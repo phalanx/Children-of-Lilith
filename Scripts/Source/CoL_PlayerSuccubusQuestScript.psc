@@ -2,14 +2,20 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 
 import PapyrusUtil
 
-Actor Property PlayerRef Auto
-Spell Property DrainHealthSpell Auto
+Actor Property playerRef Auto
+Spell Property drainHealthSpell Auto
 
-float Property PlayerEnergyCurrent = 0.0 Auto Hidden
-float Property PlayerEnergyMax = 100.0 Auto Hidden
+bool Property DebugLogging = true Auto
 
-Actor[] Property activeDrainVictims Auto Hidden
-float Property drainDurationInGameTime = 24.0 Auto
+; Energy Properties
+float Property playerEnergyCurrent = 0.0 Auto Hidden
+float Property playerEnergyMax = 100.0 Auto Hidden
+
+; Drain Properties
+Actor[] Property activeDrainVictims Auto Hidden             ; List of active drain victims. Hopefully useful for uninstall process. 
+float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
+float Property healthToDrain = 0.2 Auto Hidden              ; Percentage of health to drain from victim
+float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 
 Event OnInit()
     GotoState("Initialize")
@@ -35,52 +41,84 @@ EndFunction
 Function RegisterForEvents()
     RegisterForModEvent("CoL_startDrain", "StartDrain")
     RegisterForModEvent("CoL_endDrain", "EndDrain")
-    Debug.Trace("[CoL] Registered for CoL Drain Events")
+
+    if DebugLogging
+        Debug.Trace("[CoL] Registered for CoL Drain Events")
+    endif
 EndFunction
 
 Function AddActiveDrainVictim(Actor drainVictim)
-    Debug.Trace("[CoL] Adding Victim to activeDrainList")
+    if DebugLogging
+        Debug.Trace("[CoL] Adding Victim to activeDrainList")
+    endif
+
     activeDrainVictims = PushActor(activeDrainVictims, drainVictim)
-    Debug.Trace("[CoL] List now contains:")
-    int i = 0
-    while i < activeDrainVictims.Length
-        Debug.Trace("[CoL] " + (activeDrainVictims[i].GetBaseObject() as ActorBase).GetName())
-        i += 1
-    endwhile
+
+    if DebugLogging
+        Debug.Trace("[CoL] List now contains:")
+        int i = 0
+        while i < activeDrainVictims.Length
+            Debug.Trace("[CoL] " + (activeDrainVictims[i].GetBaseObject() as ActorBase).GetName())
+            i += 1
+        endwhile
+    endif
 EndFunction
 
 Function RemoveActiveDrainVictim(Actor drainVictim)
-    Debug.Trace("[CoL] Removing Victim from activeDrainList")
+    if DebugLogging
+        Debug.Trace("[CoL] Removing Victim from activeDrainList")
+    endif
+
     activeDrainVictims = RemoveActor(activeDrainVictims, drainVictim)
-    Debug.Trace("[CoL] List now contains:")
-    int i = 0
-    while i < activeDrainVictims.Length
-        Debug.Trace("[CoL] " + (activeDrainVictims[i].GetBaseObject() as ActorBase).GetName())
-        i += 1
-    endwhile
+    
+    if DebugLogging
+        Debug.Trace("[CoL] List now contains:")
+        int i = 0
+        while i < activeDrainVictims.Length
+            Debug.Trace("[CoL] " + (activeDrainVictims[i].GetBaseObject() as ActorBase).GetName())
+            i += 1
+        endwhile
+    endif
 EndFunction
 
-Event StartDrain(Form draineeForm)
+float Function CalculateDrainAmount(Actor drainVictim)
+    float victimHealth = drainVictim.GetActorValue("Health")
+    return (victimHealth * healthToDrain)
+EndFunction
+
+Event StartDrain(Form draineeForm, string draineeName)
     Actor drainee = draineeForm as Actor
-    string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
-    Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
-    if activeDrainVictims.find(drainee) != -1
-        Debug.Trace("[CoL] " + draineeName + " has already been drained and Drain to Death Not Enabled. Bailing...")
+
+    if DebugLogging
+        Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
+    endif
+
+    if drainee.HasSpell(DrainHealthSpell)
+        if DebugLogging
+            Debug.Trace("[CoL] " + draineeName + " has already been drained and Drain to Death Not Enabled. Bailing...")
+        endif
+
         Debug.Notification("Draining " + draineeName + " again would kill them")
         return
     endif
     drainee.AddSpell(DrainHealthSpell)
-    float drainAmount = 10.0
-    float newPlayerEnergy = PlayerEnergyCurrent + drainAmount
+
+    float drainAmount = CalculateDrainAmount(drainee)
+    float newPlayerEnergy = PlayerEnergyCurrent + (drainAmount * energyConversionRate)
     if newPlayerEnergy > PlayerEnergyMax
-        PlayerEnergyCurrent = PlayerEnergyMax
+        playerEnergyCurrent = PlayerEnergyMax
     else
-        PlayerEnergyCurrent = newPlayerEnergy
+        playerEnergyCurrent = newPlayerEnergy
     endif
-    Debug.Trace("[CoL] Player Energy is now " + PlayerEnergyCurrent)
+    if DebugLogging
+        Debug.Trace("[CoL] Player Energy is now " + playerEnergyCurrent)
+    endif
 EndEvent
 
 Event EndDrain(Form draineeForm)
     Actor drainee = draineeForm as Actor
-    Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
+
+    if DebugLogging
+        Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
+    endif
 EndEvent

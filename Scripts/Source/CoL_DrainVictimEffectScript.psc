@@ -5,33 +5,43 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 float healthDrained
 Actor drainCaster
 Actor drainTarget
+string drainTargetName
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     drainTarget = akTarget
     drainCaster = akCaster
 
-    Debug.Trace("[CoL] "+ (drainTarget.GetBaseObject() as Actorbase).GetName() + " has been drained")
-    Debug.Trace("[CoL] Starting Health Value = " + drainTarget.GetActorValue("Health"))
+    if CoL.DebugLogging
+        drainTargetName = drainTarget.GetLeveledActorBase().GetName()
+        Debug.Trace("[CoL] " + drainTargetName + " has been drained")
+        Debug.Trace("[CoL] Starting Health Value = " + drainTarget.GetActorValue("Health"))
+    endif
 
-    healthDrained = 10.0
+    healthDrained = CoL.CalculateDrainAmount(drainTarget)
     drainTarget.ModActorValue("Health", 0.0 - healthDrained)
     CoL.AddActiveDrainVictim(drainTarget)
     RegisterForSingleUpdateGameTime(CoL.drainDurationInGameTime)
 
-    Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
+    endif
 EndEvent
 
 Event OnUpdateGameTime()
-    Debug.Trace("[CoL] " + (drainTarget.GetBaseObject() as Actorbase).GetName() + " has finished being drained")
-    Debug.Trace("[CoL] Starting Health Value = " + drainTarget.GetActorValue("Health"))
-    
-    drainTarget.ModActorValue("Health", healthDrained)
-    drainTarget.RemoveSpell(CoL.DrainHealthSpell)
-    CoL.RemoveActiveDrainVictim(drainTarget)
-
-    Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
+    drainTarget.RemoveSpell(CoL.drainHealthSpell)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    Debug.Trace("[CoL] Drain Effect Removed")
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] " + drainTargetName + " has finished being drained")
+        Debug.Trace("[CoL] Starting Health Value = " + drainTarget.GetActorValue("Health"))
+    endif
+    
+    drainTarget.ModActorValue("Health", healthDrained)
+    CoL.RemoveActiveDrainVictim(drainTarget)
+
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
+        Debug.Trace("[CoL] Drain Effect Removed")
+    endif
 EndEvent
