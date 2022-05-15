@@ -7,6 +7,8 @@ Actor drainCaster
 Actor drainTarget
 string drainTargetName
 
+; Consider registering for an event to allow for removal of all active effects
+; This way I don't have to add the target to an array etc. for uninstall
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     drainTarget = akTarget
     drainCaster = akCaster

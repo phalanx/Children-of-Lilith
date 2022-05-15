@@ -8,7 +8,7 @@ Spell Property drainHealthSpell Auto
 bool Property DebugLogging = true Auto
 
 ; Energy Properties
-float Property playerEnergyCurrent = 0.0 Auto Hidden
+float Property playerEnergyCurrent = 100.0 Auto Hidden
 float Property playerEnergyMax = 100.0 Auto Hidden
 
 ; Drain Properties
@@ -16,6 +16,9 @@ Actor[] Property activeDrainVictims Auto Hidden             ; List of active dra
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
 float Property healthToDrain = 0.2 Auto Hidden              ; Percentage of health to drain from victim
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
+
+; Tunable Power Values
+float Property staminaBoostCost = 5.0 Auto    ; Per second Energy Cost of Stamina Boost Effect
 
 Event OnInit()
     GotoState("Initialize")
@@ -25,7 +28,9 @@ EndEvent
 ; Not much is being done here so probably overkill right now
 State Initialize
     Event OnBeginState()
-        Debug.Trace("[CoL] Initializing")
+        if DebugLogging
+            Debug.Trace("[CoL] Initializing")
+        endif
         Maintenance()
         GotoState("")
     EndEvent
