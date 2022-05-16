@@ -1,0 +1,1 @@
+Scriptname Col_SuccubusHealRateBoostEffectScript extends activemagiceffect  

@@ -4,8 +4,9 @@ import PapyrusUtil
 
 Actor Property playerRef Auto
 Spell Property drainHealthSpell Auto
+Spell[] Property levelOneSpells Auto
 
-bool Property DebugLogging = true Auto
+bool Property DebugLogging = true Auto Hidden
 
 ; Energy Properties
 float Property playerEnergyCurrent = 100.0 Auto Hidden
@@ -18,26 +19,29 @@ float Property healthToDrain = 0.2 Auto Hidden              ; Percentage of heal
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 
 ; Tunable Power Values
-float Property staminaBoostCost = 5.0 Auto    ; Per second Energy Cost of Stamina Boost Effect
+float Property staminaBoostCost = 5.0 Auto Hidden    ; Per second Energy Cost of Stamina Boost Effect
 
 Event OnInit()
-    GotoState("Initialize")
 EndEvent
 
-; Use Initialize state to exit OnInit asap
-; Not much is being done here so probably overkill right now
 State Initialize
     Event OnBeginState()
         if DebugLogging
             Debug.Trace("[CoL] Initializing")
         endif
+        GrantSpells()
         Maintenance()
         GotoState("")
     EndEvent
-
-    Event OnInit()
-    EndEvent
 EndState
+
+Function GrantSpells()
+    int i = 0
+    while i < levelOneSpells.Length
+        playerRef.AddSpell(levelOneSpells[i])
+        i += 1
+    endwhile
+EndFunction
 
 Function Maintenance()
     RegisterForEvents()
