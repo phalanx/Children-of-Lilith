@@ -7,6 +7,7 @@ Spell Property drainHealthSpell Auto
 Spell[] Property levelOneSpells Auto
 
 bool Property DebugLogging = true Auto Hidden
+bool Property alternativeCasting = true Auto
 
 ; Energy Properties
 float Property playerEnergyCurrent = 100.0 Auto Hidden
@@ -15,11 +16,18 @@ float Property playerEnergyMax = 100.0 Auto Hidden
 ; Drain Properties
 Actor[] Property activeDrainVictims Auto Hidden             ; List of active drain victims. Hopefully useful for uninstall process. 
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
-float Property healthToDrain = 0.2 Auto Hidden              ; Percentage of health to drain from victim
+float Property healthDrainMult = 0.2 Auto Hidden              ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 
 ; Tunable Power Values
-float Property staminaBoostCost = 5.0 Auto Hidden    ; Per second Energy Cost of Stamina Boost Effect
+float Property staminaBoostCost  = 5.0 Auto Hidden       ; Per second Energy Cost of Stamina Boost Effect
+float Property staminaBoostMult  = 1.0 Auto Hidden       ; Multiply Stamina value by this then add it to the max. (New Stamina = Current + Current * Mult)
+float Property healRateBoostCost = 1.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
+float Property healRateBoostMult = 5.0 Auto Hidden      ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
+
+; Togglable Spells
+Spell Property StaminaBoost Auto
+Spell Property healRateBoost Auto
 
 Event OnInit()
 EndEvent
@@ -92,7 +100,7 @@ EndFunction
 
 float Function CalculateDrainAmount(Actor drainVictim)
     float victimHealth = drainVictim.GetActorValue("Health")
-    return (victimHealth * healthToDrain)
+    return (victimHealth * healthDrainMult)
 EndFunction
 
 Event StartDrain(Form draineeForm, string draineeName)

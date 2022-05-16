@@ -2,18 +2,17 @@ Scriptname CoL_SuccuubsStaminaBoostEffectScript extends activemagiceffect
 
 float staminaBoosted
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-Spell Property StaminaBoostSpell Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if Col.playerEnergyCurrent >= Col.staminaBoostCost
+    if Col.playerEnergyCurrent >= CoL.staminaBoostCost
         Debug.Notification("Stamina Boost Enabled")
-        staminaBoosted = akTarget.GetActorValue("Stamina")
+        staminaBoosted = akTarget.GetActorValue("Stamina") * CoL.staminaBoostMult
         akTarget.ModActorValue("Stamina", staminaBoosted)
         RegisterForSingleUpdate(1.0)
     else
         Debug.Notification("Not enough energy")
         staminaBoosted = 0.0
-        CoL.playerRef.RemoveSpell(StaminaBoostSpell)
+        CoL.playerRef.RemoveSpell(CoL.StaminaBoost)
     endif
 EndEvent
 
@@ -22,7 +21,7 @@ Event OnUpdate()
         if CoL.DebugLogging
             Debug.Trace("[CoL] Out of Energy")
         endif
-        CoL.playerRef.RemoveSpell(StaminaBoostSpell)
+        CoL.playerRef.RemoveSpell(CoL.StaminaBoost)
         return
     endif
     CoL.playerEnergyCurrent -= CoL.staminaBoostCost
