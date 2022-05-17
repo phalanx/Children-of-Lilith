@@ -28,13 +28,3 @@ Event OnSpellCast(Form akSpell)
         endif
     endif
 EndEvent
-
-float currentHealth = 0.0
-Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, \
-  bool abBashAttack, bool abHitBlocked)
-  float newHealth = CoL.playerRef.GetActorValue("Health")
-  if currentHealth
-    Debug.Trace("[CoL] Health Lost: " + (currentHealth - newHealth) as string)
-  endif
-  currentHealth = newHealth
-EndEvent
