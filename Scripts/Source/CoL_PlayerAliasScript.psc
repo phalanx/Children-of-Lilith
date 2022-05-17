@@ -12,17 +12,18 @@ EndEvent
 
 Event OnSpellCast(Form akSpell)
     Spell spellCast = akSpell as Spell
-    Actor playerRef = GetReference() as Actor
-    if akSpell && CoL.alternativeCasting
-        int spellCost = spellCast.GetEffectiveMagickaCost(playerRef)
+    if akSpell && CoL.playerRef.HasPerk(CoL.energyForMagickaPerk)
+        Debug.Trace("[CoL] Calculating Spell Cost")
+        CoL.playerRef.RemovePerk(CoL.energyForMagickaPerk)
+        int spellCost = spellCast.GetEffectiveMagickaCost(CoL.playerRef)
+        CoL.playerRef.AddPerk(CoL.energyForMagickaPerk)
+        Debug.Trace("[CoL] Done Calculating Spell Cost")
         if spellCost < CoL.playerEnergyCurrent
             CoL.playerEnergyCurrent -= spellCost
-            playerRef.RestoreActorValue("Magicka", spellCost)
         else
-            CoL.alternativeCasting = false
-            playerRef.RestoreActorValue("Magicka", CoL.playerEnergyCurrent)
+            CoL.playerRef.RemovePerk(CoL.energyForMagickaPerk)
             CoL.playerEnergyCurrent = 0
-            Debug.Notification("Out of Energy - Disabling Alternative Casting")
+            Debug.Notification("Out of Energy - Disabling Energy Casting")
         endif
         if CoL.DebugLogging
             Debug.Trace("[CoL] New Energy Level: " + CoL.playerEnergyCurrent)

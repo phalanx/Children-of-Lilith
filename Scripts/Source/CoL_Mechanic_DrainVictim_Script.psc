@@ -1,4 +1,4 @@
-Scriptname CoL_DrainVictimEffectScript extends activemagiceffect  
+Scriptname CoL_Mechanic_DrainVictim_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 

@@ -1,4 +1,4 @@
-Scriptname CoL_SuccuubsStaminaBoostEffectScript extends activemagiceffect  
+Scriptname CoL_Ability_StaminaBoost_Script extends activemagiceffect  
 
 float staminaBoosted
 CoL_PlayerSuccubusQuestScript Property CoL Auto

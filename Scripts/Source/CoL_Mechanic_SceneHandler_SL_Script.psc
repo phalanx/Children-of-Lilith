@@ -1,4 +1,4 @@
-Scriptname CoL_SLSceneHandlerEffectScript extends activemagiceffect  
+Scriptname CoL_Mechanic_SceneHandler_SL_Script extends activemagiceffect  
 
 SexLabFramework Property SexLab Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto

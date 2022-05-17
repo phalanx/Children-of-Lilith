@@ -1,4 +1,4 @@
-Scriptname CoL_ToggleSpellEffectScript extends activemagiceffect  
+Scriptname CoL_Generic_Toggle_Spell_Script extends activemagiceffect  
 
 Spell Property SpellToToggle Auto
 

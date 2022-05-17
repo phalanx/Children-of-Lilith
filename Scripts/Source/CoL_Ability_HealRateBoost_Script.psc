@@ -1,4 +1,4 @@
-Scriptname Col_SuccubusHealRateBoostEffectScript extends activemagiceffect  
+Scriptname CoL_Ability_HealRateBoost_Script extends activemagiceffect  
 
 float healRateBoosted
 CoL_PlayerSuccubusQuestScript Property CoL Auto

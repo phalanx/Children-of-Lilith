@@ -7,7 +7,6 @@ Spell Property drainHealthSpell Auto
 Spell[] Property levelOneSpells Auto
 
 bool Property DebugLogging = true Auto Hidden
-bool Property alternativeCasting = true Auto
 
 ; Energy Properties
 float Property playerEnergyCurrent = 100.0 Auto Hidden
@@ -28,6 +27,7 @@ float Property healRateBoostMult = 5.0 Auto Hidden      ; Multiply HealRate valu
 ; Togglable Spells
 Spell Property StaminaBoost Auto
 Spell Property healRateBoost Auto
+Perk Property energyForMagickaPerk Auto
 
 Event OnInit()
 EndEvent
