@@ -13,11 +13,9 @@ EndEvent
 Event OnSpellCast(Form akSpell)
     Spell spellCast = akSpell as Spell
     if spellCast && CoL.playerRef.HasPerk(CoL.energyForMagickaPerk) && spellCast != CoL.energyForMagickaToggleSpell
-        Debug.Trace("[CoL] Calculating Spell Cost")
         CoL.playerRef.RemovePerk(CoL.energyForMagickaPerk)
         int spellCost = spellCast.GetEffectiveMagickaCost(CoL.playerRef)
         CoL.playerRef.AddPerk(CoL.energyForMagickaPerk)
-        Debug.Trace("[CoL] Done Calculating Spell Cost")
         if spellCost < CoL.playerEnergyCurrent
             CoL.playerEnergyCurrent -= spellCost
         else
@@ -29,4 +27,14 @@ Event OnSpellCast(Form akSpell)
             Debug.Trace("[CoL] New Energy Level: " + CoL.playerEnergyCurrent)
         endif
     endif
+EndEvent
+
+float currentHealth = 0.0
+Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, \
+  bool abBashAttack, bool abHitBlocked)
+  float newHealth = CoL.playerRef.GetActorValue("Health")
+  if currentHealth
+    Debug.Trace("[CoL] Health Lost: " + (currentHealth - newHealth) as string)
+  endif
+  currentHealth = newHealth
 EndEvent
