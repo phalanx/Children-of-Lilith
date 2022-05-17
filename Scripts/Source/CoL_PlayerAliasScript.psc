@@ -12,7 +12,7 @@ EndEvent
 
 Event OnSpellCast(Form akSpell)
     Spell spellCast = akSpell as Spell
-    if akSpell && CoL.playerRef.HasPerk(CoL.energyForMagickaPerk)
+    if spellCast && CoL.playerRef.HasPerk(CoL.energyForMagickaPerk) && spellCast != CoL.energyForMagickaToggleSpell
         Debug.Trace("[CoL] Calculating Spell Cost")
         CoL.playerRef.RemovePerk(CoL.energyForMagickaPerk)
         int spellCost = spellCast.GetEffectiveMagickaCost(CoL.playerRef)
