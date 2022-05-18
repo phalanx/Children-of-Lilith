@@ -26,6 +26,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 
     if CoL.DebugLogging
         Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
+        Debug.Trace("[CoL] Drain will last for " + CoL.drainDurationInGameTime +" in game hours")
     endif
 EndEvent
 
