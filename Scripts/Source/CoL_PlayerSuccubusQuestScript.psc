@@ -19,14 +19,13 @@ float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of heal
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 
 ; MCM Tunable Power Values
-float Property staminaBoostCost  = 1.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
-float Property staminaBoostMult  = 1.0 Auto Hidden      ; Multiply Stamina value by this then add it to the max. (New Stamina = Current + Current * Mult)
+float Property becomeEtherealCost  = 10.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostMult = 10.0 Auto Hidden      ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
 float Property energyCastingMult = 1.0 Auto
 
 ; Togglable Spells
-Spell Property StaminaBoost Auto                    ; Spell that contains the stamina boost effect
+Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
 Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
 Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain

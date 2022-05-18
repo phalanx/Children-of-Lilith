@@ -22,8 +22,7 @@ GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succ
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
 
     string settingsPageHeaderTwo = "Power Settings"
-    string settingsPageStaminaBoostCost = "Stamina Boost Per Second Cost"
-    string settingsPageStaminaBoostMult = "Stamina Boost Multiplier"
+    string settingsPageBecomeEtherealCost = "Become Ethereal Per Second Cost"
     string settingsPageHealRateBoostCost = "HealRate Boost Per Second Cost"
     string settingsPageHealRateBoostMult = "HealRate Boost Multiplier"
     string settingsPageEnergyCastingMult = "Energy Casting Cost Multiplier"
@@ -64,8 +63,7 @@ Event OnPageReset(string page)
         ; Power Settings
         SetCursorPosition(1)
         AddHeaderOption(settingsPageHeaderTwo)
-        AddSliderOptionST("StaminaBoostCostSlider", settingsPageStaminaBoostCost, CoL.staminaBoostCost)
-        AddSliderOptionST("StaminaBoostMultSlider", settingsPageStaminaBoostMult, CoL.staminaBoostMult)
+        AddSliderOptionST("BecomeEtherealCostSlider", settingsPageBecomeEtherealCost, CoL.becomeEtherealCost)
         AddEmptyOption()
         AddSliderOptionST("HealRateBoostCostSlider", settingsPageHealRateBoostCost, CoL.healRateBoostCost)
         AddSliderOptionST("HealRateBoostMultSlider", settingsPageHealRateBoostMult, CoL.healRateBoostMult)
@@ -140,28 +138,16 @@ EndEvent
         EndEvent
     EndState
 
-    State StaminaBoostCostSlider
+    State BecomeEtherealCostSlider
         Event OnSliderOpenST()
-            SetSliderDialogStartValue(CoL.staminaBoostCost)
-            SetSliderDialogDefaultValue(1)
+            SetSliderDialogStartValue(CoL.becomeEtherealCost)
+            SetSliderDialogDefaultValue(10)
             SetSliderDialogInterval(1)
             SetSliderDialogRange(1, 10)
         EndEvent
         Event OnSliderAcceptST(float value)
-            CoL.staminaBoostCost = value
-            SetSliderOptionValueST(CoL.staminaBoostCost)
-        EndEvent
-    EndState
-    State StaminaBoostMultSlider
-        Event OnSliderOpenST()
-            SetSliderDialogStartValue(CoL.staminaBoostMult)
-            SetSliderDialogDefaultValue(1)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 10)
-        EndEvent
-        Event OnSliderAcceptST(float value)
-            CoL.staminaBoostMult = value
-            SetSliderOptionValueST(CoL.staminaBoostMult)
+            CoL.becomeEtherealCost = value
+            SetSliderOptionValueST(CoL.becomeEtherealCost)
         EndEvent
     EndState
     State HealRateBoostCostSlider

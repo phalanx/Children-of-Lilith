@@ -30,7 +30,7 @@ Event OnSpellCast(Form akSpell)
                 CoL.playerRef.DamageActorValue("Magicka", currentMagicka)
                 CoL.playerRef.DamageActorValue("Health", healthOverflow) ; Keep players from being able to cast super high level spells without enough energy+magicka+health. Hopefully.
             endif
-            Debug.Notification("Out of Energy - Disabling Energy Casting")
+            Debug.Notification("Out of Energy: Energy Casting Disabled")
         endif
         if CoL.DebugLogging
             Debug.Trace("[CoL] New Energy Level: " + CoL.playerEnergyCurrent)
