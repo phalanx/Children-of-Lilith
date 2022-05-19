@@ -19,7 +19,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         Debug.Trace("[CoL] Starting Health Value = " + drainTarget.GetActorValue("Health"))
     endif
 
-    healthDrained = CoL.CalculateDrainAmount(drainTarget)
+    healthDrained = CoL.drainHandler.CalculateDrainAmount(drainTarget)
     drainTarget.ModActorValue("Health", 0.0 - healthDrained)
     CoL.AddActiveDrainVictim(drainTarget)
     RegisterForSingleUpdateGameTime(CoL.drainDurationInGameTime)

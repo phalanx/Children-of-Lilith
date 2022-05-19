@@ -4,7 +4,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
 ; String values to make translating the menu easier once I figure out how translation files work
-; Page 1
+; Page 1 - Status
     string statusPageName = "Status"
     string statusPageHeaderOne = "Current Stats"
     string statusPageEnergyCurrent = "Current energy"
@@ -14,9 +14,11 @@ GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succ
 
     string statusPageHeaderTwo = "Debug and Maintenance"
 
-; Page 2
+; Page 2 - Settings
     string settingsPageName = "Settings"
     string settingsPageHeaderOne = "Drain Settings"
+    string settingsPageDrainToggle = "Draining"
+    string settingsPageDrainToDeathToggle = "Draining to Death"
     string settingsPageDrainDuration = "Drain Duration"
     string settingsPageHealthDrainMult = "Health Drain Multiplier"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
@@ -26,11 +28,16 @@ GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succ
     string settingsPageHealRateBoostCost = "HealRate Boost Per Second Cost"
     string settingsPageHealRateBoostMult = "HealRate Boost Multiplier"
     string settingsPageEnergyCastingMult = "Energy Casting Cost Multiplier"
+; Page 3 - Hotkeys
+    string hotkeysPageName = "Hotkeys"
+    string hotkeysPageToggleDrainHotkey = "Toggle Drain Key"
+    string hotkeysPageToggleDrainToDeathHotkey = "Toggle Drain to Death Key"
 
 Event OnConfigInit()
-    Pages = new string[2]
+    Pages = new string[3]
     Pages[0] = statusPageName
     Pages[1] = settingsPageName
+    Pages[2] = hotkeysPageName
 EndEvent
 
 Event OnPageReset(string page)
@@ -45,7 +52,7 @@ Event OnPageReset(string page)
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("EndSuccubus", statusPageEndSuccubus, None)
-            AddTextOptionST("EnergyRefill", "Refill Energy", false)
+            AddTextOptionST("EnergyRefill", "Refill Energy", None)
             AddToggleOptionST("DebugLogging", "Enable Debug Logging", CoL.DebugLogging)
         else
             SetCursorPosition(1)
@@ -57,6 +64,8 @@ Event OnPageReset(string page)
         SetCursorFillMode(TOP_TO_BOTTOM)
         ; Drain Settings
         AddHeaderOption(settingsPageHeaderOne)
+        AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining)
+        AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
         AddSLiderOptionST("HealthConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
@@ -69,6 +78,11 @@ Event OnPageReset(string page)
         AddSliderOptionST("HealRateBoostMultSlider", settingsPageHealRateBoostMult, CoL.healRateBoostMult)
         AddEmptyOption()
         AddSliderOptionST("EnergyCastingCostMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
+; Page 3
+    elseif page == hotkeysPageName
+        SetCursorFillMode(TOP_TO_BOTTOM)
+        AddKeyMapOptionST("DrainKeyMapOption", hotkeysPageToggleDrainHotkey, CoL.toggleDrainHotkey)
+        AddKeyMapOptionST("DrainToDeathKeyMapOption", hotkeysPageToggleDrainToDeathHotkey, CoL.toggleDrainToDeathHotkey)
     endif
 EndEvent
 
@@ -101,6 +115,18 @@ EndEvent
     EndState
 
 ; Page 2 State Handlers
+    State DrainToggleOption
+        Event OnSelectST()
+            CoL.drainHandler.draining = !CoL.drainHandler.draining
+            SetToggleOptionValueST(CoL.drainHandler.draining)
+        EndEvent
+    EndState
+    State DrainToDeathToggleOption
+        Event OnSelectST()
+            CoL.drainHandler.drainingToDeath = !CoL.drainHandler.drainingToDeath
+            SetToggleOptionValueST(CoL.drainHandler.drainingToDeath)
+        EndEvent
+    EndState
     State DrainDurationSlider
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.drainDurationInGameTime)
@@ -184,5 +210,47 @@ EndEvent
         Event OnSliderAcceptST(float value)
             CoL.energyCastingMult = value
             SetSliderOptionValueST(CoL.energyCastingMult, "{1}")
+        EndEvent
+    EndState
+
+; Page 3 State Handlers
+    State DrainKeyMapOption
+        Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            bool continue = true
+            if (conflictControl != "")
+                string msg
+                if (conflictName != "")
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+                else
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n\nAre you sure you want to continue?"
+                endIf
+
+                continue = ShowMessage(msg, true, "$Yes", "$No")
+            endIf
+
+            if (continue)
+                CoL.toggleDrainHotkey = keyCode
+                SetKeyMapOptionValueST(keyCode)
+            endIf
+        EndEvent
+    EndState
+    State DrainToDeathKeyMapOption
+        Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            bool continue = true
+            if (conflictControl != "")
+                string msg
+                if (conflictName != "")
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+                else
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n\nAre you sure you want to continue?"
+                endIf
+
+                continue = ShowMessage(msg, true, "$Yes", "$No")
+            endIf
+
+            if (continue)
+                CoL.toggleDrainToDeathHotkey = keyCode
+                SetKeyMapOptionValueST(keyCode)
+            endIf
         EndEvent
     EndState
