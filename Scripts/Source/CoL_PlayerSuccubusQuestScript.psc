@@ -10,7 +10,7 @@ Spell[] Property levelOneSpells Auto                ; Spells granted to player a
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 
 ; Hotkeys
-int toggleDrainHotKey_var = 42
+int toggleDrainHotKey_var = 29
 int Property toggleDrainHotkey     ; Default Toggle Drain key to left shift
     int Function Get()
         return toggleDrainHotkey_var 
@@ -22,8 +22,8 @@ int Property toggleDrainHotkey     ; Default Toggle Drain key to left shift
     EndFunction
 EndProperty
 
-int toggleDrainToDeathHotKey_var = 56
-int Property toggleDrainToDeathHotkey     ; Default Toggle Drain to Death key to left alt
+int toggleDrainToDeathHotKey_var = 157
+int Property toggleDrainToDeathHotkey     ; Default Toggle Drain to Death key to right alt
     int Function Get()
         return toggleDrainToDeathHotkey_var 
     EndFunction
@@ -84,13 +84,16 @@ State Initialize
     EndEvent
 EndState
 
-Event OnKeyDown(int keyCode)
-    if keyCode == toggleDrainHotkey
-        drainHandler.draining = !drainHandler.draining
-    elseif keyCode == toggleDrainToDeathHotkey
-        drainHandler.drainingToDeath = !drainHandler.drainingToDeath
-    endif
-EndEvent
+State SceneRunning
+    Event OnKeyDown(int keyCode)
+        if keyCode == toggleDrainHotkey
+            drainHandler.draining = !drainHandler.draining
+        elseif keyCode == toggleDrainToDeathHotkey
+            drainHandler.drainingToDeath = !drainHandler.drainingToDeath
+        endif
+    EndEvent
+EndState
+
 
 Function GrantSpells()
     int i = 0
@@ -108,9 +111,19 @@ EndFunction
 Function RegisterForEvents()
     ; Register for Hotkeys
     RegisterForKey(toggleDrainHotKey_var)
+    RegisterForModEvent("CoL_startScene", "StartScene")
+    RegisterForModEvent("CoL_endScene", "EndScene")
     if DebugLogging
         Debug.Trace("[CoL] Registered for Hotkeys")
     endif
+EndFunction
+
+Function StartScene()
+    GoToState("SceneRunning")
+EndFunction
+
+Function EndScene()
+    GoToState("")
 EndFunction
 
 Function AddActiveDrainVictim(Actor drainVictim)
@@ -146,3 +159,6 @@ Function RemoveActiveDrainVictim(Actor drainVictim)
         endwhile
     endif
 EndFunction
+
+Event OnKeyDown(int keyCode)
+EndEvent

@@ -20,6 +20,8 @@ Function RegisterForEvents()
 EndFunction
 
 Event CoL_SLPlayerStartHandler(Form actorRef, int threadID)
+    int sceneStartEvent = ModEvent.Create("CoL_startScene")
+    ModEvent.Send(sceneStartEvent)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Player involved animation started")
     endif
@@ -70,6 +72,8 @@ Event CoL_SLOrgasmHandler(int threadID, bool hasPlayer)
 EndEvent
 
 Event CoL_SLAnimationEndHandler(int threadID, bool hasPlayer)
+    int sceneEndEvent = ModEvent.Create("CoL_endScene")
+    ModEvent.Send(sceneEndEvent)
     sslThreadController thread = SexLab.GetController(threadID)
     Actor[] actors = thread.positions
     int i = 0
