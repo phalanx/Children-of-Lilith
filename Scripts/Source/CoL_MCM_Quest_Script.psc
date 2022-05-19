@@ -47,8 +47,8 @@ Event OnPageReset(string page)
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddHeaderOption(statusPageHeaderOne)
         if isPlayerSuccubus.GetValue() as int == 1
-            AddTextOption(statusPageEnergyCurrent+": ", CoL.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
-            AddTextOption(statusPageEnergyMax+": ", CoL.playerEnergyMax as int, OPTION_FLAG_DISABLED)
+            AddTextOptionST("EnergyCurrentTextOption", statusPageEnergyCurrent+": ", CoL.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
+            AddSliderOptionST("EnergyMaxSlider", statusPageEnergyMax+": ", CoL.playerEnergyMax)
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("EndSuccubus", statusPageEndSuccubus, None)
@@ -101,12 +101,25 @@ EndEvent
         EndEvent
     EndState
 
-    State EnergyRefill
-        Event OnSelectST()
-            CoL.playerEnergyCurrent = CoL.playerEnergyMax
+    State EnergyMaxSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.playerEnergyMax)
+            SetSliderDialogDefaultValue(100)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 1000)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.playerEnergyMax = value
+            SetSliderOptionValueST(CoL.playerEnergyMax)
         EndEvent
     EndState
 
+    State EnergyRefill
+        Event OnSelectST()
+            CoL.playerEnergyCurrent = CoL.playerEnergyMax
+            SetTextOptionValueST(CoL.playerEnergyCurrent as int, false, "EnergyCurrentTextOption")
+        EndEvent
+    EndState
     State DebugLogging
         Event OnSelectST()
             CoL.DebugLogging = !CoL.DebugLogging

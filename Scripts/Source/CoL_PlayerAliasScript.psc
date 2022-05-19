@@ -1,6 +1,7 @@
 Scriptname CoL_PlayerAliasScript extends ReferenceAlias  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+ImageSpaceModifier Property EnergyCastingIMod Auto
 
 Event OnInit()
     CoL.GoToState("Initialize")
@@ -13,6 +14,8 @@ EndEvent
 Event OnSpellCast(Form akSpell)
     Spell spellCast = akSpell as Spell
     if spellCast && CoL.playerRef.HasPerk(CoL.energyCastingPerk) && spellCast != CoL.energyCastingToggleSpell
+        EnergyCastingIMod.Apply()
+        RegisterForSingleUpdate(0.2)
         CoL.playerRef.RemovePerk(CoL.energyCastingPerk)
         float spellCost = spellCast.GetEffectiveMagickaCost(CoL.playerRef) * CoL.energyCastingMult
         CoL.playerRef.AddPerk(CoL.energyCastingPerk)
@@ -32,8 +35,9 @@ Event OnSpellCast(Form akSpell)
             endif
             Debug.Notification("Out of Energy: Energy Casting Disabled")
         endif
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] New Energy Level: " + CoL.playerEnergyCurrent)
-        endif
     endif
+EndEvent
+
+Event OnUpdate()
+    EnergyCastingIMod.Remove()
 EndEvent

@@ -21,9 +21,6 @@ Event OnUpdate()
         return
     endif
     CoL.playerEnergyCurrent -= CoL.becomeEtherealCost
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] New Energy Level: " + CoL.playerEnergyCurrent)
-    endif
     RegisterForSingleUpdate(1.0)
 EndEvent
 
