@@ -12,40 +12,60 @@ bool meterBarChanged = false
     string statusPageHeaderOne = "Current Stats"
     string statusPageEnergyCurrent = "Current energy"
     string statusPageEnergyMax = "Maximum energy"
+    string statusPageEnergyMaxHelp = "Set Your Maximum Energy. Could be considered a cheat"
     string statusPageBecomeSuccubus = "Become Succubus"
+    string statusPageBecomeSuccubusHelp = "Enables the mod, turning you into a succubus"
     string statusPageEndSuccubus = "End Succubus"
-
+    string statusPageEndSuccubusHelp = "Disables the mod, returning you to human/mer"
     string statusPageHeaderTwo = "Debug and Maintenance"
+    string statusPageRefillEnergy = "Refill Energy"
+    string statusPageRefillEnergyHelp = "Cheat: Refills Energy"
+    string statusPageDebugLogging = "Toggle Debug Logging"
+    string statusPageDebugLoggingHelp = "Toggles Debug Logging. \n Warning: this can produce a lot of log entries. Only enable for troubleshooting"
 
 ; Page 2 - Settings
     string settingsPageName = "Settings"
     string settingsPageHeaderOne = "Drain Settings"
-    string settingsPageDrainToggle = "Draining"
-    string settingsPageDrainToDeathToggle = "Draining to Death"
+    string settingsPageDrainToggle = "Drain"
+    string settingsPageDrainToggleHelp = "Toggle Draining"
+    string settingsPageDrainToDeathToggle = "Drain to Death"
+    string settingsPageDrainToDeathToggleHelp = "Toggle Drain to Death. Takes precedent over Drain setting"
     string settingsPageDrainDuration = "Drain Duration"
+    string settingsPageDrainDurationHelp = "How long the Drain health debuff lasts, in game hours"
     string settingsPageHealthDrainMult = "Health Drain Multiplier"
+    string settingsPageHealthDrainMultHelp = "The percentage of health drained from victim \n (Victim Health * [this value]) = Health Drained"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
+    string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
 
     string settingsPageHeaderTwo = "Power Settings"
-    string settingsPageBecomeEtherealCost = "Become Ethereal Per Second Cost"
-    string settingsPageHealRateBoostCost = "HealRate Boost Per Second Cost"
+    string settingsPageBecomeEtherealCost = "Become Ethereal Cost"
+    string settingsPageBecomeEtherealCostHelp = "Per Second Energy Cost of Succubus Become Ethereal"
+    string settingsPageHealRateBoostCost = "HealRate Boost Cost"
+    string settingsPageHealRateBoostCostHelp = "Per Second Cost of Succubus Heal Rate Boost"
     string settingsPageHealRateBoostMult = "HealRate Boost Multiplier"
+    string settingsPageHealRateBoostMultHelp = "Multiplier applied to HealRate during Succubus Heal Rate Boost"
     string settingsPageEnergyCastingMult = "Energy Casting Cost Multiplier"
+    string settingsPageEnergyCastingMultHelp = "Multiplier applied to spells Magicka cost before being removed from Energy Pool \n (Spell Magicka Cost * [This Value]) = Energy Cost of Spell"
     string settingsPageEnergyCastingConcStyle = "Concentration Cost Calculation Style"
+    string settingsPageEnergyCastingConcStyleHelp = "Select a Concentration Cost Calculation Style \n See Mod Description for more information"
     string settingsPageEnergyCastingConcStyleLeftOnly = "Left Hand Only" 
     string settingsPageEnergyCastingConcStyleBothHands = "Both Hands" 
     string settingsPageEnergyCastingConcStyleRightOnly = "Right Hand Only" 
-    string settingsPageEnergyCastingConcStyleNone = "Neither" 
+    string settingsPageEnergyCastingConcStyleNone = "Cheat: Neither" 
 ; Page 3 - Hotkeys
     string hotkeysPageName = "Hotkeys"
     string hotkeysPageToggleDrainHotkey = "Toggle Drain Key"
+    string hotkeysPageToggleDrainHotkeyHelp = "Hotkey to Toggle Drain \n Only registers during sex scenes"
     string hotkeysPageToggleDrainToDeathHotkey = "Toggle Drain to Death Key"
+    string hotkeysPageToggleDrainToDeathHotkeyHelp = "Hotkey to Toggle Drain to Death \n Only registers during sex scenes"
 ; Page 4 - Widgets
     string widgetsPageName = "Widgets"
     string widgetsPageEnergyMeterXPos = "Energy Meter X Position"
     string widgetsPageEnergyMeterYPos = "Energy Meter Y Position"
     string widgetsPageEnergyMeterXScale = "Energy Meter X Scale"
+    string widgetsPageEnergyMeterXScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
     string widgetsPageEnergyMeterYScale = "Energy Meter Y Scale"
+    string widgetsPageEnergyMeterYScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
 
 Event OnConfigInit()
     Pages = new string[4]
@@ -80,8 +100,8 @@ Event OnPageReset(string page)
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("EndSuccubus", statusPageEndSuccubus, None)
-            AddTextOptionST("EnergyRefill", "Refill Energy", None)
-            AddToggleOptionST("DebugLogging", "Enable Debug Logging", CoL.DebugLogging)
+            AddTextOptionST("EnergyRefill", statusPageRefillEnergy, None)
+            AddToggleOptionST("DebugLogging", statusPageDebugLogging, CoL.DebugLogging)
         else
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
@@ -96,7 +116,7 @@ Event OnPageReset(string page)
         AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
-        AddSLiderOptionST("HealthConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
+        AddSLiderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
         ; Power Settings
         SetCursorPosition(1)
         AddHeaderOption(settingsPageHeaderTwo)
@@ -105,7 +125,7 @@ Event OnPageReset(string page)
         AddSliderOptionST("HealRateBoostCostSlider", settingsPageHealRateBoostCost, CoL.healRateBoostCost)
         AddSliderOptionST("HealRateBoostMultSlider", settingsPageHealRateBoostMult, CoL.healRateBoostMult)
         AddEmptyOption()
-        AddSliderOptionST("EnergyCastingCostMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
+        AddSliderOptionST("EnergyCastingMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
         AddMenuOptionST("EnergyCastingConcStyleMenu", settingsPageEnergyCastingConcStyle, settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
 
 ; Page 3
@@ -128,12 +148,18 @@ EndEvent
             isPlayerSuccubus.SetValue(1.0)
             SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "BecomeSuccubus")
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageBecomeSuccubusHelp)
+        EndEvent
     EndState
 
     State EndSuccubus
         Event OnSelectST()
             isPlayerSuccubus.SetValue(0.0)
             SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "EndSuccubus")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageEndSuccubusHelp)
         EndEvent
     EndState
 
@@ -148,6 +174,9 @@ EndEvent
             CoL.playerEnergyMax = value
             SetSliderOptionValueST(CoL.playerEnergyMax)
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageEnergyMaxHelp)
+        EndEvent
     EndState
 
     State EnergyRefill
@@ -155,11 +184,19 @@ EndEvent
             CoL.playerEnergyCurrent = CoL.playerEnergyMax
             SetTextOptionValueST(CoL.playerEnergyCurrent as int, false, "EnergyCurrentTextOption")
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageRefillEnergyHelp)
+        EndEvent
+
     EndState
+
     State DebugLogging
         Event OnSelectST()
             CoL.DebugLogging = !CoL.DebugLogging
             SetToggleOptionValueST(CoL.DebugLogging)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageDebugLoggingHelp)
         EndEvent
     EndState
 
@@ -169,11 +206,17 @@ EndEvent
             CoL.drainHandler.draining = !CoL.drainHandler.draining
             SetToggleOptionValueST(CoL.drainHandler.draining)
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDrainToggleHelp)
+        EndEvent
     EndState
     State DrainToDeathToggleOption
         Event OnSelectST()
             CoL.drainHandler.drainingToDeath = !CoL.drainHandler.drainingToDeath
             SetToggleOptionValueST(CoL.drainHandler.drainingToDeath)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDrainToDeathToggleHelp)
         EndEvent
     EndState
     State DrainDurationSlider
@@ -187,6 +230,9 @@ EndEvent
             CoL.drainDurationInGameTime = value
             SetSliderOptionValueST(CoL.drainDurationInGameTime)
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDrainDurationHelp)
+        EndEvent
     EndState
     State HealthDrainMultiSlider
         Event OnSliderOpenST()
@@ -199,8 +245,11 @@ EndEvent
             CoL.healthDrainMult = value
             SetSliderOptionValueST(CoL.healthDrainMult,"{1}")
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHealthDrainMultHelp)
+        EndEvent
     EndState
-    State HealthConversionRateSlider
+    State EnergyConversionRateSlider
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.energyConversionRate)
             SetSliderDialogDefaultValue(0.5)
@@ -209,7 +258,10 @@ EndEvent
         EndEvent
         Event OnSliderAcceptST(float value)
             CoL.energyConversionRate = value
-        SetSliderOptionValueST(CoL.energyConversionRate, "{1}")
+            SetSliderOptionValueST(CoL.energyConversionRate, "{1}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageEnergyConversionRateHelp)
         EndEvent
     EndState
 
@@ -224,6 +276,9 @@ EndEvent
             CoL.becomeEtherealCost = value
             SetSliderOptionValueST(CoL.becomeEtherealCost)
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageBecomeEtherealCostHelp)
+        EndEvent
     EndState
     State HealRateBoostCostSlider
         Event OnSliderOpenST()
@@ -235,6 +290,9 @@ EndEvent
         Event OnSliderAcceptST(float value)
             CoL.healRateBoostCost = value
             SetSliderOptionValueST(CoL.healRateBoostCost)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHealRateBoostCostHelp)
         EndEvent
     EndState
     State HealRateBoostMultSlider
@@ -248,8 +306,11 @@ EndEvent
             CoL.healRateBoostMult = value
             SetSliderOptionValueST(CoL.healRateBoostMult)
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHealRateBoostMultHelp)
+        EndEvent
     EndState
-    State EnergyCastingCostMultSlider
+    State EnergyCastingMultSlider
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.energyCastingMult)
             SetSliderDialogDefaultValue(1.0)
@@ -260,6 +321,9 @@ EndEvent
             CoL.energyCastingMult = value
             SetSliderOptionValueST(CoL.energyCastingMult, "{1}")
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageEnergyCastingMultHelp)
+        EndEvent
     EndState
     State EnergyCastingConcStyleMenu
         Event OnMenuOpenST() 
@@ -267,12 +331,13 @@ EndEvent
             SetMenuDialogStartIndex(CoL.energyCastingConcStyle)
             SetMenuDialogDefaultIndex(1)
         EndEvent
-
         Event OnMenuAcceptST(int newVal)
             CoL.energyCastingConcStyle = newVal
             SetMenuOptionValueST(settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
         EndEvent
-
+        Event OnHighlightST()
+            SetInfoText(settingsPageEnergyCastingConcStyleHelp)
+        EndEvent
     EndState
 
 
@@ -296,6 +361,9 @@ EndEvent
                 SetKeyMapOptionValueST(keyCode)
             endIf
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(hotkeysPageToggleDrainHotkeyHelp)
+        EndEvent
     EndState
     State DrainToDeathKeyMapOption
         Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
@@ -315,6 +383,9 @@ EndEvent
                 CoL.toggleDrainToDeathHotkey = keyCode
                 SetKeyMapOptionValueST(keyCode)
             endIf
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(hotkeysPageToggleDrainToDeathHotkeyHelp)
         EndEvent
     EndState
 ; Page 4 State Handlers
@@ -356,6 +427,9 @@ EndEvent
             SetSliderOptionValueST(CoL.widgetHandler.energyMeterXScale)
             meterBarChanged = true
         EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterXScaleHelp)
+        EndEvent
     EndState
     State energyMeterYScaleSlider
         Event OnSliderOpenST()
@@ -368,5 +442,8 @@ EndEvent
             CoL.widgetHandler.energyMeterYScale = value as int
             SetSliderOptionValueST(CoL.widgetHandler.energyMeterYScale)
             meterBarChanged = true
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterYScaleHelp)
         EndEvent
     EndState
