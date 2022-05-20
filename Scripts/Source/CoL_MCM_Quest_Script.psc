@@ -3,6 +3,9 @@ Scriptname CoL_MCM_Quest_Script extends SKI_ConfigBase
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
+string[] settingsPageEnergyCastingConcStyleOptions
+bool meterBarChanged = false
+
 ; String values to make translating the menu easier once I figure out how translation files work
 ; Page 1 - Status
     string statusPageName = "Status"
@@ -28,16 +31,41 @@ GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succ
     string settingsPageHealRateBoostCost = "HealRate Boost Per Second Cost"
     string settingsPageHealRateBoostMult = "HealRate Boost Multiplier"
     string settingsPageEnergyCastingMult = "Energy Casting Cost Multiplier"
+    string settingsPageEnergyCastingConcStyle = "Concentration Cost Calculation Style"
+    string settingsPageEnergyCastingConcStyleLeftOnly = "Left Hand Only" 
+    string settingsPageEnergyCastingConcStyleBothHands = "Both Hands" 
+    string settingsPageEnergyCastingConcStyleRightOnly = "Right Hand Only" 
+    string settingsPageEnergyCastingConcStyleNone = "Neither" 
 ; Page 3 - Hotkeys
     string hotkeysPageName = "Hotkeys"
     string hotkeysPageToggleDrainHotkey = "Toggle Drain Key"
     string hotkeysPageToggleDrainToDeathHotkey = "Toggle Drain to Death Key"
+; Page 4 - Widgets
+    string widgetsPageName = "Widgets"
+    string widgetsPageEnergyMeterXPos = "Energy Meter X Position"
+    string widgetsPageEnergyMeterYPos = "Energy Meter Y Position"
+    string widgetsPageEnergyMeterXScale = "Energy Meter X Scale"
+    string widgetsPageEnergyMeterYScale = "Energy Meter Y Scale"
 
 Event OnConfigInit()
-    Pages = new string[3]
+    Pages = new string[4]
     Pages[0] = statusPageName
     Pages[1] = settingsPageName
     Pages[2] = hotkeysPageName
+    Pages[3] = widgetsPageName
+    
+    settingsPageEnergyCastingConcStyleOptions = new string[4]
+    settingsPageEnergyCastingConcStyleOptions[0] = settingsPageEnergyCastingConcStyleLeftOnly 
+    settingsPageEnergyCastingConcStyleOptions[1] = settingsPageEnergyCastingConcStyleBothHands
+    settingsPageEnergyCastingConcStyleOptions[2] = settingsPageEnergyCastingConcStyleRightOnly 
+    settingsPageEnergyCastingConcStyleOptions[3] = settingsPageEnergyCastingConcStyleNone
+EndEvent
+
+Event OnConfigClose()
+    if meterBarChanged
+        CoL.widgetHandler.GoToState("MoveEnergyMeter")
+        meterBarChanged = false
+    endif
 EndEvent
 
 Event OnPageReset(string page)
@@ -78,11 +106,19 @@ Event OnPageReset(string page)
         AddSliderOptionST("HealRateBoostMultSlider", settingsPageHealRateBoostMult, CoL.healRateBoostMult)
         AddEmptyOption()
         AddSliderOptionST("EnergyCastingCostMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
+        AddMenuOptionST("EnergyCastingConcStyleMenu", settingsPageEnergyCastingConcStyle, settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
+
 ; Page 3
     elseif page == hotkeysPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddKeyMapOptionST("DrainKeyMapOption", hotkeysPageToggleDrainHotkey, CoL.toggleDrainHotkey)
         AddKeyMapOptionST("DrainToDeathKeyMapOption", hotkeysPageToggleDrainToDeathHotkey, CoL.toggleDrainToDeathHotkey)
+    elseif page == widgetsPageName
+        SetCursorFillMode(TOP_TO_BOTTOM)
+        AddSliderOptionST("energyMeterXPosSlider", widgetsPageEnergyMeterXPos, CoL.widgetHandler.energyMeterXPos)
+        AddSliderOptionST("energyMeterYPosSlider", widgetsPageEnergyMeterYPos, CoL.widgetHandler.energyMeterYPos)
+        AddSliderOptionST("energyMeterXScaleSlider", widgetsPageEnergyMeterXScale, CoL.widgetHandler.energyMeterXScale)
+        AddSliderOptionST("energyMeterYScaleSlider", widgetsPageEnergyMeterYScale, CoL.widgetHandler.energyMeterYScale)
     endif
 EndEvent
 
@@ -225,6 +261,20 @@ EndEvent
             SetSliderOptionValueST(CoL.energyCastingMult, "{1}")
         EndEvent
     EndState
+    State EnergyCastingConcStyleMenu
+        Event OnMenuOpenST() 
+            SetMenuDialogOptions(settingsPageEnergyCastingConcStyleOptions)
+            SetMenuDialogStartIndex(CoL.energyCastingConcStyle)
+            SetMenuDialogDefaultIndex(1)
+        EndEvent
+
+        Event OnMenuAcceptST(int newVal)
+            CoL.energyCastingConcStyle = newVal
+            SetMenuOptionValueST(settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
+        EndEvent
+
+    EndState
+
 
 ; Page 3 State Handlers
     State DrainKeyMapOption
@@ -265,5 +315,58 @@ EndEvent
                 CoL.toggleDrainToDeathHotkey = keyCode
                 SetKeyMapOptionValueST(keyCode)
             endIf
+        EndEvent
+    EndState
+; Page 4 State Handlers
+    State energyMeterXPosSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.energyMeterXPos)
+            SetSliderDialogDefaultValue(640)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 1279)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.energyMeterXPos = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.energyMeterXPos)
+            meterBarChanged = true
+        EndEvent
+    EndState
+    State energyMeterYPosSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.energyMeterYPos)
+            SetSliderDialogDefaultValue(700)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 719)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.energyMeterYPos = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.energyMeterYPos)
+            meterBarChanged = true
+        EndEvent
+    EndState
+    State energyMeterXScaleSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.energyMeterXScale)
+            SetSliderDialogDefaultValue(70)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 200)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.energyMeterXScale = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.energyMeterXScale)
+            meterBarChanged = true
+        EndEvent
+    EndState
+    State energyMeterYScaleSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.energyMeterYScale)
+            SetSliderDialogDefaultValue(70)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 200)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.energyMeterYScale = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.energyMeterYScale)
+            meterBarChanged = true
         EndEvent
     EndState

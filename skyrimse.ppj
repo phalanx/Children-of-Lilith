@@ -20,6 +20,7 @@
         <Import>@ModsFolder\SexLabFrameworkAE\Scripts\Source</Import>
         <Import>@ModsFolder\SkyUI SDK\Scripts\Source</Import>
         <Import>@ModsFolder\Fores New Idles in Skyrim SE - FNIS SE\source\scripts</Import>
+        <Import>@ModsFolder\iWant Widgets\source\scripts</Import>
         <Import>@ModsFolder\Mfg Fix\source\scripts</Import>
         <Import>@ModsFolder\Race-Menu-Modders Package\Source\Scripts</Import>
         <Import>@ModsFolder\Creation Kit Scripts\Scripts\Source</Import>

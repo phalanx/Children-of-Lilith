@@ -2,6 +2,7 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 
 import PapyrusUtil
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+CoL_UI_Widget_Script  Property widgetHandler Auto
 
 Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
@@ -11,7 +12,7 @@ bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throu
 
 ; Hotkeys
 int toggleDrainHotKey_var = 29
-int Property toggleDrainHotkey     ; Default Toggle Drain key to left shift
+int Property toggleDrainHotkey Hidden     ; Default Toggle Drain key to left shift
     int Function Get()
         return toggleDrainHotkey_var 
     EndFunction
@@ -23,7 +24,7 @@ int Property toggleDrainHotkey     ; Default Toggle Drain key to left shift
 EndProperty
 
 int toggleDrainToDeathHotKey_var = 157
-int Property toggleDrainToDeathHotkey     ; Default Toggle Drain to Death key to right alt
+int Property toggleDrainToDeathHotkey Hidden    ; Default Toggle Drain to Death key to right alt
     int Function Get()
         return toggleDrainToDeathHotkey_var 
     EndFunction
@@ -35,7 +36,7 @@ int Property toggleDrainToDeathHotkey     ; Default Toggle Drain to Death key to
 EndProperty
 
 ; Energy Properties
-float playerEnergyCurrent_var = 0.0
+float playerEnergyCurrent_var = 50.0
 float Property playerEnergyCurrent Hidden
     float Function Get()
         return playerEnergyCurrent_var
@@ -48,6 +49,7 @@ float Property playerEnergyCurrent Hidden
         if DebugLogging
             Debug.Trace("[CoL] Player Energy is now " + playerEnergyCurrent)
         endif
+        widgetHandler.GoToState("UpdateMeter")
     EndFunction
 EndProperty
 float Property playerEnergyMax = 100.0 Auto Hidden
@@ -55,14 +57,15 @@ float Property playerEnergyMax = 100.0 Auto Hidden
 ; MCM Tunable Drain Properties
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
 float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
-float Property drainToDeathMult = 2.0 Auto
+float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 
 ; MCM Tunable Power Values
-float Property becomeEtherealCost  = 10.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
+float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
-float Property healRateBoostMult = 10.0 Auto Hidden      ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
-float Property energyCastingMult = 1.0 Auto
+float Property healRateBoostMult = 10.0 Auto Hidden     ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
+float Property energyCastingMult = 1.0 Auto  Hidden     ; Modify the energy cost of spells
+int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
 
 ; Togglable Spells
 Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
@@ -78,6 +81,7 @@ State Initialize
         if DebugLogging
             Debug.Trace("[CoL] Initializing")
         endif
+        widgetHandler.GoToState("Initialize")
         GrantSpells()
         Maintenance()
         GotoState("")
@@ -94,7 +98,6 @@ State SceneRunning
     EndEvent
 EndState
 
-
 Function GrantSpells()
     int i = 0
     while i < levelOneSpells.Length
@@ -104,7 +107,9 @@ Function GrantSpells()
 EndFunction
 
 Function Maintenance()
-    drainHandler.GoToState("Maintenance")
+    widgetHandler.GoToState("Running")
+    drainHandler.GoToState("Initialize")
+    Debug.Trace("[CoL] Testing")
     RegisterForEvents()
 EndFunction
 

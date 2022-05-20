@@ -23,7 +23,7 @@ bool Property drainingToDeath
     EndFunction
 EndProperty
 
-State Maintenance
+State Initialize
     Event OnBeginState()
         RegisterForModEvent("CoL_startDrain", "StartDrain")
         RegisterForModEvent("CoL_endDrain", "EndDrain")
