@@ -11,7 +11,9 @@ int Property energyMeterYScale = 70 Auto Hidden
 
 State Initialize
     Event OnBeginState()
-        Debug.Trace("[CoL] Initializing Widgets")
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Initializing Widgets")
+        endif
         energyMeter = iWidgets.loadMeter(energyMeterXPos, energyMeterYPos, True)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
         iWidgets.setMeterFillDirection(energyMeter, "both")
@@ -22,6 +24,17 @@ State Initialize
         else
             GoToState("UpdateMeter")
         endif
+    EndEvent
+EndState
+
+State Uninitialize
+    Event OnBeginState()
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Uninitializing Widgets")
+        endif
+        iWidgets.Destroy(energyMeter)
+        UnregisterForModEvent("iWantWidgetsReset")
+        GoToState("")
     EndEvent
 EndState
 

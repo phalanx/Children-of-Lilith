@@ -6,7 +6,7 @@
     Output="Scripts" 
     Optimize="false" 
     Release="false" 
-    Zip="false"
+    Zip="true"
     Package="false"
     Final="false">
     <Variables>
@@ -45,8 +45,10 @@
     <ZipFiles Output="Build">
         <ZipFile Name="@ModName" RootDir="." Compression="deflate">
             <Include>@ModName.esp</Include>
+            <Include>LICENSE</Include>
             <Include NoRecurse="true">*.bsa</Include>
             <Match In="Scripts\Source">*.psc</Match>
+            <Match In="Scripts">*.pex</Match>
         </ZipFile>
     </ZipFiles>
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->

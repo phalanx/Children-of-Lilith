@@ -7,8 +7,6 @@ Actor drainCaster
 Actor drainTarget
 string drainTargetName
 
-; Consider registering for an event to allow for removal of all active effects
-; This way I don't have to add the target to an array etc. for uninstall
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     drainTarget = akTarget
     drainCaster = akCaster
@@ -21,7 +19,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 
     healthDrained = CoL.drainHandler.CalculateDrainAmount(drainTarget)
     drainTarget.ModActorValue("Health", 0.0 - healthDrained)
-    CoL.AddActiveDrainVictim(drainTarget)
+    RegisterforModEvent("CoL_Uninitialize", "OnCoLUninitialize")
     RegisterForSingleUpdateGameTime(CoL.drainDurationInGameTime)
 
     if CoL.DebugLogging
@@ -41,10 +39,13 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     endif
     
     drainTarget.ModActorValue("Health", healthDrained)
-    CoL.RemoveActiveDrainVictim(drainTarget)
 
     if CoL.DebugLogging
         Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
         Debug.Trace("[CoL] Drain Effect Removed")
     endif
+EndEvent
+
+Event OnCoLUninitialize()
+    Dispel()
 EndEvent

@@ -2,11 +2,14 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 
 import PapyrusUtil
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
+
+GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
+GlobalVariable Property GameDaysPassed Auto
 
 Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
-Actor[] Property activeDrainVictims Auto Hidden     ; List of active drain victims. Hopefully useful for uninstall process. 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as  a level one succubus
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 
@@ -44,6 +47,8 @@ float Property playerEnergyCurrent Hidden
     Function Set(float newVal)
         if newVal > playerEnergyMax
             newVal = playerEnergyMax
+        elseif newVal < 0
+            newVal = 0
         endif
         playerEnergyCurrent_var = newVal
         if DebugLogging
@@ -53,6 +58,23 @@ float Property playerEnergyCurrent Hidden
     EndFunction
 EndProperty
 float Property playerEnergyMax = 100.0 Auto Hidden
+bool hungerEnabled_var
+bool Property hungerEnabled Hidden
+    bool Function Get()
+        return hungerEnabled_var
+    EndFunction
+    Function Set(bool newValue)
+        hungerEnabled_var = newValue
+        if hungerEnabled_var
+            hungerHandler.GoToState("HungerEnabled")
+        else
+            hungerHandler.GoToState("HungerDisabled")
+        endif
+    EndFunction
+EndProperty
+float Property dailyHungerAmount = 10.0 Auto Hidden
+bool Property hungerDamageEnabled = false Auto Hidden
+float Property hungerDamageAmount = 5.0 Auto Hidden
 
 ; MCM Tunable Drain Properties
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
@@ -83,9 +105,21 @@ State Initialize
         endif
         widgetHandler.GoToState("Initialize")
         GrantSpells()
-        Maintenance()
-        GotoState("")
+        isPlayerSuccubus.SetValue(1.0)
+        GotoState("Running")
     EndEvent
+EndState
+
+State Running
+    Event OnBeginState()
+        Maintenance()
+    EndEvent
+    
+    Function Maintenance()
+        widgetHandler.GoToState("Running")
+        drainHandler.GoToState("Initialize")
+        RegisterForEvents()
+    EndFunction
 EndState
 
 State SceneRunning
@@ -98,6 +132,20 @@ State SceneRunning
     EndEvent
 EndState
 
+State Uninitialize
+    Event OnBeginState()
+        widgetHandler.GoToState("Uninitialize")
+        RemoveSpells()
+        drainHandler.GoToState("Uninitialize")
+        UnregisterForEvents()
+
+        int uninitEvent = ModEvent.Create("CoL_Uninitialize")
+        ModEvent.Send(uninitEvent)
+        isPlayerSuccubus.SetValue(0.0)
+        GoToState("")
+    EndEvent
+EndState
+
 Function GrantSpells()
     int i = 0
     while i < levelOneSpells.Length
@@ -106,11 +154,15 @@ Function GrantSpells()
     endwhile
 EndFunction
 
+Function RemoveSpells()
+    int i = 0
+    while i < levelOneSpells.Length
+        playerRef.RemoveSpell(levelOneSpells[i])
+        i += 1
+    endwhile
+EndFunction
+
 Function Maintenance()
-    widgetHandler.GoToState("Running")
-    drainHandler.GoToState("Initialize")
-    Debug.Trace("[CoL] Testing")
-    RegisterForEvents()
 EndFunction
 
 Function RegisterForEvents()
@@ -119,7 +171,17 @@ Function RegisterForEvents()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
     if DebugLogging
-        Debug.Trace("[CoL] Registered for Hotkeys")
+        Debug.Trace("[CoL] Registered for Hotkeys and Events")
+    endif
+EndFunction
+
+Function UnregisterForEvents()
+    ; Register for Hotkeys
+    UnregisterForKey(toggleDrainHotKey_var)
+    UnregisterForModEvent("CoL_startScene")
+    UnregisterForModEvent("CoL_endScene")
+    if DebugLogging
+        Debug.Trace("[CoL] Unregistered for Hotkeys and Events")
     endif
 EndFunction
 
@@ -129,40 +191,6 @@ EndFunction
 
 Function EndScene()
     GoToState("")
-EndFunction
-
-Function AddActiveDrainVictim(Actor drainVictim)
-    if DebugLogging
-        Debug.Trace("[CoL] Adding Victim to activeDrainList")
-    endif
-
-    activeDrainVictims = PushActor(activeDrainVictims, drainVictim)
-
-    if DebugLogging
-        Debug.Trace("[CoL] List now contains:")
-        int i = 0
-        while i < activeDrainVictims.Length
-            Debug.Trace("[CoL] " + (activeDrainVictims[i].GetBaseObject() as ActorBase).GetName())
-            i += 1
-        endwhile
-    endif
-EndFunction
-
-Function RemoveActiveDrainVictim(Actor drainVictim)
-    if DebugLogging
-        Debug.Trace("[CoL] Removing Victim from activeDrainList")
-    endif
-
-    activeDrainVictims = RemoveActor(activeDrainVictims, drainVictim)
-    
-    if DebugLogging
-        Debug.Trace("[CoL] List now contains:")
-        int i = 0
-        while i < activeDrainVictims.Length
-            Debug.Trace("[CoL] " + (activeDrainVictims[i].GetBaseObject() as ActorBase).GetName())
-            i += 1
-        endwhile
-    endif
 EndFunction
 
 Event OnKeyDown(int keyCode)

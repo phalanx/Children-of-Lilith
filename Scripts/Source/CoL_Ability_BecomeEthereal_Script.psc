@@ -17,6 +17,7 @@ Event OnUpdate()
             Debug.Trace("[CoL] Out of Energy")
         endif
         Debug.Notification("Out of Energy: Become Ethereal Disabled")
+        Col.playerEnergyCurrent = 0
         CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
         return
     endif

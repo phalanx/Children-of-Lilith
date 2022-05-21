@@ -25,7 +25,7 @@ bool meterBarChanged = false
 
 ; Page 2 - Settings
     string settingsPageName = "Settings"
-    string settingsPageHeaderOne = "Drain Settings"
+    string settingsPageDrainHeader = "Drain Settings"
     string settingsPageDrainToggle = "Drain"
     string settingsPageDrainToggleHelp = "Toggle Draining"
     string settingsPageDrainToDeathToggle = "Drain to Death"
@@ -36,8 +36,17 @@ bool meterBarChanged = false
     string settingsPageHealthDrainMultHelp = "The percentage of health drained from victim \n (Victim Health * [this value]) = Health Drained"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
     string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
+    string settingsPageHungerHeader = "Hunger Settings"
+    string settingsPageHungerToggle = "Hunger"
+    string settingsPageHungerToggleHelp = "Enable Passive Energy Drain. Hunger updates every 30 seconds"
+    string settingsPageHungerAmount = "Hunger Amount"
+    string settingsPageHungerAmountHelp = "If Hunger is enabled, this sets the amount of Energy lost on a daily basis"
+    string settingsPageHungerDamage = "Deadly Hunger"
+    string settingsPageHungerDamageHelp = "If Hunger is enabled, this sets whether or not running out of Energy will cause periodic "
+    string settingsPageHungerDamageAmount = "Hunger Damage Amount"
+    string settingsPageHungerDamageAmountHelp = "If Hunger Damage is enabled, Max Health will be reduced by this amount per Hunger tick (30 seconds)"
 
-    string settingsPageHeaderTwo = "Power Settings"
+    string settingsPagePowerHeader = "Power Settings"
     string settingsPageBecomeEtherealCost = "Become Ethereal Cost"
     string settingsPageBecomeEtherealCostHelp = "Per Second Energy Cost of Succubus Become Ethereal"
     string settingsPageHealRateBoostCost = "HealRate Boost Cost"
@@ -111,15 +120,21 @@ Event OnPageReset(string page)
     elseif page == settingsPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
         ; Drain Settings
-        AddHeaderOption(settingsPageHeaderOne)
+        AddHeaderOption(settingsPageDrainHeader)
         AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining)
         AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
-        AddSLiderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
+        AddSliderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
+        ; Hunger Settings
+        AddHeaderOption(settingsPageHungerHeader)
+        AddToggleOptionST("HungerToggle", settingsPageHungerToggle, CoL.hungerEnabled)
+        AddSliderOptionST("HungerAmountSlider", settingsPageHungerAmount, CoL.dailyHungerAmount)
+        AddToggleOptionST("HungerDamageToggle", settingsPageHungerDamage, CoL.hungerDamageEnabled)
+        AddSliderOptionST("HungerDamageAmountSlider", settingsPageHungerDamageAmount, CoL.hungerDamageAmount)
         ; Power Settings
         SetCursorPosition(1)
-        AddHeaderOption(settingsPageHeaderTwo)
+        AddHeaderOption(settingsPagePowerHeader)
         AddSliderOptionST("BecomeEtherealCostSlider", settingsPageBecomeEtherealCost, CoL.becomeEtherealCost)
         AddEmptyOption()
         AddSliderOptionST("HealRateBoostCostSlider", settingsPageHealRateBoostCost, CoL.healRateBoostCost)
@@ -145,7 +160,7 @@ EndEvent
 ; Page 1 State Handlers
     State BecomeSuccubus
         Event OnSelectST()
-            isPlayerSuccubus.SetValue(1.0)
+            CoL.GoToState("Initialize")
             SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "BecomeSuccubus")
         EndEvent
         Event OnHighlightST()
@@ -155,7 +170,7 @@ EndEvent
 
     State EndSuccubus
         Event OnSelectST()
-            isPlayerSuccubus.SetValue(0.0)
+            CoL.GoToState("Uninitialize")
             SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "EndSuccubus")
         EndEvent
         Event OnHighlightST()
@@ -262,6 +277,55 @@ EndEvent
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageEnergyConversionRateHelp)
+        EndEvent
+    EndState
+
+    State HungerToggle
+        Event OnSelectST()
+            CoL.hungerEnabled = !CoL.hungerEnabled
+            SetToggleOptionValueST(CoL.hungerEnabled)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerToggleHelp)
+        EndEvent
+    EndState
+    State HungerAmountSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.dailyHungerAmount)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0.0, 100.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.dailyHungerAmount = value
+            SetSliderOptionValueST(CoL.dailyHungerAmount)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerAmountHelp)
+        EndEvent
+    EndState
+    State HungerDamageToggle
+        Event OnSelectST()
+            CoL.hungerDamageEnabled = !CoL.hungerDamageEnabled
+            SetToggleOptionValueST(CoL.hungerDamageEnabled)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerDamageHelp)
+        EndEvent
+    EndState
+    State HungerDamageAmountSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.hungerDamageAmount)
+            SetSliderDialogDefaultValue(5.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0.0, 100.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.hungerDamageAmount = value
+            SetSliderOptionValueST(CoL.hungerDamageAmount)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerDamageAmountHelp)
         EndEvent
     EndState
 

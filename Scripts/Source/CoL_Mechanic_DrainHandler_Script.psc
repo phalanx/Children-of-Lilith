@@ -27,10 +27,21 @@ State Initialize
     Event OnBeginState()
         RegisterForModEvent("CoL_startDrain", "StartDrain")
         RegisterForModEvent("CoL_endDrain", "EndDrain")
-        GoToState("CheckDraining")
         if CoL.DebugLogging
             Debug.Trace("[CoL] Registered for CoL Drain Events")
         endif
+        GoToState("CheckDraining")
+    EndEvent
+EndState
+
+State Uninitialize
+    Event OnBeginState()
+        UnregisterForModEvent("CoL_startDrain")
+        UnregisterForModEvent("CoL_endDrain")
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Unregistered for CoL Drain Events")
+        endif
+        GoToState("")
     EndEvent
 EndState
 
