@@ -1,9 +1,10 @@
 Scriptname CoL_Mechanic_DrainHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+VisualEffect Property drainToDeathVFX Auto
 
 bool draining_var = false
-bool Property draining 
+bool Property draining Hidden
     bool Function Get()
         return draining_var
     EndFunction
@@ -13,7 +14,7 @@ bool Property draining
     EndFunction
 EndProperty
 bool drainingToDeath_var = false
-bool Property drainingToDeath
+bool Property drainingToDeath Hidden
     bool Function Get()
         return drainingToDeath_var
     EndFunction
@@ -112,6 +113,7 @@ State DrainingToDeath
             Debug.Trace("[CoL] Starting Deferred Kill")
         endif
 
+        drainToDeathVFX.Play(drainee, 1)
         drainee.StartDeferredKill()
         drainee.Kill(CoL.playerRef)
 

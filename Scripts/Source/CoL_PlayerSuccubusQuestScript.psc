@@ -167,7 +167,8 @@ EndFunction
 
 Function RegisterForEvents()
     ; Register for Hotkeys
-    RegisterForKey(toggleDrainHotKey_var)
+    RegisterForKey(toggleDrainHotKey)
+    RegisterForKey(toggleDrainToDeathHotKey)
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
     if DebugLogging
