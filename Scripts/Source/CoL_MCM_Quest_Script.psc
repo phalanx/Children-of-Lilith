@@ -161,7 +161,9 @@ EndEvent
     State BecomeSuccubus
         Event OnSelectST()
             CoL.GoToState("Initialize")
+            SetTextOptionValueST("Exit Menu Now")
             SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "BecomeSuccubus")
+            Utility.Wait(0.5)
         EndEvent
         Event OnHighlightST()
             SetInfoText(statusPageBecomeSuccubusHelp)
