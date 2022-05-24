@@ -51,9 +51,11 @@ State CheckDraining
             Debug.Notification("Draining To Death Enabled")
             GoToState("DrainingToDeath")
         elseif draining
+            Debug.Notification("Draining To Death Disabled")
             Debug.Notification("Draining Enabled")
             GoToState("Draining")
         else 
+            Debug.Notification("Draining To Death Disabled")
             Debug.Notification("Draining Disabled")
             GoToState("")
         endif
@@ -129,7 +131,6 @@ State DrainingToDeath
     EndEvent
 
     Event OnEndState()
-        Debug.Notification("Draining To Death Disabled")
     EndEvent
 EndState
 

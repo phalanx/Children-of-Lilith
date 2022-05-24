@@ -55,7 +55,7 @@ bool meterBarChanged = false
     string settingsPageHealRateBoostMultHelp = "Multiplier applied to HealRate during Succubus Heal Rate Boost"
     string settingsPageEnergyCastingMult = "Energy Casting Cost Multiplier"
     string settingsPageEnergyCastingMultHelp = "Multiplier applied to spells Magicka cost before being removed from Energy Pool \n (Spell Magicka Cost * [This Value]) = Energy Cost of Spell"
-    string settingsPageEnergyCastingConcStyle = "Concentration Cost Calculation Style"
+    string settingsPageEnergyCastingConcStyle = "Cost Calculation Style"
     string settingsPageEnergyCastingConcStyleHelp = "Select a Concentration Cost Calculation Style \n See Mod Description for more information"
     string settingsPageEnergyCastingConcStyleLeftOnly = "Left Hand Only" 
     string settingsPageEnergyCastingConcStyleBothHands = "Both Hands" 
