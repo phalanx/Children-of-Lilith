@@ -3,6 +3,7 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 import PapyrusUtil
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
@@ -104,6 +105,7 @@ State Initialize
             Debug.Trace("[CoL] Initializing")
         endif
         widgetHandler.GoToState("Initialize")
+        levelHandler.GoToState("Initialize")
         GrantSpells()
         isPlayerSuccubus.SetValue(1.0)
         GotoState("Running")
@@ -118,6 +120,7 @@ State Running
     Function Maintenance()
         widgetHandler.GoToState("Running")
         drainHandler.GoToState("Initialize")
+        levelHandler.GoToState("Running")
         RegisterForEvents()
     EndFunction
 EndState
@@ -135,6 +138,7 @@ EndState
 State Uninitialize
     Event OnBeginState()
         widgetHandler.GoToState("Uninitialize")
+        levelHandler.GoToState("Uninitialize")
         RemoveSpells()
         drainHandler.GoToState("Uninitialize")
         UnregisterForEvents()
