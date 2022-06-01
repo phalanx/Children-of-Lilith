@@ -10,6 +10,9 @@ bool meterBarChanged = false
 ; Page 1 - Status
     string statusPageName = "Status"
     string statusPageHeaderOne = "Current Stats"
+    string statusPageCurrentLevel = "Current Succubus Level"
+    string statusPageCurrentXP = "Current Succubus Exp"
+    string statusPageNextLevelXP = "Exp Required for Next Level"
     string statusPageEnergyCurrent = "Current energy"
     string statusPageEnergyMax = "Maximum energy"
     string statusPageEnergyMaxHelp = "Set Your Maximum Energy. Could be considered a cheat"
@@ -36,6 +39,21 @@ bool meterBarChanged = false
     string settingsPageHealthDrainMultHelp = "The percentage of health drained from victim \n (Victim Health * [this value]) = Health Drained"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
     string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
+
+    string settingsPageLevelHeader = "Leveling Settings"
+    string settingsPageLevelXpPerDrain = "XP Per Drain"
+    string settingsPageLevelXpPerDrainHelp = "Set XP Gained Per Drain"
+    string settingsPageLevelXpDeathMult = "XP Drain to Death Mult"
+    string settingsPageLevelXpDeathMultHelp = "Multiplier applied to XP Per Drain when Victim is Drained to Death"
+    string settingsPageLevelXpConstant = "XP Constant"
+    string settingsPageLevelXpConstantHelp = "Set the XP Constant.\nLower values = more XP required per level\nFormula is (next_level/Constant)^Power"
+    string settingsPageLevelXpPower = "XP Power"
+    string settingsPageLevelXpPowerHelp = "Set the XP Power. Controls how quickly the required XP per level grows.\n Higher values = larger gaps between levels\nFormula is (next_level/Constant)^Power"
+    string settingsPageLevelLevelsPerPerk = "Levels Before Perk"
+    string settingsPageLevelLevelsPerPerkHelp = "Set how many levels before recieving a perk point"
+    string settingsPageLevelPerksPerLevel = "Perk Points Recieved"
+    string settingsPageLevelPerksPerLevelHelp = "Set how many perk points you recieve when you receive them"
+
     string settingsPageHungerHeader = "Hunger Settings"
     string settingsPageHungerToggle = "Hunger"
     string settingsPageHungerToggleHelp = "Enable Passive Energy Drain. Hunger updates every 30 seconds"
@@ -75,13 +93,41 @@ bool meterBarChanged = false
     string widgetsPageEnergyMeterXScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
     string widgetsPageEnergyMeterYScale = "Energy Meter Y Scale"
     string widgetsPageEnergyMeterYScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
+; Page 5 - Perks
+    string perkPageName = "Perks"
+    string perkPagePointsHeader = "Perk Points"
+    string perkPageAvailablePerkPoints = "Available Perk Points"
+    string perkPageAvailablePerkPointsHelp = "Cheat: Click to add a perk point"
+    string perkPageResetPerks = "Reset Perks"
+    string perkPageResetPerksHelp = "Remove all perks and return perk points"
+    string perkPageGeneralHeader = "General Perks"
+    string perkPageGentleDrainer = "Gentle Drainer"
+    string perkPageGentleDrainerHelp = "Reduce the amount of time the drain debuff lasts by half"
+    string perkPageOutOfPerkPoints = "No succubus perk points available"
+    string perkpageEfficientFeeder = "Efficient Feeder"
+    string perkpageEfficientFeederHelp = "Increase Health Conversion Rate by 10% per Rank"
+    string perkpageEnergyStorage = "Energy Storage"
+    string perkpageEnergyStorageHelp = "Increase Max Energy by 10 per Rank"
+
+int Function GetVersion()
+    return 2
+EndFunction
+
+Event OnVersionUpdate(int newVersion)
+    Debug.Trace("[CoL] New Version Detected " + newVersion)
+    if newVersion == 2
+        CoL.levelHandler.GoToState("Initialize")
+        OnConfigInit()
+    endif
+EndEvent
 
 Event OnConfigInit()
-    Pages = new string[4]
+    Pages = new string[5]
     Pages[0] = statusPageName
     Pages[1] = settingsPageName
     Pages[2] = hotkeysPageName
     Pages[3] = widgetsPageName
+    Pages[4] = perkPageName
     
     settingsPageEnergyCastingConcStyleOptions = new string[4]
     settingsPageEnergyCastingConcStyleOptions[0] = settingsPageEnergyCastingConcStyleLeftOnly 
@@ -99,11 +145,14 @@ EndEvent
 
 Event OnPageReset(string page)
     if page == ""
-; Page 1
+; Page 1 - Status
     elseif page == statusPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddHeaderOption(statusPageHeaderOne)
         if isPlayerSuccubus.GetValue() as int == 1
+            AddTextOptionST("SuccubusCurrentLevel", statusPageCurrentLevel+": ", CoL.levelHandler.playerSuccubusLevel.GetValueInt(), OPTION_FLAG_DISABLED)
+            AddTextOptionST("SuccubusCurrentXP", statusPageCurrentXP+": ", (CoL.levelHandler.playerSuccubusXP as int), OPTION_FLAG_DISABLED)
+            AddTextOptionST("SuccubusNextLevelXP", statusPageNextLevelXP+": ", (CoL.levelHandler.xpForNextLevel as int), OPTION_FLAG_DISABLED)
             AddTextOptionST("EnergyCurrentTextOption", statusPageEnergyCurrent+": ", CoL.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
             AddSliderOptionST("EnergyMaxSlider", statusPageEnergyMax+": ", CoL.playerEnergyMax)
             SetCursorPosition(1)
@@ -116,7 +165,7 @@ Event OnPageReset(string page)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("BecomeSuccubus", statusPageBecomeSuccubus, None)
         endif
-; Page 2
+; Page 2 - Settings
     elseif page == settingsPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
         ; Drain Settings
@@ -126,6 +175,14 @@ Event OnPageReset(string page)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
         AddSliderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
+        ; Level Settings
+        AddHeaderOption(settingsPageLevelHeader)
+        AddSliderOptionST("LevelXpPerDrain", settingsPageLevelXpPerDrain, CoL.levelHandler.xpPerDrain)
+        AddSliderOptionST("LevelXpDeathMult", settingsPageLevelXpDeathMult, CoL.levelHandler.drainToDeathXPMult)
+        AddSliderOptionST("LevelXpConstant", settingsPageLevelXpConstant, CoL.levelHandler.xpConstant, "{2}")
+        AddSliderOptionST("LevelXpPower", settingsPageLevelXpPower, CoL.levelHandler.xpPower, "{2}")
+        AddSliderOptionST("LevelLevelsPerPerk", settingsPageLevelLevelsPerPerk, CoL.levelHandler.levelsForPerk)
+        AddSliderOptionST("LevelPerksPerLevel", settingsPageLevelPerksPerLevel, CoL.levelHandler.perkPointsOnLevelUp)
         ; Hunger Settings
         AddHeaderOption(settingsPageHungerHeader)
         AddToggleOptionST("HungerToggle", settingsPageHungerToggle, CoL.hungerEnabled)
@@ -143,18 +200,32 @@ Event OnPageReset(string page)
         AddSliderOptionST("EnergyCastingMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
         AddMenuOptionST("EnergyCastingConcStyleMenu", settingsPageEnergyCastingConcStyle, settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
 
-; Page 3
+; Page 3 - Hotkeys
     elseif page == hotkeysPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddKeyMapOptionST("DrainKeyMapOption", hotkeysPageToggleDrainHotkey, CoL.toggleDrainHotkey)
         AddKeyMapOptionST("DrainToDeathKeyMapOption", hotkeysPageToggleDrainToDeathHotkey, CoL.toggleDrainToDeathHotkey)
-; Page 4
+; Page 4 - Widgets
     elseif page == widgetsPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddSliderOptionST("energyMeterXPosSlider", widgetsPageEnergyMeterXPos, CoL.widgetHandler.energyMeterXPos)
         AddSliderOptionST("energyMeterYPosSlider", widgetsPageEnergyMeterYPos, CoL.widgetHandler.energyMeterYPos)
         AddSliderOptionST("energyMeterXScaleSlider", widgetsPageEnergyMeterXScale, CoL.widgetHandler.energyMeterXScale)
         AddSliderOptionST("energyMeterYScaleSlider", widgetsPageEnergyMeterYScale, CoL.widgetHandler.energyMeterYScale)
+; Page 5 - Perks
+    elseif page == perkPageName
+        SetCursorFillMode(TOP_TO_BOTTOM)
+        AddHeaderOption(perkPagePointsHeader)
+        AddTextOptionST("perksAvailableOption", perkPageAvailablePerkPoints, CoL.availablePerkPoints)
+        AddTextOptionST("perkReset", perkPageResetPerks, None)
+        AddHeaderOption(perkPageGeneralHeader)
+        if !CoL.gentleDrainer
+            AddToggleOptionST("perkGentleDrainer", perkPageGentleDrainer, CoL.gentleDrainer)
+        else
+            AddToggleOptionST("perkGentleDrainer", perkPageGentleDrainer, CoL.gentleDrainer, OPTION_FLAG_DISABLED)
+        endif
+        AddTextOptionST("perkEfficientFeeder", perkpageEfficientFeeder, CoL.efficientFeeder)
+        AddTextOptionST("perkEnergyStorage", perkpageEnergyStorage, CoL.energyStorage)
     endif
 EndEvent
 
@@ -280,6 +351,97 @@ EndEvent
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageEnergyConversionRateHelp)
+        EndEvent
+    EndState
+
+    State LevelXpPerDrain
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.levelHandler.xpPerDrain)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(1.0, 100.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.levelHandler.xpPerDrain = value
+            SetSliderOptionValueST(CoL.levelhandler.xpPerDrain)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingspageLevelXpPerDrainHelp)
+        EndEvent
+    EndState
+    State LevelXpDeathMult
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.levelHandler.drainToDeathXPMult)
+            SetSliderDialogDefaultValue(2.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(1.0, 100.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.levelHandler.drainToDeathXPMult = value
+            SetSliderOptionValueST(CoL.levelhandler.drainToDeathXPMult)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageLevelXpDeathMultHelp)
+        EndEvent
+    EndState
+    State LevelXpConstant
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.levelHandler.xpConstant)
+            SetSliderDialogDefaultValue(0.75)
+            SetSliderDialogInterval(0.01)
+            SetSliderDialogRange(0.01, 5.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.levelHandler.xpConstant = value
+            SetSliderOptionValueST(CoL.levelhandler.xpConstant, "{2}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageLevelXpConstantHelp)
+        EndEvent
+    EndState
+    State LevelXpPower
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.levelHandler.xpPower)
+            SetSliderDialogDefaultValue(1.5)
+            SetSliderDialogInterval(0.01)
+            SetSliderDialogRange(0.01, 5.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.levelHandler.xpPower = value
+            SetSliderOptionValueST(CoL.levelhandler.xpPower,"{2}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageLevelXpPowerHelp)
+        EndEvent
+    EndState
+    State LevelLevelsPerPerk
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.levelHandler.levelsForPerk)
+            SetSliderDialogDefaultValue(5)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 10)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.levelHandler.levelsForPerk = value as int
+            SetSliderOptionValueST(CoL.levelhandler.levelsForPerk)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageLevelLevelsPerPerkHelp)
+        EndEvent
+    EndState
+    State LevelPerksPerLevel
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.levelHandler.perkPointsOnLevelUp)
+            SetSliderDialogDefaultValue(1)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 10)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.levelHandler.perkPointsOnLevelUp = value as int
+            SetSliderOptionValueST(CoL.levelhandler.perkPointsOnLevelUp)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageLevelPerksPerLevelHelp)
         EndEvent
     EndState
 
@@ -512,5 +674,90 @@ EndEvent
         EndEvent
         Event OnHighlightST()
             SetInfoText(widgetsPageEnergyMeterYScaleHelp)
+        EndEvent
+    EndState
+; Page 5 State Handlers
+    State perksAvailableOption
+        Event OnSelectST()
+            CoL.availablePerkPoints += 1
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkPageAvailablePerkPointsHelp)
+        EndEvent
+    EndState
+    State perkReset
+        Event OnSelectST()
+            if CoL.gentleDrainer
+                CoL.gentleDrainer = false
+                ; SetToggleOptionValueST(CoL.gentleDrainer, true, "perkGentleDrainer")
+                CoL.availablePerkPoints += 1
+            endif
+            if CoL.efficientFeeder > 0
+                int i = 0
+                while i < CoL.efficientFeeder
+                    CoL.availablePerkPoints += 1
+                    CoL.efficientFeeder -= 1
+                endwhile
+            endif
+            if CoL.energyStorage > 0
+                int i = 0
+                while i < CoL.energyStorage
+                    CoL.availablePerkPoints += 1
+                    CoL.energyStorage -= 1
+                    CoL.playerEnergyMax -= 10
+                endwhile
+            endif
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkPageResetPerksHelp)
+        EndEvent
+    EndState
+    State perkGentleDrainer
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.gentleDrainer = !CoL.gentleDrainer
+                SetToggleOptionValueST(CoL.gentleDrainer)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkPageGentleDrainerHelp)
+        EndEvent
+    EndState
+    State perkEfficientFeeder
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.efficientFeeder += 1
+                CoL.energyConversionRate += 0.1
+                SetTextOptionValueST(CoL.efficientFeeder)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkpageEfficientFeederHelp)
+        EndEvent
+    EndState
+    State perkEnergyStorage
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.energyStorage += 1
+                CoL.playerEnergyMax += 10
+                SetTextOptionValueST(CoL.energyStorage)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkpageEnergyStorageHelp)
         EndEvent
     EndState

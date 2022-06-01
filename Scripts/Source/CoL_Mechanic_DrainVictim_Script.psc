@@ -20,11 +20,17 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     healthDrained = CoL.drainHandler.CalculateDrainAmount(drainTarget)
     drainTarget.ModActorValue("Health", 0.0 - healthDrained)
     RegisterforModEvent("CoL_Uninitialize", "OnCoLUninitialize")
-    RegisterForSingleUpdateGameTime(CoL.drainDurationInGameTime)
+    float drainTime
+    if CoL.gentleDrainer
+        drainTime = CoL.drainDurationInGameTime/2
+    else
+        drainTime = CoL.drainDurationInGameTime
+    endif
+    RegisterForSingleUpdateGameTime(drainTime)
 
     if CoL.DebugLogging
         Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
-        Debug.Trace("[CoL] Drain will last for " + CoL.drainDurationInGameTime +" in game hours")
+        Debug.Trace("[CoL] Drain will last for " + drainTime +" in game hours")
     endif
 EndEvent
 

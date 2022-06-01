@@ -2,16 +2,22 @@ Scriptname CoL_PlayerAliasScript extends ReferenceAlias
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 ImageSpaceModifier Property EnergyCastingIMod Auto
-GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
 Event OnInit()
-    if isPlayerSuccubus.GetValueInt() > 0
+    if CoL.isPlayerSuccubus.GetValueInt() > 0
         CoL.GoToState("Initialize")
     endif
 EndEvent
 
 Event OnPlayerLoadGame()
-    if isPlayerSuccubus.GetValueInt() > 0
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] Player Loaded Game")
+        Debug.Trace("[CoL] isPlayerSuccubus Value:" + CoL.isPlayerSuccubus.GetValueInt())
+    endif
+    if CoL.isPlayerSuccubus.GetValueInt() > 0
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Maintenance Should Run")
+        endif
         CoL.Maintenance()
     endif
 EndEvent

@@ -77,13 +77,13 @@ float Property dailyHungerAmount = 10.0 Auto Hidden
 bool Property hungerDamageEnabled = false Auto Hidden
 float Property hungerDamageAmount = 5.0 Auto Hidden
 
-; MCM Tunable Drain Properties
+; Drain Properties
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
 float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
 float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 
-; MCM Tunable Power Values
+; Power Propertiesx
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostMult = 10.0 Auto Hidden     ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
@@ -95,6 +95,12 @@ Spell Property becomeEthereal Auto                    ; Spell that contains the 
 Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
 Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
+
+; Perk Stuff
+int Property availablePerkPoints = 0 Auto Hidden
+bool Property gentleDrainer = false Auto Hidden  ; Perk that reduces base drain duration by half
+int Property efficientFeeder = 0 Auto Hidden ; Ranked perk that increases health conversion rate
+int Property energyStorage = 0 Auto Hidden   ; Ranked perk that increases max energy amount
 
 Event OnInit()
 EndEvent
@@ -118,6 +124,9 @@ State Running
     EndEvent
     
     Function Maintenance()
+        if DebugLogging
+            Debug.Trace("[CoL] Maintenance running")
+        endif
         widgetHandler.GoToState("Running")
         drainHandler.GoToState("Initialize")
         levelHandler.GoToState("Running")
@@ -139,12 +148,12 @@ State Uninitialize
     Event OnBeginState()
         widgetHandler.GoToState("Uninitialize")
         levelHandler.GoToState("Uninitialize")
-        RemoveSpells()
         drainHandler.GoToState("Uninitialize")
         UnregisterForEvents()
 
         int uninitEvent = ModEvent.Create("CoL_Uninitialize")
         ModEvent.Send(uninitEvent)
+        RemoveSpells()
         isPlayerSuccubus.SetValue(0.0)
         GoToState("")
     EndEvent
