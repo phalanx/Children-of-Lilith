@@ -15,7 +15,7 @@ float Property playerSuccubusXP Hidden
             Debug.Trace("[CoL] Xp Gained: " + newVal)
             Debug.Trace("[CoL] Current Xp: " + playerSuccubusXP_var)
         Endif
-        if playerSuccubusXP_var > xpForNextLevel
+        if playerSuccubusXP_var >= xpForNextLevel
             LevelUp()
         EndIf
     EndFunction
@@ -45,7 +45,7 @@ float Property xpPower Hidden
         calculateXpForNextLevel()
     EndFunction
 endProperty
-int Property levelsForPerk = 5 Auto
+int Property levelsForPerk = 1 Auto
 int Property perkPointsOnLevelUp = 1 Auto
 
 State Initialize

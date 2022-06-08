@@ -417,7 +417,7 @@ EndEvent
     State LevelLevelsPerPerk
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.levelHandler.levelsForPerk)
-            SetSliderDialogDefaultValue(5)
+            SetSliderDialogDefaultValue(1)
             SetSliderDialogInterval(1)
             SetSliderDialogRange(1, 10)
         EndEvent
