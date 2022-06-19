@@ -6,6 +6,9 @@ CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
+; Optional Integrations
+zadLibs Property ddLibs Auto
+
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
 
@@ -101,6 +104,21 @@ int Property availablePerkPoints = 0 Auto Hidden
 bool Property gentleDrainer = false Auto Hidden  ; Perk that reduces base drain duration by half
 int Property efficientFeeder = 0 Auto Hidden ; Ranked perk that increases health conversion rate
 int Property energyStorage = 0 Auto Hidden   ; Ranked perk that increases max energy amount
+
+; Transform Stuff
+bool Property isTransformed Auto Hidden
+bool Property succuPresetSaved = false Auto Hidden
+string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
+Race Property succuRace Auto Hidden
+ColorForm Property succuHairColor Auto Hidden
+
+bool Property mortalPresetSaved = false Auto Hidden
+string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
+Race Property mortalRace Auto Hidden
+ColorForm Property mortalHairColor Auto Hidden
+
+Form[] Property NoStripList Auto Hidden
+ObjectReference Property succuEquipmentChest Auto
 
 Event OnInit()
 EndEvent

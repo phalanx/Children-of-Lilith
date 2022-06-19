@@ -25,6 +25,11 @@
         <Import>@ModsFolder\Race-Menu-Modders Package\Source\Scripts</Import>
         <Import>@ModsFolder\Creation Kit Scripts\Scripts\Source</Import>
         <Import>@ModsFolder\PapyrusUtil SE - Modders Scripting Utility Functions\Scripts\Source</Import>
+        <Import>@ModsFolder\Devious Devices\Scripts\Source</Import>
+        <Import>@ModsFolder\SexLabArousedSSELoose\Scripts\Source</Import>
+        <Import>@ModsFolder\FNIS Sexy Move SE\source\scripts</Import>
+        <Import>@ModsFolder\ConsoleUtilSSE\Scripts\Source</Import>
+        <Import>@ModsFolder\XP32 Maximum Skeleton Special Extended\scripts\source</Import>
     </Imports>
     <Folders>
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->

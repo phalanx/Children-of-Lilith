@@ -1,5 +1,7 @@
 Scriptname CoL_MCM_Quest_Script extends SKI_ConfigBase
 
+import CharGen
+
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
@@ -108,9 +110,28 @@ bool meterBarChanged = false
     string perkpageEfficientFeederHelp = "Increase Health Conversion Rate by 10% per Rank"
     string perkpageEnergyStorage = "Energy Storage"
     string perkpageEnergyStorageHelp = "Increase Max Energy by 10 per Rank"
+; Page 6 - Transformation
+    string transformPageName = "Transformation"
+    string transformPagePresetHeader = "Preset"
+    string transformPageSaveSuccuPreset = "Save Succubus Form"
+    string transformPageSaveSuccuPresetHelp = "Save current appearance as Succubus Form"
+    string transformPageSaveSuccuPresetMsg = "Succubus Form Saved"
+    string transformPageLoadSuccuPreset = "Load Succubus Form"
+    string transformPageLoadSuccuPresetHelp = "Change current appearance to Succubus Form."
+    string transformPageLoadSuccuPresetMsg = "Succubus Form Loaded\nExit menu to apply changes"
+    string transformPageSaveMortalPreset = "Save Human Form"
+    string transformPageSaveMortalPresetHelp = "Save current appearance as Human Form.\nWill be replaced on every transform"
+    string transformPageSaveMortalPresetMsg = "Human Form Saved"
+    string transformPageLoadMortalPreset = "Load Human Form"
+    string transformPageLoadMortalPresetHelp = "Change current appearance to Human Form"
+    string transformPageLoadMortalPresetMsg = "Human Form Loaded\nExit menu to apply changes"
+    string transformPageEquipmentHeader = "Equipment"
+    string transformPageEquipmentSave = "Select Succubus Equipment"
+    string transformPageEquipmentSaveHelp = "Opens a Chest Menu\nPlace the equipment you want to wear in your succubus form within"
+    string transformPageEquipmentSaveMsg = "Exit Menu to Select Equipment"
 
 int Function GetVersion()
-    return 2
+    return 3
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -119,15 +140,20 @@ Event OnVersionUpdate(int newVersion)
         CoL.levelHandler.GoToState("Initialize")
         OnConfigInit()
     endif
+    if newVersion == 3
+        CoL.Maintenance()
+        OnConfigInit()
+    endif
 EndEvent
 
 Event OnConfigInit()
-    Pages = new string[5]
+    Pages = new string[6]
     Pages[0] = statusPageName
     Pages[1] = settingsPageName
     Pages[2] = hotkeysPageName
     Pages[3] = widgetsPageName
     Pages[4] = perkPageName
+    Pages[5] = transformPageName
     
     settingsPageEnergyCastingConcStyleOptions = new string[4]
     settingsPageEnergyCastingConcStyleOptions[0] = settingsPageEnergyCastingConcStyleLeftOnly 
@@ -226,6 +252,25 @@ Event OnPageReset(string page)
         endif
         AddTextOptionST("perkEfficientFeeder", perkpageEfficientFeeder, CoL.efficientFeeder)
         AddTextOptionST("perkEnergyStorage", perkpageEnergyStorage, CoL.energyStorage)
+; Page 6 - Transform
+    elseif page == transformPageName
+        SetCursorFillMode(TOP_TO_BOTTOM)
+        AddHeaderOption(transformPagePresetHeader)
+        AddTextOptionST("transformSaveMortalPreset", transformPageSaveMortalPreset, None)
+        if CoL.mortalPresetSaved
+            AddTextOptionST("transformLoadMortalPreset", transformPageLoadMortalPreset, None)
+        else
+            AddTextOptionST("transformLoadMortalPreset", transformPageLoadMortalPreset, None, OPTION_FLAG_DISABLED)
+        endif
+        AddTextOptionST("transformSaveSuccuPreset", transformPageSaveSuccuPreset, None)
+        if CoL.succuPresetSaved
+            AddTextOptionST("transformLoadSuccuPreset", transformPageLoadSuccuPreset, None)
+        else
+            AddTextOptionST("transformLoadSuccuPreset", transformPageLoadSuccuPreset, None, OPTION_FLAG_DISABLED)
+        endif
+        SetCursorPosition(1)
+        AddHeaderOption(transformPageEquipmentHeader)
+        AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
     endif
 EndEvent
 
@@ -759,5 +804,68 @@ EndEvent
         EndEvent
         Event OnHighlightST()
             SetInfoText(perkpageEnergyStorageHelp)
+        EndEvent
+    EndState
+; Page 6 State Handlers
+    State transformSaveMortalPreset
+        Event OnSelectST()
+            CoL.mortalRace = CoL.playerRef.GetRace()
+            CoL.mortalHairColor = CoL.playerRef.GetActorbase().GetHairColor()
+            CharGen.SavePreset(CoL.mortalPresetName)
+            CoL.mortalPresetSaved = True
+            Debug.MessageBox(transformPageSaveMortalPresetMsg)
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageSaveMortalPresetHelp)
+        EndEvent
+    EndState
+    State transformLoadMortalPreset
+        Event OnSelectST()
+            CoL.playerRef.SetRace(CoL.mortalRace)
+            CoL.playerRef.GetActorbase().SetHairColor(CoL.mortalHairColor)
+            Debug.MessageBox(transformPageLoadMortalPresetMsg)
+            Utility.Wait(0.1)
+            CharGen.LoadPreset(CoL.mortalPresetName)
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageLoadMortalPresetHelp)
+        EndEvent
+    EndState
+    State transformSaveSuccuPreset
+        Event OnSelectST()
+            CoL.succuRace = CoL.playerRef.GetRace()
+            CoL.succuHairColor = CoL.playerRef.GetActorbase().GetHairColor()
+            CharGen.SavePreset(CoL.succuPresetName)
+            CoL.succuPresetSaved = True
+            Debug.MessageBox(transformPageSaveSuccuPresetMsg)
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageSaveSuccuPresetHelp)
+        EndEvent
+    EndState
+    State transformLoadSuccuPreset
+        Event OnSelectST()
+            CoL.playerRef.SetRace(CoL.succuRace)
+            CoL.playerRef.GetActorbase().SetHairColor(CoL.succuHairColor)
+            Debug.MessageBox(transformPageLoadSuccuPresetMsg)
+            Utility.Wait(0.1)
+            CharGen.LoadPreset(CoL.succuPresetName)
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageLoadSuccuPresetHelp)
+        EndEvent
+    EndState
+    State transformActivateEquipmentChest
+        Event OnSelectST()
+            CoL.succuEquipmentChest.Activate(CoL.playerRef)
+            Debug.MessageBox(transformPageEquipmentSaveMsg)
+            Utility.Wait(0.1)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageEquipmentSaveHelp)
         EndEvent
     EndState
