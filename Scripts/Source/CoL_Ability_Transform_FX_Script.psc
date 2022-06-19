@@ -7,8 +7,7 @@ Sound Property SuccubusTransformSound Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     SuccubusTransformSound.Play(akTarget)
-    if CoL.isTransformed
-    else
+    if !CoL.isTransformed
         akTarget.PlayIdle(SuccubusTransformationIdle)
         Utility.Wait(5)
         Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
