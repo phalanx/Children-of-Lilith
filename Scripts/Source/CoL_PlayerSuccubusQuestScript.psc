@@ -7,7 +7,7 @@ CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
 ; Optional Integrations
-zadLibs Property ddLibs Auto
+Keyword Property ddLibs Auto
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
@@ -106,6 +106,7 @@ int Property efficientFeeder = 0 Auto Hidden ; Ranked perk that increases health
 int Property energyStorage = 0 Auto Hidden   ; Ranked perk that increases max energy amount
 
 ; Transform Stuff
+Spell Property transformSpell Auto
 bool Property isTransformed Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
@@ -150,6 +151,7 @@ State Running
         levelHandler.GoToState("Running")
         RegisterForEvents()
     EndFunction
+
 EndState
 
 State SceneRunning

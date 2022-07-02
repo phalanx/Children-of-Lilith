@@ -75,7 +75,7 @@ Form[] function StripEquipment(Actor actorRef)
                     	x += 1
                     endwhile
                 endif
-                if !CoL.ddLibs || !itemRef.hasKeyword(CoL.ddLibs.zad_Lockable) ; Make sure it's not a devious device, if compatibility patch installed
+                if !CoL.ddLibs || !itemRef.hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device, if compatibility patch installed
                     actorRef.UnequipItemEX(itemRef)
                     stripped[i] = itemRef
                 endif

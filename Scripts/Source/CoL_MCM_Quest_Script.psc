@@ -1,12 +1,14 @@
 Scriptname CoL_MCM_Quest_Script extends SKI_ConfigBase
 
 import CharGen
+import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
 string[] settingsPageEnergyCastingConcStyleOptions
 bool meterBarChanged = false
+Form[] equippedItems
 
 ; String values to make translating the menu easier once I figure out how translation files work
 ; Page 1 - Status
@@ -120,7 +122,7 @@ bool meterBarChanged = false
     string transformPageLoadSuccuPresetHelp = "Change current appearance to Succubus Form."
     string transformPageLoadSuccuPresetMsg = "Succubus Form Loaded\nExit menu to apply changes"
     string transformPageSaveMortalPreset = "Save Human Form"
-    string transformPageSaveMortalPresetHelp = "Save current appearance as Human Form.\nWill be replaced on every transform"
+    string transformPageSaveMortalPresetHelp = "Save current appearance as Human Form."
     string transformPageSaveMortalPresetMsg = "Human Form Saved"
     string transformPageLoadMortalPreset = "Load Human Form"
     string transformPageLoadMortalPresetHelp = "Change current appearance to Human Form"
@@ -129,21 +131,27 @@ bool meterBarChanged = false
     string transformPageEquipmentSave = "Select Succubus Equipment"
     string transformPageEquipmentSaveHelp = "Opens a Chest Menu\nPlace the equipment you want to wear in your succubus form within"
     string transformPageEquipmentSaveMsg = "Exit Menu to Select Equipment"
+    string transformPageNoStripAddHeader = "Add Items to No Strip List"
+    string transformPageNoStripRemoveHeader = "Remove Equipment from Never Strip List"
 
 int Function GetVersion()
-    return 3
+    return 4
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
     Debug.Trace("[CoL] New Version Detected " + newVersion)
-    if newVersion == 2
+    if newVersion >= 2
         CoL.levelHandler.GoToState("Initialize")
-        OnConfigInit()
     endif
-    if newVersion == 3
+    if newVersion >= 3
         CoL.Maintenance()
-        OnConfigInit()
     endif
+    if newVersion >= 4
+        if CoL.isPlayerSuccubus && !CoL.playerRef.HasSpell(CoL.transformSpell)
+            CoL.playerRef.AddSpell(CoL.transformSpell)
+        endif
+    endif
+    OnConfigInit()
 EndEvent
 
 Event OnConfigInit()
@@ -254,6 +262,7 @@ Event OnPageReset(string page)
         AddTextOptionST("perkEnergyStorage", perkpageEnergyStorage, CoL.energyStorage)
 ; Page 6 - Transform
     elseif page == transformPageName
+        equippedItems = getEquippedItems(CoL.playerRef)
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddHeaderOption(transformPagePresetHeader)
         AddTextOptionST("transformSaveMortalPreset", transformPageSaveMortalPreset, None)
@@ -271,8 +280,32 @@ Event OnPageReset(string page)
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
+        AddHeaderOption(transformPageNoStripAddHeader)
+        int i = 0
+		while i < equippedItems.Length
+			if !CoL.ddLibs || !equippedItems[i].hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device, if compatibility patch installed
+				if CoL.NoStripList.Find(equippedItems[i]) == -1
+					string itemName = equippedItems[i].GetName()
+					if itemName != "" && itemName != " "
+						AddTextOptionST("transformAddStrippable+" + i, itemName, None)
+					endif
+				endif
+			endif
+			i += 1
+		endwhile
+        AddHeaderOption(transformPageNoStripRemoveHeader)
+		i = 0
+		while i < CoL.NoStripList.Length
+			string itemName = CoL.NoStripList[i].GetName()
+			AddTextOptionST("transformRemoveStrippable+" + i, itemName, None)
+			i += 1
+		endwhile
     endif
 EndEvent
+
+string[] function getoptions()
+	return stringsplit(getstate(), "+")
+endfunction
 
 ; Page 1 State Handlers
     State BecomeSuccubus
@@ -869,3 +902,56 @@ EndEvent
             SetInfoText(transformPageEquipmentSaveHelp)
         EndEvent
     EndState
+    Event OnSelectST()
+        string[] options = getOptions()
+        string option = options[0]
+        if option == "transformRemoveStrippable"
+            int index = options[1] as int
+            Form itemRef = CoL.NoStripList[index]
+            CoL.NoStripList = RemoveForm(CoL.NoStripList, itemRef)
+
+            if CoL.DebugLogging
+                Debug.trace("Removing " + itemRef.GetName())
+                int i = 0
+                Debug.trace("Worn Item List contains:")
+                while i < equippedItems.Length
+                    Debug.trace(equippedItems[i].getName())
+                    i += 1
+                endwhile
+            endif
+
+            ForcePageReset()
+        elseif option == "transformAddStrippable"
+            int index = options[1] as int
+            Form itemRef = equippedItems[index]
+            CoL.NoStripList = PushForm(CoL.NoStripList, itemRef)
+
+            if CoL.DebugLogging
+                Debug.trace("Adding " + itemRef.getName())
+                int i = 0
+                Debug.trace("Don't strip list contains:")
+                while i < CoL.NoStripList.Length
+                    Debug.trace(CoL.NoStripList[i].getName())
+                    i += 1
+                endwhile
+            endif
+
+            ForcePageReset()
+        endif
+    EndEvent
+
+Form[] function getEquippedItems(Actor actorRef)
+	int i = 31
+    Form itemRef
+	equippedItems = new Form[34]
+    while i >= 0
+        itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30))
+		if itemRef 
+			equippedItems[i] = itemRef
+		endif
+		i -= 1
+	endwhile
+	; return ClearNone(equippedItems)
+	; equippedItems = ClearNone(equippedItems)
+	return RemoveDupeForm(ClearNone(equippedItems))
+EndFunction

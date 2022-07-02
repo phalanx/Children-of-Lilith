@@ -53,6 +53,7 @@
             <Include>LICENSE</Include>
             <Include NoRecurse="true">*.bsa</Include>
             <Match In="Handlers">*</Match>
+            <Match In="Compatibility">*</Match>
             <Match In="fomod">*</Match>
             <Match In="Scripts\Source">*.psc</Match>
             <Match In="Scripts">*.pex</Match>
