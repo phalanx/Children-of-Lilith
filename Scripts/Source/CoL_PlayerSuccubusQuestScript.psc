@@ -155,7 +155,16 @@ State Running
 EndState
 
 State SceneRunning
+    Event onBeginState()
+        if DebugLogging
+            Debug.Trace("[CoL] Entered SceneRunning State")
+        endif
+    EndEvent
     Event OnKeyDown(int keyCode)
+        if DebugLogging
+            Debug.Trace("[CoL] KeyDown Detected")
+            Debug.Trace("[CoL] Detected Key: " + keyCode)
+        endif
         if keyCode == toggleDrainHotkey
             drainHandler.draining = !drainHandler.draining
         elseif keyCode == toggleDrainToDeathHotkey

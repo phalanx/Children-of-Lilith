@@ -147,7 +147,7 @@ Event OnVersionUpdate(int newVersion)
         CoL.Maintenance()
     endif
     if newVersion >= 4
-        if CoL.isPlayerSuccubus && !CoL.playerRef.HasSpell(CoL.transformSpell)
+        if CoL.isPlayerSuccubus.GetValue() as Int > 0 && !CoL.playerRef.HasSpell(CoL.transformSpell)
             CoL.playerRef.AddSpell(CoL.transformSpell)
         endif
     endif
