@@ -88,6 +88,7 @@ State Draining
 
         float drainAmount = CalculateDrainAmount(drainee)
         CoL.playerEnergyCurrent += drainAmount
+        CoL.levelHandler.gainXP(false)
     EndEvent
 
     Event EndDrain(Form draineeForm)
@@ -96,7 +97,6 @@ State Draining
         if CoL.DebugLogging
             Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
         endif
-        CoL.levelHandler.gainXP(false)
     EndEvent
 EndState
 
