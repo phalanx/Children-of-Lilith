@@ -19,6 +19,7 @@ State Waiting
         victim1 = None
         victim2 = None
         RegisterForModEvent("CoL_FG_startScene", "startScene")
+        Debug.Trace("[CoL] Registered for Flower Girl Start Event")
     EndEvent
 
     Event startScene(Form participant1, Form participant2)
