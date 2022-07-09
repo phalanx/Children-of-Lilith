@@ -61,7 +61,7 @@ State Running
     Event orgasmHandler(string eventName, string strArg, float numArg, Form sender)
         Actor victim = oStim.GetMostRecentOrgasmedActor()
 
-        if victim == CoL.playerRef
+        if victim == None || victim == CoL.playerRef 
             return
         endif
 
@@ -79,12 +79,15 @@ State Running
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Player involved animation ended")
+            Debug.Trace("[CoL] " + currentVictims.Length)
         endif
 
         int i = 0
         while i < currentVictims.Length
-            triggerDrainEnd(currentVictims[i])
-            i += 1
+            if currentVictims[i] != None
+                triggerDrainEnd(currentVictims[i])
+            endif
+                i += 1
         endwhile
 
         GoToState("Waiting")
