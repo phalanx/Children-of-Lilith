@@ -120,6 +120,7 @@ State DrainingToDeath
 
         float drainAmount = CalculateDrainAmount(drainee)
         CoL.playerEnergyCurrent += drainAmount 
+        CoL.levelHandler.gainXP(true)
     EndEvent
 
     Event EndDrain(Form draineeForm)
@@ -131,7 +132,6 @@ State DrainingToDeath
         endif
 
         drainee.EndDeferredKill()
-        CoL.levelHandler.gainXP(true)
     EndEvent
 
     Event OnEndState()
