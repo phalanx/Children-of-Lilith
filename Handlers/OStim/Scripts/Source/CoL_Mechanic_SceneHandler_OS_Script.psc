@@ -2,6 +2,9 @@ Scriptname CoL_Mechanic_SceneHandler_OS_Script extends activemagiceffect
 
 OSexIntegrationMain Property oStim Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+Quest Property oDefeat Auto Hidden
+
+OUndressScript oUndress
 
 import PapyrusUtil
 
@@ -9,11 +12,15 @@ Actor[] currentVictims ;List of victims in current scene that have been drained
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     currentVictims = new Actor[1]
+    oDefeat = Quest.GetQuest("ODefeatMainQuest")
+    oUndress = oStim.GetUndressScript()
     GoToState("Waiting")
 EndEvent
 
 Event OnPlayerLoadGame()
     currentVictims = new Actor[1]
+    oDefeat = Quest.GetQuest("ODefeatMainQuest")
+    oUndress = oStim.GetUndressScript()
     GoToState("Waiting")
 EndEvent
 
@@ -68,7 +75,22 @@ State Running
         if CoL.DebugLogging
             Debug.Trace("[CoL] Entered orgasm handler")
         endif
-        
+        if oStim.FullyAnimateRedress && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
+            Actor[] actors = oStim.GetActors()
+            if victim == actors[0]
+                ;Dom
+                oUndress.DomEquipmentDrops = new ObjectReference[1]
+                oUndress.DomEquipmentForms = new Form[1]
+            elseif victim == actors[1]
+                ;Sub
+                oUndress.SubEquipmentDrops = new ObjectReference[1]
+                oUndress.SubEquipmentForms = new Form[1]
+            elseif victim == actors[2]
+                ;Third
+                oUndress.ThirdEquipmentDrops = new ObjectReference[1]
+                oUndress.ThirdEquipmentForms = new Form[1]
+            endif
+        endif
         triggerDrainStart(victim)
         if currentVictims.Find(victim) == -1
             currentVictims = PushActor(currentVictims, victim)
@@ -79,9 +101,10 @@ State Running
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Player involved animation ended")
-            Debug.Trace("[CoL] " + currentVictims.Length)
         endif
 
+        int sceneEndEvent = ModEvent.Create("CoL_endScene")
+        ModEvent.Send(sceneEndEvent)
         int i = 0
         while i < currentVictims.Length
             if currentVictims[i] != None
@@ -95,7 +118,7 @@ State Running
 
     Event OnEndState()
         UnregisterForModEvent("ostim_orgasm")
-        UnregisterForModEvent("ostim_totalend")
+        UnregisterForModEvent("ostim_end")
         currentVictims = new Actor[1]
     EndEvent
 
@@ -121,6 +144,12 @@ EndFunction
 Function triggerDrainEnd(Actor victim)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Trigger drain end for " + victim.GetBaseObject().GetName())
+    endif
+
+    Utility.Wait(2)
+    if oDefeat && CoL.drainHandler.drainingToDeath
+        Debug.Trace("[CoL] oDefeat Detected")
+        Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
     endif
 
     int drainHandle = ModEvent.Create("CoL_endDrain")

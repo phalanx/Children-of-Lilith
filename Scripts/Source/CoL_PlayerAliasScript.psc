@@ -18,7 +18,7 @@ Event OnPlayerLoadGame()
         if CoL.DebugLogging
             Debug.Trace("[CoL] Maintenance Should Run")
         endif
-        CoL.Maintenance()
+        CoL.GoToState("Running")
     endif
 EndEvent
 
