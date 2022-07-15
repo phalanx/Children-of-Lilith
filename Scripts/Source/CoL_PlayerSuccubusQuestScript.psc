@@ -4,6 +4,7 @@ import PapyrusUtil
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
 ; Optional Integrations
@@ -85,6 +86,7 @@ float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game 
 float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
 float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
+bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
 
 ; Power Propertiesx
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect

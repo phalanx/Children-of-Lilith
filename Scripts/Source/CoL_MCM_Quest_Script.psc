@@ -43,6 +43,8 @@ Form[] equippedItems
     string settingsPageHealthDrainMultHelp = "The percentage of health drained from victim \n (Victim Health * [this value]) = Health Drained"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
     string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
+    string settingsPageDrainFeedsVampire = "Drain Feeds Vampires"
+    string settingsPageDrainFeedsVampireHelp = "Should drain victims also trigger a vampire feeding"
 
     string settingsPageLevelHeader = "Leveling Settings"
     string settingsPageLevelXpPerDrain = "XP Per Drain"
@@ -209,6 +211,7 @@ Event OnPageReset(string page)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
         AddSliderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
+        AddToggleOptionST("DrainFeedsVampireOption", settingsPageDrainFeedsVampire, CoL.drainFeedsVampire)
         ; Level Settings
         AddHeaderOption(settingsPageLevelHeader)
         AddSliderOptionST("LevelXpPerDrain", settingsPageLevelXpPerDrain, CoL.levelHandler.xpPerDrain)
@@ -429,6 +432,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageEnergyConversionRateHelp)
+        EndEvent
+    EndState
+    State DrainFeedsVampireOption
+        Event OnSelectST()
+            CoL.drainFeedsVampire = !CoL.drainFeedsVampire
+            SetToggleOptionValueST(CoL.drainFeedsVampire)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDrainFeedsVampireHelp)
         EndEvent
     EndState
 
