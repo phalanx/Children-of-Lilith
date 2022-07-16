@@ -5,7 +5,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     if Col.playerEnergyCurrent >= Col.healRateBoostCost
-        healRateBoosted = akTarget.GetActorValue("HealRate") * CoL.healRateBoostMult
+        healRateBoosted = akTarget.GetBaseActorValue("HealRate") * CoL.healRateBoostMult
         akTarget.ModActorValue("HealRate", healRateBoosted)
         RegisterForSingleUpdate(1.0)
     else

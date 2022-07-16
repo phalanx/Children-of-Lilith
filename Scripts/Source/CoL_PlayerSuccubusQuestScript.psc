@@ -103,9 +103,12 @@ Perk Property energyCastingPerk Auto             ; The perk that reduces magicka
 
 ; Perk Stuff
 int Property availablePerkPoints = 0 Auto Hidden
-bool Property gentleDrainer = false Auto Hidden  ; Perk that reduces base drain duration by half
-int Property efficientFeeder = 0 Auto Hidden ; Ranked perk that increases health conversion rate
-int Property energyStorage = 0 Auto Hidden   ; Ranked perk that increases max energy amount
+bool Property gentleDrainer = false Auto Hidden      ; Perk that reduces base drain duration by half
+int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
+int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
+bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
+bool Property healingForm = false Auto Hidden        ; Perk that adds Heal Rate Boost to transformed form
+bool Property safeTransformation = false Auto Hidden ; Perk that turns you ethereal while transforming
 
 ; Transform Stuff
 Spell Property transformSpell Auto

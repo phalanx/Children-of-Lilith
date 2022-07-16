@@ -34,6 +34,7 @@ Function Transform()
     SwapEquipment(CoL.succuEquipmentChest, CoL.playerRef, succubusEquipment)
     EquipEquipment(CoL.playerRef, succubusEquipment)
     SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, originalEquipment)
+    AddAdditionalPowers()
 EndFunction
 
 Function UnTransform()
@@ -53,7 +54,20 @@ Function UnTransform()
     SwapEquipment(CoL.succuEquipmentChest, CoL.playerRef, originalEquipment)
     EquipEquipment(CoL.playerRef, originalEquipment)
     SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, succubusEquipment)
+    RemoveAdditionalPowers()
 EndFunction
+
+function AddAdditionalPowers()
+    if CoL.healingForm
+        ToggleHealRateBoost(true)
+    endif
+endfunction
+
+function RemoveAdditionalPowers()
+    if CoL.healingForm
+        ToggleHealRateBoost(false)
+    endif
+endfunction
 
 Form[] function StripEquipment(Actor actorRef)
     int i = 31
@@ -105,3 +119,12 @@ function EquipEquipment(Actor actorRef, Form[] equipmentList)
 		endwhile
 	endif
 endfunction
+
+Function ToggleHealRateBoost(bool enable)
+    float healRateBoost = CoL.playerRef.GetBaseActorValue("HealRate") * CoL.healRateBoostMult
+    if enable
+        CoL.playerRef.ModActorValue("HealRate", healRateBoost)
+    else
+        CoL.playerRef.ModActorValue("HealRate", 0.0 - healRateBoost)
+    endif
+endFunction
