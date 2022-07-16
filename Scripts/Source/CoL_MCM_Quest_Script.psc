@@ -43,6 +43,8 @@ Form[] equippedItems
     string settingsPageHealthDrainMultHelp = "The percentage of health drained from victim \n (Victim Health * [this value]) = Health Drained"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
     string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
+    string settingsPageDrainFeedsVampire = "Drain Feeds Vampires"
+    string settingsPageDrainFeedsVampireHelp = "Should drain victims also trigger a vampire feeding"
 
     string settingsPageLevelHeader = "Leveling Settings"
     string settingsPageLevelXpPerDrain = "XP Per Drain"
@@ -112,6 +114,12 @@ Form[] equippedItems
     string perkpageEfficientFeederHelp = "Increase Health Conversion Rate by 10% per Rank"
     string perkpageEnergyStorage = "Energy Storage"
     string perkpageEnergyStorageHelp = "Increase Max Energy by 10 per Rank"
+    string perkPageEnergyWeaver = "Energy Weaver"
+    string perkPageEnergyWeaverHelp = "Reduce Energy Cost of Spells by 25%(50% while transformed) while using Energy Casting."
+    string perkPageHealingForm = "Healing Form"
+    string perkPageHealingFormHelp = "Succubus Healing Rate Boost is applied while you are transformed."
+    string perkpageSafeTransformation = "Safe Transformation"
+    string perkpageSafeTransformationHelp = "Become Ethereal While Transforming"
 ; Page 6 - Transformation
     string transformPageName = "Transformation"
     string transformPagePresetHeader = "Preset"
@@ -209,6 +217,7 @@ Event OnPageReset(string page)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
         AddSliderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
+        AddToggleOptionST("DrainFeedsVampireOption", settingsPageDrainFeedsVampire, CoL.drainFeedsVampire)
         ; Level Settings
         AddHeaderOption(settingsPageLevelHeader)
         AddSliderOptionST("LevelXpPerDrain", settingsPageLevelXpPerDrain, CoL.levelHandler.xpPerDrain)
@@ -260,6 +269,21 @@ Event OnPageReset(string page)
         endif
         AddTextOptionST("perkEfficientFeeder", perkpageEfficientFeeder, CoL.efficientFeeder)
         AddTextOptionST("perkEnergyStorage", perkpageEnergyStorage, CoL.energyStorage)
+        if !CoL.energyWeaver
+            AddToggleOptionST("perkEnergyWeaver", perkPageEnergyWeaver, CoL.EnergyWeaver)
+        else
+            AddToggleOptionST("perkEnergyWeaver", perkPageEnergyWeaver, CoL.energyWeaver, OPTION_FLAG_DISABLED)
+        endif
+        if !CoL.healingForm
+            AddToggleOptionST("perkHealingForm", perkPageHealingForm, CoL.HealingForm)
+        else
+            AddToggleOptionST("perkHealingForm", perkPageHealingForm, CoL.HealingForm, OPTION_FLAG_DISABLED)
+        endif
+        if !CoL.safeTransformation
+            AddToggleOptionST("perkSafeTransformation", perkPagesafeTransformation, CoL.safeTransformation)
+        else
+            AddToggleOptionST("perkSafeTransformation", perkPagesafeTransformation, CoL.safeTransformation, OPTION_FLAG_DISABLED)
+        endif
 ; Page 6 - Transform
     elseif page == transformPageName
         equippedItems = getEquippedItems(CoL.playerRef)
@@ -429,6 +453,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageEnergyConversionRateHelp)
+        EndEvent
+    EndState
+    State DrainFeedsVampireOption
+        Event OnSelectST()
+            CoL.drainFeedsVampire = !CoL.drainFeedsVampire
+            SetToggleOptionValueST(CoL.drainFeedsVampire)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDrainFeedsVampireHelp)
         EndEvent
     EndState
 
@@ -837,6 +870,51 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(perkpageEnergyStorageHelp)
+        EndEvent
+    EndState
+    State perkEnergyWeaver
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.energyWeaver = !CoL.energyWeaver
+                SetToggleOptionValueST(CoL.energyWeaver)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkPageEnergyWeaverHelp)
+        EndEvent
+    EndState
+    State perkHealingForm
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.healingForm = !CoL.healingForm
+                SetToggleOptionValueST(CoL.healingForm)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkPageHealingFormHelp)
+        EndEvent
+    EndState
+    State perkSafeTransformation
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.safeTransformation = !CoL.safeTransformation
+                SetToggleOptionValueST(CoL.safeTransformation)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkpageSafeTransformationHelp)
         EndEvent
     EndState
 ; Page 6 State Handlers

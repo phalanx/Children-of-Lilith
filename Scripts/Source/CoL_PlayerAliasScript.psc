@@ -18,7 +18,7 @@ Event OnPlayerLoadGame()
         if CoL.DebugLogging
             Debug.Trace("[CoL] Maintenance Should Run")
         endif
-        CoL.Maintenance()
+        CoL.GoToState("Running")
     endif
 EndEvent
 
@@ -71,6 +71,13 @@ EndEvent
 Function ExpendEnergy(Spell spellCast, float costModifier = 1.0)
     CoL.playerRef.RemovePerk(CoL.energyCastingPerk)
     float spellCost = (spellCast.GetEffectiveMagickaCost(CoL.playerRef) * CoL.energyCastingMult) * costModifier
+    if CoL.energyWeaver
+        if CoL.isTransformed
+            spellCost -= spellCost * 0.5
+        else
+            spellCost -= spellCost * 0.25
+        endif
+    endif
     CoL.playerRef.AddPerk(CoL.energyCastingPerk)
     if spellCost < CoL.playerEnergyCurrent
         CoL.playerEnergyCurrent -= spellCost 

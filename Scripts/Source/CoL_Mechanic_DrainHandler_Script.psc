@@ -24,8 +24,11 @@ bool Property drainingToDeath Hidden
     EndFunction
 EndProperty
 
+Keyword Property vampireKeyword Auto Hidden
+
 State Initialize
     Event OnBeginState()
+        vampireKeyword = Keyword.GetKeyword("vampire")
         RegisterForModEvent("CoL_startDrain", "StartDrain")
         RegisterForModEvent("CoL_endDrain", "EndDrain")
         if CoL.DebugLogging
@@ -89,12 +92,12 @@ State Draining
         float drainAmount = CalculateDrainAmount(drainee)
         CoL.playerEnergyCurrent += drainAmount
         CoL.levelHandler.gainXP(false)
+        doVampireDrain(drainee)
     EndEvent
 
     Event EndDrain(Form draineeForm)
-        Actor drainee = draineeForm as Actor
-
         if CoL.DebugLogging
+            Actor drainee = draineeForm as Actor
             Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
         endif
     EndEvent
@@ -121,6 +124,7 @@ State DrainingToDeath
         float drainAmount = CalculateDrainAmount(drainee)
         CoL.playerEnergyCurrent += drainAmount 
         CoL.levelHandler.gainXP(true)
+        doVampireDrain(drainee)
     EndEvent
 
     Event EndDrain(Form draineeForm)
@@ -137,6 +141,12 @@ State DrainingToDeath
     Event OnEndState()
     EndEvent
 EndState
+
+Function doVampireDrain(Actor drainee)
+    if CoL.playerRef.HasKeyword(vampireKeyword) && CoL.drainFeedsVampire
+        CoL.vampireHandler.Feed(drainee)
+    endif
+EndFunction
 
 ; Empty Functions for Empty State
 float Function CalculateDrainAmount(Actor drainVictim)
