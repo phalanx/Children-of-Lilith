@@ -1,8 +1,9 @@
 Scriptname CoL_Mechanic_VampireHandler_Script extends Quest  
-; For Vanilla, Scion, and Sacrosanct
+; For Sanguinaire
+
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 PlayerVampireQuestScript Property playerVampireQuest Auto
 
 Function Feed(Actor drainee)
-    playerVampireQuest.VampireFeed()
+    playerVampireQuest.VampireFeed(CoL.playerRef, drainee)
 EndFunction
