@@ -96,9 +96,8 @@ State Draining
     EndEvent
 
     Event EndDrain(Form draineeForm)
-        Actor drainee = draineeForm as Actor
-
         if CoL.DebugLogging
+            Actor drainee = draineeForm as Actor
             Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
         endif
     EndEvent
