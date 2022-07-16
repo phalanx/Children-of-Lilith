@@ -36,6 +36,7 @@
         <Import>@ModsFolder\ODefeat\scripts\Source</Import>
         <Import>@ModsFolder\powerofthree's Papyrus Extender\Source\scripts</Import>
         <Import>@ModsFolder\NL_MCM - A Modular MCM Framework - SDK\scripts\Source</Import>
+        <Import>@ModsFolder\Better Vampires 8.7 SE\scripts\source</Import>
     </Imports>
     <Folders>
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->

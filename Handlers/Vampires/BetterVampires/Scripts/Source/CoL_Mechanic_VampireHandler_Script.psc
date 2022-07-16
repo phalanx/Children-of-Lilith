@@ -1,7 +1,7 @@
 Scriptname CoL_Mechanic_VampireHandler_Script extends Quest  
-; For Vanilla and Sacrosanct
+; For Better Vampires
 PlayerVampireQuestScript Property playerVampireQuest Auto
 
 Function Feed(Actor drainee)
-    playerVampireQuest.VampireFeed()
+    playerVampireQuest.VampireFeed(drainee)
 EndFunction
