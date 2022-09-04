@@ -90,8 +90,10 @@ Form[] function StripEquipment(Actor actorRef)
                     endwhile
                 endif
                 if !CoL.ddLibs || !itemRef.hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device, if compatibility patch installed
-                    actorRef.UnequipItemEX(itemRef)
-                    stripped[i] = itemRef
+                    if !CoL.toysToy || !itemRef.hasKeyword(CoL.toysToy) ; Make sure it's not a Toys Framework toy, if compatibility patch installed
+                        actorRef.UnequipItemEX(itemRef)
+                        stripped[i] = itemRef
+                    endif
                 endif
 			endif
         endif

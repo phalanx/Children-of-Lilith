@@ -9,6 +9,7 @@ CoL_UI_Widget_Script  Property widgetHandler Auto
 
 ; Optional Integrations
 Keyword Property ddLibs Auto
+Keyword Property toysToy Auto
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
