@@ -9,6 +9,7 @@ CoL_UI_Widget_Script  Property widgetHandler Auto
 
 ; Optional Integrations
 Keyword Property ddLibs Auto
+Keyword Property toysToy Auto
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
@@ -117,6 +118,7 @@ bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden
 ColorForm Property succuHairColor Auto Hidden
+bool Property transformCrime = false Auto Hidden
 
 bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
