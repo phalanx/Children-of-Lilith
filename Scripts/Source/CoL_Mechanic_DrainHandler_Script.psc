@@ -67,12 +67,12 @@ State CheckDraining
 EndState
 
 State Draining
-    float Function CalculateDrainAmount(Actor drainVictim)
+    float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return (victimHealth * CoL.healthDrainMult)
+        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult))
     EndFunction
 
-    Event StartDrain(Form draineeForm, string draineeName)
+    Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
         if CoL.DebugLogging
@@ -89,7 +89,7 @@ State Draining
         endif
         drainee.AddSpell(CoL.DrainHealthSpell)
 
-        float drainAmount = CalculateDrainAmount(drainee)
+        float drainAmount = CalculateDrainAmount(drainee, arousal)
         CoL.playerEnergyCurrent += drainAmount
         CoL.levelHandler.gainXP(false)
         doVampireDrain(drainee)
@@ -104,12 +104,12 @@ State Draining
 EndState
 
 State DrainingToDeath
-    float Function CalculateDrainAmount(Actor drainVictim)
+    float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return (victimHealth * CoL.healthDrainMult) * CoL.drainToDeathMult
+        return ((victimHealth * CoL.healthDrainMult) + (arousal * coL.drainArousalMult)) * CoL.drainToDeathMult
     EndFunction
 
-    Event StartDrain(Form draineeForm, string draineeName)
+    Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
         if CoL.DebugLogging
@@ -121,7 +121,7 @@ State DrainingToDeath
         drainee.StartDeferredKill()
         drainee.Kill(CoL.playerRef)
 
-        float drainAmount = CalculateDrainAmount(drainee)
+        float drainAmount = CalculateDrainAmount(drainee, arousal)
         CoL.playerEnergyCurrent += drainAmount 
         CoL.levelHandler.gainXP(true)
         doVampireDrain(drainee)
@@ -149,9 +149,9 @@ Function doVampireDrain(Actor drainee)
 EndFunction
 
 ; Empty Functions for Empty State
-float Function CalculateDrainAmount(Actor drainVictim)
+float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 EndFunction
-Event StartDrain(Form draineeForm, string draineeName)
+Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
 EndEvent
 Event EndDrain(Form draineeForm)
 EndEvent

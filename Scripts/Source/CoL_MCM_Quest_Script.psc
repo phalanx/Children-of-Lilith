@@ -41,6 +41,8 @@ Form[] equippedItems
     string settingsPageDrainDurationHelp = "How long the Drain health debuff lasts, in game hours"
     string settingsPageHealthDrainMult = "Health Drain Multiplier"
     string settingsPageHealthDrainMultHelp = "The percentage of health drained from victim \n (Victim Health * [this value]) = Health Drained"
+    string settingsPageDrainArousalMult = "Drain Arousal Multiplier"
+    string settingsPageDrainArousalMultHelp = "Value to Multiply arousal by before adding it to the amount of energy gained \n Only has an effect if a supported Arousal Framework is installed"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
     string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
     string settingsPageDrainFeedsVampire = "Drain Feeds Vampires"
@@ -218,6 +220,7 @@ Event OnPageReset(string page)
         AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
+        AddSliderOptionST("DrainArousalMultiSlider", settingsPageDrainArousalMult, CoL.drainArousalMult, "{1}")
         AddSliderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
         AddToggleOptionST("DrainFeedsVampireOption", settingsPageDrainFeedsVampire, CoL.drainFeedsVampire)
         ; Level Settings
@@ -438,6 +441,21 @@ endfunction
         Event OnSliderAcceptST(float value)
             CoL.healthDrainMult = value
             SetSliderOptionValueST(CoL.healthDrainMult,"{1}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHealthDrainMultHelp)
+        EndEvent
+    EndState
+    State DrainArousalMultiSlide
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.drainArousalMult)
+            SetSliderDialogDefaultValue(0.1)
+            SetSliderDialogInterval(0.1)
+            SetSliderDialogRange(0.0, 1.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.healthDrainMult = value
+            SetSliderOptionValueST(CoL.drainArousalMult,"{1}")
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageHealthDrainMultHelp)

@@ -3,9 +3,11 @@ Scriptname CoL_Mechanic_SceneHandler_SL_Script extends activemagiceffect
 import PapyrusUtil
 
 SexLabFramework Property SexLab Auto
+CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 bool SLSOInstalled
+bool SLARInstalled
 Actor[] currentVictims
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -28,9 +30,13 @@ EndFunction
 
 Function CheckForAddons()
     SLSOInstalled = Quest.GetQuest("SLSO")
+    SLARInstalled = SLAR.IsInterfaceActive()
     if CoL.DebugLogging
         if SLSOInstalled
             Debug.Trace("[CoL] SLSO Detected")
+        endif
+        if SLARInstalled
+            Debug.Trace("[CoL] SLAR Detected")
         endif
     endif
 EndFunction
@@ -40,10 +46,16 @@ Function triggerDrainStart(Actor victim)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Trigger drain start for " + actorName)
     endif
+    float arousal = 0.0
+    if SLARInstalled
+        arousal = (SLAR.GetActorArousal(victim) as float)
+    endif
+
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
+        ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Drain start event sent")
@@ -79,7 +91,7 @@ Event CoL_SLPlayerStartHandler(Form actorRef, int threadID)
         endif
     else
         if CoL.DebugLogging
-            Debug.Trace("[CoL] Added orgasm hook to thread")
+            Debug.Trace("[CoL] Registered for SexLab Orgasm Event")
         endif
         RegisterForModEvent("HookOrgasmEnd_CoLSLSceneHook", "CoL_SLOrgasmHandler")
     endif
