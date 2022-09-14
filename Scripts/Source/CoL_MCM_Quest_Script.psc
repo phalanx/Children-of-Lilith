@@ -141,6 +141,8 @@ Form[] equippedItems
     string transformPageEquipmentSaveMsg = "Exit Menu to Select Equipment"
     string transformPageNoStripAddHeader = "Add Items to No Strip List"
     string transformPageNoStripRemoveHeader = "Remove Equipment from Never Strip List"
+    string transformPageTransformCrime = "Transformation is a Crime"
+    string transformPageTransformCrimeHelp = "Should Transformation be a Crime"
 
 int Function GetVersion()
     return 4
@@ -301,6 +303,7 @@ Event OnPageReset(string page)
         else
             AddTextOptionST("transformLoadSuccuPreset", transformPageLoadSuccuPreset, None, OPTION_FLAG_DISABLED)
         endif
+        AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
@@ -978,6 +981,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageEquipmentSaveHelp)
+        EndEvent
+    EndState
+    State transformCrime
+        Event OnSelectST()
+            CoL.transformCrime = !CoL.transformCrime
+            SetToggleOptionValueST(CoL.transformCrime)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageTransformCrimeHelp)
         EndEvent
     EndState
     Event OnSelectST()

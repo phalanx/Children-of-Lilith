@@ -118,6 +118,7 @@ bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden
 ColorForm Property succuHairColor Auto Hidden
+bool Property transformCrime = false Auto Hidden
 
 bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden

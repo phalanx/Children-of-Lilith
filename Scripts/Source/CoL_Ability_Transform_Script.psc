@@ -4,6 +4,7 @@ import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 Idle Property IdleVampireTransformation Auto
+Faction Property playerWerewolfFaction Auto
 
 Form[] originalEquipment
 Form[] succubusEquipment
@@ -35,6 +36,10 @@ Function Transform()
     EquipEquipment(CoL.playerRef, succubusEquipment)
     SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, originalEquipment)
     AddAdditionalPowers()
+    if CoL.transformCrime
+        CoL.playerRef.SetAttackActorOnSight()
+        CoL.playerRef.AddToFaction(playerWerewolfFaction)
+    endif
 EndFunction
 
 Function UnTransform()
@@ -55,6 +60,10 @@ Function UnTransform()
     EquipEquipment(CoL.playerRef, originalEquipment)
     SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, succubusEquipment)
     RemoveAdditionalPowers()
+    if CoL.transformCrime
+        CoL.playerRef.SetAttackActorOnSight(false)
+        CoL.playerRef.RemoveFromFaction(playerWerewolfFaction)
+    endif
 EndFunction
 
 function AddAdditionalPowers()
