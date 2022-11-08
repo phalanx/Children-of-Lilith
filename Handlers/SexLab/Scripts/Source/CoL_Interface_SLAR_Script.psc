@@ -24,6 +24,10 @@ State Installed
         return CoL_Global_SLAR_Script.GetActorArousal(SLAR, akRef)
     EndFunction
 
+    Int Function UpdateActorExposure(Actor akRef, Int val, String debugMsg = "")
+        return CoL_Global_SLAR_Script.UpdateActorExposure(SLAR, akRef, val, debugMsg)
+    EndFunction
+
     bool Function IsInterfaceActive()
         return true
     EndFunction
@@ -35,5 +39,9 @@ bool Function IsInterfaceActive()
 EndFunction
 
 Int Function GetActorArousal(Actor akRef)
+    return -5
+EndFunction
+
+Int Function UpdateActorExposure(Actor akRef, Int val, String debugMsg = "")
     return -5
 EndFunction

@@ -106,7 +106,7 @@ EndState
 State DrainingToDeath
     float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return ((victimHealth * CoL.healthDrainMult) + (arousal * coL.drainArousalMult)) * CoL.drainToDeathMult
+        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult)) * CoL.drainToDeathMult
     EndFunction
 
     Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)

@@ -16,7 +16,8 @@ GlobalVariable Property GameDaysPassed Auto
 
 Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
-Spell[] Property levelOneSpells Auto                ; Spells granted to player as  a level one succubus
+Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
+Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 
 ; Hotkeys
@@ -90,7 +91,7 @@ float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
 
-; Power Propertiesx
+; Power Properties
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostMult = 10.0 Auto Hidden     ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
@@ -102,6 +103,11 @@ Spell Property becomeEthereal Auto                    ; Spell that contains the 
 Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
 Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
+
+; Spell Properties
+int Property temptationCost = 10 Auto Hidden
+int Property temptationBaseIncrease = 1 Auto Hidden
+float Property temptationLevelMult = 1.0 Auto
 
 ; Perk Stuff
 int Property availablePerkPoints = 0 Auto Hidden
@@ -139,7 +145,6 @@ State Initialize
         endif
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
-        GrantSpells()
         isPlayerSuccubus.SetValue(1.0)
         GotoState("Running")
     EndEvent
@@ -190,24 +195,23 @@ State Uninitialize
 
         int uninitEvent = ModEvent.Create("CoL_Uninitialize")
         ModEvent.Send(uninitEvent)
-        RemoveSpells()
         isPlayerSuccubus.SetValue(0.0)
         GoToState("")
     EndEvent
 EndState
 
-Function GrantSpells()
+Function GrantSpells(Spell[] spellList)
     int i = 0
-    while i < levelOneSpells.Length
-        playerRef.AddSpell(levelOneSpells[i])
+    while i < spellList.Length
+        playerRef.AddSpell(spellList[i])
         i += 1
     endwhile
 EndFunction
 
-Function RemoveSpells()
+Function RemoveSpells(Spell[] spellList)
     int i = 0
-    while i < levelOneSpells.Length
-        playerRef.RemoveSpell(levelOneSpells[i])
+    while i < spellList.Length
+        playerRef.RemoveSpell(spellList[i])
         i += 1
     endwhile
 EndFunction

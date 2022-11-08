@@ -1,7 +1,6 @@
 Scriptname CoL_Mechanic_LevelHandler_Script extends Quest  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-
 GlobalVariable Property playerSuccubusLevel Auto
 
 float playerSuccubusXP_var = 0.0
@@ -58,6 +57,13 @@ State Initialize
 EndState
 
 State Running
+    Event OnBeginState()
+        int i = 0
+        while i < playerSuccubusLevel.GetValueInt()
+            LevelUp(true)
+            i += 1
+        endwhile
+    EndEvent
     Function gainXP(bool applyDeathMult)
         float xpMod = 1.0
         if applyDeathMult
@@ -66,11 +72,19 @@ State Running
         playerSuccubusXP += (xpPerDrain * xpMod)
     EndFunction
 
-    Function LevelUp()
-        playerSuccubusLevel.Mod(1)
+    Function LevelUp(bool catchup=false)
+        if !catchup
+            playerSuccubusLevel.Mod(1)
+        endif
 
         if (playerSuccubusLevel.GetValueInt() % levelsForPerk) == 0
             AddPerkPoint()
+        endif
+        if (playerSuccubusLevel.GetValueInt() == 1)
+            CoL.GrantSpells(CoL.levelOneSpells)
+        endif
+        if (playerSuccubusLevel.GetValueInt() == 2)
+            CoL.GrantSpells(CoL.levelTwoSpells)
         endif
 
         calculateXpForNextLevel()
@@ -95,6 +109,11 @@ State Running
     Function calculateXpForNextLevel()
         xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/xpConstant), xpPower)
     EndFunction
+
+    Event OnEndState()
+        CoL.RemoveSpells(CoL.levelOneSpells)
+        CoL.RemoveSpells(CoL.levelTwoSpells)
+    EndEvent
 EndState
 
 State Uninitialize
@@ -109,7 +128,7 @@ EndState
 Function gainXP(bool applyDeathMult)
 EndFunction
 
-Function levelUp()
+Function levelUp(bool catchup=false)
 EndFunction
 
 Function addPerkPoint()

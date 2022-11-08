@@ -87,6 +87,12 @@ Form[] equippedItems
     string settingsPageEnergyCastingConcStyleBothHands = "Both Hands" 
     string settingsPageEnergyCastingConcStyleRightOnly = "Right Hand Only" 
     string settingsPageEnergyCastingConcStyleNone = "Cheat: Neither" 
+    string settingsPageTemptationCost = "Temptation Cost"
+    string settingsPageTemptationCostHelp = "Energy Cost of Succubus Temptation"
+    string settingsPageTemptationBaseIncrease = "Temptation Base Arousal Increase"
+    string settingsPageTemptationBaseIncreaseHelp = "Base Arousal Increase of Temptation"
+    string settingsPageTemptationLevelMult = "Temptation Level Multiplier"
+    string settingsPageTemptationLevelMultHelp = "Multiplier applied to succubus level before being added to Temptation Base arousal increase"
 ; Page 3 - Hotkeys
     string hotkeysPageName = "Hotkeys"
     string hotkeysPageToggleDrainHotkey = "Toggle Drain Key"
@@ -147,20 +153,22 @@ Form[] equippedItems
     string transformPageTransformCrimeHelp = "Should Transformation be a Crime"
 
 int Function GetVersion()
-    return 4
+    return 5
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
     Debug.Trace("[CoL] New Version Detected " + newVersion)
-    if newVersion >= 2
-        CoL.levelHandler.GoToState("Initialize")
-    endif
-    if newVersion >= 3
-        CoL.Maintenance()
-    endif
-    if newVersion >= 4
-        if CoL.isPlayerSuccubus.GetValue() as Int > 0 && !CoL.playerRef.HasSpell(CoL.transformSpell)
-            CoL.playerRef.AddSpell(CoL.transformSpell)
+    if isPlayerSuccubus.GetValueInt() > 0
+        if newVersion >= 2
+            CoL.levelHandler.GoToState("Initialize")
+        endif
+        if newVersion >= 3
+            CoL.Maintenance()
+        endif
+        if newVersion >= 4
+            if !CoL.playerRef.HasSpell(CoL.transformSpell)
+                CoL.playerRef.AddSpell(CoL.transformSpell)
+            endif
         endif
     endif
     OnConfigInit()
@@ -247,6 +255,10 @@ Event OnPageReset(string page)
         AddEmptyOption()
         AddSliderOptionST("EnergyCastingMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
         AddMenuOptionST("EnergyCastingConcStyleMenu", settingsPageEnergyCastingConcStyle, settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
+        AddEmptyOption()
+        AddSliderOptionST("TemptationCostSlider", settingsPageTemptationCost, CoL.temptationCost)
+        AddSliderOptionST("TemptationBaseIncreaseSlider", settingsPageTemptationBaseIncrease, CoL.temptationBaseIncrease)
+        AddSliderOptionST("TemptationLevelMultSlider", settingsPageTemptationLevelMult, CoL.temptationLevelMult)
 
 ; Page 3 - Hotkeys
     elseif page == hotkeysPageName
@@ -700,7 +712,51 @@ endfunction
             SetInfoText(settingsPageEnergyCastingConcStyleHelp)
         EndEvent
     EndState
-
+    State TemptationCostSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.temptationCost)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.temptationCost = value as int
+            SetSliderOptionValueST(CoL.temptationCost, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTemptationCostHelp)
+        EndEvent
+    EndState
+    State TemptationBaseIncreaseSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.temptationBaseIncrease)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.temptationBaseIncrease = value as int
+            SetSliderOptionValueST(CoL.temptationBaseIncrease, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTemptationBaseIncreaseHelp)
+        EndEvent
+    EndState
+    State TemptationLevelMultSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.temptationLevelMult)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.temptationLevelMult = value as int
+            SetSliderOptionValueST(CoL.temptationLevelMult, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTemptationLevelMultHelp)
+        EndEvent
+    EndState
 
 ; Page 3 State Handlers
     State DrainKeyMapOption
