@@ -77,6 +77,7 @@ State Draining
 
         if CoL.DebugLogging
             Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
+            Debug.Trace("[CoL] Recieved Victim Arousal: " + arousal)
         endif
 
         if drainee.HasSpell(CoL.DrainHealthSpell)
@@ -118,8 +119,6 @@ State DrainingToDeath
         endif
 
         drainToDeathVFX.Play(drainee, 1)
-        drainee.StartDeferredKill()
-        drainee.Kill(CoL.playerRef)
 
         float drainAmount = CalculateDrainAmount(drainee, arousal)
         CoL.playerEnergyCurrent += drainAmount 
@@ -135,7 +134,7 @@ State DrainingToDeath
             Debug.Trace("[CoL] Ending Deferred Kill")
         endif
 
-        drainee.EndDeferredKill()
+        drainee.Kill(CoL.playerRef)
     EndEvent
 
     Event OnEndState()

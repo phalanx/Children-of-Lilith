@@ -91,7 +91,7 @@ State Running
         if CoL.DebugLogging
             Debug.Trace("[CoL] XP For Next Level: " + xpForNextLevel)
         endif
-        if playerSuccubusXP > xpForNextLevel
+        if playerSuccubusXP >= xpForNextLevel
             LevelUp()
         else
             Debug.Notification("Succubus Level Increased")
