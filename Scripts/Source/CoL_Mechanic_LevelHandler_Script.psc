@@ -52,18 +52,16 @@ State Initialize
         if CoL.DebugLogging
             Debug.Trace("[CoL] Initializing Level Handler")
         endif
-        GoToState("Running")
-    EndEvent
-EndState
-
-State Running
-    Event OnBeginState()
         int i = 0
         while i < playerSuccubusLevel.GetValueInt()
             LevelUp(true)
             i += 1
         endwhile
+        GoToState("Running")
     EndEvent
+EndState
+
+State Running
     Function gainXP(bool applyDeathMult)
         float xpMod = 1.0
         if applyDeathMult
@@ -72,32 +70,6 @@ State Running
         playerSuccubusXP += (xpPerDrain * xpMod)
     EndFunction
 
-    Function LevelUp(bool catchup=false)
-        if !catchup
-            playerSuccubusLevel.Mod(1)
-        endif
-
-        if (playerSuccubusLevel.GetValueInt() % levelsForPerk) == 0
-            AddPerkPoint()
-        endif
-        if (playerSuccubusLevel.GetValueInt() == 1)
-            CoL.GrantSpells(CoL.levelOneSpells)
-        endif
-        if (playerSuccubusLevel.GetValueInt() == 2)
-            CoL.GrantSpells(CoL.levelTwoSpells)
-        endif
-
-        calculateXpForNextLevel()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] XP For Next Level: " + xpForNextLevel)
-        endif
-        if playerSuccubusXP >= xpForNextLevel
-            LevelUp()
-        else
-            Debug.Notification("Succubus Level Increased")
-            Debug.Notification("New Level: " + playerSuccubusLevel.GetValueInt())
-        endif
-    EndFunction
 
     Function addPerkPoint()
         if CoL.DebugLogging
@@ -109,11 +81,6 @@ State Running
     Function calculateXpForNextLevel()
         xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/xpConstant), xpPower)
     EndFunction
-
-    Event OnEndState()
-        CoL.RemoveSpells(CoL.levelOneSpells)
-        CoL.RemoveSpells(CoL.levelTwoSpells)
-    EndEvent
 EndState
 
 State Uninitialize
@@ -121,6 +88,8 @@ State Uninitialize
         if CoL.DebugLogging
             Debug.Trace("[CoL] Uninitializing Level Handler")
         endif
+        CoL.RemoveSpells(CoL.levelOneSpells)
+        CoL.RemoveSpells(CoL.levelTwoSpells)
         GoToState("")
     EndEvent
 EndState
@@ -128,7 +97,31 @@ EndState
 Function gainXP(bool applyDeathMult)
 EndFunction
 
-Function levelUp(bool catchup=false)
+Function LevelUp(bool catchup=false)
+    if !catchup
+        playerSuccubusLevel.Mod(1)
+    endif
+
+    if (playerSuccubusLevel.GetValueInt() % levelsForPerk) == 0
+        AddPerkPoint()
+    endif
+    if (playerSuccubusLevel.GetValueInt() == 1)
+        CoL.GrantSpells(CoL.levelOneSpells)
+    endif
+    if (playerSuccubusLevel.GetValueInt() == 2)
+        CoL.GrantSpells(CoL.levelTwoSpells)
+    endif
+
+    calculateXpForNextLevel()
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] XP For Next Level: " + xpForNextLevel)
+    endif
+    if playerSuccubusXP >= xpForNextLevel
+        LevelUp()
+    else
+        Debug.Notification("Succubus Level Increased")
+        Debug.Notification("New Level: " + playerSuccubusLevel.GetValueInt())
+    endif
 EndFunction
 
 Function addPerkPoint()

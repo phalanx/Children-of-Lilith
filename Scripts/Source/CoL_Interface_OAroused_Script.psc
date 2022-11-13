@@ -39,9 +39,9 @@ bool Function IsInterfaceActive()
 EndFunction
 
 float Function GetArousal(Actor akRef)
-    return -5
+    return 0
 EndFunction
 
 float Function ModifyArousal(Actor akRef, Int val)
-    return -5
+    return 0
 EndFunction

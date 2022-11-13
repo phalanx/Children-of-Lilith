@@ -6,6 +6,9 @@ import PapyrusUtil
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
+Quest Property oStim_Interfaces Auto
+Quest Property SexLab_Interfaces Auto
+
 string[] settingsPageEnergyCastingConcStyleOptions
 bool meterBarChanged = false
 Form[] equippedItems
@@ -175,13 +178,14 @@ Event OnVersionUpdate(int newVersion)
 EndEvent
 
 Event OnConfigInit()
-    Pages = new string[6]
+    Pages = new string[7]
     Pages[0] = statusPageName
     Pages[1] = settingsPageName
     Pages[2] = hotkeysPageName
     Pages[3] = widgetsPageName
     Pages[4] = perkPageName
     Pages[5] = transformPageName
+    Pages[6] = "Compatibility Checks"
     
     settingsPageEnergyCastingConcStyleOptions = new string[4]
     settingsPageEnergyCastingConcStyleOptions[0] = settingsPageEnergyCastingConcStyleLeftOnly 
@@ -342,6 +346,17 @@ Event OnPageReset(string page)
 			AddTextOptionST("transformRemoveStrippable+" + i, itemName, None)
 			i += 1
 		endwhile
+; Page 7 - Compatibilities
+    elseif page == "Compatibility Checks"
+        SetCursorFillMode(TOP_TO_BOTTOM)
+        AddHeaderOption("OStim")
+        AddToggleOptionST("OStim", "OStim", (oStim_Interfaces as CoL_Interface_Ostim_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("OAroused", "OAroused", (oStim_Interfaces as CoL_Interface_OAroused_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddHeaderOption("SexLab")
+        AddToggleOptionST("SexLab", "SexLab", (SexLab_Interfaces as CoL_Interface_SexLab_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("SLSO", "SexLab Separate Orgasms", Quest.GetQuest("SLSO"), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("SLAR", "SexLab Aroused", (SexLab_Interfaces as CoL_Interface_SLAR_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+
     endif
 EndEvent
 
