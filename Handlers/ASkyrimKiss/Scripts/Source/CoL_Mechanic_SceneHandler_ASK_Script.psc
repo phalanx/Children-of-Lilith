@@ -38,6 +38,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     if drainHandle
         ModEvent.pushForm(drainHandle, draineeRef)
         ModEvent.PushString(drainHandle, draineeRef.GetLeveledActorBase().GetName())
+        ModEvent.PushFloat(drainHandle, 0.0)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Drain start event sent")

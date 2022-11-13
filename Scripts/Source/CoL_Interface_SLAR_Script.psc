@@ -39,9 +39,9 @@ bool Function IsInterfaceActive()
 EndFunction
 
 Int Function GetActorArousal(Actor akRef)
-    return -5
+    return 0
 EndFunction
 
 Int Function UpdateActorExposure(Actor akRef, Int val, String debugMsg = "")
-    return -5
+    return 0
 EndFunction

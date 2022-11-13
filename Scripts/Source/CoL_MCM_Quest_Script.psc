@@ -110,6 +110,7 @@ Form[] equippedItems
     string widgetsPageEnergyMeterXScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
     string widgetsPageEnergyMeterYScale = "Energy Meter Y Scale"
     string widgetsPageEnergyMeterYScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
+    string widgetsPageEnergyMeterAlpha = "Energy Meter Transparency"
 ; Page 5 - Perks
     string perkPageName = "Perks"
     string perkPagePointsHeader = "Perk Points"
@@ -276,6 +277,7 @@ Event OnPageReset(string page)
         AddSliderOptionST("energyMeterYPosSlider", widgetsPageEnergyMeterYPos, CoL.widgetHandler.energyMeterYPos)
         AddSliderOptionST("energyMeterXScaleSlider", widgetsPageEnergyMeterXScale, CoL.widgetHandler.energyMeterXScale)
         AddSliderOptionST("energyMeterYScaleSlider", widgetsPageEnergyMeterYScale, CoL.widgetHandler.energyMeterYScale)
+        AddSliderOptionST("energyMeterAlphaSlider", widgetsPageEnergyMeterAlpha, CoL.widgetHandler.energyMeterAlpha)
 ; Page 5 - Perks
     elseif page == perkPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -356,6 +358,8 @@ Event OnPageReset(string page)
         AddToggleOptionST("SexLab", "SexLab", (SexLab_Interfaces as CoL_Interface_SexLab_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
         AddToggleOptionST("SLSO", "SexLab Separate Orgasms", Quest.GetQuest("SLSO"), OPTION_FLAG_DISABLED)
         AddToggleOptionST("SLAR", "SexLab Aroused", (SexLab_Interfaces as CoL_Interface_SLAR_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddHeaderOption("Toys & Love")
+        AddToggleOptionST("TL", "Toys & Love", Game.IsPluginInstalled("Toys.esm"), OPTION_FLAG_DISABLED)
 
     endif
 EndEvent
@@ -863,7 +867,7 @@ endfunction
             SetInfoText(widgetsPageEnergyMeterXScaleHelp)
         EndEvent
     EndState
-    State energyMeterYScaleSlider
+    State energyMeterYScaleSlider 
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.widgetHandler.energyMeterYScale)
             SetSliderDialogDefaultValue(70)
@@ -879,6 +883,23 @@ endfunction
             SetInfoText(widgetsPageEnergyMeterYScaleHelp)
         EndEvent
     EndState
+    State energyMeterAlphaSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.energyMeterAlpha)
+            SetSliderDialogDefaultValue(100)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.energyMeterAlpha = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.energyMeterAlpha)
+            meterBarChanged = true
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterYScaleHelp)
+        EndEvent
+    EndState
+
 ; Page 5 State Handlers
     State perksAvailableOption
         Event OnSelectST()

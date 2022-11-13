@@ -4,6 +4,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 iWant_Widgets Property iWidgets Auto
 
 int energyMeter
+int Property energyMeterAlpha = 100 Auto
 int Property energyMeterXPos = 640 Auto Hidden
 int Property energyMeterYPos = 700 Auto Hidden
 int Property energyMeterXScale = 70 Auto Hidden
@@ -58,6 +59,7 @@ EndState
 State MoveEnergyMeter
     Event OnBeginState()
         iWidgets.setPos(energyMeter, energyMeterXPos, energyMeterYPos)
+        iWidgets.setTransparency(energyMeter, energyMeterAlpha)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
     EndEvent
 EndState

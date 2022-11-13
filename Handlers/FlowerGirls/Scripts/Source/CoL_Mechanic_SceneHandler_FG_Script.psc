@@ -123,6 +123,7 @@ Function triggerDrainStart(Actor victim)
     if drainHandle
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
+        ModEvent.PushFloat(drainHandle, 0.0)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Drain start event sent")
