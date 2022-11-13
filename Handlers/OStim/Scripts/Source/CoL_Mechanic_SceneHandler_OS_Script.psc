@@ -20,6 +20,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     currentVictims = new Actor[1]
     oDefeat = Quest.GetQuest("ODefeatMainQuest")
     oUndress = oStim.GetUndressScript()
+    CheckForAddons()
     GoToState("Waiting")
 EndEvent
 
