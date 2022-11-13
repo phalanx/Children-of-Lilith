@@ -64,9 +64,15 @@ State CheckDraining
             GoToState("")
         endif
     EndEvent
+    Event OnEndState()
+        CoL.widgetHandler.UpdateColor()
+    EndEvent
 EndState
 
 State Draining
+    Event OnBeginState()
+        CoL.widgetHandler.UpdateColor()
+    EndEvent
     float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
         return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult))
@@ -105,6 +111,9 @@ State Draining
 EndState
 
 State DrainingToDeath
+    Event OnBeginState()
+        CoL.widgetHandler.UpdateColor()
+    EndEvent
     float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
         return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult)) * CoL.drainToDeathMult
@@ -115,7 +124,6 @@ State DrainingToDeath
 
         if CoL.DebugLogging
             Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
-            Debug.Trace("[CoL] Starting Deferred Kill")
         endif
 
         drainToDeathVFX.Play(drainee, 1)
@@ -131,7 +139,7 @@ State DrainingToDeath
 
         if CoL.DebugLogging
             Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
-            Debug.Trace("[CoL] Ending Deferred Kill")
+            Debug.Trace("[CoL] Killing")
         endif
 
         drainee.Kill(CoL.playerRef)

@@ -10,6 +10,42 @@ int Property energyMeterYPos = 700 Auto Hidden
 int Property energyMeterXScale = 70 Auto Hidden
 int Property energyMeterYScale = 70 Auto Hidden
 
+int[] Function GetColor()
+    int[] disabledColor = new int[6]
+        disabledColor[0] = 255
+        disabledColor[1] = 255
+        disabledColor[2] = 255
+        disabledColor[3] = 255
+        disabledColor[4] = 255
+        disabledColor[5] = 255
+    int[] drainColor = new int[6]
+        drainColor[0] = 255
+        drainColor[1] = 207
+        drainColor[2] = 242
+        drainColor[3] = 255
+        drainColor[4] = 157
+        drainColor[5] = 227
+    int[] deathColor=  new int[6]
+        deathColor[0] = 255
+        deathColor[1] = 102
+        deathColor[2] = 102
+        deathColor[3] = 255
+        deathColor[4] = 51
+        deathColor[5] = 51
+    if CoL.drainHandler.GetState() == "Draining"
+        return drainColor
+    elseif CoL.drainHandler.GetState() == "DrainingToDeath"
+        return deathColor
+    else
+        return disabledColor
+    endif
+endFunction
+
+Function UpdateColor()
+    int[] color = GetColor()
+    iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
+EndFunction
+
 State Initialize
     Event OnBeginState()
         if CoL.DebugLogging
@@ -18,7 +54,8 @@ State Initialize
         energyMeter = iWidgets.loadMeter(energyMeterXPos, energyMeterYPos, True)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
         iWidgets.setMeterFillDirection(energyMeter, "both")
-        iWidgets.setMeterRGB(energyMeter, 255, 207, 242, 255, 157, 227)
+        int[] color = GetColor()
+        iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
         if energyMeter == -1
             Debug.Trace("[CoL] Failed to load energy meter")
             GoToState("")
