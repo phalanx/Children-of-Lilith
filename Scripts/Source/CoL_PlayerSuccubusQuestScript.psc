@@ -7,9 +7,10 @@ CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
-; Optional Integrations
+; Keyword Definitions
 Keyword Property ddLibs Auto
 Keyword Property toysToy Auto
+Keyword Property BBBNoStrip Auto
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
@@ -121,6 +122,7 @@ bool Property safeTransformation = false Auto Hidden ; Perk that turns you ether
 ; Transform Stuff
 Spell Property transformSpell Auto
 bool Property isTransformed Auto Hidden
+bool Property transformSwapsEquipment = true Auto
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden
@@ -143,6 +145,12 @@ State Initialize
         if DebugLogging
             Debug.Trace("[CoL] Initializing")
         endif
+        ddLibs = Keyword.GetKeyword("zad_Lockable")
+        toysToy = Keyword.GetKeyword("ToysToy")
+        if Game.IsPluginInstalled("3BBB.esp")
+            BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
+        endif
+        Debug.Trace(BBBNoStrip)
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
         isPlayerSuccubus.SetValue(1.0)
@@ -247,6 +255,17 @@ EndFunction
 Function EndScene()
     GoToState("")
 EndFunction
+
+bool Function IsStrippable(Form itemRef)
+    if !ddLibs || !itemRef.hasKeyword(ddLibs) ; Make sure it's not a devious device
+        if !toysToy || !itemRef.hasKeyword(toysToy) ; Make sure it's not a Toys Framework toy
+            if !BBBNoStrip || !itemRef.hasKeyword(BBBNoStrip) ; Make sure it doesn't have 3BBB's NoStrip Keyword
+                return True
+            endif
+        endif
+    endif
+    return false
+endFunction
 
 Event OnKeyDown(int keyCode)
 EndEvent

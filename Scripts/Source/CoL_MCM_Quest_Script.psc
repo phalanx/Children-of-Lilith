@@ -155,6 +155,8 @@ Form[] equippedItems
     string transformPageNoStripRemoveHeader = "Remove Equipment from Never Strip List"
     string transformPageTransformCrime = "Transformation is a Crime"
     string transformPageTransformCrimeHelp = "Should Transformation be a Crime"
+    string transformPageEquipmentSwap = "Transform Swaps Equipment"
+    string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
 
 int Function GetVersion()
     return 5
@@ -325,6 +327,7 @@ Event OnPageReset(string page)
             AddTextOptionST("transformLoadSuccuPreset", transformPageLoadSuccuPreset, None, OPTION_FLAG_DISABLED)
         endif
         AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
+        AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
@@ -1102,6 +1105,15 @@ endfunction
             SetInfoText(transformPageTransformCrimeHelp)
         EndEvent
     EndState
+    State transformEquipment
+        Event OnSelectST()
+            CoL.transformSwapsEquipment = !CoL.transformSwapsEquipment
+            SetToggleOptionValueST(CoL.transformSwapsEquipment)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageEquipmentSwap)
+        EndEvent
+    EndState
     Event OnSelectST()
         string[] options = getOptions()
         string option = options[0]
@@ -1146,12 +1158,12 @@ Form[] function getEquippedItems(Actor actorRef)
 	equippedItems = new Form[34]
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30))
-		if itemRef 
-			equippedItems[i] = itemRef
+		if itemRef
+            if CoL.IsStrippable(itemRef)
+                equippedItems[i] = itemRef
+            endif
 		endif
 		i -= 1
 	endwhile
-	; return ClearNone(equippedItems)
-	; equippedItems = ClearNone(equippedItems)
 	return RemoveDupeForm(ClearNone(equippedItems))
 EndFunction
