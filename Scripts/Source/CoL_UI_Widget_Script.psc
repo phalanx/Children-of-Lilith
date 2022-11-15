@@ -4,11 +4,13 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 iWant_Widgets Property iWidgets Auto
 
 int energyMeter
-int Property energyMeterAlpha = 100 Auto
+int Property energyMeterAlpha = 100 Auto Hidden
 int Property energyMeterXPos = 640 Auto Hidden
 int Property energyMeterYPos = 700 Auto Hidden
 int Property energyMeterXScale = 70 Auto Hidden
 int Property energyMeterYScale = 70 Auto Hidden
+bool Property autoFade = false Auto Hidden
+int Property autoFadeTime = 5 Auto Hidden
 
 int[] Function GetColor()
     int[] disabledColor = new int[6]
@@ -88,7 +90,13 @@ EndState
 
 State UpdateMeter
     Event OnBeginState()
+        if autoFade
+            ShowMeter()
+        endif
         iWidgets.setMeterPercent(energyMeter, ((CoL.playerEnergyCurrent / CoL.playerEnergyMax) * 100) as int)
+        if autoFade
+            AutoHideMeter()
+        endif
         GoToState("Running")
     EndEvent
 EndState
@@ -98,8 +106,22 @@ State MoveEnergyMeter
         iWidgets.setPos(energyMeter, energyMeterXPos, energyMeterYPos)
         iWidgets.setTransparency(energyMeter, energyMeterAlpha)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
+        GoToState("UpdateMeter")
     EndEvent
 EndState
+
+Function AutoHideMeter()
+    UnRegisterForUpdate()
+    RegisterForSingleUpdate(autoFadeTime)
+EndFunction
+
+Function OnUpdate()
+    iWidgets.setVisible(energyMeter, 0)
+EndFunction
+
+Function ShowMeter()
+    iWidgets.setVisible(energyMeter, 1)
+EndFunction
 
 ; Empty Functions for Empty State
 Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)

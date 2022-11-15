@@ -111,6 +111,10 @@ Form[] equippedItems
     string widgetsPageEnergyMeterYScale = "Energy Meter Y Scale"
     string widgetsPageEnergyMeterYScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
     string widgetsPageEnergyMeterAlpha = "Energy Meter Transparency"
+    string widgetsPageEnergyMeterAutoHide = "Energy Meter AutoHides"
+    string widgetsPageEnergyMeterAutoHideHelp = "Energy Meter will disappear after some time"
+    string widgetsPageEnergyMeterAutoHideTime = "Energy Meter AutoHide Timer"
+    string widgetsPageEnergyMeterAutoHideTimeHelp = "Time until the Energy Meter disappears"
 ; Page 5 - Perks
     string perkPageName = "Perks"
     string perkPagePointsHeader = "Perk Points"
@@ -280,6 +284,8 @@ Event OnPageReset(string page)
         AddSliderOptionST("energyMeterXScaleSlider", widgetsPageEnergyMeterXScale, CoL.widgetHandler.energyMeterXScale)
         AddSliderOptionST("energyMeterYScaleSlider", widgetsPageEnergyMeterYScale, CoL.widgetHandler.energyMeterYScale)
         AddSliderOptionST("energyMeterAlphaSlider", widgetsPageEnergyMeterAlpha, CoL.widgetHandler.energyMeterAlpha)
+        AddToggleOptionST("energyMeterAutoHideToggle", widgetsPageEnergyMeterAutoHide, CoL.widgetHandler.autoFade)
+        AddSliderOptionST("energyMeterAutoHideTimerSlider", widgetsPageEnergyMeterAutoHideTime, CoL.widgetHandler.autoFadeTime)
 ; Page 5 - Perks
     elseif page == perkPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -896,6 +902,32 @@ endfunction
         Event OnSliderAcceptST(float value)
             CoL.widgetHandler.energyMeterAlpha = value as int
             SetSliderOptionValueST(CoL.widgetHandler.energyMeterAlpha)
+            meterBarChanged = true
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterYScaleHelp)
+        EndEvent
+    EndState
+    State energyMeterAutoHideToggle
+        Event OnSelectST()
+            CoL.widgetHandler.autoFade = !CoL.widgetHandler.autoFade
+            SetToggleOptionValueST(CoL.widgetHandler.autoFade)
+            meterBarChanged = true
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterAutoHideHelp)
+        EndEvent
+    EndState
+   State energyMeterAutoHideTimerSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.autoFadeTime)
+            SetSliderDialogDefaultValue(10)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 30)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.autoFadeTime = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.autoFadeTime)
             meterBarChanged = true
         EndEvent
         Event OnHighlightST()
