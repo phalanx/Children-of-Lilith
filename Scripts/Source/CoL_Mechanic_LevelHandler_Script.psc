@@ -90,6 +90,8 @@ State Uninitialize
         endif
         CoL.RemoveSpells(CoL.levelOneSpells)
         CoL.RemoveSpells(CoL.levelTwoSpells)
+        CoL.RemoveSpells(CoL.levelFiveSpells)
+        CoL.RemoveSpells(CoL.levelTenSpells)
         GoToState("")
     EndEvent
 EndState
@@ -110,6 +112,12 @@ Function LevelUp(bool catchup=false)
     endif
     if (playerSuccubusLevel.GetValueInt() == 2)
         CoL.GrantSpells(CoL.levelTwoSpells)
+    endif
+    if (playerSuccubusLevel.GetValueInt() == 5)
+        CoL.GrantSpells(CoL.levelFiveSpells)
+    endif
+    if (playerSuccubusLevel.GetValueInt() == 10)
+        CoL.GrantSpells(CoL.levelTenSpells)
     endif
 
     calculateXpForNextLevel()

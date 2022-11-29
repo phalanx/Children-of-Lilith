@@ -10,7 +10,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     if OAroused.IsInterfaceActive()
         int ArousalIncrease = (CoL.temptationBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * CoL.temptationLevelMult) as int)
         if CoL.DebugLogging
-            Debug.Trace("[CoL] Increasing target OAroused Arousal by " + ArousalIncrease)
+            Debug.Trace("[CoL] Increasing player OAroused Arousal by " + ArousalIncrease)
         endif
         OAroused.ModifyArousal(akTarget, ArousalIncrease)
     endif

@@ -163,7 +163,7 @@ Form[] equippedItems
     string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
 
 int Function GetVersion()
-    return 5
+    return 6
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -179,6 +179,11 @@ Event OnVersionUpdate(int newVersion)
             if !CoL.playerRef.HasSpell(CoL.transformSpell)
                 CoL.playerRef.AddSpell(CoL.transformSpell)
             endif
+        endif
+        if newVersion >= 6
+            CoL.levelHandler.GoToState("Uninitialize")
+            Utility.Wait(1)
+            CoL.levelHandler.GoToState("Initialize")
         endif
     endif
     OnConfigInit()

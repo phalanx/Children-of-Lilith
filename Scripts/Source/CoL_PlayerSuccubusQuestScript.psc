@@ -19,6 +19,8 @@ Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
+Spell[] Property levelFiveSpells Auto                ; Spells granted to player as a level five succubus
+Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 
 ; Hotkeys
@@ -106,6 +108,10 @@ Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
 
 ; Spell Properties
+int Property excitementCost = 10 Auto Hidden
+int Property excitementBaseIncrease = 1 Auto Hidden
+float Property excitementLevelMult = 1.0 Auto
+
 int Property temptationCost = 10 Auto Hidden
 int Property temptationBaseIncrease = 1 Auto Hidden
 float Property temptationLevelMult = 1.0 Auto
