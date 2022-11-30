@@ -30,6 +30,8 @@ Form[] equippedItems
     string statusPageHeaderTwo = "Debug and Maintenance"
     string statusPageRefillEnergy = "Refill Energy"
     string statusPageRefillEnergyHelp = "Cheat: Refills Energy"
+    string statusPageLevelUp = "Level Up"
+    string statusPageLevelUpHelp = "Cheat: Add Succubus Level"
     string statusPageDebugLogging = "Toggle Debug Logging"
     string statusPageDebugLoggingHelp = "Toggles Debug Logging. \n Warning: this can produce a lot of log entries. Only enable for troubleshooting"
 
@@ -96,6 +98,18 @@ Form[] equippedItems
     string settingsPageTemptationBaseIncreaseHelp = "Base Arousal Increase of Temptation"
     string settingsPageTemptationLevelMult = "Temptation Level Multiplier"
     string settingsPageTemptationLevelMultHelp = "Multiplier applied to succubus level before being added to Temptation Base arousal increase"
+    string settingsPageExcitementCost = "Excitement Cost"
+    string settingsPageExcitementCostHelp = "Energy Cost of Succubus Excitement"
+    string settingsPageExcitementBaseIncrease = "Excitement Base Arousal Increase"
+    string settingsPageExcitementBaseIncreaseHelp = "Base Arousal Increase of Excitement"
+    string settingsPageExcitementLevelMult = "Excitement Level Multiplier"
+    string settingsPageExcitementLevelMultHelp = "Multiplier applied to succubus level before being added to Excitement Base arousal increase"
+    string settingsPageSuppressionCost = "Suppression Cost"
+    string settingsPageSuppressionCostHelp = "Energy Cost of Succubus Suppression"
+    string settingsPageSuppressionBaseIncrease = "Suppression Base Arousal Increase"
+    string settingsPageSuppressionBaseIncreaseHelp = "Base Arousal Increase of Suppression"
+    string settingsPageSuppressionLevelMult = "Suppression Level Multiplier"
+    string settingsPageSuppressionLevelMultHelp = "Multiplier applied to succubus level before being added to Suppression Base arousal increase"
 ; Page 3 - Hotkeys
     string hotkeysPageName = "Hotkeys"
     string hotkeysPageToggleDrainHotkey = "Toggle Drain Key"
@@ -136,6 +150,8 @@ Form[] equippedItems
     string perkPageHealingFormHelp = "Succubus Healing Rate Boost is applied while you are transformed."
     string perkpageSafeTransformation = "Safe Transformation"
     string perkpageSafeTransformationHelp = "Become Ethereal While Transforming"
+    string perkpageSlakeThirst = "Slake Thirst"
+    string perkpageSlakeThirstHelp = "Add Succubus Arousal Level to Drain Amount\nIf multiple arousal frameworks detected, uses the average\nMultiplied by Drain Arousal Multiplier"
 ; Page 6 - Transformation
     string transformPageName = "Transformation"
     string transformPagePresetHeader = "Preset"
@@ -229,6 +245,7 @@ Event OnPageReset(string page)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("EndSuccubus", statusPageEndSuccubus, None)
             AddTextOptionST("EnergyRefill", statusPageRefillEnergy, None)
+            AddTextOptionST("LevelUp", statusPageLevelUp, None)
             AddToggleOptionST("DebugLogging", statusPageDebugLogging, CoL.DebugLogging)
         else
             SetCursorPosition(1)
@@ -275,7 +292,14 @@ Event OnPageReset(string page)
         AddSliderOptionST("TemptationCostSlider", settingsPageTemptationCost, CoL.temptationCost)
         AddSliderOptionST("TemptationBaseIncreaseSlider", settingsPageTemptationBaseIncrease, CoL.temptationBaseIncrease)
         AddSliderOptionST("TemptationLevelMultSlider", settingsPageTemptationLevelMult, CoL.temptationLevelMult)
-
+        AddEmptyOption()
+        AddSliderOptionST("ExcitementCostSlider", settingsPageExcitementCost, CoL.excitementCost)
+        AddSliderOptionST("ExcitementBaseIncreaseSlider", settingsPageExcitementBaseIncrease, CoL.excitementBaseIncrease)
+        AddSliderOptionST("ExcitementLevelMultSlider", settingsPageExcitementLevelMult, CoL.excitementLevelMult)
+        AddEmptyOption()
+        AddSliderOptionST("SuppressionCostSlider", settingsPageSuppressionCost, CoL.suppressionCost)
+        AddSliderOptionST("SuppressionBaseIncreaseSlider", settingsPageSuppressionBaseIncrease, CoL.suppressionBaseIncrease)
+        AddSliderOptionST("SuppressionLevelMultSlider", settingsPageSuppressionLevelMult, CoL.suppressionLevelMult)
 ; Page 3 - Hotkeys
     elseif page == hotkeysPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -319,6 +343,11 @@ Event OnPageReset(string page)
             AddToggleOptionST("perkSafeTransformation", perkPagesafeTransformation, CoL.safeTransformation)
         else
             AddToggleOptionST("perkSafeTransformation", perkPagesafeTransformation, CoL.safeTransformation, OPTION_FLAG_DISABLED)
+        endif
+        if !CoL.slakeThirst
+            AddToggleOptionST("perkSlakeThirst", perkPageSlakeThirst, CoL.slakeThirst)
+        else
+            AddToggleOptionST("perkSlakeThirst", perkPageSlakeThirst, CoL.slakeThirst, OPTION_FLAG_DISABLED)
         endif
 ; Page 6 - Transform
     elseif page == transformPageName
@@ -428,6 +457,17 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(statusPageRefillEnergyHelp)
+        EndEvent
+
+    EndState
+
+    State LevelUp
+        Event OnSelectST()
+            CoL.levelHandler.LevelUp()
+            SetTextOptionValueST(CoL.levelHandler.playerSuccubusLevel.GetValueInt(), false, "SuccubusCurrentLevel")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageLevelUpHelp)
         EndEvent
 
     EndState
@@ -716,6 +756,7 @@ endfunction
             SetInfoText(settingsPageHealRateBoostMultHelp)
         EndEvent
     EndState
+
     State EnergyCastingMultSlider
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.energyCastingMult)
@@ -745,6 +786,7 @@ endfunction
             SetInfoText(settingsPageEnergyCastingConcStyleHelp)
         EndEvent
     EndState
+
     State TemptationCostSlider
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.temptationCost)
@@ -788,6 +830,98 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageTemptationLevelMultHelp)
+        EndEvent
+    EndState
+
+    State ExcitementCostSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.excitementCost)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.excitementCost = value as int
+            SetSliderOptionValueST(CoL.excitementCost, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageExcitementCostHelp)
+        EndEvent
+    EndState
+    State ExcitementBaseIncreaseSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.excitementBaseIncrease)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.excitementBaseIncrease = value as int
+            SetSliderOptionValueST(CoL.excitementBaseIncrease, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageExcitementBaseIncreaseHelp)
+        EndEvent
+    EndState
+    State ExcitementLevelMultSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.excitementLevelMult)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.excitementLevelMult = value as int
+            SetSliderOptionValueST(CoL.excitementLevelMult, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageExcitementLevelMultHelp)
+        EndEvent
+    EndState
+
+    State SuppressionCostSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.suppressionCost)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.suppressionCost = value as int
+            SetSliderOptionValueST(CoL.suppressionCost, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageSuppressionCostHelp)
+        EndEvent
+    EndState
+    State SuppressionBaseIncreaseSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.suppressionBaseIncrease)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.suppressionBaseIncrease = value as int
+            SetSliderOptionValueST(CoL.suppressionBaseIncrease, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageSuppressionBaseIncreaseHelp)
+        EndEvent
+    EndState
+    State SuppressionLevelMultSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.suppressionLevelMult)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.suppressionLevelMult = value as int
+            SetSliderOptionValueST(CoL.suppressionLevelMult, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageSuppressionLevelMultHelp)
         EndEvent
     EndState
 
@@ -1068,6 +1202,21 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(perkpageSafeTransformationHelp)
+        EndEvent
+    EndState
+    State perkSlakeThirst
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.slakeThirst = !CoL.slakeThirst
+                SetToggleOptionValueST(CoL.slakeThirst)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkpageSlakeThirstHelp)
         EndEvent
     EndState
 ; Page 6 State Handlers

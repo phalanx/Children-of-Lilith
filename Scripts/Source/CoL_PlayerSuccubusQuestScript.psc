@@ -6,11 +6,13 @@ CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
+CoL_Interface_SLAR_Script Property SLAR Auto
+CoL_Interface_OAroused_Script Property OAroused Auto
 
 ; Keyword Definitions
-Keyword Property ddLibs Auto
-Keyword Property toysToy Auto
-Keyword Property BBBNoStrip Auto
+Keyword Property ddLibs Auto Hidden
+Keyword Property toysToy Auto Hidden
+Keyword Property BBBNoStrip Auto Hidden
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
@@ -89,7 +91,7 @@ float Property hungerDamageAmount = 5.0 Auto Hidden
 ; Drain Properties
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
 float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
-float Property drainArousalMult = 0.1 Auto
+float Property drainArousalMult = 0.1 Auto Hidden
 float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
@@ -110,11 +112,15 @@ Perk Property energyCastingPerk Auto             ; The perk that reduces magicka
 ; Spell Properties
 int Property excitementCost = 10 Auto Hidden
 int Property excitementBaseIncrease = 1 Auto Hidden
-float Property excitementLevelMult = 1.0 Auto
+float Property excitementLevelMult = 1.0 Auto Hidden
+
+int Property suppressionCost = 10 Auto Hidden
+int Property suppressionBaseIncrease = 1 Auto Hidden
+float Property suppressionLevelMult = 1.0 Auto Hidden
 
 int Property temptationCost = 10 Auto Hidden
 int Property temptationBaseIncrease = 1 Auto Hidden
-float Property temptationLevelMult = 1.0 Auto
+float Property temptationLevelMult = 1.0 Auto Hidden
 
 ; Perk Stuff
 int Property availablePerkPoints = 0 Auto Hidden
@@ -124,11 +130,12 @@ int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increase
 bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
 bool Property healingForm = false Auto Hidden        ; Perk that adds Heal Rate Boost to transformed form
 bool Property safeTransformation = false Auto Hidden ; Perk that turns you ethereal while transforming
+bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubus arousal to drain amount
 
 ; Transform Stuff
 Spell Property transformSpell Auto
 bool Property isTransformed Auto Hidden
-bool Property transformSwapsEquipment = true Auto
+bool Property transformSwapsEquipment = true Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden

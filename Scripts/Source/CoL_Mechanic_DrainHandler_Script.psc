@@ -75,7 +75,19 @@ State Draining
     EndEvent
     float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult))
+        float succubusArousal = 0.0
+
+        if CoL.slakeThirst
+            if CoL.SLAR.IsInterfaceActive() && CoL.OAroused.IsInterfaceActive()
+                succubusArousal = (CoL.SLAR.GetActorArousal(CoL.playerRef) + CoL.OAroused.GetArousal(CoL.playerRef)) / 2
+            elseif CoL.OAroused.IsInterfaceActive()
+                succubusArousal = CoL.OAroused.GetArousal(CoL.playerRef)
+            elseif CoL.SLAR.IsInterfaceActive()
+                succubusArousal = CoL.SLAR.GetActorArousal(CoL.playerRef)
+            endif
+        endif
+
+        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult))
     EndFunction
 
     Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
@@ -116,7 +128,19 @@ State DrainingToDeath
     EndEvent
     float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult)) * CoL.drainToDeathMult
+         float succubusArousal = 0.0
+
+        if CoL.slakeThirst
+            if CoL.SLAR.IsInterfaceActive() && CoL.OAroused.IsInterfaceActive()
+                succubusArousal = (CoL.SLAR.GetActorArousal(CoL.playerRef) + CoL.OAroused.GetArousal(CoL.playerRef)) / 2
+            elseif CoL.OAroused.IsInterfaceActive()
+                succubusArousal = CoL.OAroused.GetArousal(CoL.playerRef)
+            elseif CoL.SLAR.IsInterfaceActive()
+                succubusArousal = CoL.SLAR.GetActorArousal(CoL.playerRef)
+            endif
+        endif
+
+        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult)) * CoL.drainToDeathMult
     EndFunction
 
     Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
