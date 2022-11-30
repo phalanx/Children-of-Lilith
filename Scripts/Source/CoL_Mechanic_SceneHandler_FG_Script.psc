@@ -1,18 +1,31 @@
 Scriptname CoL_Mechanic_SceneHandler_FG_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-Keyword Property playerHavingSex Auto
+Keyword Property playerHavingSex Auto Hidden
 
 Actor victim1
 Actor victim2
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    GoToState("Waiting")
+    Maintenance()
 EndEvent
 
 Event OnPlayerLoadGame()
-    GoToState("Waiting")
+    Maintenance()
 EndEvent
+
+Function Maintenance()
+    playerHavingSex = Keyword.GetKeyword("dxIsHavingSex")
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] FG Keyword: " + playerHavingSex)
+    endif
+    if playerHavingSex
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Flowergirls Detected")
+        endif
+        GoToState("Waiting")
+    endif
+EndFunction
 
 State Waiting
     Event OnBeginState()

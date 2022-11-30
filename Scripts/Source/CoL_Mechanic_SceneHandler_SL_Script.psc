@@ -141,7 +141,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
         Debug.Trace("[CoL] Player involved animation ended")
     endif
     UnregisterForModEvent("SexLabOrgasmSeparate")
-    ; currentVictims = RemoveDupeActor(currentVictims)
+    currentVictims = RemoveDupeActor(currentVictims)
     Actor[] actors = SexLab.Positions(threadId)
     int i = 0
     while i < actors.Length
