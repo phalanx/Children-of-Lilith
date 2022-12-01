@@ -463,7 +463,7 @@ endfunction
 
     State LevelUp
         Event OnSelectST()
-            CoL.levelHandler.LevelUp()
+            CoL.levelHandler.playerSuccubusXP = CoL.levelHandler.xpForNextLevel
             SetTextOptionValueST(CoL.levelHandler.playerSuccubusLevel.GetValueInt(), false, "SuccubusCurrentLevel")
         EndEvent
         Event OnHighlightST()
