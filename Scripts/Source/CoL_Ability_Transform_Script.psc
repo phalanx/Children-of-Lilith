@@ -26,15 +26,17 @@ Function Transform()
     Utility.Wait(0.1)
     CharGen.LoadPreset(CoL.succuPresetName)
     ; Equipment Transform
-    originalEquipment = StripEquipment(CoL.playerRef)
-    int i = 0
-    while i < CoL.succuEquipmentChest.GetNumItems()
-        succubusEquipment = PushForm(succubusEquipment, CoL.succuEquipmentChest.GetNthForm(i))
-        i += 1
-    endwhile
-    SwapEquipment(CoL.succuEquipmentChest, CoL.playerRef, succubusEquipment)
-    EquipEquipment(CoL.playerRef, succubusEquipment)
-    SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, originalEquipment)
+    if CoL.transformSwapsEquipment
+        originalEquipment = StripEquipment(CoL.playerRef)
+        int i = 0
+        while i < CoL.succuEquipmentChest.GetNumItems()
+            succubusEquipment = PushForm(succubusEquipment, CoL.succuEquipmentChest.GetNthForm(i))
+            i += 1
+        endwhile
+        SwapEquipment(CoL.succuEquipmentChest, CoL.playerRef, succubusEquipment)
+        EquipEquipment(CoL.playerRef, succubusEquipment)
+        SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, originalEquipment)
+    endif
     AddAdditionalPowers()
     if CoL.transformCrime
         CoL.playerRef.SetAttackActorOnSight()
@@ -50,15 +52,17 @@ Function UnTransform()
     Utility.Wait(0.1)
     CharGen.LoadPreset(CoL.mortalPresetName)
     ; Equipment Transform
-    succubusEquipment = StripEquipment(CoL.playerRef)
-    int i = 0
-    while i < CoL.succuEquipmentChest.GetNumItems()
-        originalEquipment = PushForm(originalEquipment, CoL.succuEquipmentChest.GetNthForm(i))
-        i += 1
-    endwhile
-    SwapEquipment(CoL.succuEquipmentChest, CoL.playerRef, originalEquipment)
-    EquipEquipment(CoL.playerRef, originalEquipment)
-    SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, succubusEquipment)
+    if CoL.transformSwapsEquipment
+        succubusEquipment = StripEquipment(CoL.playerRef)
+        int i = 0
+        while i < CoL.succuEquipmentChest.GetNumItems()
+            originalEquipment = PushForm(originalEquipment, CoL.succuEquipmentChest.GetNthForm(i))
+            i += 1
+        endwhile
+        SwapEquipment(CoL.succuEquipmentChest, CoL.playerRef, originalEquipment)
+        EquipEquipment(CoL.playerRef, originalEquipment)
+        SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, succubusEquipment)
+    endif
     RemoveAdditionalPowers()
     if CoL.transformCrime
         CoL.playerRef.SetAttackActorOnSight(false)
@@ -98,11 +102,9 @@ Form[] function StripEquipment(Actor actorRef)
                     	x += 1
                     endwhile
                 endif
-                if !CoL.ddLibs || !itemRef.hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device, if compatibility patch installed
-                    if !CoL.toysToy || !itemRef.hasKeyword(CoL.toysToy) ; Make sure it's not a Toys Framework toy, if compatibility patch installed
-                        actorRef.UnequipItemEX(itemRef)
-                        stripped[i] = itemRef
-                    endif
+                if CoL.IsStrippable(itemRef)
+                    actorRef.UnequipItemEX(itemRef)
+                    stripped[i] = itemRef
                 endif
 			endif
         endif

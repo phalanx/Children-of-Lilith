@@ -4,10 +4,49 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 iWant_Widgets Property iWidgets Auto
 
 int energyMeter
+int Property energyMeterAlpha = 100 Auto Hidden
 int Property energyMeterXPos = 640 Auto Hidden
 int Property energyMeterYPos = 700 Auto Hidden
 int Property energyMeterXScale = 70 Auto Hidden
 int Property energyMeterYScale = 70 Auto Hidden
+bool Property autoFade = false Auto Hidden
+int Property autoFadeTime = 5 Auto Hidden
+
+int[] Function GetColor()
+    int[] disabledColor = new int[6]
+        disabledColor[0] = 255
+        disabledColor[1] = 255
+        disabledColor[2] = 255
+        disabledColor[3] = 255
+        disabledColor[4] = 255
+        disabledColor[5] = 255
+    int[] drainColor = new int[6]
+        drainColor[0] = 255
+        drainColor[1] = 207
+        drainColor[2] = 242
+        drainColor[3] = 255
+        drainColor[4] = 157
+        drainColor[5] = 227
+    int[] deathColor=  new int[6]
+        deathColor[0] = 255
+        deathColor[1] = 102
+        deathColor[2] = 102
+        deathColor[3] = 255
+        deathColor[4] = 51
+        deathColor[5] = 51
+    if CoL.drainHandler.GetState() == "Draining"
+        return drainColor
+    elseif CoL.drainHandler.GetState() == "DrainingToDeath"
+        return deathColor
+    else
+        return disabledColor
+    endif
+endFunction
+
+Function UpdateColor()
+    int[] color = GetColor()
+    iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
+EndFunction
 
 State Initialize
     Event OnBeginState()
@@ -17,7 +56,8 @@ State Initialize
         energyMeter = iWidgets.loadMeter(energyMeterXPos, energyMeterYPos, True)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
         iWidgets.setMeterFillDirection(energyMeter, "both")
-        iWidgets.setMeterRGB(energyMeter, 255, 207, 242, 255, 157, 227)
+        int[] color = GetColor()
+        iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
         if energyMeter == -1
             Debug.Trace("[CoL] Failed to load energy meter")
             GoToState("")
@@ -50,7 +90,13 @@ EndState
 
 State UpdateMeter
     Event OnBeginState()
+        if autoFade
+            ShowMeter()
+        endif
         iWidgets.setMeterPercent(energyMeter, ((CoL.playerEnergyCurrent / CoL.playerEnergyMax) * 100) as int)
+        if autoFade
+            AutoHideMeter()
+        endif
         GoToState("Running")
     EndEvent
 EndState
@@ -58,9 +104,24 @@ EndState
 State MoveEnergyMeter
     Event OnBeginState()
         iWidgets.setPos(energyMeter, energyMeterXPos, energyMeterYPos)
+        iWidgets.setTransparency(energyMeter, energyMeterAlpha)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
+        GoToState("UpdateMeter")
     EndEvent
 EndState
+
+Function AutoHideMeter()
+    UnRegisterForUpdate()
+    RegisterForSingleUpdate(autoFadeTime)
+EndFunction
+
+Function OnUpdate()
+    iWidgets.setVisible(energyMeter, 0)
+EndFunction
+
+Function ShowMeter()
+    iWidgets.setVisible(energyMeter, 1)
+EndFunction
 
 ; Empty Functions for Empty State
 Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)

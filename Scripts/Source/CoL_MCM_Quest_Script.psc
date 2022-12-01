@@ -6,6 +6,9 @@ import PapyrusUtil
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
+Quest Property oStim_Interfaces Auto
+Quest Property SexLab_Interfaces Auto
+
 string[] settingsPageEnergyCastingConcStyleOptions
 bool meterBarChanged = false
 Form[] equippedItems
@@ -27,6 +30,8 @@ Form[] equippedItems
     string statusPageHeaderTwo = "Debug and Maintenance"
     string statusPageRefillEnergy = "Refill Energy"
     string statusPageRefillEnergyHelp = "Cheat: Refills Energy"
+    string statusPageLevelUp = "Level Up"
+    string statusPageLevelUpHelp = "Cheat: Add Succubus Level"
     string statusPageDebugLogging = "Toggle Debug Logging"
     string statusPageDebugLoggingHelp = "Toggles Debug Logging. \n Warning: this can produce a lot of log entries. Only enable for troubleshooting"
 
@@ -41,6 +46,8 @@ Form[] equippedItems
     string settingsPageDrainDurationHelp = "How long the Drain health debuff lasts, in game hours"
     string settingsPageHealthDrainMult = "Health Drain Multiplier"
     string settingsPageHealthDrainMultHelp = "The percentage of health drained from victim \n (Victim Health * [this value]) = Health Drained"
+    string settingsPageDrainArousalMult = "Drain Arousal Multiplier"
+    string settingsPageDrainArousalMultHelp = "Value to Multiply arousal by before adding it to the amount of energy gained \n Only has an effect if a supported Arousal Framework is installed"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
     string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
     string settingsPageDrainFeedsVampire = "Drain Feeds Vampires"
@@ -85,6 +92,24 @@ Form[] equippedItems
     string settingsPageEnergyCastingConcStyleBothHands = "Both Hands" 
     string settingsPageEnergyCastingConcStyleRightOnly = "Right Hand Only" 
     string settingsPageEnergyCastingConcStyleNone = "Cheat: Neither" 
+    string settingsPageTemptationCost = "Temptation Cost"
+    string settingsPageTemptationCostHelp = "Energy Cost of Succubus Temptation"
+    string settingsPageTemptationBaseIncrease = "Temptation Base Arousal Increase"
+    string settingsPageTemptationBaseIncreaseHelp = "Base Arousal Increase of Temptation"
+    string settingsPageTemptationLevelMult = "Temptation Level Multiplier"
+    string settingsPageTemptationLevelMultHelp = "Multiplier applied to succubus level before being added to Temptation Base arousal increase"
+    string settingsPageExcitementCost = "Excitement Cost"
+    string settingsPageExcitementCostHelp = "Energy Cost of Succubus Excitement"
+    string settingsPageExcitementBaseIncrease = "Excitement Base Arousal Increase"
+    string settingsPageExcitementBaseIncreaseHelp = "Base Arousal Increase of Excitement"
+    string settingsPageExcitementLevelMult = "Excitement Level Multiplier"
+    string settingsPageExcitementLevelMultHelp = "Multiplier applied to succubus level before being added to Excitement Base arousal increase"
+    string settingsPageSuppressionCost = "Suppression Cost"
+    string settingsPageSuppressionCostHelp = "Energy Cost of Succubus Suppression"
+    string settingsPageSuppressionBaseIncrease = "Suppression Base Arousal Increase"
+    string settingsPageSuppressionBaseIncreaseHelp = "Base Arousal Increase of Suppression"
+    string settingsPageSuppressionLevelMult = "Suppression Level Multiplier"
+    string settingsPageSuppressionLevelMultHelp = "Multiplier applied to succubus level before being added to Suppression Base arousal increase"
 ; Page 3 - Hotkeys
     string hotkeysPageName = "Hotkeys"
     string hotkeysPageToggleDrainHotkey = "Toggle Drain Key"
@@ -99,6 +124,11 @@ Form[] equippedItems
     string widgetsPageEnergyMeterXScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
     string widgetsPageEnergyMeterYScale = "Energy Meter Y Scale"
     string widgetsPageEnergyMeterYScaleHelp = "Save and reload after changing this or the meter's position will be wrong"
+    string widgetsPageEnergyMeterAlpha = "Energy Meter Transparency"
+    string widgetsPageEnergyMeterAutoHide = "Energy Meter AutoHides"
+    string widgetsPageEnergyMeterAutoHideHelp = "Energy Meter will disappear after some time"
+    string widgetsPageEnergyMeterAutoHideTime = "Energy Meter AutoHide Timer"
+    string widgetsPageEnergyMeterAutoHideTimeHelp = "Time until the Energy Meter disappears"
 ; Page 5 - Perks
     string perkPageName = "Perks"
     string perkPagePointsHeader = "Perk Points"
@@ -120,6 +150,8 @@ Form[] equippedItems
     string perkPageHealingFormHelp = "Succubus Healing Rate Boost is applied while you are transformed."
     string perkpageSafeTransformation = "Safe Transformation"
     string perkpageSafeTransformationHelp = "Become Ethereal While Transforming"
+    string perkpageSlakeThirst = "Slake Thirst"
+    string perkpageSlakeThirstHelp = "Add Succubus Arousal Level to Drain Amount\nIf multiple arousal frameworks detected, uses the average\nMultiplied by Drain Arousal Multiplier"
 ; Page 6 - Transformation
     string transformPageName = "Transformation"
     string transformPagePresetHeader = "Preset"
@@ -143,35 +175,45 @@ Form[] equippedItems
     string transformPageNoStripRemoveHeader = "Remove Equipment from Never Strip List"
     string transformPageTransformCrime = "Transformation is a Crime"
     string transformPageTransformCrimeHelp = "Should Transformation be a Crime"
+    string transformPageEquipmentSwap = "Transform Swaps Equipment"
+    string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
 
 int Function GetVersion()
-    return 4
+    return 6
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
     Debug.Trace("[CoL] New Version Detected " + newVersion)
-    if newVersion >= 2
-        CoL.levelHandler.GoToState("Initialize")
-    endif
-    if newVersion >= 3
-        CoL.Maintenance()
-    endif
-    if newVersion >= 4
-        if CoL.isPlayerSuccubus.GetValue() as Int > 0 && !CoL.playerRef.HasSpell(CoL.transformSpell)
-            CoL.playerRef.AddSpell(CoL.transformSpell)
+    if isPlayerSuccubus.GetValueInt() > 0
+        if newVersion >= 2
+            CoL.levelHandler.GoToState("Initialize")
+        endif
+        if newVersion >= 3
+            CoL.Maintenance()
+        endif
+        if newVersion >= 4
+            if !CoL.playerRef.HasSpell(CoL.transformSpell)
+                CoL.playerRef.AddSpell(CoL.transformSpell)
+            endif
+        endif
+        if newVersion >= 6
+            CoL.levelHandler.GoToState("Uninitialize")
+            Utility.Wait(1)
+            CoL.levelHandler.GoToState("Initialize")
         endif
     endif
     OnConfigInit()
 EndEvent
 
 Event OnConfigInit()
-    Pages = new string[6]
+    Pages = new string[7]
     Pages[0] = statusPageName
     Pages[1] = settingsPageName
     Pages[2] = hotkeysPageName
     Pages[3] = widgetsPageName
     Pages[4] = perkPageName
     Pages[5] = transformPageName
+    Pages[6] = "Compatibility Checks"
     
     settingsPageEnergyCastingConcStyleOptions = new string[4]
     settingsPageEnergyCastingConcStyleOptions[0] = settingsPageEnergyCastingConcStyleLeftOnly 
@@ -203,6 +245,7 @@ Event OnPageReset(string page)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("EndSuccubus", statusPageEndSuccubus, None)
             AddTextOptionST("EnergyRefill", statusPageRefillEnergy, None)
+            AddTextOptionST("LevelUp", statusPageLevelUp, None)
             AddToggleOptionST("DebugLogging", statusPageDebugLogging, CoL.DebugLogging)
         else
             SetCursorPosition(1)
@@ -218,6 +261,7 @@ Event OnPageReset(string page)
         AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
+        AddSliderOptionST("DrainArousalMultiSlider", settingsPageDrainArousalMult, CoL.drainArousalMult, "{1}")
         AddSliderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
         AddToggleOptionST("DrainFeedsVampireOption", settingsPageDrainFeedsVampire, CoL.drainFeedsVampire)
         ; Level Settings
@@ -244,7 +288,18 @@ Event OnPageReset(string page)
         AddEmptyOption()
         AddSliderOptionST("EnergyCastingMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
         AddMenuOptionST("EnergyCastingConcStyleMenu", settingsPageEnergyCastingConcStyle, settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
-
+        AddEmptyOption()
+        AddSliderOptionST("TemptationCostSlider", settingsPageTemptationCost, CoL.temptationCost)
+        AddSliderOptionST("TemptationBaseIncreaseSlider", settingsPageTemptationBaseIncrease, CoL.temptationBaseIncrease)
+        AddSliderOptionST("TemptationLevelMultSlider", settingsPageTemptationLevelMult, CoL.temptationLevelMult)
+        AddEmptyOption()
+        AddSliderOptionST("ExcitementCostSlider", settingsPageExcitementCost, CoL.excitementCost)
+        AddSliderOptionST("ExcitementBaseIncreaseSlider", settingsPageExcitementBaseIncrease, CoL.excitementBaseIncrease)
+        AddSliderOptionST("ExcitementLevelMultSlider", settingsPageExcitementLevelMult, CoL.excitementLevelMult)
+        AddEmptyOption()
+        AddSliderOptionST("SuppressionCostSlider", settingsPageSuppressionCost, CoL.suppressionCost)
+        AddSliderOptionST("SuppressionBaseIncreaseSlider", settingsPageSuppressionBaseIncrease, CoL.suppressionBaseIncrease)
+        AddSliderOptionST("SuppressionLevelMultSlider", settingsPageSuppressionLevelMult, CoL.suppressionLevelMult)
 ; Page 3 - Hotkeys
     elseif page == hotkeysPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -257,6 +312,9 @@ Event OnPageReset(string page)
         AddSliderOptionST("energyMeterYPosSlider", widgetsPageEnergyMeterYPos, CoL.widgetHandler.energyMeterYPos)
         AddSliderOptionST("energyMeterXScaleSlider", widgetsPageEnergyMeterXScale, CoL.widgetHandler.energyMeterXScale)
         AddSliderOptionST("energyMeterYScaleSlider", widgetsPageEnergyMeterYScale, CoL.widgetHandler.energyMeterYScale)
+        AddSliderOptionST("energyMeterAlphaSlider", widgetsPageEnergyMeterAlpha, CoL.widgetHandler.energyMeterAlpha)
+        AddToggleOptionST("energyMeterAutoHideToggle", widgetsPageEnergyMeterAutoHide, CoL.widgetHandler.autoFade)
+        AddSliderOptionST("energyMeterAutoHideTimerSlider", widgetsPageEnergyMeterAutoHideTime, CoL.widgetHandler.autoFadeTime)
 ; Page 5 - Perks
     elseif page == perkPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -286,6 +344,11 @@ Event OnPageReset(string page)
         else
             AddToggleOptionST("perkSafeTransformation", perkPagesafeTransformation, CoL.safeTransformation, OPTION_FLAG_DISABLED)
         endif
+        if !CoL.slakeThirst
+            AddToggleOptionST("perkSlakeThirst", perkPageSlakeThirst, CoL.slakeThirst)
+        else
+            AddToggleOptionST("perkSlakeThirst", perkPageSlakeThirst, CoL.slakeThirst, OPTION_FLAG_DISABLED)
+        endif
 ; Page 6 - Transform
     elseif page == transformPageName
         equippedItems = getEquippedItems(CoL.playerRef)
@@ -304,6 +367,7 @@ Event OnPageReset(string page)
             AddTextOptionST("transformLoadSuccuPreset", transformPageLoadSuccuPreset, None, OPTION_FLAG_DISABLED)
         endif
         AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
+        AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
@@ -327,6 +391,19 @@ Event OnPageReset(string page)
 			AddTextOptionST("transformRemoveStrippable+" + i, itemName, None)
 			i += 1
 		endwhile
+; Page 7 - Compatibilities
+    elseif page == "Compatibility Checks"
+        SetCursorFillMode(TOP_TO_BOTTOM)
+        AddHeaderOption("OStim")
+        AddToggleOptionST("OStim", "OStim", (oStim_Interfaces as CoL_Interface_Ostim_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("OAroused", "OAroused", (oStim_Interfaces as CoL_Interface_OAroused_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddHeaderOption("SexLab")
+        AddToggleOptionST("SexLab", "SexLab", (SexLab_Interfaces as CoL_Interface_SexLab_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("SLSO", "SexLab Separate Orgasms", Quest.GetQuest("SLSO"), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("SLAR", "SexLab Aroused", (SexLab_Interfaces as CoL_Interface_SLAR_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+        AddHeaderOption("Toys & Love")
+        AddToggleOptionST("TL", "Toys & Love", Game.IsPluginInstalled("Toys.esm"), OPTION_FLAG_DISABLED)
+
     endif
 EndEvent
 
@@ -380,6 +457,17 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(statusPageRefillEnergyHelp)
+        EndEvent
+
+    EndState
+
+    State LevelUp
+        Event OnSelectST()
+            CoL.levelHandler.playerSuccubusXP = CoL.levelHandler.xpForNextLevel
+            SetTextOptionValueST(CoL.levelHandler.playerSuccubusLevel.GetValueInt(), false, "SuccubusCurrentLevel")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageLevelUpHelp)
         EndEvent
 
     EndState
@@ -438,6 +526,21 @@ endfunction
         Event OnSliderAcceptST(float value)
             CoL.healthDrainMult = value
             SetSliderOptionValueST(CoL.healthDrainMult,"{1}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHealthDrainMultHelp)
+        EndEvent
+    EndState
+    State DrainArousalMultiSlide
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.drainArousalMult)
+            SetSliderDialogDefaultValue(0.1)
+            SetSliderDialogInterval(0.1)
+            SetSliderDialogRange(0.0, 1.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.healthDrainMult = value
+            SetSliderOptionValueST(CoL.drainArousalMult,"{1}")
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageHealthDrainMultHelp)
@@ -653,6 +756,7 @@ endfunction
             SetInfoText(settingsPageHealRateBoostMultHelp)
         EndEvent
     EndState
+
     State EnergyCastingMultSlider
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.energyCastingMult)
@@ -683,6 +787,143 @@ endfunction
         EndEvent
     EndState
 
+    State TemptationCostSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.temptationCost)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.temptationCost = value as int
+            SetSliderOptionValueST(CoL.temptationCost, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTemptationCostHelp)
+        EndEvent
+    EndState
+    State TemptationBaseIncreaseSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.temptationBaseIncrease)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.temptationBaseIncrease = value as int
+            SetSliderOptionValueST(CoL.temptationBaseIncrease, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTemptationBaseIncreaseHelp)
+        EndEvent
+    EndState
+    State TemptationLevelMultSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.temptationLevelMult)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.temptationLevelMult = value as int
+            SetSliderOptionValueST(CoL.temptationLevelMult, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTemptationLevelMultHelp)
+        EndEvent
+    EndState
+
+    State ExcitementCostSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.excitementCost)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.excitementCost = value as int
+            SetSliderOptionValueST(CoL.excitementCost, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageExcitementCostHelp)
+        EndEvent
+    EndState
+    State ExcitementBaseIncreaseSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.excitementBaseIncrease)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.excitementBaseIncrease = value as int
+            SetSliderOptionValueST(CoL.excitementBaseIncrease, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageExcitementBaseIncreaseHelp)
+        EndEvent
+    EndState
+    State ExcitementLevelMultSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.excitementLevelMult)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.excitementLevelMult = value as int
+            SetSliderOptionValueST(CoL.excitementLevelMult, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageExcitementLevelMultHelp)
+        EndEvent
+    EndState
+
+    State SuppressionCostSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.suppressionCost)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.suppressionCost = value as int
+            SetSliderOptionValueST(CoL.suppressionCost, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageSuppressionCostHelp)
+        EndEvent
+    EndState
+    State SuppressionBaseIncreaseSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.suppressionBaseIncrease)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.suppressionBaseIncrease = value as int
+            SetSliderOptionValueST(CoL.suppressionBaseIncrease, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageSuppressionBaseIncreaseHelp)
+        EndEvent
+    EndState
+    State SuppressionLevelMultSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.suppressionLevelMult)
+            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.suppressionLevelMult = value as int
+            SetSliderOptionValueST(CoL.suppressionLevelMult, "{0}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageSuppressionLevelMultHelp)
+        EndEvent
+    EndState
 
 ; Page 3 State Handlers
     State DrainKeyMapOption
@@ -774,7 +1015,7 @@ endfunction
             SetInfoText(widgetsPageEnergyMeterXScaleHelp)
         EndEvent
     EndState
-    State energyMeterYScaleSlider
+    State energyMeterYScaleSlider 
         Event OnSliderOpenST()
             SetSliderDialogStartValue(CoL.widgetHandler.energyMeterYScale)
             SetSliderDialogDefaultValue(70)
@@ -790,6 +1031,49 @@ endfunction
             SetInfoText(widgetsPageEnergyMeterYScaleHelp)
         EndEvent
     EndState
+    State energyMeterAlphaSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.energyMeterAlpha)
+            SetSliderDialogDefaultValue(100)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.energyMeterAlpha = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.energyMeterAlpha)
+            meterBarChanged = true
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterYScaleHelp)
+        EndEvent
+    EndState
+    State energyMeterAutoHideToggle
+        Event OnSelectST()
+            CoL.widgetHandler.autoFade = !CoL.widgetHandler.autoFade
+            SetToggleOptionValueST(CoL.widgetHandler.autoFade)
+            meterBarChanged = true
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterAutoHideHelp)
+        EndEvent
+    EndState
+   State energyMeterAutoHideTimerSlider 
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.widgetHandler.autoFadeTime)
+            SetSliderDialogDefaultValue(10)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 30)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.widgetHandler.autoFadeTime = value as int
+            SetSliderOptionValueST(CoL.widgetHandler.autoFadeTime)
+            meterBarChanged = true
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(widgetsPageEnergyMeterYScaleHelp)
+        EndEvent
+    EndState
+
 ; Page 5 State Handlers
     State perksAvailableOption
         Event OnSelectST()
@@ -920,6 +1204,21 @@ endfunction
             SetInfoText(perkpageSafeTransformationHelp)
         EndEvent
     EndState
+    State perkSlakeThirst
+        Event OnSelectST()
+            if CoL.availablePerkPoints > 0
+                CoL.slakeThirst = !CoL.slakeThirst
+                SetToggleOptionValueST(CoL.slakeThirst)
+                CoL.availablePerkPoints -= 1
+                ForcePageReset()
+            else
+                Debug.MessageBox(perkPageOutOfPerkPoints)
+            endif
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(perkpageSlakeThirstHelp)
+        EndEvent
+    EndState
 ; Page 6 State Handlers
     State transformSaveMortalPreset
         Event OnSelectST()
@@ -992,6 +1291,15 @@ endfunction
             SetInfoText(transformPageTransformCrimeHelp)
         EndEvent
     EndState
+    State transformEquipment
+        Event OnSelectST()
+            CoL.transformSwapsEquipment = !CoL.transformSwapsEquipment
+            SetToggleOptionValueST(CoL.transformSwapsEquipment)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageEquipmentSwap)
+        EndEvent
+    EndState
     Event OnSelectST()
         string[] options = getOptions()
         string option = options[0]
@@ -1036,12 +1344,12 @@ Form[] function getEquippedItems(Actor actorRef)
 	equippedItems = new Form[34]
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30))
-		if itemRef 
-			equippedItems[i] = itemRef
+		if itemRef
+            if CoL.IsStrippable(itemRef)
+                equippedItems[i] = itemRef
+            endif
 		endif
 		i -= 1
 	endwhile
-	; return ClearNone(equippedItems)
-	; equippedItems = ClearNone(equippedItems)
 	return RemoveDupeForm(ClearNone(equippedItems))
 EndFunction

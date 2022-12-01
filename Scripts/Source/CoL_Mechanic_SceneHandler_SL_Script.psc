@@ -2,21 +2,36 @@ Scriptname CoL_Mechanic_SceneHandler_SL_Script extends activemagiceffect
 
 import PapyrusUtil
 
-SexLabFramework Property SexLab Auto
+CoL_Interface_SexLab_Script Property SexLab Auto
+CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 
+bool SexLabInstalled
 bool SLSOInstalled
+bool SLARInstalled
 Actor[] currentVictims
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    CheckForAddons()
-    RegisterForEvents()
+    Maintenance()
 EndEvent
 
 Event OnPlayerLoadGame()
+    Maintenance()
+EndEvent
+
+Function Maintenance()
+    SexLabInstalled = SexLab.IsInterfaceActive()
+    if !SexLabInstalled
+        return
+    endif
+
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] SexLab detected")
+    endif
+
     CheckForAddons()
     RegisterForEvents()
-EndEvent
+EndFunction
 
 Function RegisterForEvents()
     ; Register for sexlab's player tracking so we know when a scene involving the player starts
@@ -28,9 +43,13 @@ EndFunction
 
 Function CheckForAddons()
     SLSOInstalled = Quest.GetQuest("SLSO")
+    SLARInstalled = SLAR.IsInterfaceActive()
     if CoL.DebugLogging
         if SLSOInstalled
             Debug.Trace("[CoL] SLSO Detected")
+        endif
+        if SLARInstalled
+            Debug.Trace("[CoL] SLAR Detected")
         endif
     endif
 EndFunction
@@ -40,10 +59,16 @@ Function triggerDrainStart(Actor victim)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Trigger drain start for " + actorName)
     endif
+    float arousal = 0.0
+    if SLARInstalled
+        arousal = (SLAR.GetActorArousal(victim) as float)
+    endif
+
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
+        ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Drain start event sent")
@@ -63,14 +88,13 @@ Function triggerDrainEnd(Actor victim)
     endif
 EndFunction
 
-Event CoL_SLPlayerStartHandler(Form actorRef, int threadID)
+Event CoL_SLPlayerStartHandler(Form actorRef, int threadId)
     int sceneStartEvent = ModEvent.Create("CoL_startScene")
     ModEvent.Send(sceneStartEvent)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Player involved animation started")
     endif
-    sslThreadController thread = SexLab.GetController(threadID)
-    thread.SetHook("CoLSLSceneHook")
+    SexLab.SetHook(threadId, "CoLSLSceneHook")
     ; Register for thread specific SL Hooks
     if SLSOInstalled
         RegisterForModEvent("SexLabOrgasmSeparate", "SLSOOrgasmHandler")
@@ -79,7 +103,7 @@ Event CoL_SLPlayerStartHandler(Form actorRef, int threadID)
         endif
     else
         if CoL.DebugLogging
-            Debug.Trace("[CoL] Added orgasm hook to thread")
+            Debug.Trace("[CoL] Registered for SexLab Orgasm Event")
         endif
         RegisterForModEvent("HookOrgasmEnd_CoLSLSceneHook", "CoL_SLOrgasmHandler")
     endif
@@ -89,7 +113,7 @@ Event CoL_SLPlayerStartHandler(Form actorRef, int threadID)
     endif
 EndEvent
 
-Event CoL_SLOrgasmHandler(int threadID, bool hasPlayer)
+Event CoL_SLOrgasmHandler(int threadId, bool hasPlayer)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Entered orgasm handler")
     endif
@@ -99,8 +123,7 @@ Event CoL_SLOrgasmHandler(int threadID, bool hasPlayer)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Unregistered for Orgasm Event")
     endif
-    sslThreadController thread = SexLab.GetController(threadID)
-    Actor[] actors = thread.positions
+    Actor[] actors = SexLab.Positions(threadId)
     int i = 0
     while i < actors.Length
         if actors[i] != CoL.PlayerRef
@@ -110,17 +133,16 @@ Event CoL_SLOrgasmHandler(int threadID, bool hasPlayer)
     endwhile
 EndEvent
 
-Event CoL_SLAnimationEndHandler(int threadID, bool hasPlayer)
+Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
 
     int sceneEndEvent = ModEvent.Create("CoL_endScene")
     ModEvent.Send(sceneEndEvent)
-    sslThreadController thread = SexLab.GetController(threadID)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Player involved animation ended")
     endif
     UnregisterForModEvent("SexLabOrgasmSeparate")
     currentVictims = RemoveDupeActor(currentVictims)
-    Actor[] actors = thread.positions
+    Actor[] actors = SexLab.Positions(threadId)
     int i = 0
     while i < actors.Length
         if actors[i] && actors[i] != CoL.playerRef && currentVictims.Find(actors[i]) != -1

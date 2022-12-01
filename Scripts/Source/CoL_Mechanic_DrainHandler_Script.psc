@@ -64,19 +64,38 @@ State CheckDraining
             GoToState("")
         endif
     EndEvent
+    Event OnEndState()
+        CoL.widgetHandler.UpdateColor()
+    EndEvent
 EndState
 
 State Draining
-    float Function CalculateDrainAmount(Actor drainVictim)
+    Event OnBeginState()
+        CoL.widgetHandler.UpdateColor()
+    EndEvent
+    float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return (victimHealth * CoL.healthDrainMult)
+        float succubusArousal = 0.0
+
+        if CoL.slakeThirst
+            if CoL.SLAR.IsInterfaceActive() && CoL.OAroused.IsInterfaceActive()
+                succubusArousal = (CoL.SLAR.GetActorArousal(CoL.playerRef) + CoL.OAroused.GetArousal(CoL.playerRef)) / 2
+            elseif CoL.OAroused.IsInterfaceActive()
+                succubusArousal = CoL.OAroused.GetArousal(CoL.playerRef)
+            elseif CoL.SLAR.IsInterfaceActive()
+                succubusArousal = CoL.SLAR.GetActorArousal(CoL.playerRef)
+            endif
+        endif
+
+        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult))
     EndFunction
 
-    Event StartDrain(Form draineeForm, string draineeName)
+    Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
         if CoL.DebugLogging
             Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
+            Debug.Trace("[CoL] Recieved Victim Arousal: " + arousal)
         endif
 
         if drainee.HasSpell(CoL.DrainHealthSpell)
@@ -89,7 +108,7 @@ State Draining
         endif
         drainee.AddSpell(CoL.DrainHealthSpell)
 
-        float drainAmount = CalculateDrainAmount(drainee)
+        float drainAmount = CalculateDrainAmount(drainee, arousal)
         CoL.playerEnergyCurrent += drainAmount
         CoL.levelHandler.gainXP(false)
         doVampireDrain(drainee)
@@ -104,24 +123,36 @@ State Draining
 EndState
 
 State DrainingToDeath
-    float Function CalculateDrainAmount(Actor drainVictim)
+    Event OnBeginState()
+        CoL.widgetHandler.UpdateColor()
+    EndEvent
+    float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return (victimHealth * CoL.healthDrainMult) * CoL.drainToDeathMult
+         float succubusArousal = 0.0
+
+        if CoL.slakeThirst
+            if CoL.SLAR.IsInterfaceActive() && CoL.OAroused.IsInterfaceActive()
+                succubusArousal = (CoL.SLAR.GetActorArousal(CoL.playerRef) + CoL.OAroused.GetArousal(CoL.playerRef)) / 2
+            elseif CoL.OAroused.IsInterfaceActive()
+                succubusArousal = CoL.OAroused.GetArousal(CoL.playerRef)
+            elseif CoL.SLAR.IsInterfaceActive()
+                succubusArousal = CoL.SLAR.GetActorArousal(CoL.playerRef)
+            endif
+        endif
+
+        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult)) * CoL.drainToDeathMult
     EndFunction
 
-    Event StartDrain(Form draineeForm, string draineeName)
+    Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
         if CoL.DebugLogging
             Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
-            Debug.Trace("[CoL] Starting Deferred Kill")
         endif
 
         drainToDeathVFX.Play(drainee, 1)
-        drainee.StartDeferredKill()
-        drainee.Kill(CoL.playerRef)
 
-        float drainAmount = CalculateDrainAmount(drainee)
+        float drainAmount = CalculateDrainAmount(drainee, arousal)
         CoL.playerEnergyCurrent += drainAmount 
         CoL.levelHandler.gainXP(true)
         doVampireDrain(drainee)
@@ -132,10 +163,10 @@ State DrainingToDeath
 
         if CoL.DebugLogging
             Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
-            Debug.Trace("[CoL] Ending Deferred Kill")
+            Debug.Trace("[CoL] Killing")
         endif
 
-        drainee.EndDeferredKill()
+        drainee.Kill(CoL.playerRef)
     EndEvent
 
     Event OnEndState()
@@ -149,9 +180,9 @@ Function doVampireDrain(Actor drainee)
 EndFunction
 
 ; Empty Functions for Empty State
-float Function CalculateDrainAmount(Actor drainVictim)
+float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 EndFunction
-Event StartDrain(Form draineeForm, string draineeName)
+Event StartDrain(Form draineeForm, string draineeName, float arousal=0.0)
 EndEvent
 Event EndDrain(Form draineeForm)
 EndEvent

@@ -3,22 +3,30 @@ Scriptname CoL_Mechanic_SceneHandler_TL_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_SLAR_Script Property SLAR Auto
 string currentSceneName
 
 Actor[] victims
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    ; victims = new Actor[1]
-    RegisterForEvents()
+    Maintenance()
 EndEvent
 
 Event OnPlayerLoadGame()
-    ; victims = new Actor[1]
-    RegisterForEvents()
+    Maintenance()
 EndEvent
 
+Function Maintenance()
+    if Game.IsPluginInstalled("Toys.esm")
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Toys and Love Detected")
+        endif
+        RegisterForEvents()
+    endif
+EndFunction
+
 Function RegisterForEvents()
-    ; Register for sexlab's player tracking so we know when a scene involving the player starts
+    ; Register for Toys and Loves's player tracking so we know when a scene involving the player starts
     RegisterForModEvent("ToysStartLove", "startScene")
     if CoL.DebugLogging
         Debug.Trace("[CoL] Registered for Toys&Love Player Start Scene Event")
@@ -34,9 +42,11 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
         if victims[i] != None
             string actorName = victims[i].GetLeveledActorBase().GetName()
             int drainHandle = ModEvent.Create("CoL_startDrain")
+            float arousal = SLAR.GetActorArousal(victims[i])
             if drainHandle
                 ModEvent.pushForm(drainHandle, victims[i])
                 ModEvent.PushString(drainHandle, actorName)
+                ModEvent.PushFloat(drainHandle, arousal)
                 ModEvent.Send(drainHandle)
                 if CoL.DebugLogging
                     Debug.Trace("[CoL] Drain start event sent for " + actorName)
@@ -70,8 +80,8 @@ Event startScene(string EventName, string strArg, float numArg, Form sender)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Player involved animation started")
     endif
-    
-    currentSceneName = strArg;
+
+    currentSceneName = strArg
     RegisterForModEvent("ToysClimaxNPC", "triggerDrainStart")
     RegisterForModEvent("ToysLoveSceneInfo", "sceneInfo")
     RegisterForModEvent("ToysLoveSceneEnd", "endScene")

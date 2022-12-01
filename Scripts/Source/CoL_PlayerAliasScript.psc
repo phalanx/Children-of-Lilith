@@ -47,6 +47,12 @@ Event OnPlayerLoadGame()
             GoToState("Standard")
         endif
     endif
+
+    int gameLoadEvent = ModEvent.Create("CoL_GameLoad")
+    if gameLoadEvent
+        ModEvent.Send(gameLoadEvent)
+    endif
+
 EndEvent
 
 Event OnSpellCast(Form akSpell)

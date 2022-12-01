@@ -6,17 +6,23 @@ CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
+CoL_Interface_SLAR_Script Property SLAR Auto
+CoL_Interface_OAroused_Script Property OAroused Auto
 
-; Optional Integrations
-Keyword Property ddLibs Auto
-Keyword Property toysToy Auto
+; Keyword Definitions
+Keyword Property ddLibs Auto Hidden
+Keyword Property toysToy Auto Hidden
+Keyword Property BBBNoStrip Auto Hidden
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
 
 Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
-Spell[] Property levelOneSpells Auto                ; Spells granted to player as  a level one succubus
+Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
+Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
+Spell[] Property levelFiveSpells Auto                ; Spells granted to player as a level five succubus
+Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 
 ; Hotkeys
@@ -85,11 +91,12 @@ float Property hungerDamageAmount = 5.0 Auto Hidden
 ; Drain Properties
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
 float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
+float Property drainArousalMult = 0.1 Auto Hidden
 float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
 
-; Power Propertiesx
+; Power Properties
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostMult = 10.0 Auto Hidden     ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
@@ -102,6 +109,19 @@ Spell Property healRateBoost Auto                   ; Spell that contains the he
 Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
 
+; Spell Properties
+int Property excitementCost = 10 Auto Hidden
+int Property excitementBaseIncrease = 1 Auto Hidden
+float Property excitementLevelMult = 1.0 Auto Hidden
+
+int Property suppressionCost = 10 Auto Hidden
+int Property suppressionBaseIncrease = 1 Auto Hidden
+float Property suppressionLevelMult = 1.0 Auto Hidden
+
+int Property temptationCost = 10 Auto Hidden
+int Property temptationBaseIncrease = 1 Auto Hidden
+float Property temptationLevelMult = 1.0 Auto Hidden
+
 ; Perk Stuff
 int Property availablePerkPoints = 0 Auto Hidden
 bool Property gentleDrainer = false Auto Hidden      ; Perk that reduces base drain duration by half
@@ -110,10 +130,12 @@ int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increase
 bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
 bool Property healingForm = false Auto Hidden        ; Perk that adds Heal Rate Boost to transformed form
 bool Property safeTransformation = false Auto Hidden ; Perk that turns you ethereal while transforming
+bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubus arousal to drain amount
 
 ; Transform Stuff
 Spell Property transformSpell Auto
 bool Property isTransformed Auto Hidden
+bool Property transformSwapsEquipment = true Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden
@@ -136,9 +158,14 @@ State Initialize
         if DebugLogging
             Debug.Trace("[CoL] Initializing")
         endif
+        ddLibs = Keyword.GetKeyword("zad_Lockable")
+        toysToy = Keyword.GetKeyword("ToysToy")
+        if Game.IsPluginInstalled("3BBB.esp")
+            BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
+        endif
+        Debug.Trace(BBBNoStrip)
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
-        GrantSpells()
         isPlayerSuccubus.SetValue(1.0)
         GotoState("Running")
     EndEvent
@@ -189,24 +216,23 @@ State Uninitialize
 
         int uninitEvent = ModEvent.Create("CoL_Uninitialize")
         ModEvent.Send(uninitEvent)
-        RemoveSpells()
         isPlayerSuccubus.SetValue(0.0)
         GoToState("")
     EndEvent
 EndState
 
-Function GrantSpells()
+Function GrantSpells(Spell[] spellList)
     int i = 0
-    while i < levelOneSpells.Length
-        playerRef.AddSpell(levelOneSpells[i])
+    while i < spellList.Length
+        playerRef.AddSpell(spellList[i])
         i += 1
     endwhile
 EndFunction
 
-Function RemoveSpells()
+Function RemoveSpells(Spell[] spellList)
     int i = 0
-    while i < levelOneSpells.Length
-        playerRef.RemoveSpell(levelOneSpells[i])
+    while i < spellList.Length
+        playerRef.RemoveSpell(spellList[i])
         i += 1
     endwhile
 EndFunction
@@ -242,6 +268,17 @@ EndFunction
 Function EndScene()
     GoToState("")
 EndFunction
+
+bool Function IsStrippable(Form itemRef)
+    if !ddLibs || !itemRef.hasKeyword(ddLibs) ; Make sure it's not a devious device
+        if !toysToy || !itemRef.hasKeyword(toysToy) ; Make sure it's not a Toys Framework toy
+            if !BBBNoStrip || !itemRef.hasKeyword(BBBNoStrip) ; Make sure it doesn't have 3BBB's NoStrip Keyword
+                return True
+            endif
+        endif
+    endif
+    return false
+endFunction
 
 Event OnKeyDown(int keyCode)
 EndEvent

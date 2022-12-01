@@ -1,28 +1,59 @@
 Scriptname CoL_Mechanic_SceneHandler_OS_Script extends activemagiceffect
 
-OSexIntegrationMain Property oStim Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_OStim_Script Property oStim Auto
+CoL_Interface_OAroused_Script Property OAroused Auto
 Quest Property oDefeat Auto Hidden
 
-OUndressScript oUndress
+bool oStimInstalled = False
+bool oDefeatInstalled = False
+bool oArousedInstalled = False
 
 import PapyrusUtil
 
-Actor[] currentVictims ;List of victims in current scene that have been drained
+Actor[] currentVictims  ;List of victims in current scene that have been drained
+Actor[] currentPartners ;List of partners in current scene (drained or not)
+float[] currentPartnerArousal
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    currentVictims = new Actor[1]
-    oDefeat = Quest.GetQuest("ODefeatMainQuest")
-    oUndress = oStim.GetUndressScript()
-    GoToState("Waiting")
+    Maintenance()
 EndEvent
 
 Event OnPlayerLoadGame()
-    currentVictims = new Actor[1]
-    oDefeat = Quest.GetQuest("ODefeatMainQuest")
-    oUndress = oStim.GetUndressScript()
-    GoToState("Waiting")
+    Maintenance()
 EndEvent
+
+Function Maintenance()
+    oStimInstalled = oStim.IsInterfaceActive()
+    if !oStimInstalled
+        return
+    endif
+
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] OStim detected")
+    endif
+
+    currentVictims = new Actor[1]
+    CheckForAddons()
+    GoToState("Waiting")
+EndFunction
+
+Function CheckForAddons()
+    oDefeat = Quest.GetQuest("ODefeatMainQuest")
+    if oDefeat != None
+        oDefeatInstalled = True
+    endif
+    oArousedInstalled = OAroused.IsInterfaceActive()
+
+    if CoL.DebugLogging
+        if oArousedInstalled
+            Debug.Trace("[CoL] OAroused Detected")
+        endif
+        if oDefeatInstalled
+            Debug.Trace("[CoL] ODefeat Detected")
+        endif
+    endif
+EndFunction
 
 State Waiting
     Event OnBeginState()
@@ -43,6 +74,14 @@ State Waiting
         if !oStim.IsPlayerInvolved()
             return
         endif
+
+        currentPartners = ostim.GetActors()
+        currentPartnerArousal = new float[3]
+        int i = 0
+        while i < currentPartners.Length
+            currentPartnerArousal[i] = OAroused.GetArousal(currentPartners[i])
+            i += 1
+        endwhile
 
         int sceneStartEvent = ModEvent.Create("CoL_startScene")
         if sceneStartEvent
@@ -75,22 +114,11 @@ State Running
         if CoL.DebugLogging
             Debug.Trace("[CoL] Entered orgasm handler")
         endif
-        if oStim.FullyAnimateRedress && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
-            Actor[] actors = oStim.GetActors()
-            if victim == actors[0]
-                ;Dom
-                oUndress.DomEquipmentDrops = new ObjectReference[1]
-                oUndress.DomEquipmentForms = new Form[1]
-            elseif victim == actors[1]
-                ;Sub
-                oUndress.SubEquipmentDrops = new ObjectReference[1]
-                oUndress.SubEquipmentForms = new Form[1]
-            elseif victim == actors[2]
-                ;Third
-                oUndress.ThirdEquipmentDrops = new ObjectReference[1]
-                oUndress.ThirdEquipmentForms = new Form[1]
-            endif
+
+        if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
+            Ostim.ClearStrippedGear(victim)
         endif
+
         triggerDrainStart(victim)
         if currentVictims.Find(victim) == -1
             currentVictims = PushActor(currentVictims, victim)
@@ -130,10 +158,14 @@ Function triggerDrainStart(Actor victim)
         Debug.Trace("[CoL] Trigger drain start for " + actorName)
     endif
 
+    int index = currentPartners.Find(victim)
+    float arousal = currentPartnerArousal[index]
+
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
+        ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Drain start event sent")
