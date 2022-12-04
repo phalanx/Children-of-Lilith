@@ -117,7 +117,7 @@ EndFunction
 
 Function OnUpdate()
     if autoFade
-        iWidgets.setVisible(energyMeter, 0)
+        ShowMeter()
     endif
 EndFunction
 
