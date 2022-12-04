@@ -158,12 +158,6 @@ State Initialize
         if DebugLogging
             Debug.Trace("[CoL] Initializing")
         endif
-        ddLibs = Keyword.GetKeyword("zad_Lockable")
-        toysToy = Keyword.GetKeyword("ToysToy")
-        if Game.IsPluginInstalled("3BBB.esp")
-            BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
-        endif
-        Debug.Trace(BBBNoStrip)
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
         isPlayerSuccubus.SetValue(1.0)
@@ -180,6 +174,16 @@ State Running
         if DebugLogging
             Debug.Trace("[CoL] Maintenance running")
         endif
+        if Game.IsPluginInstalled("Devious Devices - Assets.esm")
+            ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
+        endif
+        if Game.IsPluginInstalled("Toys.esm")
+            toysToy = Game.GetFormFromFile(0x000815, "Toys.esm") as Keyword
+        endif
+        if Game.IsPluginInstalled("3BBB.esp")
+            BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
+        endif
+        Debug.Trace(BBBNoStrip)
         widgetHandler.GoToState("Running")
         drainHandler.GoToState("Initialize")
         levelHandler.GoToState("Running")
