@@ -90,12 +90,13 @@ EndState
 
 State UpdateMeter
     Event OnBeginState()
+        UnRegisterForUpdate()
         if autoFade
             ShowMeter()
         endif
         iWidgets.setMeterPercent(energyMeter, ((CoL.playerEnergyCurrent / CoL.playerEnergyMax) * 100) as int)
         if autoFade
-            AutoHideMeter()
+            RegisterForSingleUpdate(autoFadeTime)
         endif
         GoToState("Running")
     EndEvent
@@ -110,18 +111,19 @@ State MoveEnergyMeter
     EndEvent
 EndState
 
-Function AutoHideMeter()
-    UnRegisterForUpdate()
-    RegisterForSingleUpdate(autoFadeTime)
-EndFunction
-
 Function OnUpdate()
-    iWidgets.setVisible(energyMeter, 0)
+    UnRegisterForUpdate()
+    if autoFade
+        iWidgets.setVisible(energyMeter, 0)
+    else
+        ShowMeter()
+    endif
 EndFunction
 
 Function ShowMeter()
     iWidgets.setVisible(energyMeter, 1)
 EndFunction
+
 
 ; Empty Functions for Empty State
 Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)

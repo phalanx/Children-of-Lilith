@@ -1051,6 +1051,7 @@ endfunction
         Event OnSelectST()
             CoL.widgetHandler.autoFade = !CoL.widgetHandler.autoFade
             SetToggleOptionValueST(CoL.widgetHandler.autoFade)
+            CoL.widgetHandler.ShowMeter()
             meterBarChanged = true
         EndEvent
         Event OnHighlightST()
