@@ -91,10 +91,11 @@ float Property hungerDamageAmount = 5.0 Auto Hidden
 ; Drain Properties
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
 float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
-float Property drainArousalMult = 0.1 Auto Hidden
+float Property drainArousalMult = 0.1 Auto Hidden           ; Multiplier applied to arousal before being added to drain amount
 float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
+bool Property drainNotificationsEnabled = true Auto Hidden  ; Should notifications play when drain style is changed
 
 ; Power Properties
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect

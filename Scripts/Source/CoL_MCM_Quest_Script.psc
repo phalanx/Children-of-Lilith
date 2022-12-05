@@ -42,6 +42,8 @@ Form[] equippedItems
     string settingsPageDrainToggleHelp = "Toggle Draining"
     string settingsPageDrainToDeathToggle = "Drain to Death"
     string settingsPageDrainToDeathToggleHelp = "Toggle Drain to Death. Takes precedent over Drain setting"
+    string settingsPageDrainVerbosity = "Enable Drain Notifications"
+    string settingsPageDrainVerbosityHelp = "Should switching drain modes trigger a notification in the top left"
     string settingsPageDrainDuration = "Drain Duration"
     string settingsPageDrainDurationHelp = "How long the Drain health debuff lasts, in game hours"
     string settingsPageHealthDrainMult = "Health Drain Multiplier"
@@ -261,6 +263,7 @@ Event OnPageReset(string page)
         AddHeaderOption(settingsPageDrainHeader)
         AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining)
         AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
+        AddToggleOptionST("DrainVerbosityToggleOption", settingsPageDrainVerbosity, CoL.drainNotificationsEnabled)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
         AddSliderOptionST("DrainArousalMultiSlider", settingsPageDrainArousalMult, CoL.drainArousalMult, "{1}")
@@ -502,6 +505,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageDrainToDeathToggleHelp)
+        EndEvent
+    EndState
+    State DrainVerbosityToggleOption
+        Event OnSelectST()
+            CoL.drainNotificationsEnabled = !CoL.drainNotificationsEnabled
+            SetToggleOptionValueST(CoL.drainNotificationsEnabled)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDrainVerbosityHelp)
         EndEvent
     EndState
     State DrainDurationSlider

@@ -10,7 +10,7 @@ bool Property draining Hidden
     EndFunction
     Function Set(bool newVal)
         draining_var = newVal
-        GoToState("CheckDraining")
+        CheckDraining(CoL.drainNotificationsEnabled)
     EndFunction
 EndProperty
 bool drainingToDeath_var = false
@@ -20,7 +20,7 @@ bool Property drainingToDeath Hidden
     EndFunction
     Function Set(bool newVal)
         drainingToDeath_var = newVal
-        GoToState("CheckDraining")
+        CheckDraining(CoL.drainNotificationsEnabled)
     EndFunction
 EndProperty
 
@@ -28,15 +28,19 @@ Keyword Property vampireKeyword Auto Hidden
 
 State Initialize
     Event OnBeginState()
-        vampireKeyword = Keyword.GetKeyword("vampire")
-        RegisterForModEvent("CoL_startDrain", "StartDrain")
-        RegisterForModEvent("CoL_endDrain", "EndDrain")
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Registered for CoL Drain Events")
-        endif
-        GoToState("CheckDraining")
+        Maintenance()
+        CheckDraining(false)
     EndEvent
 EndState
+
+Function Maintenance()
+    vampireKeyword = Keyword.GetKeyword("vampire")
+    RegisterForModEvent("CoL_startDrain", "StartDrain")
+    RegisterForModEvent("CoL_endDrain", "EndDrain")
+    if CoL.DebugLogging
+        Debug.Trace("[CoL] Registered for CoL Drain Events")
+    endif
+EndFunction
 
 State Uninitialize
     Event OnBeginState()
@@ -49,25 +53,26 @@ State Uninitialize
     EndEvent
 EndState
 
-State CheckDraining
-    Event OnBeginState()
-        if drainingToDeath
+Function CheckDraining(bool verbose)
+    if drainingToDeath
+        if verbose
             Debug.Notification("Draining To Death Enabled")
-            GoToState("DrainingToDeath")
-        elseif draining
-            Debug.Notification("Draining To Death Disabled")
-            Debug.Notification("Draining Enabled")
-            GoToState("Draining")
-        else 
-            Debug.Notification("Draining To Death Disabled")
-            Debug.Notification("Draining Disabled")
-            GoToState("")
         endif
-    EndEvent
-    Event OnEndState()
-        CoL.widgetHandler.UpdateColor()
-    EndEvent
-EndState
+        GoToState("DrainingToDeath")
+    elseif draining
+        if verbose
+            Debug.Notification("Draining Enabled")
+        endif
+        GoToState("Draining")
+    else 
+        if verbose
+            Debug.Notification("Draining Disabled")
+        endif
+        GoToState("")
+    endif
+    CoL.widgetHandler.GoToState("UpdateMeter")
+    Debug.Trace("[CoL] Finished Checking Drain State")
+EndFunction
 
 State Draining
     Event OnBeginState()
