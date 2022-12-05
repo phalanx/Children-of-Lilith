@@ -181,6 +181,8 @@ Form[] equippedItems
     string transformPageTransformCrimeHelp = "Should Transformation be a Crime"
     string transformPageEquipmentSwap = "Transform Swaps Equipment"
     string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
+    string transformPageTransformAnimation = "Play Transformation Animation"
+    string transformPageTransformAnimationHelp = "Should an animation play when you transform\n the smoke effect will play either way"
 
 int Function GetVersion()
     return 6
@@ -374,6 +376,7 @@ Event OnPageReset(string page)
         endif
         AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
         AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
+        AddToggleOptionST("transformAnimation", transformPageTransformAnimation, CoL.transformAnimation)
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
@@ -1323,6 +1326,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageEquipmentSwap)
+        EndEvent
+    EndState
+    State transformAnimation
+        Event OnSelectST()
+            CoL.transformAnimation = !CoL.transformAnimation
+            SetToggleOptionValueST(CoL.transformAnimation)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageTransformAnimationHelp)
         EndEvent
     EndState
     Event OnSelectST()
