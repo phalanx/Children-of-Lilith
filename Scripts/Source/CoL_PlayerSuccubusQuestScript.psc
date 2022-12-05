@@ -100,6 +100,7 @@ bool Property drainFeedsVampire = true Auto Hidden          ; Should draining tr
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostMult = 10.0 Auto Hidden     ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
+bool Property healRateBoostFlat = false Auto Hidden     ; If true, apply healRateBoostMult as a flat amount instead of a multiplier
 float Property energyCastingMult = 1.0 Auto  Hidden     ; Modify the energy cost of spells
 int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
 
