@@ -3,7 +3,7 @@ Scriptname CoL_Mechanic_SceneHandler_TL_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-CoL_Interface_SLAR_Script Property SLAR Auto
+; CoL_Interface_SLAR_Script Property SLAR Auto
 string currentSceneName
 
 Actor[] victims
@@ -42,7 +42,7 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
         if victims[i] != None
             string actorName = victims[i].GetLeveledActorBase().GetName()
             int drainHandle = ModEvent.Create("CoL_startDrain")
-            float arousal = SLAR.GetActorArousal(victims[i])
+            float arousal = ToysGlobal.GetRousing()
             if drainHandle
                 ModEvent.pushForm(drainHandle, victims[i])
                 ModEvent.PushString(drainHandle, actorName)
