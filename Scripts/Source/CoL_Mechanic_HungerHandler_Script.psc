@@ -14,15 +14,22 @@ State HungerEnabled
     Event OnUpdate()
         float timePassed = CoL.GameDaysPassed.GetValue() - lastCheckTime
         float hungerAmount = CoL.dailyHungerAmount * timePassed
-        if CoL.hungerDamageEnabled && CoL.playerEnergyCurrent < hungerAmount
-            CoL.playerRef.RemoveSpell(starvationSpell)
-            starvationSpell.SetNthEffectMagnitude(0, CoL.hungerDamageAmount * starvationStack)
-            CoL.playerRef.AddSpell(starvationSpell, false)
-            starvationStack += 1
+        if ((CoL.playerEnergyCurrent/CoL.playerEnergyMax ) * 100) < CoL.hungerThreshold
+            if CoL.hungerDamageEnabled
+                CoL.playerRef.RemoveSpell(starvationSpell)
+                starvationSpell.SetNthEffectMagnitude(0, CoL.hungerDamageAmount * starvationStack)
+                CoL.playerRef.AddSpell(starvationSpell, false)
+                starvationStack += 1
+            endif
+            if CoL.hungerArousalEnabled
+                CoL.SLAR.UpdateActorExposure(CoL.playerRef, (CoL.hungerArousalAmount as int))
+                CoL.OAroused.ModifyArousal(CoL.playerRef, (CoL.hungerArousalAmount as int))
+                ToysGlobal.ArousalAdjust(CoL.hungerArousalAmount as int)
+            endif
+            CoL.playerEnergyCurrent = 0
             if CoL.DebugLogging
                 Debug.Trace("[CoL] Starvation Stack: " + starvationStack)
             endif
-            CoL.playerEnergyCurrent = 0
         else
             starvationStack = 0
             CoL.playerRef.RemoveSpell(starvationSpell)

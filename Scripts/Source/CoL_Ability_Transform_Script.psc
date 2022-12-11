@@ -25,6 +25,7 @@ Function Transform()
     CoL.playerRef.GetActorbase().SetHairColor(CoL.succuHairColor)
     Utility.Wait(0.1)
     CharGen.LoadPreset(CoL.succuPresetName)
+    CoL.UpdateTattoo()
     ; Equipment Transform
     if CoL.transformSwapsEquipment
         originalEquipment = StripEquipment(CoL.playerRef)

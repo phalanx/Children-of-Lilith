@@ -24,6 +24,7 @@ Spell[] Property levelTwoSpells Auto                ; Spells granted to player a
 Spell[] Property levelFiveSpells Auto                ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
+bool Property EnergyScaleTestEnabled = false Auto Hidden       ; Enable Energy Scale test when Drain to Death button pushed
 
 ; Hotkeys
 int toggleDrainHotKey_var = 29
@@ -67,6 +68,9 @@ float Property playerEnergyCurrent Hidden
             Debug.Trace("[CoL] Player Energy is now " + playerEnergyCurrent)
         endif
         widgetHandler.GoToState("UpdateMeter")
+        if tattooFade
+            UpdateTattoo()
+        endif
     EndFunction
 EndProperty
 float Property playerEnergyMax = 100.0 Auto Hidden
@@ -87,6 +91,11 @@ EndProperty
 float Property dailyHungerAmount = 10.0 Auto Hidden
 bool Property hungerDamageEnabled = false Auto Hidden
 float Property hungerDamageAmount = 5.0 Auto Hidden
+bool Property hungerArousalEnabled = false Auto Hidden
+float Property hungerArousalAmount = 5.0 Auto Hidden
+int Property hungerThreshold = 10 Auto Hidden
+bool Property tattooFade = false Auto Hidden
+int Property tattooSlot = 6 Auto Hidden
 
 ; Drain Properties
 float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
@@ -192,7 +201,14 @@ State Running
         levelHandler.GoToState("Running")
         RegisterForEvents()
     EndFunction
-
+    
+    Event OnKeyDown(int keyCode)
+        if EnergyScaleTestEnabled
+            if keyCode == toggleDrainToDeathHotKey
+                ScaleEnergyTest()
+            endif
+        endif
+    EndEvent
 EndState
 
 State SceneRunning
@@ -288,4 +304,27 @@ bool Function IsStrippable(Form itemRef)
 endFunction
 
 Event OnKeyDown(int keyCode)
+    if keyCode == toggleDrainToDeathHotKey
+        ScaleEnergyTest()
+    endif
 EndEvent
+
+Function UpdateTattoo()
+    Float newAlpha = playerEnergyCurrent/playerEnergyMax
+    int correctedSlot = tattooSlot - 1
+    string bodySlot = "Body [Ovl" + correctedSlot + "]"
+    Debug.Trace(bodySlot)
+    NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
+EndFunction
+
+Function ScaleEnergyTest()
+    playerEnergyCurrent = 0
+    while playerEnergyCurrent < playerEnergyMax
+        playerEnergyCurrent += 10
+        Utility.Wait(0.1)
+    endwhile
+    while playerEnergyCurrent > 0
+        playerEnergyCurrent -= 10
+        Utility.Wait(0.1)
+    endwhile
+EndFunction

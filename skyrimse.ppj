@@ -31,7 +31,7 @@
         <Import>@ModsFolder\ConsoleUtilSSE\Scripts\Source</Import>
         <Import>@ModsFolder\XP32 Maximum Skeleton Special Extended\scripts\source</Import>
         <Import>@ModsFolder\OStim - OSex overhaul and API\Scripts\Source</Import>
-        <Import>@ModsFolder\OSA\Scripts\Source</Import>
+        <Import>@ModsFolder\OSA - For OStim\Scripts\Source</Import>
         <Import>@ModsFolder\OAroused\scripts\source</Import>
         <Import>@ModsFolder\JContainers SE\scripts\source</Import>
         <Import>@ModsFolder\ODefeat\scripts\Source</Import>

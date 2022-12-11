@@ -34,6 +34,8 @@ Form[] equippedItems
     string statusPageLevelUpHelp = "Cheat: Add Succubus Level"
     string statusPageDebugLogging = "Toggle Debug Logging"
     string statusPageDebugLoggingHelp = "Toggles Debug Logging. \n Warning: this can produce a lot of log entries. Only enable for troubleshooting"
+    string statusPageEnergyScaleTest = "Energy Scale Test Enabled"
+    string statusPageEnergyScaleTestHelp = "Enable energy scale test\n Push Drain to Death hotkey to run\n Energy will empty, increase to max, then decrease to 0"
 
 ; Page 2 - Settings
     string settingsPageName = "Settings"
@@ -72,12 +74,24 @@ Form[] equippedItems
     string settingsPageHungerHeader = "Hunger Settings"
     string settingsPageHungerToggle = "Hunger"
     string settingsPageHungerToggleHelp = "Enable Passive Energy Drain. Hunger updates every 30 seconds"
+    string settingsPageHungerThreshold = "Hunger Threshold"
+    string settingsPageHungerThresholdHelp = "When Energy falls this below this percentage, activate Hunger effects"
     string settingsPageHungerAmount = "Hunger Amount"
     string settingsPageHungerAmountHelp = "If Hunger is enabled, this sets the amount of Energy lost on a daily basis"
     string settingsPageHungerDamage = "Deadly Hunger"
-    string settingsPageHungerDamageHelp = "If Hunger is enabled, this sets whether or not running out of Energy will cause periodic "
+    string settingsPageHungerDamageHelp = "If Hunger is enabled, this sets whether or not running out of Energy will periodically reduce Max Health"
     string settingsPageHungerDamageAmount = "Hunger Damage Amount"
     string settingsPageHungerDamageAmountHelp = "If Hunger Damage is enabled, Max Health will be reduced by this amount per Hunger tick (30 seconds)"
+    string settingsPageHungerArousal = "Hunger Arousal Enabled"
+    string settingsPageHungerArousalHelp = "If Hunger is enabled, this sets whether or not running out of Energy will cause Increasing Arousal"
+    string settingsPageHungerArousalAmount = "Hunger Arousal Amount"
+    string settingsPageHungerArousalAmountHelp = "If Hunger Arousal is enabled, arousal will increase by this amount per Hunger tick (30 seconds)"
+
+    string settingsPageTattooHeader = "Tattoo Settings"
+    string settingsPageTattooFade = "Tattoo Fade"
+    string settingsPageTattooFadeHelp = "Enable tattoo fading based on percentage of current energy"
+    string settingsPageTattooSlot = "Tattoo Body Slot"
+    string settingsPageTattooSlotHelp = "Body slot the tattoo you want to fade occupies"
 
     string settingsPagePowerHeader = "Power Settings"
     string settingsPageBecomeEtherealCost = "Become Ethereal Cost"
@@ -253,6 +267,7 @@ Event OnPageReset(string page)
             AddTextOptionST("EnergyRefill", statusPageRefillEnergy, None)
             AddTextOptionST("LevelUp", statusPageLevelUp, None)
             AddToggleOptionST("DebugLogging", statusPageDebugLogging, CoL.DebugLogging)
+            AddToggleOptionST("EnergyScaleTest", statusPageEnergyScaleTest, CoL.EnergyScaleTestEnabled)
         else
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
@@ -282,11 +297,18 @@ Event OnPageReset(string page)
         ; Hunger Settings
         AddHeaderOption(settingsPageHungerHeader)
         AddToggleOptionST("HungerToggle", settingsPageHungerToggle, CoL.hungerEnabled)
+        AddSliderOptionST("HungerThresholdSlider", settingsPageHungerThreshold, CoL.hungerThreshold)
         AddSliderOptionST("HungerAmountSlider", settingsPageHungerAmount, CoL.dailyHungerAmount)
         AddToggleOptionST("HungerDamageToggle", settingsPageHungerDamage, CoL.hungerDamageEnabled)
         AddSliderOptionST("HungerDamageAmountSlider", settingsPageHungerDamageAmount, CoL.hungerDamageAmount)
-        ; Power Settings
+        AddToggleOptionST("HungerArousalToggle", settingsPageHungerArousal, CoL.hungerArousalEnabled)
+        AddSliderOptionST("HungerArousalAmountSlider", settingsPageHungerArousalAmount, CoL.hungerArousalAmount)
+        ; Tattoo Settings
         SetCursorPosition(1)
+        AddHeaderOption(settingsPageTattooHeader)
+        AddToggleOptionST("tattooFade", settingsPageTattooFade, CoL.tattooFade)
+        AddSliderOptionST("tattooSlot", settingsPageTattooSlot, CoL.tattooSlot)
+        ; Power Settings
         AddHeaderOption(settingsPagePowerHeader)
         AddSliderOptionST("BecomeEtherealCostSlider", settingsPageBecomeEtherealCost, CoL.becomeEtherealCost)
         AddEmptyOption()
@@ -488,6 +510,16 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(statusPageDebugLoggingHelp)
+        EndEvent
+    EndState
+
+    State EnergyScaleTest
+        Event OnSelectST()
+            CoL.EnergyScaleTestEnabled = !CoL.EnergyScaleTestEnabled
+            SetToggleOptionValueST(CoL.EnergyScaleTestEnabled)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageEnergyScaleTestHelp)
         EndEvent
     EndState
 
@@ -704,6 +736,21 @@ endfunction
             SetInfoText(settingsPageHungerAmountHelp)
         EndEvent
     EndState
+    State HungerThresholdSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.hungerThreshold as float)
+            SetSliderDialogDefaultValue(10.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0.0, 100.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.hungerThreshold = value as int
+            SetSliderOptionValueST(CoL.hungerThreshold as float)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerThresholdHelp)
+        EndEvent
+    EndState
     State HungerDamageToggle
         Event OnSelectST()
             CoL.hungerDamageEnabled = !CoL.hungerDamageEnabled
@@ -726,6 +773,55 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageHungerDamageAmountHelp)
+        EndEvent
+    EndState
+    State HungerArousalToggle
+        Event OnSelectST()
+            CoL.hungerArousalEnabled = !CoL.hungerArousalEnabled
+            SetToggleOptionValueST(CoL.hungerArousalEnabled)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerArousalHelp)
+        EndEvent
+    EndState
+    State HungerArousalAmountSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.hungerArousalAmount)
+            SetSliderDialogDefaultValue(5.0)
+            SetSliderDialogInterval(1.0)
+            SetSliderDialogRange(0.0, 100.0)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.hungerArousalAmount = value
+            SetSliderOptionValueST(CoL.hungerArousalAmount)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerArousalAmountHelp)
+        EndEvent
+    EndState
+
+    State tattooFade
+        Event OnSelectST()
+            CoL.tattooFade = !CoL.tattooFade
+            SetToggleOptionValueST(CoL.tattooFade)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTattooFadeHelp)
+        EndEvent
+    EndState
+    State tattooSlot
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.tattooSlot)
+            SetSliderDialogDefaultValue(6)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 6)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.tattooSlot = value as int
+            SetSliderOptionValueST(CoL.tattooSlot)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageTattooSlotHelp)
         EndEvent
     EndState
 
