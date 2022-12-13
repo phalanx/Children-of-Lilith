@@ -8,6 +8,8 @@ Quest Property oDefeat Auto Hidden
 bool oStimInstalled = False
 bool oDefeatInstalled = False
 bool oArousedInstalled = False
+Actor succubus
+String succubusName
 
 import PapyrusUtil
 
@@ -28,10 +30,15 @@ Function Maintenance()
     if !oStimInstalled
         return
     endif
-
     if CoL.DebugLogging
         Debug.Trace("[CoL] OStim detected")
     endif
+
+    succubus = GetTargetActor()
+    if succubus == None
+        Dispel()
+    endif
+    succubusName = succubus.GetActorBase().GetName()
 
     currentVictims = new Actor[1]
     CheckForAddons()
@@ -59,7 +66,7 @@ State Waiting
     Event OnBeginState()
 
         if CoL.DebugLogging
-            Debug.Trace("[CoL] Registered for OStim Events")
+            Debug.Trace("[CoL] Registered for OStim Events for " + succubusName)
         endif
 
         RegisterForModEvent("ostim_start", "startScene")
@@ -68,10 +75,10 @@ State Waiting
     Event startScene(string eventName, string strArg, float numArg, Form sender)
 
         if CoL.DebugLogging
-            Debug.Trace("[CoL] OStim animation started")
+            Debug.Trace("[CoL] " + succubusName + " involved OStim animation started")
         endif
 
-        if !oStim.IsPlayerInvolved()
+        if !oStim.IsActorActive(succubus)
             return
         endif
 
@@ -93,6 +100,9 @@ State Waiting
     EndEvent
 
     Event OnEndState()
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] OS Handler Exited Wait")
+        endif
         UnregisterForModEvent("ostim_start")
     EndEvent
 
@@ -107,7 +117,10 @@ State Running
     Event orgasmHandler(string eventName, string strArg, float numArg, Form sender)
         Actor victim = oStim.GetMostRecentOrgasmedActor()
 
-        if victim == None || victim == CoL.playerRef 
+        if victim == None || victim == succubus || currentPartners.Find(victim) == -1
+            if CoL.DebugLogging
+                Debug.Trace("[CoL] Detected orgasm not related to " + succubusName + " scene")
+            endif
             return
         endif
 
@@ -128,7 +141,7 @@ State Running
 
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
         if CoL.DebugLogging
-            Debug.Trace("[CoL] Player involved animation ended")
+            Debug.Trace("[CoL] " + succubusName + " involved animation ended")
         endif
 
         int sceneEndEvent = ModEvent.Create("CoL_endScene")
@@ -163,6 +176,7 @@ Function triggerDrainStart(Actor victim)
 
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)

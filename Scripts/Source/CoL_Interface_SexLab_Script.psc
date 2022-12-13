@@ -36,6 +36,10 @@ State Installed
         return CoL_Global_SexLab_Script.Positions(SexLab, threadId)
     EndFunction
 
+    Function TrackActor(Actor actorRef, string trackName)
+        CoL_Global_SexLab_Script.TrackActor(SexLab, actorRef, trackName)
+    EndFunction
+
 EndState
 
 bool Function IsInterfaceActive()
@@ -43,6 +47,9 @@ bool Function IsInterfaceActive()
 EndFunction
 
 Function SetHook(int threadId, string hookName)
+EndFunction
+
+Function TrackActor(Actor actorRef, string trackName)
 EndFunction
 
 Actor[] Function Positions(int threadId)

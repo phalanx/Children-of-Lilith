@@ -10,6 +10,8 @@ bool SexLabInstalled
 bool SLSOInstalled
 bool SLARInstalled
 Actor[] currentVictims
+Actor succubus
+String succubusName
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Maintenance()
@@ -24,20 +26,33 @@ Function Maintenance()
     if !SexLabInstalled
         return
     endif
-
     if CoL.DebugLogging
         Debug.Trace("[CoL] SexLab detected")
     endif
+
+    succubus = GetTargetActor()
+    if succubus == None
+        Dispel()
+    endif
+    succubusName = succubus.GetActorBase().GetName()
 
     CheckForAddons()
     RegisterForEvents()
 EndFunction
 
 Function RegisterForEvents()
-    ; Register for sexlab's player tracking so we know when a scene involving the player starts
-    RegisterForModEvent("PlayerTrack_Start", "CoL_SLPlayerStartHandler")
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Registered for SexLab Player Start Scene Event")
+    ; Register for sexlab's tracking so we know when a scene involving the succubus starts
+    if succubus == CoL.playerRef
+        RegisterForModEvent("PlayerTrack_Start", "SceneStartHandler")
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Registered for SexLab Player Start Scene Event")
+        endif
+    elseif succubus != None
+        SexLab.TrackActor(succubus,"CoL_" + succubusName + "Track")
+        RegisterForModEvent("CoL_" + succubusName + "Track_Start", "SceneStartHandler")
+        if CoL.DebugLogging
+            Debug.Trace("[CoL] Registered for SexLab " + succubusName + " Start Scene Event")
+        endif
     endif
 EndFunction
 
@@ -66,6 +81,7 @@ Function triggerDrainStart(Actor victim)
 
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)
@@ -88,11 +104,11 @@ Function triggerDrainEnd(Actor victim)
     endif
 EndFunction
 
-Event CoL_SLPlayerStartHandler(Form actorRef, int threadId)
+Event SceneStartHandler(Form actorRef, int threadId)
     int sceneStartEvent = ModEvent.Create("CoL_startScene")
     ModEvent.Send(sceneStartEvent)
     if CoL.DebugLogging
-        Debug.Trace("[CoL] Player involved animation started")
+        Debug.Trace("[CoL] "+ succubusName +" involved animation started")
     endif
     SexLab.SetHook(threadId, "CoLSLSceneHook")
     ; Register for thread specific SL Hooks
@@ -126,7 +142,7 @@ Event CoL_SLOrgasmHandler(int threadId, bool hasPlayer)
     Actor[] actors = SexLab.Positions(threadId)
     int i = 0
     while i < actors.Length
-        if actors[i] != CoL.PlayerRef
+        if actors[i] != succubus
             triggerDrainStart(actors[i])
         endif
         i += 1
@@ -138,14 +154,14 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
     int sceneEndEvent = ModEvent.Create("CoL_endScene")
     ModEvent.Send(sceneEndEvent)
     if CoL.DebugLogging
-        Debug.Trace("[CoL] Player involved animation ended")
+        Debug.Trace("[CoL] "+ succubusName +" involved animation ended")
     endif
     UnregisterForModEvent("SexLabOrgasmSeparate")
     currentVictims = RemoveDupeActor(currentVictims)
     Actor[] actors = SexLab.Positions(threadId)
     int i = 0
     while i < actors.Length
-        if actors[i] && actors[i] != CoL.playerRef && currentVictims.Find(actors[i]) != -1
+        if actors[i] && actors[i] != succubus && currentVictims.Find(actors[i]) != -1
             if CoL.DebugLogging
                 Debug.Trace("[CoL] Trigger drain end for " + actors[i].GetBaseObject().GetName())
             endif
@@ -162,7 +178,7 @@ Event SLSOOrgasmHandler(Form ActorRef, Int threadID)
     if CoL.DebugLogging
         Debug.Trace("[CoL] Entered orgasm handler")
     endif
-    if akActor != CoL.playerRef
+    if akActor != succubus
         triggerDrainStart(akActor)
         if CoL.DebugLogging
             Debug.Trace("[CoL] Trigger drain start for " + actorName)

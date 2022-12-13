@@ -5,6 +5,8 @@ Keyword Property playerHavingSex Auto Hidden
 
 Actor victim1
 Actor victim2
+Actor succubus
+String succubusName
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Maintenance()
@@ -23,6 +25,8 @@ Function Maintenance()
         if CoL.DebugLogging
             Debug.Trace("[CoL] Flowergirls Detected")
         endif
+        succubus = GetTargetActor()
+        succubusName = succubus.GetActorBase().GetName()
         GoToState("Waiting")
     endif
 EndFunction
@@ -32,24 +36,24 @@ State Waiting
         victim1 = None
         victim2 = None
         RegisterForModEvent("CoL_FG_startScene", "startScene")
-        Debug.Trace("[CoL] Registered for Flower Girl Start Event")
+        Debug.Trace("[CoL] Registered for Flower Girl " + succubusName +" Start Event")
     EndEvent
 
     Event startScene(Form participant1, Form participant2)
-        if !CoL.playerRef.HasKeyword(playerHavingSex) 
+        if !Succubus.HasKeyword(playerHavingSex) 
             return
         endif
 
         if CoL.DebugLogging
-            Debug.Trace("[CoL] Player involved animation started")
+            Debug.Trace("[CoL] Succubus involved animation started")
         endif
 
         UnRegisterForModEvent("CoL_FG_startScene")
 
-        if participant1 as Actor != CoL.playerRef
+        if participant1 as Actor != succubus
             victim1 = participant1 as Actor
         endif
-        if participant2 as Actor != CoL.playerRef
+        if participant2 as Actor != succubus
             victim2 = participant2 as Actor
         endif
 
@@ -104,7 +108,7 @@ State Ending
         endif
 
         if CoL.DebugLogging
-            Debug.Trace("[CoL] Player involved animation ended")
+            Debug.Trace("[CoL] Succubus involved animation ended")
         endif
 
         UnregisterForModEvent("CoL_FG_stopScene")
@@ -134,6 +138,7 @@ Function triggerDrainStart(Actor victim)
 
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, 0.0)

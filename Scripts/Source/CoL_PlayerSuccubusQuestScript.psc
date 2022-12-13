@@ -18,11 +18,13 @@ GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succ
 GlobalVariable Property GameDaysPassed Auto
 
 Actor Property playerRef Auto                       ; The player reference
+Actor[] Property succubusList Auto Hidden           ; List of actors that have been turned into a succubus
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
-Spell[] Property levelFiveSpells Auto                ; Spells granted to player as a level five succubus
+Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
+Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 bool Property EnergyScaleTestEnabled = false Auto Hidden       ; Enable Energy Scale test when Drain to Death button pushed
 

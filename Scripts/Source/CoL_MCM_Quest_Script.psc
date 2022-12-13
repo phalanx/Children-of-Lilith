@@ -36,6 +36,8 @@ Form[] equippedItems
     string statusPageDebugLoggingHelp = "Toggles Debug Logging. \n Warning: this can produce a lot of log entries. Only enable for troubleshooting"
     string statusPageEnergyScaleTest = "Energy Scale Test Enabled"
     string statusPageEnergyScaleTestHelp = "Enable energy scale test\n Push Drain to Death hotkey to run\n Energy will empty, increase to max, then decrease to 0"
+    string statusPageNPCHeader = "NPC Succubi"
+    string statusPageNPCHelp = "Click on an entry to End Succubus for the NPC"
 
 ; Page 2 - Settings
     string settingsPageName = "Settings"
@@ -268,10 +270,24 @@ Event OnPageReset(string page)
             AddTextOptionST("LevelUp", statusPageLevelUp, None)
             AddToggleOptionST("DebugLogging", statusPageDebugLogging, CoL.DebugLogging)
             AddToggleOptionST("EnergyScaleTest", statusPageEnergyScaleTest, CoL.EnergyScaleTestEnabled)
+            AddHeaderOption(statusPageNPCHeader)
+            int i = 0
+            while i < CoL.succubusList.Length
+                string npcName = CoL.succubusList[i].GetActorBase().GetName()
+                AddTextOptionST("statusPageNPC+" + i, npcName, None)
+                i += 1
+            endwhile
         else
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("BecomeSuccubus", statusPageBecomeSuccubus, None)
+            AddHeaderOption(statusPageNPCHeader)
+            int i = 0
+            while i < CoL.succubusList.Length
+                string npcName = CoL.succubusList[i].GetActorBase().GetName()
+                AddTextOptionST("statusPageNPC+" + i, npcName, None)
+                i += 1
+            endwhile
         endif
 ; Page 2 - Settings
     elseif page == settingsPageName
@@ -1468,6 +1484,18 @@ endfunction
             endif
 
             ForcePageReset()
+        elseif option == "statusPageNPC"
+            int index = options[1] as int
+            CoL.succubusList[index].RemoveSpell(CoL.sceneHandlerSpell)
+            CoL.succubusList = RemoveActor(CoL.succubusList, CoL.succubusList[index])
+            ForcePageReset()
+        endif
+    EndEvent
+    Event OnHighlightST()
+        string[] options = getOptions()
+        string option = options[0]
+        if option == "statusPageNPC"
+            SetInfoText(statusPageNPCHelp)
         endif
     EndEvent
 
