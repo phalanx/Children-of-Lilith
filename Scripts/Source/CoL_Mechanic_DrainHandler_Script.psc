@@ -93,7 +93,12 @@ State Draining
             endif
         endif
 
-        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult))
+        float drainAmount = ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult))
+        if drainAmount > victimHealth
+            return victimHealth - 1
+        else
+            return drainAmount
+        endif
     EndFunction
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
@@ -105,7 +110,7 @@ State Draining
             Debug.Trace("[CoL] Recieved Victim Arousal: " + arousal)
         endif
 
-        if drainee.HasSpell(CoL.DrainHealthSpell)
+        if drainee.IsInFaction(CoL.drainVictimFaction)
             if CoL.DebugLogging
                 Debug.Trace("[CoL] " + draineeName + " has already been drained and Drain to Death Not Enabled. Bailing...")
             endif
@@ -113,9 +118,18 @@ State Draining
             Debug.Notification("Draining " + draineeName + " again would kill them")
             return
         endif
-        drainee.AddSpell(CoL.DrainHealthSpell)
-
+        
+        ; int effectDuration = ((CoL.drainDurationInGameTime * 60 * 60) / CoL.TimeScale.getValueInt()) as int
+        ; CoL.drainHealthSpell.SetNthEffectDuration(0, effectDuration)
+        ; CoL.drainHealthSpell.SetNthEffectMagnitude(0, drainAmount)
         float drainAmount = CalculateDrainAmount(drainee, arousal)
+        drainee.AddSpell(CoL.drainHealthSpell)
+
+        ; if CoL.DebugLogging
+        ;     Debug.Trace("[CoL] Drain Amount: " + drainAmount)
+        ; endif
+        ; CoL.drainHealthSpell.Cast(drainee, drainee)
+
         if (drainerForm as Actor) != CoL.playerRef
             drainAmount = drainAmount * 0.1
         endif

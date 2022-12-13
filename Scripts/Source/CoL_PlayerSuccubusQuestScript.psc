@@ -16,6 +16,9 @@ Keyword Property BBBNoStrip Auto Hidden
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
+GlobalVariable Property TimeScale Auto
+
+Faction Property drainVictimFaction Auto
 
 Actor Property playerRef Auto                       ; The player reference
 Actor[] Property succubusList Auto Hidden           ; List of actors that have been turned into a succubus
