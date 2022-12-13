@@ -333,3 +333,9 @@ Function ScaleEnergyTest()
         Utility.Wait(0.1)
     endwhile
 EndFunction
+
+Function Log(string msg)
+    if DebugLogging
+        Debug.Trace("[CoL] " + msg)
+    endif
+EndFunction

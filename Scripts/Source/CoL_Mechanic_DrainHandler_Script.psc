@@ -104,31 +104,20 @@ State Draining
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
-            Debug.Trace("[CoL] Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-            Debug.Trace("[CoL] Recieved Victim Arousal: " + arousal)
-        endif
+        CoL.Log("Recieved Start Drain Event for " + draineeName)
+        CoL.Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
+        CoL.Log("Recieved Victim Arousal: " + arousal)
 
         if drainee.IsInFaction(CoL.drainVictimFaction)
-            if CoL.DebugLogging
-                Debug.Trace("[CoL] " + draineeName + " has already been drained and Drain to Death Not Enabled. Bailing...")
-            endif
-
+            CoL.Log(draineeName + " has already been drained and Drain to Death Not Enabled. Bailing...")
             Debug.Notification("Draining " + draineeName + " again would kill them")
             return
         endif
         
-        ; int effectDuration = ((CoL.drainDurationInGameTime * 60 * 60) / CoL.TimeScale.getValueInt()) as int
-        ; CoL.drainHealthSpell.SetNthEffectDuration(0, effectDuration)
-        ; CoL.drainHealthSpell.SetNthEffectMagnitude(0, drainAmount)
         float drainAmount = CalculateDrainAmount(drainee, arousal)
-        drainee.AddSpell(CoL.drainHealthSpell)
+        drainee.AddSpell(CoL.drainHealthSpell, false)
 
-        ; if CoL.DebugLogging
-        ;     Debug.Trace("[CoL] Drain Amount: " + drainAmount)
-        ; endif
-        ; CoL.drainHealthSpell.Cast(drainee, drainee)
+        CoL.Log("Drain Amount: " + drainAmount)
 
         if (drainerForm as Actor) != CoL.playerRef
             drainAmount = drainAmount * 0.1
@@ -141,10 +130,7 @@ State Draining
     EndEvent
 
     Event EndDrain(Form draineeForm)
-        if CoL.DebugLogging
-            Actor drainee = draineeForm as Actor
-            Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
-        endif
+        CoL.Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
     EndEvent
 EndState
 
@@ -172,12 +158,24 @@ State DrainingToDeath
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Recieved Start Drain Event for " + draineeName)
-            Debug.Trace("[CoL] Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-        endif
+        CoL.Log("Recieved Start Drain Event for " + draineeName)
+        CoL.Log("Drained by " + drainee.GetBaseObject().GetName())
 
-        drainToDeathVFX.Play(drainee, 1)
+        if drainee.isEssential()
+            CoL.Log("Victim is essential")
+            string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the skeins of fate"
+
+            if drainee.IsInFaction(CoL.drainVictimFaction)
+                CoL.Log("Victim has been drained")
+                notifyMsg = notifyMsg + " and cannot be drained again"
+                return
+            else
+                drainee.AddSpell(CoL.drainHealthSpell, false)
+            endif
+            Debug.Notification(notifyMsg)
+        else
+            drainToDeathVFX.Play(drainee, 1, (drainerForm as Actor))
+        endif
 
         float drainAmount = CalculateDrainAmount(drainee, arousal)
         if (drainerForm as Actor) != CoL.playerRef
@@ -193,12 +191,15 @@ State DrainingToDeath
     Event EndDrain(Form draineeForm)
         Actor drainee = draineeForm as Actor
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
-            Debug.Trace("[CoL] Killing")
+        CoL.Log("Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
+        CoL.Log("Killing")
+        if drainee.isEssential()
+            CoL.Log("Can't kill essential. Dealing damage instead")
+            drainee.DamageActorValue("Health", 10000)
+            return
         endif
-
         drainee.Kill(CoL.playerRef)
+
     EndEvent
 
     Event OnEndState()
