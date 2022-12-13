@@ -5,10 +5,7 @@ Scriptname PF_HSF_DoNothingPkg_0500080B Extends Package Hidden
 ;BEGIN FRAGMENT Fragment_1
 Function Fragment_1(Actor akActor)
 ;BEGIN CODE
-   if CoL.DebugLogging
-        Debug.Trace("[CoL] ILS Start Detected: " + akActor.GetLeveledActorBase().GetName())
-   endif
-
+    CoL.Log("ILS Start Detected: " + akActor.GetLeveledActorBase().GetName())
     int sceneStartEvent = ModEvent.Create("CoL_startScene")
     if sceneStartEvent
         ModEvent.Send(sceneStartEvent)
@@ -21,9 +18,7 @@ EndFunction
 ;BEGIN FRAGMENT Fragment_4
 Function Fragment_4(Actor akActor)
 ;BEGIN CODE
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] ILS End Detected: " + akActor.GetLeveledActorBase().GetName())
-    endif
+    CoL.Log("ILS End Detected: " + akActor.GetLeveledActorBase().GetName())
     int sceneEndEvent = ModEvent.Create("CoL_endScene")
     if sceneEndEvent
         ModEvent.Send(sceneEndEvent)
@@ -31,22 +26,20 @@ Function Fragment_4(Actor akActor)
 
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, CoL.playerRef)
         ModEvent.pushForm(drainHandle, akActor)
         ModEvent.PushString(drainHandle, akActor.GetLeveledActorBase().GetName())
         ModEvent.PushFloat(drainHandle, 0.0)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain start event sent")
-        endif
+        CoL.Log("Drain start event sent")
     endif
     Utility.Wait(0.5)
     drainHandle = ModEvent.Create("CoL_endDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, CoL.playerRef)
         ModEvent.pushForm(drainHandle, akActor)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain end event sent")
-        endif
+        CoL.Log("Drain end event sent")
     endif
     
 ;END CODE

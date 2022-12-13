@@ -156,6 +156,7 @@ Function triggerDrainEnd(Actor victim)
 
     int drainHandle = ModEvent.Create("CoL_endDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging

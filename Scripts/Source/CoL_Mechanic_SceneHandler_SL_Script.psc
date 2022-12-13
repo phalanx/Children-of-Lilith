@@ -96,11 +96,10 @@ EndFunction
 Function triggerDrainEnd(Actor victim)
     int drainHandle = ModEvent.Create("CoL_endDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain end event sent for " + victim.GetLeveledActorBase().GetName())
-        endif
+        CoL.Log("Drain end event sent for " + victim.GetLeveledActorBase().GetName())
     endif
 EndFunction
 

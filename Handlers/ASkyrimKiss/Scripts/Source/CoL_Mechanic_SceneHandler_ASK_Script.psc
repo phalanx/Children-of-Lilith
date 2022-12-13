@@ -36,6 +36,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     endif
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, akCaster)
         ModEvent.pushForm(drainHandle, draineeRef)
         ModEvent.PushString(drainHandle, draineeRef.GetLeveledActorBase().GetName())
         ModEvent.PushFloat(drainHandle, 0.0)
@@ -47,6 +48,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     Utility.Wait(0.5)
     drainHandle = ModEvent.Create("CoL_endDrain")
     if drainHandle
+        ModEvent.pushForm(drainHandle, akCaster)
         ModEvent.pushForm(drainHandle, draineeRef)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging

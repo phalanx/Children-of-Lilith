@@ -129,7 +129,7 @@ State Draining
         endif
     EndEvent
 
-    Event EndDrain(Form draineeForm)
+    Event EndDrain(Form drainerForm, Form draineeForm)
         CoL.Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
     EndEvent
 EndState
@@ -163,11 +163,12 @@ State DrainingToDeath
 
         if drainee.isEssential()
             CoL.Log("Victim is essential")
-            string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the skeins of fate"
+            string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the weave of fate"
 
             if drainee.IsInFaction(CoL.drainVictimFaction)
                 CoL.Log("Victim has been drained")
                 notifyMsg = notifyMsg + " and cannot be drained again"
+                Debug.Notification(notifyMsg)
                 return
             else
                 drainee.AddSpell(CoL.drainHealthSpell, false)
@@ -188,7 +189,7 @@ State DrainingToDeath
         endif
     EndEvent
 
-    Event EndDrain(Form draineeForm)
+    Event EndDrain(Form drainerForm, Form draineeForm)
         Actor drainee = draineeForm as Actor
 
         CoL.Log("Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
@@ -198,7 +199,7 @@ State DrainingToDeath
             drainee.DamageActorValue("Health", 10000)
             return
         endif
-        drainee.Kill(CoL.playerRef)
+        drainee.Kill(drainerForm as Actor)
 
     EndEvent
 
@@ -217,5 +218,5 @@ float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 EndFunction
 Event StartDrain( Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
 EndEvent
-Event EndDrain(Form draineeForm)
+Event EndDrain(Form drainerForm, Form draineeForm)
 EndEvent

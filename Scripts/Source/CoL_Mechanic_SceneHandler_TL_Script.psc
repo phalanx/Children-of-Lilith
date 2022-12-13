@@ -75,6 +75,7 @@ Function triggerDrainEnd()
         if victims[i] != None
             int drainHandle = ModEvent.Create("CoL_endDrain")
             if drainHandle
+                ModEvent.pushForm(drainHandle, succubus)
                 ModEvent.pushForm(drainHandle, victims[i])
                 ModEvent.Send(drainHandle)
                 if CoL.DebugLogging
