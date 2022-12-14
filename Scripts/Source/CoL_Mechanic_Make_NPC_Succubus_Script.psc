@@ -8,17 +8,13 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
     Actor oldSuccubus = akOldContainer as Actor
 
     if oldSuccubus != None && oldSuccubus != CoL.playerRef && CoL.succubusList.Find(oldSuccubus) != -1
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Succubus Being Removed")
-        endif
+        CoL.Log("Succubus Being Removed")
         CoL.succubusList = RemoveActor(CoL.succubusList, oldSuccubus)
         oldSuccubus.RemoveSpell(CoL.sceneHandlerSpell)
     endif
 
     if  newSuccubus != None && newSuccubus != CoL.playerRef && CoL.succubusList.Find(newSuccubus) == -1
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] New Succubus Being Created")
-        endif
+        CoL.Log("New Succubus Being Created")
         newSuccubus.AddSpell(CoL.sceneHandlerSpell)
         if CoL.isPlayerSuccubus.GetValueInt() == 0
             CoL.drainHandler.draining = true

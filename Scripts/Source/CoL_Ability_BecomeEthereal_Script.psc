@@ -13,9 +13,7 @@ EndEvent
 
 Event OnUpdate()
     if Col.playerEnergyCurrent < Col.becomeEtherealCost
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Out of Energy")
-        endif
+        CoL.Log("Out of Energy")
         Debug.Notification("Out of Energy: Become Ethereal Disabled")
         Col.playerEnergyCurrent = 0
         CoL.playerRef.RemoveSpell(CoL.becomeEthereal)

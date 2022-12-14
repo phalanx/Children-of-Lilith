@@ -17,9 +17,7 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
     else
         drainTime = CoL.drainDurationInGameTime
     endif
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Drain will last for " + drainTime +" in game hours")
-    endif
+    CoL.Log("Drain will last for " + drainTime +" in game hours")
 
     float removalDay
     if !drainTarget.IsInFaction(CoL.drainVictimFaction)
@@ -31,26 +29,20 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
         ; If victim is in a faction, get the removalDay from StorageUtils
         removalDay = GetFloatValue(drainTarget, "CoL_drainRemovalDay")
         if removalDay == 0.0
-            if CoL.DebugLogging
-                Debug.Trace("[CoL] " + drainTargetName + " is a member of the drain faction but no removal day is set. Bailing...")
-                return
-            endif
+            CoL.Log(drainTargetName + " is a member of the drain faction but no removal day is set. Bailing...")
+            return
         endif
     endif
 
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] " + drainTargetName + " has been drained")
-        Debug.Trace("[CoL] Starting Health Value = " + drainTarget.GetActorValue("Health"))
-    endif
+    CoL.Log(drainTargetName + " has been drained")
+    CoL.Log("Starting Health Value = " + drainTarget.GetActorValue("Health"))
 
     healthDrained = CoL.drainHandler.CalculateDrainAmount(drainTarget)
     drainTarget.ModActorValue("Health", 0.0 - healthDrained)
 
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
-        Debug.Trace("[CoL] Drain will last until " + removalDay)
-        Debug.Trace("[CoL] Current Game Day: " + CoL.GameDaysPassed.GetValue())
-    endif
+    CoL.Log("New Health Value = " + drainTarget.GetActorValue("Health"))
+    CoL.Log("Drain will last until " + removalDay)
+    CoL.Log("Current Game Day: " + CoL.GameDaysPassed.GetValue())
 
     if removalDay <= CoL.GameDaysPassed.GetValue()
         FinishDrain(drainTarget)
@@ -70,15 +62,11 @@ Function FinishDrain(Actor drainTarget)
 EndFunction
 
 Event OnEffectFinish(Actor drainTarget, Actor akCaster)
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] " + drainTargetName + " has finished being drained")
-        Debug.Trace("[CoL] Starting Health Value = " + drainTarget.GetActorValue("Health"))
-    endif
+    CoL.Log(drainTargetName + " has finished being drained")
+    CoL.Log("Starting Health Value = " + drainTarget.GetActorValue("Health"))
     
     drainTarget.ModActorValue("Health", healthDrained)
 
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] New Health Value = " + drainTarget.GetActorValue("Health"))
-        Debug.Trace("[CoL] Drain Effect Removed")
-    endif
+    CoL.Log("New Health Value = " + drainTarget.GetActorValue("Health"))
+    CoL.Log("Drain Effect Removed")
 EndEvent

@@ -1458,11 +1458,11 @@ endfunction
             CoL.NoStripList = RemoveForm(CoL.NoStripList, itemRef)
 
             if CoL.DebugLogging
-                Debug.trace("Removing " + itemRef.GetName())
+               CoL.Log("Removing " + itemRef.GetName())
                 int i = 0
-                Debug.trace("Worn Item List contains:")
+                CoL.Log("Worn Item List contains:")
                 while i < equippedItems.Length
-                    Debug.trace(equippedItems[i].getName())
+                    CoL.Log(equippedItems[i].getName())
                     i += 1
                 endwhile
             endif
@@ -1474,11 +1474,11 @@ endfunction
             CoL.NoStripList = PushForm(CoL.NoStripList, itemRef)
 
             if CoL.DebugLogging
-                Debug.trace("Adding " + itemRef.getName())
+                CoL.Log("Adding " + itemRef.getName())
                 int i = 0
-                Debug.trace("Don't strip list contains:")
+                CoL.Log("Don't strip list contains:")
                 while i < CoL.NoStripList.Length
-                    Debug.trace(CoL.NoStripList[i].getName())
+                    CoL.Log(CoL.NoStripList[i].getName())
                     i += 1
                 endwhile
             endif

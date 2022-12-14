@@ -9,9 +9,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Bool ToysInstalled = Quest.GetQuest("toysframework")
     if ToysInstalled
         int rousingIncrease = (CoL.excitementBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * CoL.excitementLevelMult) as int)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Increasing target Toys Rousing by " + rousingIncrease) 
-        endif
+        CoL.Log("Increasing target Toys Rousing by " + rousingIncrease) 
         ToysGlobal.ArousalAdjust(rousingIncrease)
     endif
 EndEvent

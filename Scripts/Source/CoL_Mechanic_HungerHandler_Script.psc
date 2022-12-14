@@ -27,9 +27,7 @@ State HungerEnabled
                 ToysGlobal.ArousalAdjust(CoL.hungerArousalAmount as int)
             endif
             CoL.playerEnergyCurrent = 0
-            if CoL.DebugLogging
-                Debug.Trace("[CoL] Starvation Stack: " + starvationStack)
-            endif
+            CoL.Log("Starvation Stack: " + starvationStack)
         else
             starvationStack = 0
             CoL.playerRef.RemoveSpell(starvationSpell)

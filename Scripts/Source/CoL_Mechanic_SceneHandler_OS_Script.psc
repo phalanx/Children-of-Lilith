@@ -30,9 +30,7 @@ Function Maintenance()
     if !oStimInstalled
         return
     endif
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] OStim detected")
-    endif
+    CoL.Log("OStim detected")
 
     succubus = GetTargetActor()
     if succubus == None
@@ -52,31 +50,23 @@ Function CheckForAddons()
     endif
     oArousedInstalled = OAroused.IsInterfaceActive()
 
-    if CoL.DebugLogging
-        if oArousedInstalled
-            Debug.Trace("[CoL] OAroused Detected")
-        endif
-        if oDefeatInstalled
-            Debug.Trace("[CoL] ODefeat Detected")
-        endif
+    if oArousedInstalled
+       CoL.Log("OAroused Detected")
+    endif
+    if oDefeatInstalled
+        CoL.Log("ODefeat Detected")
     endif
 EndFunction
 
 State Waiting
     Event OnBeginState()
-
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Registered for OStim Events for " + succubusName)
-        endif
-
+        CoL.Log("Registered for OStim Events for " + succubusName)
         RegisterForModEvent("ostim_start", "startScene")
     EndEvent
 
     Event startScene(string eventName, string strArg, float numArg, Form sender)
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] " + succubusName + " involved OStim animation started")
-        endif
+        CoL.Log(succubusName + " involved OStim animation started")
 
         if !oStim.IsActorActive(succubus)
             return
@@ -92,7 +82,7 @@ State Waiting
 
         int sceneStartEvent = ModEvent.Create("CoL_startScene")
         if sceneStartEvent
-            Debug.Trace("[CoL] Sending Scene Start Event")
+            CoL.Log("Sending Scene Start Event")
             ModEvent.Send(sceneStartEvent)
         endif
 
@@ -100,9 +90,7 @@ State Waiting
     EndEvent
 
     Event OnEndState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] OS Handler Exited Wait")
-        endif
+        CoL.Log("OS Handler Exited Wait")
         UnregisterForModEvent("ostim_start")
     EndEvent
 
@@ -118,15 +106,11 @@ State Running
         Actor victim = oStim.GetMostRecentOrgasmedActor()
 
         if victim == None || victim == succubus || currentPartners.Find(victim) == -1
-            if CoL.DebugLogging
-                Debug.Trace("[CoL] Detected orgasm not related to " + succubusName + " scene")
-            endif
+            CoL.Log("Detected orgasm not related to " + succubusName + " scene")
             return
         endif
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Entered orgasm handler")
-        endif
+        CoL.Log("Entered orgasm handler")
 
         if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
             Ostim.ClearStrippedGear(victim)
@@ -140,9 +124,7 @@ State Running
     EndEvent
 
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] " + succubusName + " involved animation ended")
-        endif
+        CoL.Log(succubusName + " involved animation ended")
 
         int sceneEndEvent = ModEvent.Create("CoL_endScene")
         ModEvent.Send(sceneEndEvent)
@@ -167,9 +149,7 @@ EndState
 
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Trigger drain start for " + actorName)
-    endif
+    CoL.Log("Trigger drain start for " + actorName)
 
     int index = currentPartners.Find(victim)
     float arousal = currentPartnerArousal[index]
@@ -181,20 +161,16 @@ Function triggerDrainStart(Actor victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain start event sent")
-        endif
+        CoL.Log("Drain start event sent")
     endif
 EndFunction
 
 Function triggerDrainEnd(Actor victim)
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Trigger drain end for " + victim.GetBaseObject().GetName())
-    endif
+    CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
     if oDefeat && CoL.drainHandler.drainingToDeath
-        Debug.Trace("[CoL] oDefeat Detected")
+        CoL.Log("oDefeat Detected")
         Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
     endif
 

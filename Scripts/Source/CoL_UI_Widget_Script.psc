@@ -50,9 +50,7 @@ EndFunction
 
 State Initialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Initializing Widgets")
-        endif
+        CoL.Log("Initializing Widgets")
         energyMeter = iWidgets.loadMeter(energyMeterXPos, energyMeterYPos, True)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
         iWidgets.setMeterFillDirection(energyMeter, "both")
@@ -69,9 +67,7 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Uninitializing Widgets")
-        endif
+        CoL.Log("Uninitializing Widgets")
         iWidgets.Destroy(energyMeter)
         UnregisterForModEvent("iWantWidgetsReset")
         GoToState("")

@@ -10,10 +10,8 @@ float Property playerSuccubusXP Hidden
     EndFunction
     Function Set(float newVal)
         playerSuccubusXP_var = newVal
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Xp Gained: " + newVal)
-            Debug.Trace("[CoL] Current Xp: " + playerSuccubusXP_var)
-        Endif
+        CoL.Log("Xp Gained: " + newVal)
+        CoL.Log("Current Xp: " + playerSuccubusXP_var)
         if playerSuccubusXP_var >= xpForNextLevel
             LevelUp()
         EndIf
@@ -49,9 +47,7 @@ int Property perkPointsOnLevelUp = 1 Auto
 
 State Initialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Initializing Level Handler")
-        endif
+        CoL.Log("Initializing Level Handler")
         int i = 0
         while i < playerSuccubusLevel.GetValueInt()
             LevelUp(true)
@@ -72,9 +68,7 @@ State Running
 
 
     Function addPerkPoint()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Adding Perk")
-        endif
+        CoL.Log("Adding Perk")
         CoL.availablePerkPoints += perkPointsOnLevelUp 
     EndFunction
 
@@ -85,9 +79,7 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Uninitializing Level Handler")
-        endif
+        CoL.Log("Uninitializing Level Handler")
         CoL.RemoveSpells(CoL.levelOneSpells)
         CoL.RemoveSpells(CoL.levelTwoSpells)
         CoL.RemoveSpells(CoL.levelFiveSpells)
@@ -121,9 +113,7 @@ Function LevelUp(bool catchup=false)
     endif
 
     calculateXpForNextLevel()
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] XP For Next Level: " + xpForNextLevel)
-    endif
+    CoL.Log("XP For Next Level: " + xpForNextLevel)
     if playerSuccubusXP >= xpForNextLevel
         LevelUp()
     else

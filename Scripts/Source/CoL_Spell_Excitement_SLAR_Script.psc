@@ -9,9 +9,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
     if SLAR.IsInterfaceActive()
         int slarIncrease = (CoL.excitementBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * CoL.excitementLevelMult) as int)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Increasing target SLAR Exposure by " + slarIncrease) ; This gets multiplied by a configurable SLAR value
-        endif
+        CoL.Log("Increasing target SLAR Exposure by " + slarIncrease) ; This gets multiplied by a configurable SLAR value
         SLAR.UpdateActorExposure(akTarget, slarIncrease)
     endif
 EndEvent

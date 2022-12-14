@@ -31,15 +31,11 @@ Event OnInit()
 EndEvent
 
 Event OnPlayerLoadGame()
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Player Loaded Game")
-        Debug.Trace("[CoL] isPlayerSuccubus Value:" + CoL.isPlayerSuccubus.GetValueInt())
-    endif
+    CoL.Log("Player Loaded Game")
+    CoL.Log("isPlayerSuccubus Value:" + CoL.isPlayerSuccubus.GetValueInt())
     HandleOrdinatorVancian()
     if CoL.isPlayerSuccubus.GetValueInt() > 0
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Maintenance Should Run")
-        endif
+        CoL.Log("Maintenance Should Run")
         CoL.GoToState("Running")
         if VancianMagicPerk && CoL.playerRef.HasPerk(VancianMagicPerk)
             GoToState("Vancian")

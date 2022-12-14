@@ -21,9 +21,7 @@ EndEvent
 
 Event OnUpdate()
     if Col.playerEnergyCurrent < Col.healRateBoostCost
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Out of Energy")
-        endif
+        CoL.Log("Out of Energy")
         Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
         CoL.playerRef.RemoveSpell(CoL.HealRateBoost)
         return

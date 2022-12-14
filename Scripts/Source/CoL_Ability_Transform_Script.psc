@@ -91,15 +91,13 @@ Form[] function StripEquipment(Actor actorRef)
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30)) 
 		if itemRef 
-            if CoL.DebugLogging
-                Debug.Trace("[CoL] Checking Item: " + itemRef.GetName())
-            endif
+            CoL.Log("Checking Item: " + itemRef.GetName())
 			if  NoStripList.Find(itemRef) == -1    ; Make sure list exists and item is not part of no strip list
                 if CoL.DebugLogging
-                    Debug.Trace("[CoL] Item not found in striplist. List contains:")
+                    CoL.Log("Item not found in striplist. List contains:")
                     int x = 0
                     while x < NoStripList.Length
-                    	Debug.Trace(NoStripList[x])
+                    	CoL.Log(NoStripList[x])
                     	x += 1
                     endwhile
                 endif

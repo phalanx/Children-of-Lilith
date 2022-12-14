@@ -18,13 +18,8 @@ EndEvent
 
 Function Maintenance()
     playerHavingSex = Keyword.GetKeyword("dxIsHavingSex")
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] FG Keyword: " + playerHavingSex)
-    endif
     if playerHavingSex
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Flowergirls Detected")
-        endif
+        CoL.Log("Flowergirls Detected")
         succubus = GetTargetActor()
         succubusName = succubus.GetActorBase().GetName()
         GoToState("Waiting")
@@ -36,7 +31,7 @@ State Waiting
         victim1 = None
         victim2 = None
         RegisterForModEvent("CoL_FG_startScene", "startScene")
-        Debug.Trace("[CoL] Registered for Flower Girl " + succubusName +" Start Event")
+        CoL.Log("Registered for Flower Girl " + succubusName +" Start Event")
     EndEvent
 
     Event startScene(Form participant1, Form participant2)
@@ -44,9 +39,7 @@ State Waiting
             return
         endif
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Succubus involved animation started")
-        endif
+        CoL.Log("Succubus involved animation started")
 
         UnRegisterForModEvent("CoL_FG_startScene")
 
@@ -78,9 +71,7 @@ State Running
             endif
         endif
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Entered orgasm handler")
-        endif
+        CoL.Log("Entered orgasm handler")
 
         UnRegisterForModEvent("CoL_FG_Climax")
 
@@ -107,9 +98,7 @@ State Ending
             endif
         endif
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Succubus involved animation ended")
-        endif
+        CoL.Log("[CoL] Succubus involved animation ended")
 
         UnregisterForModEvent("CoL_FG_stopScene")
 
@@ -132,9 +121,7 @@ Function triggerDrainStart(Actor victim)
         return
     endif
     string actorName = victim.GetLeveledActorBase().GetName()
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Trigger drain start for " + actorName)
-    endif
+    CoL.Log("Trigger drain start for " + actorName)
 
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
@@ -143,25 +130,19 @@ Function triggerDrainStart(Actor victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, 0.0)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain start event sent")
-        endif
+        CoL.Log("Drain start event sent")
     endif
 EndFunction
 
 Function triggerDrainEnd(Actor victim)
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Trigger drain end for " + victim.GetBaseObject().GetName())
-    endif
+    CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     int drainHandle = ModEvent.Create("CoL_endDrain")
     if drainHandle
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain end event sent")
-        endif
+        CoL.Log("Drain end event sent")
     endif
 EndFunction
 

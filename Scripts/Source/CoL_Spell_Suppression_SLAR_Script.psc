@@ -9,9 +9,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
     if SLAR.IsInterfaceActive()
         int slarDecrease = (CoL.suppressionBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * CoL.suppressionLevelMult) as int)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Decreasing target SLAR Exposure by " + slarDecrease) ; This gets multiplied by a configurable SLAR value
-        endif
+        CoL.Log("Decreasing target SLAR Exposure by " + slarDecrease) ; This gets multiplied by a configurable SLAR value
         SLAR.UpdateActorExposure(akTarget, (0 - slarDecrease))
     endif
 EndEvent

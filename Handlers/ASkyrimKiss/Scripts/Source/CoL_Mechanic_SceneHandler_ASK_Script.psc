@@ -31,9 +31,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     endif
     int sceneEndEvent = ModEvent.Create("CoL_endScene")
     ModEvent.Send(sceneEndEvent)
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Trigger drain end for " + draineeRef.GetBaseObject().GetName())
-    endif
+    CoL.Log("Trigger drain end for " + draineeRef.GetBaseObject().GetName())
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
         ModEvent.pushForm(drainHandle, akCaster)
@@ -41,9 +39,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
         ModEvent.PushString(drainHandle, draineeRef.GetLeveledActorBase().GetName())
         ModEvent.PushFloat(drainHandle, 0.0)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain start event sent")
-        endif
+        CoL.Log("Drain start event sent")
     endif
     Utility.Wait(0.5)
     drainHandle = ModEvent.Create("CoL_endDrain")
@@ -51,8 +47,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
         ModEvent.pushForm(drainHandle, akCaster)
         ModEvent.pushForm(drainHandle, draineeRef)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain end event sent")
-        endif
+        CoL.Log("Drain end event sent")
     endif
 EndEvent

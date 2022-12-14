@@ -172,9 +172,7 @@ EndEvent
 
 State Initialize
     Event OnBeginState()
-        if DebugLogging
-            Debug.Trace("[CoL] Initializing")
-        endif
+        Log("Initializing")
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
         isPlayerSuccubus.SetValue(1.0)
@@ -188,9 +186,7 @@ State Running
     EndEvent
     
     Function Maintenance()
-        if DebugLogging
-            Debug.Trace("[CoL] Maintenance running")
-        endif
+        Log("Maintenance running")
         if Game.IsPluginInstalled("Devious Devices - Assets.esm")
             ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
         endif
@@ -200,7 +196,6 @@ State Running
         if Game.IsPluginInstalled("3BBB.esp")
             BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
         endif
-        Debug.Trace(BBBNoStrip)
         widgetHandler.GoToState("Running")
         drainHandler.GoToState("Initialize")
         levelHandler.GoToState("Running")
@@ -218,15 +213,11 @@ EndState
 
 State SceneRunning
     Event onBeginState()
-        if DebugLogging
-            Debug.Trace("[CoL] Entered SceneRunning State")
-        endif
+        Log("Entered SceneRunning State")
     EndEvent
     Event OnKeyDown(int keyCode)
-        if DebugLogging
-            Debug.Trace("[CoL] KeyDown Detected")
-            Debug.Trace("[CoL] Detected Key: " + keyCode)
-        endif
+        Log("KeyDown Detected")
+        Log("Detected Key: " + keyCode)
         if keyCode == toggleDrainHotkey
             drainHandler.draining = !drainHandler.draining
         elseif keyCode == toggleDrainToDeathHotkey
@@ -274,9 +265,7 @@ Function RegisterForEvents()
     RegisterForKey(toggleDrainToDeathHotKey)
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
-    if DebugLogging
-        Debug.Trace("[CoL] Registered for Hotkeys and Events")
-    endif
+    Log("Registered for Hotkeys and Events")
 EndFunction
 
 Function UnregisterForEvents()
@@ -284,9 +273,7 @@ Function UnregisterForEvents()
     UnregisterForKey(toggleDrainHotKey_var)
     UnregisterForModEvent("CoL_startScene")
     UnregisterForModEvent("CoL_endScene")
-    if DebugLogging
-        Debug.Trace("[CoL] Unregistered for Hotkeys and Events")
-    endif
+    Log("Unregistered for Hotkeys and Events")
 EndFunction
 
 Function StartScene()
@@ -318,11 +305,11 @@ Function UpdateTattoo()
     Float newAlpha = playerEnergyCurrent/playerEnergyMax
     int correctedSlot = tattooSlot - 1
     string bodySlot = "Body [Ovl" + correctedSlot + "]"
-    Debug.Trace(bodySlot)
     NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
 EndFunction
 
 Function ScaleEnergyTest()
+    float currentEnergy = playerEnergyCurrent
     playerEnergyCurrent = 0
     while playerEnergyCurrent < playerEnergyMax
         playerEnergyCurrent += 10
@@ -332,6 +319,7 @@ Function ScaleEnergyTest()
         playerEnergyCurrent -= 10
         Utility.Wait(0.1)
     endwhile
+    playerEnergyCurrent = currentEnergy
 EndFunction
 
 Function Log(string msg)

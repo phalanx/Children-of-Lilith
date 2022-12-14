@@ -37,18 +37,14 @@ Function Maintenance()
     vampireKeyword = Keyword.GetKeyword("vampire")
     RegisterForModEvent("CoL_startDrain", "StartDrain")
     RegisterForModEvent("CoL_endDrain", "EndDrain")
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Registered for CoL Drain Events")
-    endif
+    CoL.Log("Registered for CoL Drain Events")
 EndFunction
 
 State Uninitialize
     Event OnBeginState()
         UnregisterForModEvent("CoL_startDrain")
         UnregisterForModEvent("CoL_endDrain")
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Unregistered for CoL Drain Events")
-        endif
+        CoL.Log("Unregistered for CoL Drain Events")
         GoToState("")
     EndEvent
 EndState
@@ -71,7 +67,7 @@ Function CheckDraining(bool verbose)
         GoToState("")
     endif
     CoL.widgetHandler.GoToState("UpdateMeter")
-    Debug.Trace("[CoL] Finished Checking Drain State")
+    CoL.Log("[CoL] Finished Checking Drain State")
 EndFunction
 
 State Draining
