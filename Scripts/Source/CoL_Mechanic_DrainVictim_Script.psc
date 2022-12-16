@@ -9,13 +9,6 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
     
     drainTargetName = drainTarget.GetLeveledActorBase().GetName()
     
-    float drainTime
-    if CoL.gentleDrainer
-        drainTime = CoL.drainDurationInGameTime/2
-    else
-        drainTime = CoL.drainDurationInGameTime
-    endif
-
     float removalDay
     if !drainTarget.IsInFaction(CoL.drainVictimFaction)
         CoL.Log(drainTarget + " is not in drain victim faction. Removing Drain Victim Effect")
@@ -46,6 +39,7 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
         FinishDrain(drainTarget)
         return
     else
+        float drainTime = (removalDay - CoL.GameDaysPassed.GetValue()) * 24
         RegisterForSingleUpdateGameTime(drainTime)
         RegisterForModEvent("CoL_Uninitialize", "FinishDrain")
     endif
