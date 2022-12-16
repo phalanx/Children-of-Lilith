@@ -46,8 +46,13 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
     while i < victims.length
         if victims[i] != None
             string actorName = victims[i].GetLeveledActorBase().GetName()
-            int drainHandle = ModEvent.Create("CoL_startDrain")
             float arousal = ToysGlobal.GetRousing()
+            int drainHandle 
+            if succubus == CoL.playerRef
+                drainHandle = ModEvent.Create("CoL_startDrain")
+            else
+                drainHandle = ModEvent.Create("CoL_startDrain_NPC")
+            endif
             if drainHandle
                 ModEvent.pushForm(drainHandle, succubus)
                 ModEvent.pushForm(drainHandle, victims[i])
@@ -65,7 +70,12 @@ Function triggerDrainEnd()
     int i = 0
     while i < victims.length
         if victims[i] != None
-            int drainHandle = ModEvent.Create("CoL_endDrain")
+            int drainHandle
+            if succubus == CoL.playerRef
+                drainHandle = ModEvent.Create("CoL_endDrain")
+            else
+                drainHandle = ModEvent.Create("CoL_endDrain_NPC")
+            endif
             if drainHandle
                 ModEvent.pushForm(drainHandle, succubus)
                 ModEvent.pushForm(drainHandle, victims[i])
@@ -78,15 +88,22 @@ Function triggerDrainEnd()
 EndFunction
 
 Event startScene(string EventName, string strArg, float numArg, Form sender)
-    int sceneStartEvent = ModEvent.Create("CoL_startScene")
-    ModEvent.Send(sceneStartEvent)
-    CoL.Log(succubusName + " involved animation started")
+    int sceneStartEvent
+    if succubus == CoL.playerRef
+        sceneStartEvent = ModEvent.Create("CoL_startScene")
+    else
+        sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+    endif
+    if sceneStartEvent
+        ModEvent.Send(sceneStartEvent)
+        CoL.Log(succubusName + " involved animation started")
+    endif
 
     currentSceneName = strArg
     RegisterForModEvent("ToysClimaxNPC", "triggerDrainStart")
     RegisterForModEvent("ToysLoveSceneInfo", "sceneInfo")
     RegisterForModEvent("ToysLoveSceneEnd", "endScene")
-    CoL.Log("Registered for TL Events")
+    CoL.Log("Registered for TL Scene Events")
 EndEvent
 
 Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerConsent, Form ActInPos1, Form ActInPos2, Form ActInPos3, Form ActInPos4, Form ActInPos5)
@@ -94,6 +111,7 @@ Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerC
         return
     endif
 
+    UnRegisterForModEvent("ToysLoveSceneInfo")
     CoL.Log("Scene Info: ")
 
     Actor victim
@@ -128,7 +146,14 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
     CoL.Log(succubusName +" involved animation ended")
 
     triggerDrainEnd()
-    int sceneEndEvent = ModEvent.Create("CoL_endScene")
-    ModEvent.Send(sceneEndEvent)
+    int sceneEndEvent
+    if succubus == CoL.playerRef
+        sceneEndEvent = ModEvent.Create("CoL_endScene")
+    else
+        sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+    endif
+    if sceneEndEvent
+        ModEvent.Send(sceneEndEvent)
+    endif
     victims = new Actor[1]
 EndEvent

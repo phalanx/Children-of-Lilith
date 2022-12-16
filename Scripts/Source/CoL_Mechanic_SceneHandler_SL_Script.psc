@@ -69,7 +69,12 @@ Function triggerDrainStart(Actor victim)
         arousal = (SLAR.GetActorArousal(victim) as float)
     endif
 
-    int drainHandle = ModEvent.Create("CoL_startDrain")
+    int drainHandle
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_startDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_startDrain_NPC")
+    endif
     if drainHandle
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
@@ -82,7 +87,12 @@ Function triggerDrainStart(Actor victim)
 EndFunction
 
 Function triggerDrainEnd(Actor victim)
-    int drainHandle = ModEvent.Create("CoL_endDrain")
+    int drainHandle
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_endDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_endDrain_NPC")
+    endif
     if drainHandle
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
@@ -92,7 +102,12 @@ Function triggerDrainEnd(Actor victim)
 EndFunction
 
 Event SceneStartHandler(Form actorRef, int threadId)
-    int sceneStartEvent = ModEvent.Create("CoL_startScene")
+    int sceneStartEvent
+    if succubus == CoL.playerRef
+        sceneStartEvent = ModEvent.Create("CoL_startScene")
+    else
+        sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+    endif
     ModEvent.Send(sceneStartEvent)
     CoL.Log(succubusName +" involved animation started")
     SexLab.SetHook(threadId, "CoLSLSceneHook")
@@ -126,7 +141,12 @@ EndEvent
 
 Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
 
-    int sceneEndEvent = ModEvent.Create("CoL_endScene")
+    int sceneEndEvent
+    if succubus == CoL.playerRef
+        sceneEndEvent = ModEvent.Create("CoL_endScene")
+    else
+        sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+    endif
     ModEvent.Send(sceneEndEvent)
     CoL.Log(succubusName +" involved animation ended")
     UnregisterForModEvent("SexLabOrgasmSeparate")

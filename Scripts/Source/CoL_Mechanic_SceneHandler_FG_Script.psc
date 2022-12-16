@@ -1,7 +1,7 @@
 Scriptname CoL_Mechanic_SceneHandler_FG_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-Keyword Property playerHavingSex Auto Hidden
+Keyword Property IsHavingSex Auto Hidden
 
 Actor victim1
 Actor victim2
@@ -17,8 +17,8 @@ Event OnPlayerLoadGame()
 EndEvent
 
 Function Maintenance()
-    playerHavingSex = Keyword.GetKeyword("dxIsHavingSex")
-    if playerHavingSex
+    IsHavingSex = Keyword.GetKeyword("dxIsHavingSex")
+    if IsHavingSex
         CoL.Log("Flowergirls Detected")
         succubus = GetTargetActor()
         succubusName = succubus.GetActorBase().GetName()
@@ -35,11 +35,11 @@ State Waiting
     EndEvent
 
     Event startScene(Form participant1, Form participant2)
-        if !Succubus.HasKeyword(playerHavingSex) 
+        if !Succubus.HasKeyword(IsHavingSex) 
             return
         endif
 
-        CoL.Log("Succubus involved animation started")
+        CoL.Log(succubusName + " involved animation started")
 
         UnRegisterForModEvent("CoL_FG_startScene")
 
@@ -50,7 +50,13 @@ State Waiting
             victim2 = participant2 as Actor
         endif
 
-        int sceneStartEvent = ModEvent.Create("CoL_startScene")
+        int sceneStartEvent
+        if succubus == CoL.playerRef
+            sceneStartEvent = ModEvent.Create("CoL_startScene")
+        else
+            sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+        endif
+
         if sceneStartEvent
             ModEvent.Send(sceneStartEvent)
             GoToState("Running")
@@ -98,12 +104,19 @@ State Ending
             endif
         endif
 
-        CoL.Log("[CoL] Succubus involved animation ended")
+        CoL.Log(succubusName + " involved animation ended")
 
         UnregisterForModEvent("CoL_FG_stopScene")
 
-        int sceneEndEvent = ModEvent.Create("CoL_endScene")
-        ModEvent.Send(sceneEndEvent)
+        int sceneEndEvent 
+        if succubus == CoL.playerRef
+            sceneEndEvent = ModEvent.Create("CoL_endScene")
+        else
+            sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+        endif
+        if sceneEndEvent
+            ModEvent.Send(sceneEndEvent)
+        endif
 
         if victim1
             triggerDrainEnd(victim1)
@@ -122,8 +135,13 @@ Function triggerDrainStart(Actor victim)
     endif
     string actorName = victim.GetLeveledActorBase().GetName()
     CoL.Log("Trigger drain start for " + actorName)
-
-    int drainHandle = ModEvent.Create("CoL_startDrain")
+    
+    int drainHandle 
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_startDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_startDrain_NPC")
+    endif
     if drainHandle
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
@@ -137,7 +155,12 @@ EndFunction
 Function triggerDrainEnd(Actor victim)
     CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
-    int drainHandle = ModEvent.Create("CoL_endDrain")
+    int drainHandle 
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_endDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_endDrain_NPC")
+    endif
     if drainHandle
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)

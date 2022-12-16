@@ -80,7 +80,12 @@ State Waiting
             i += 1
         endwhile
 
-        int sceneStartEvent = ModEvent.Create("CoL_startScene")
+        int sceneStartEvent
+        if succubus == CoL.playerRef
+            sceneStartEvent = ModEvent.Create("CoL_startScene")
+        else
+            sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+        endif
         if sceneStartEvent
             CoL.Log("Sending Scene Start Event")
             ModEvent.Send(sceneStartEvent)
@@ -126,8 +131,15 @@ State Running
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
         CoL.Log(succubusName + " involved animation ended")
 
-        int sceneEndEvent = ModEvent.Create("CoL_endScene")
-        ModEvent.Send(sceneEndEvent)
+        int sceneEndEvent
+        if succubus == CoL.playerRef
+            sceneEndEvent = ModEvent.Create("CoL_endScene")
+        else
+            sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+        endif
+        if sceneEndEvent
+            ModEvent.Send(sceneEndEvent)
+        endif
         int i = 0
         while i < currentVictims.Length
             if currentVictims[i] != None
@@ -154,7 +166,12 @@ Function triggerDrainStart(Actor victim)
     int index = currentPartners.Find(victim)
     float arousal = currentPartnerArousal[index]
 
-    int drainHandle = ModEvent.Create("CoL_startDrain")
+    int drainHandle
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_startDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_startDrain_NPC")
+    endif
     if drainHandle
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
@@ -174,7 +191,12 @@ Function triggerDrainEnd(Actor victim)
         Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
     endif
 
-    int drainHandle = ModEvent.Create("CoL_endDrain")
+    int drainHandle
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_endDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_endDrain_NPC")
+    endif
     if drainHandle
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)

@@ -58,6 +58,9 @@ Form[] equippedItems
     string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
     string settingsPageDrainFeedsVampire = "Drain Feeds Vampires"
     string settingsPageDrainFeedsVampireHelp = "Should drain victims also trigger a vampire feeding"
+    string settingsPageNpcDrainHeader = "NPC Drain Settings"
+    string settingsPageNpcDeathChance = "NPC Drain to Death Chance"
+    string settingsPageNpcDeathChanceHelp = "Percentage Chance NPC drains victim to death"
 
     string settingsPageLevelHeader = "Leveling Settings"
     string settingsPageLevelXpPerDrain = "XP Per Drain"
@@ -302,6 +305,9 @@ Event OnPageReset(string page)
         AddSliderOptionST("DrainArousalMultiSlider", settingsPageDrainArousalMult, CoL.drainArousalMult, "{1}")
         AddSliderOptionST("EnergyConversionRateSlider", settingsPageEnergyConversionRate, CoL.energyConversionRate, "{1}")
         AddToggleOptionST("DrainFeedsVampireOption", settingsPageDrainFeedsVampire, CoL.drainFeedsVampire)
+        ; NPC Drain Settings
+        AddHeaderOption(settingsPageNpcDrainHeader)
+        AddSliderOptionST("npcDeathChanceSlider", settingsPageNpcDeathChance, CoL.npcDrainToDeathChance, "{1}")
         ; Level Settings
         AddHeaderOption(settingsPageLevelHeader)
         AddSliderOptionST("LevelXpPerDrain", settingsPageLevelXpPerDrain, CoL.levelHandler.xpPerDrain)
@@ -634,6 +640,21 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageDrainFeedsVampireHelp)
+        EndEvent
+    EndState
+    State NpcDeathChanceSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.npcDrainToDeathChance)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.npcDrainToDeathChance = value as int
+            SetSliderOptionValueST(CoL.npcDrainToDeathChance,"{1}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageNpcDeathChanceHelp)
         EndEvent
     EndState
 

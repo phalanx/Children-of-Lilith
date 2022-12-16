@@ -1,7 +1,5 @@
 Scriptname CoL_Mechanic_DrainVictim_Script extends activemagiceffect  
 
-import StorageUtil
-
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 float healthDrained
@@ -17,35 +15,36 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
     else
         drainTime = CoL.drainDurationInGameTime
     endif
-    CoL.Log("Drain will last for " + drainTime +" in game hours")
 
     float removalDay
     if !drainTarget.IsInFaction(CoL.drainVictimFaction)
-        ; If victim not in faction, store the removal day in StorageUtils
-        removalday = CoL.GameDaysPassed.GetValue() + (drainTime / 24)
-        drainTarget.AddToFaction(CoL.drainVictimFaction)
-        SetFloatValue(drainTarget, "CoL_drainRemovalDay", removalday)
+        CoL.Log(drainTarget + " is not in drain victim faction. Removing Drain Victim Effect")
+        FinishDrain(drainTarget)
+        return
     else
         ; If victim is in a faction, get the removalDay from StorageUtils
-        removalDay = GetFloatValue(drainTarget, "CoL_drainRemovalDay")
+        removalDay = StorageUtil.GetFloatValue(drainTarget, "CoL_drainRemovalDay")
         if removalDay == 0.0
-            CoL.Log(drainTargetName + " is a member of the drain faction but no removal day is set. Bailing...")
+            CoL.Log(drainTargetName + " is a member of the drain victim faction but no removal day is set. Removing Drain Victim Effect")
+            FinishDrain(drainTarget)
             return
         endif
     endif
 
     CoL.Log(drainTargetName + " has been drained")
-    CoL.Log("Starting Health Value = " + drainTarget.GetActorValue("Health"))
+    CoL.Log("Starting Health Value: " + drainTarget.GetActorValue("Health"))
 
-    healthDrained = CoL.drainHandler.CalculateDrainAmount(drainTarget)
+    healthDrained = StorageUtil.GetFloatValue(drainTarget, "CoL_drainAmount")
     drainTarget.ModActorValue("Health", 0.0 - healthDrained)
 
-    CoL.Log("New Health Value = " + drainTarget.GetActorValue("Health"))
+    CoL.Log("Drain Amount: " + healthDrained)
+    CoL.Log("New Health Value: " + drainTarget.GetActorValue("Health"))
     CoL.Log("Drain will last until " + removalDay)
     CoL.Log("Current Game Day: " + CoL.GameDaysPassed.GetValue())
 
     if removalDay <= CoL.GameDaysPassed.GetValue()
         FinishDrain(drainTarget)
+        return
     else
         RegisterForSingleUpdateGameTime(drainTime)
         RegisterForModEvent("CoL_Uninitialize", "FinishDrain")
@@ -57,6 +56,8 @@ Event OnUpdateGameTime()
 EndEvent
 
 Function FinishDrain(Actor drainTarget)
+    StorageUtil.UnsetFloatValue(drainTarget, "CoL_drainRemovalDay")
+    StorageUtil.UnsetFloatValue(drainTarget, "CoL_drainAmount")
     drainTarget.RemoveSpell(CoL.DrainHealthSpell)
     drainTarget.RemoveFromFaction(CoL.drainVictimFaction)
 EndFunction

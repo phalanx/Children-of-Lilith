@@ -2,6 +2,7 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 
 import PapyrusUtil
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+CoL_Mechanic_NPC_DrainHandler_Script Property npcDrainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
@@ -111,6 +112,9 @@ float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drai
 bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
 bool Property drainNotificationsEnabled = true Auto Hidden  ; Should notifications play when drain style is changed
 
+; NPC Drain Properties
+int Property npcDrainToDeathChance = 0 Auto Hidden
+
 ; Power Properties
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
@@ -198,6 +202,7 @@ State Running
         endif
         widgetHandler.GoToState("Running")
         drainHandler.GoToState("Initialize")
+        npcDrainHandler.GoToState("Initialize")
         levelHandler.GoToState("Running")
         RegisterForEvents()
     EndFunction
@@ -260,11 +265,13 @@ Function Maintenance()
 EndFunction
 
 Function RegisterForEvents()
-    ; Register for Hotkeys
+    ; Register for Events
     RegisterForKey(toggleDrainHotKey)
     RegisterForKey(toggleDrainToDeathHotKey)
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
+    RegisterForModEvent("CoL_startScene_NPC", "StartSceneNPC")
+    RegisterForModEvent("CoL_endSceneNPC", "EndSceneNPC")
     Log("Registered for Hotkeys and Events")
 EndFunction
 
@@ -278,6 +285,18 @@ EndFunction
 
 Function StartScene()
     GoToState("SceneRunning")
+EndFunction
+
+Function StartSceneNPC()
+    int random = Utility.RandomInt()
+    Log("NPC Scene Start Detected")
+    if random < npcDrainToDeathChance
+        npcDrainHandler.GoToState("DrainingToDeath")
+        Log("NPC will Drain to Death")
+    else
+        npcDrainHandler.GoToState("Draining")
+        Log("NPC will Drain")
+    endif
 EndFunction
 
 Function EndScene()
