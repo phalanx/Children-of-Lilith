@@ -15,6 +15,10 @@ Form[] succubusEquipment
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Utility.Wait(1.5)
     if CoL.isTransformed
+        if CoL.lockTransform
+            Debug.Notification("Arousal preventing untransforming")
+            return
+        endif
         UnTransform()
     else
         Transform()
@@ -51,7 +55,6 @@ EndFunction
 
 Function UnTransform()
     CoL.isTransformed = false
-    UnRegisterForupdate()
     ; Body Transform
     CoL.playerRef.SetRace(CoL.mortalRace)
     CoL.playerRef.GetActorbase().SetHairColor(CoL.mortalHairColor)

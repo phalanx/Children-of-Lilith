@@ -58,6 +58,7 @@ bool Function IsInterfaceActive()
 EndFunction
 
 bool Function IsPlayerInvolved()
+    return false
 EndFunction
 
 Actor[] Function GetActors()
@@ -76,4 +77,5 @@ Function ClearStrippedGear(Actor victim)
 EndFunction
 
 bool Function IsActorActive(Actor actorRef)
+    return false
 EndFunction

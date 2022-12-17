@@ -17,3 +17,7 @@ Actor[] Function Positions(Quest SexLab, int threadId) Global
     sslThreadController thread = CoL_Global_SexLab_Script.GetController(SexLab, threadId)
     return thread.Positions
 EndFunction
+
+bool Function IsActorActive(Quest SexLab, Actor actorRef) Global
+    return (SexLab as SexLabFramework).IsActorActive(actorRef)
+EndFunction

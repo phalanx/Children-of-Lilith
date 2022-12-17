@@ -210,6 +210,10 @@ Form[] equippedItems
     string transformPageTransformAnimationHelp = "Should an animation play when you transform\n the smoke effect will play either way"
     string transformPageTransformCost = "Transform Energy Cost"
     string transformPageTransformCostHelp = "Per second energy cost of being transformed"
+    string transformPageTransformArousalUpperThreshold = "Transform Upper Threshold"
+    string transformPageTransformArousalUpperThresholdHelp = "Force transform when above this threshold \n Set to 0 to disable"
+    string transformPageTransformArousalLowerThreshold = "Transform Lower Threshold"
+    string transformPageTransformArousalLowerThresholdHelp = "Force transform when below this threshold \n Set to 0 to disable"
     ; Buffs
     string transformPageBuffsHeader = "Transform Buffs"
     string transformPageBuffsEnabled = "Enable Transform Buffs"
@@ -458,6 +462,8 @@ Event OnPageReset(string page)
         AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
         AddToggleOptionST("transformAnimation", transformPageTransformAnimation, CoL.transformAnimation)
         AddSliderOptionST("transformCost", transformPageTransformCost, CoL.transformCost)
+        AddSliderOptionST("transformArousalUpperThreshold", transformPageTransformArousalUpperThreshold, CoL.transformArousalUpperThreshold)
+        AddSliderOptionST("transformArousalLowerThreshold", transformPageTransformArousalLowerThreshold, CoL.transformArousalLowerThreshold)
         AddHeaderOption(transformPageBuffsHeader)
         AddToggleOptionST("transformBuffsEnable", transformPageBuffsEnabled, CoL.transformBuffsEnabled)
         AddSliderOptionST("transformBuffsArmor", transformPageBuffsArmor, CoL.extraArmor)
@@ -1677,6 +1683,37 @@ endfunction
         Event OnHighlightST()
             SetInfoText(transformPageBuffsExtraCarryWeightHelp)
         EndEvent
+    EndState
+    State transformArousalUpperThreshold
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.transformArousalUpperThreshold)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.transformArousalUpperThreshold = value
+            SetSliderOptionValueST(CoL.transformArousalUpperThreshold)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPagetransformArousalUpperThreshold)
+        EndEvent
+    EndState
+    State transformArousalLowerThreshold
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.transformArousalLowerThreshold)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.transformArousalLowerThreshold = value
+            SetSliderOptionValueST(CoL.transformArousalLowerThreshold)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPagetransformArousalLowerThreshold)
+        EndEvent
+
     EndState
 
     Event OnSelectST()

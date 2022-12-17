@@ -5,9 +5,13 @@ CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
+CoL_Mechanic_Arousal_Transform Property arousalTransformHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_Interface_OAroused_Script Property OAroused Auto
+CoL_Interface_Toys_Script Property Toys Auto
+CoL_Interface_OStim_Script Property oStim Auto
+CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
@@ -156,6 +160,7 @@ bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubu
 ; Transform Stuff
 Spell Property transformSpell Auto
 bool Property isTransformed Auto Hidden
+bool Property lockTransform Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
@@ -163,16 +168,42 @@ Race Property succuRace Auto Hidden
 ColorForm Property succuHairColor Auto Hidden
 bool Property transformCrime = false Auto Hidden
 bool Property transformAnimation = true Auto Hidden
-
 bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
 Race Property mortalRace Auto Hidden
 ColorForm Property mortalHairColor Auto Hidden
-
 Form[] Property NoStripList Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
-
 float Property transformCost = 1.0 Auto Hidden
+float transformArousalUpperThreshold_var
+float Property transformArousalUpperThreshold Hidden
+    float Function Get()
+        return transformArousalUpperThreshold_var
+    EndFunction
+    Function Set(float newValue)
+        if newValue != 0 && arousalTransformHandler.GetState() != "Polling"
+            arousalTransformHandler.GoToState("Initialize")
+        elseif transformArousalLowerThreshold == 0 && arousalTransformHandler.GetState() == "Polling"
+            arousalTransformHandler.GoToState("Uninitialize")
+        endif
+        transformArousalUpperThreshold_var = newValue
+    EndFunction
+EndProperty
+
+float transformArousalLowerThreshold_var
+float Property transformArousalLowerThreshold Hidden
+    float Function Get()
+        return transformArousalLowerThreshold_var
+    EndFunction
+    Function Set(float newValue)
+        if newValue != 0 && arousalTransformHandler.GetState() != "Polling"
+            arousalTransformHandler.GoToState("Initialize")
+        elseif transformArousalUpperThreshold == 0 && arousalTransformHandler.GetState() == "Polling"
+            arousalTransformHandler.GoToState("Uninitialize")
+        endif
+    transformArousalLowerThreshold_var = newValue
+    EndFunction
+EndProperty
 
 ; Transform Buffs
 bool Property transformBuffsEnabled Auto Hidden
@@ -355,10 +386,25 @@ Event OnUpdate()
         if playerEnergyCurrent > transformCost
             playerEnergyCurrent -= transformCost
             RegisterForSingleUpdate(1)
-        else
+        elseif !lockTransform
             playerEnergyCurrent = 0
             Debug.Notification("Out of Energy")
             transformSpell.Cast(playerRef, playerRef)
         endif
     endif
 EndEvent
+
+bool Function isBusy()
+	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
+		return True
+	elseIf playerRef.IsInCombat()
+		return True
+	elseIf UI.IsMenuOpen("Dialogue Menu")
+		return True
+	elseIf !Game.IsFightingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Crafting Menu") || !playerRef.Is3DLoaded() || StorageUtil.GetIntValue(playerRef, "DCUR_SceneRunning")==1
+		return True
+	elseIf (Game.GetCameraState() == 10 || playerRef.GetSitState() != 0 || Game.GetCameraState() == 12 || playerRef.IsSwimming())  ;horse/in furniture/dragon/Swimming
+		return True
+	endIf
+	return False
+EndFunction
