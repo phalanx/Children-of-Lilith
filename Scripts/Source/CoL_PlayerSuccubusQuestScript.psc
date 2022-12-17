@@ -2,7 +2,6 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 
 import PapyrusUtil
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
-CoL_Mechanic_NPC_DrainHandler_Script Property npcDrainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
@@ -10,6 +9,7 @@ CoL_UI_Widget_Script  Property widgetHandler Auto
 CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_Interface_OAroused_Script Property OAroused Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
+CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
 ; Keyword Definitions
 Keyword Property ddLibs Auto Hidden
@@ -203,7 +203,6 @@ State Running
         endif
         widgetHandler.GoToState("Running")
         drainHandler.GoToState("Initialize")
-        npcDrainHandler.GoToState("Initialize")
         levelHandler.GoToState("Running")
         RegisterForEvents()
     EndFunction
@@ -272,8 +271,6 @@ Function RegisterForEvents()
     RegisterForKey(toggleDrainToDeathHotKey)
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
-    RegisterForModEvent("CoL_startScene_NPC", "StartSceneNPC")
-    RegisterForModEvent("CoL_endSceneNPC", "EndSceneNPC")
     Log("Registered for Hotkeys and Events")
 EndFunction
 
@@ -287,18 +284,6 @@ EndFunction
 
 Function StartScene()
     GoToState("SceneRunning")
-EndFunction
-
-Function StartSceneNPC()
-    int random = Utility.RandomInt()
-    Log("NPC Scene Start Detected")
-    if random < npcDrainToDeathChance
-        npcDrainHandler.GoToState("DrainingToDeath")
-        Log("NPC will Drain to Death")
-    else
-        npcDrainHandler.GoToState("Draining")
-        Log("NPC will Drain")
-    endif
 EndFunction
 
 Function EndScene()

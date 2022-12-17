@@ -27,6 +27,10 @@ Form[] equippedItems
     string statusPageBecomeSuccubusHelp = "Enables the mod, turning you into a succubus"
     string statusPageEndSuccubus = "End Succubus"
     string statusPageEndSuccubusHelp = "Disables the mod, returning you to human/mer"
+    string statusPageBecomeNPCSuccubus = "Become NPC Succubus"
+    string statusPageBecomeNPCSuccubusHelp = "Begin NPC Succubus System"
+    string statusPageEndNPCSuccubus = "End NPC Succubus"
+    string statusPageEndNPCSuccubusHelp = "End NPC Succubus System"
     string statusPageHeaderTwo = "Debug and Maintenance"
     string statusPageRefillEnergy = "Refill Energy"
     string statusPageRefillEnergyHelp = "Cheat: Refills Energy"
@@ -269,6 +273,11 @@ Event OnPageReset(string page)
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("EndSuccubus", statusPageEndSuccubus, None)
+            if CoL.npcSuccubusQuest.GetState() == "Running"
+                AddTextOptionST("EndNPCSuccubus", statusPageEndNPCSuccubus, None)
+            else
+                AddTextOptionST("BecomeNPCSuccubus", statusPageBecomeNPCSuccubus, None)
+            endif
             AddTextOptionST("EnergyRefill", statusPageRefillEnergy, None)
             AddTextOptionST("LevelUp", statusPageLevelUp, None)
             AddToggleOptionST("DebugLogging", statusPageDebugLogging, CoL.DebugLogging)
@@ -284,6 +293,11 @@ Event OnPageReset(string page)
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("BecomeSuccubus", statusPageBecomeSuccubus, None)
+            if CoL.npcSuccubusQuest.GetState() == "Running"
+                AddTextOptionST("EndNPCSuccubus", statusPageEndNPCSuccubus, None)
+            else
+                AddTextOptionST("BecomeNPCSuccubus", statusPageBecomeNPCSuccubus, None)
+            endif
             AddHeaderOption(statusPageNPCHeader)
             int i = 0
             while i < CoL.succubusList.Length
@@ -484,6 +498,28 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(statusPageEndSuccubusHelp)
+        EndEvent
+    EndState
+
+    State BecomeNPCSuccubus
+        Event OnSelectST()
+            SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "BecomeNPCSuccubus")
+            CoL.npcSuccubusQuest.GoToState("Initialize")
+            SetTextOptionValueST("Exit Menu Now")
+            Utility.Wait(0.5)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageBecomeNPCSuccubusHelp)
+        EndEvent
+    EndState
+
+    State EndNPCSuccubus
+        Event OnSelectST()
+            SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "EndNPCSuccubus")
+            CoL.npcSuccubusQuest.GoToState("Uninitialize")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageEndNPCSuccubusHelp)
         EndEvent
     EndState
 

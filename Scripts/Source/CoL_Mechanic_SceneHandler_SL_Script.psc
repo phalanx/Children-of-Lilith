@@ -46,8 +46,8 @@ Function RegisterForEvents()
         RegisterForModEvent("PlayerTrack_Start", "SceneStartHandler")
         CoL.Log("Registered for SexLab Player Start Scene Event")
     elseif succubus != None
-        SexLab.TrackActor(succubus,"CoL_" + succubusName + "Track")
-        RegisterForModEvent("CoL_" + succubusName + "Track_Start", "SceneStartHandler")
+        SexLab.TrackActor(succubus,"CoL_" + succubus + "Track")
+        RegisterForModEvent("CoL_" + succubus + "Track_Start", "SceneStartHandler")
         CoL.Log("Registered for SexLab " + succubusName + " Start Scene Event")
     endif
 EndFunction
