@@ -172,6 +172,18 @@ ColorForm Property mortalHairColor Auto Hidden
 Form[] Property NoStripList Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
 
+float Property transformCost = 1.0 Auto Hidden
+
+; Transform Buffs
+bool Property transformBuffsEnabled Auto Hidden
+float Property extraArmor Auto Hidden
+float Property extraMagicResist Auto Hidden
+float Property extraHealth Auto Hidden
+float Property extraMagicka Auto Hidden
+float Property extraStamina Auto Hidden
+float Property extraMeleeDamage Auto Hidden
+float Property extraCarryWeight Auto Hidden
+
 Event OnInit()
 EndEvent
 
@@ -333,3 +345,20 @@ Function Log(string msg)
         Debug.Trace("[CoL] " + msg)
     endif
 EndFunction
+
+Function transformDrain()
+    RegisterForSingleUpdate(1)
+EndFunction
+
+Event OnUpdate()
+    if isTransformed && transformCost > 0
+        if playerEnergyCurrent > transformCost
+            playerEnergyCurrent -= transformCost
+            RegisterForSingleUpdate(1)
+        else
+            playerEnergyCurrent = 0
+            Debug.Notification("Out of Energy")
+            transformSpell.Cast(playerRef, playerRef)
+        endif
+    endif
+EndEvent

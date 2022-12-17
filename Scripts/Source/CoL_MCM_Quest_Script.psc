@@ -196,6 +196,7 @@ Form[] equippedItems
     string transformPageLoadMortalPresetHelp = "Change current appearance to Human Form"
     string transformPageLoadMortalPresetMsg = "Human Form Loaded\nExit menu to apply changes"
     string transformPageEquipmentHeader = "Equipment"
+    string transformPageLoadEquipment = "Load Equipment Strip Options"
     string transformPageEquipmentSave = "Select Succubus Equipment"
     string transformPageEquipmentSaveHelp = "Opens a Chest Menu\nPlace the equipment you want to wear in your succubus form within"
     string transformPageEquipmentSaveMsg = "Exit Menu to Select Equipment"
@@ -207,7 +208,25 @@ Form[] equippedItems
     string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
     string transformPageTransformAnimation = "Play Transformation Animation"
     string transformPageTransformAnimationHelp = "Should an animation play when you transform\n the smoke effect will play either way"
-    string transformPageLoadEquipment = "Load Equipment Strip Options"
+    string transformPageTransformCost = "Transform Energy Cost"
+    string transformPageTransformCostHelp = "Per second energy cost of being transformed"
+    ; Buffs
+    string transformPageBuffsHeader = "Transform Buffs"
+    string transformPageBuffsEnabled = "Enable Transform Buffs"
+    string transformPageBuffsArmor = "Extra Armor"
+    string transformPageBuffsArmorHelp = "Increases Armor Rating by this amount"
+    string transformPageBuffsMagicResist = "Extra Magic Resist"
+    string transformPageBuffsMagicResistHelp = "Increases percentage of Magic Resistance by this amount"
+    string transformPageBuffsHealth = "Extra Health"
+    string transformPageBuffsHealthHelp = "Increaes Health by this amount"
+    string transformPageBuffsMagicka = "Extra Magicka"
+    string transformPageBuffsMagickaHelp = "Increases Magicka by this amount"
+    string transformPageBuffsStamina = "Extra Stamina"
+    string transformPageBuffsStaminaHelp = "Increases Stamina by this amount"
+    string transformPageBuffsExtraMeleeDamage = "Extra Melee Damage"
+    string transformPageBuffsExtraMeleeDamageHelp = "Multiplier to increase damage"
+    string transformPageBuffsExtraCarryWeight = "Extra Carry Weight"
+    string transformPageBuffsExtraCarryWeightHelp = "Increase carry weight by this amount"
 
 int Function GetVersion()
     return 6
@@ -438,6 +457,16 @@ Event OnPageReset(string page)
         AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
         AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
         AddToggleOptionST("transformAnimation", transformPageTransformAnimation, CoL.transformAnimation)
+        AddSliderOptionST("transformCost", transformPageTransformCost, CoL.transformCost)
+        AddHeaderOption(transformPageBuffsHeader)
+        AddToggleOptionST("transformBuffsEnable", transformPageBuffsEnabled, CoL.transformBuffsEnabled)
+        AddSliderOptionST("transformBuffsArmor", transformPageBuffsArmor, CoL.extraArmor)
+        AddSliderOptionST("transformBuffsMagicResist", transformPageBuffsMagicResist, CoL.extraMagicResist)
+        AddSliderOptionST("transformBuffsHealth", transformPageBuffsHealth, CoL.extraHealth)
+        AddSliderOptionST("transformBuffsMagicka", transformPageBuffsMagicka, CoL.extraMagicka)
+        AddSliderOptionST("transformBuffsStamina", transformPageBuffsStamina, CoL.extraStamina)
+        AddSliderOptionST("transformBuffsExtraMeleeDamage", transformPageBuffsExtraMeleeDamage, CoL.extraMeleeDamage, "{1}")
+        AddSliderOptionST("transformBuffsExtraCarryWeight", transformPageBuffsExtraCarryWeight, CoL.extraCarryWeight)
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
@@ -1514,12 +1543,142 @@ endfunction
             SetInfoText(transformPageTransformAnimationHelp)
         EndEvent
     EndState
+    State transformCost
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.transformCost)
+            SetSliderDialogDefaultValue(1)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.transformCost = value
+            SetSliderOptionValueST(CoL.transformCost)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageTransformCostHelp)
+        EndEvent
+    EndState
     State transformLoadEquipment
         Event OnSelectST()
             loadEquipment = true
             ForcePageReset()
         EndEvent
     EndState
+    State transformBuffsEnable
+        Event OnSelectST()
+            CoL.transformBuffsEnabled = !CoL.transformBuffsEnabled
+            SetToggleOptionValueST(CoL.transformBuffsEnabled)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsEnabled)
+        EndEvent
+    EndState
+    State transformBuffsArmor
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.extraArmor)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 1000)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.extraArmor = value
+            SetSliderOptionValueST(CoL.extraArmor)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsArmorHelp)
+        EndEvent
+    EndState
+    State transformBuffsMagicResist
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.extraMagicResist)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.extraMagicResist = value
+            SetSliderOptionValueST(CoL.extraMagicResist)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsMagicResistHelp)
+        EndEvent
+    EndState
+    State transformBuffsHealth
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.extraHealth)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 1000)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.extraHealth = value
+            SetSliderOptionValueST(CoL.extraHealth)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsHealthHelp)
+        EndEvent
+    EndState
+    State transformBuffsMagicka
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.extraMagicka)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 1000)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.extraMagicka = value
+            SetSliderOptionValueST(CoL.extraMagicka)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsMagickaHelp)
+        EndEvent
+    EndState
+    State transformBuffsStamina
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.extraStamina)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 1000)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.extraStamina = value
+            SetSliderOptionValueST(CoL.extraStamina)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsStaminaHelp)
+        EndEvent
+    EndState
+    State transformBuffsExtraMeleeDamage
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.extraMeleeDamage)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(0.1)
+            SetSliderDialogRange(0, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.extraMeleeDamage = value
+            SetSliderOptionValueST(CoL.extraMeleeDamage, "{1}")
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsExtraMeleeDamageHelp)
+        EndEvent
+    EndState
+    State transformBuffsExtraCarryWeight
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.extraCarryWeight)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(0, 1000)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.extraCarryWeight = value
+            SetSliderOptionValueST(CoL.extraCarryWeight)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageBuffsExtraCarryWeightHelp)
+        EndEvent
+    EndState
+
     Event OnSelectST()
         string[] options = getOptions()
         string option = options[0]

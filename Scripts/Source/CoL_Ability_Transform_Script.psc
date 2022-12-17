@@ -6,6 +6,9 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 Idle Property IdleVampireTransformation Auto
 Faction Property playerWerewolfFaction Auto
 
+; Transform Buff Settings
+
+
 Form[] originalEquipment
 Form[] succubusEquipment
 
@@ -43,10 +46,12 @@ Function Transform()
         CoL.playerRef.SetAttackActorOnSight()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
+
 EndFunction
 
 Function UnTransform()
     CoL.isTransformed = false
+    UnRegisterForupdate()
     ; Body Transform
     CoL.playerRef.SetRace(CoL.mortalRace)
     CoL.playerRef.GetActorbase().SetHairColor(CoL.mortalHairColor)
@@ -75,11 +80,29 @@ function AddAdditionalPowers()
     if CoL.healingForm
         ToggleHealRateBoost(true)
     endif
+    if CoL.transformBuffsEnabled
+        CoL.playerRef.ModActorValue("Health", CoL.extraHealth)
+        CoL.playerRef.ModActorValue("Stamina", CoL.extraStamina)
+        CoL.playerRef.ModActorValue("Magicka", CoL.extraMagicka)
+        CoL.playerRef.ModActorValue("CarryWeight", CoL.extraCarryWeight)
+        CoL.playerRef.ModActorValue("attackDamageMult", CoL.extraMeleeDamage)
+        CoL.playerRef.ModActorValue("DamageResist", CoL.extraArmor)
+        CoL.playerRef.ModActorValue("MagicResist", CoL.extraMagicResist)
+    endif
 endfunction
 
 function RemoveAdditionalPowers()
     if CoL.healingForm
         ToggleHealRateBoost(false)
+    endif
+    if CoL.transformBuffsEnabled
+        CoL.playerRef.ModActorValue("Health", 0.0 - CoL.extraHealth)
+        CoL.playerRef.ModActorValue("Stamina", 0 - CoL.extraStamina)
+        CoL.playerRef.ModActorValue("Magicka", 0 - CoL.extraMagicka)
+        CoL.playerRef.ModActorValue("CarryWeight", 0 - CoL.extraCarryWeight)
+        CoL.playerRef.ModActorValue("attackDamageMult", 0 - CoL.extraMeleeDamage)
+        CoL.playerRef.ModActorValue("DamageResist", 0 - CoL.extraArmor)
+        CoL.playerRef.ModActorValue("MagicResist", 0 - CoL.extraMagicResist)
     endif
 endfunction
 
