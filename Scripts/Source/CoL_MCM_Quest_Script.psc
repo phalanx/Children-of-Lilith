@@ -467,9 +467,9 @@ endfunction
 ; Page 1 State Handlers
     State BecomeSuccubus
         Event OnSelectST()
+            SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "BecomeSuccubus")
             CoL.GoToState("Initialize")
             SetTextOptionValueST("Exit Menu Now")
-            SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "BecomeSuccubus")
             Utility.Wait(0.5)
         EndEvent
         Event OnHighlightST()
@@ -479,8 +479,8 @@ endfunction
 
     State EndSuccubus
         Event OnSelectST()
-            CoL.GoToState("Uninitialize")
             SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "EndSuccubus")
+            CoL.GoToState("Uninitialize")
         EndEvent
         Event OnHighlightST()
             SetInfoText(statusPageEndSuccubusHelp)

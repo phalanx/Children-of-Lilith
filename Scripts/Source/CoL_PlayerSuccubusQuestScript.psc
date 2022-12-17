@@ -9,6 +9,7 @@ CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_Interface_OAroused_Script Property OAroused Auto
+CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 
 ; Keyword Definitions
 Keyword Property ddLibs Auto Hidden
@@ -236,6 +237,7 @@ State Uninitialize
         widgetHandler.GoToState("Uninitialize")
         levelHandler.GoToState("Uninitialize")
         drainHandler.GoToState("Uninitialize")
+        uninitializeQuest.GoToState("Run")
         UnregisterForEvents()
 
         int uninitEvent = ModEvent.Create("CoL_Uninitialize")

@@ -14,6 +14,7 @@ Actor succubus
 String succubusName
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    CoL.Log(akTarget.GetDisplayName())
     Maintenance()
 EndEvent
 
@@ -29,6 +30,7 @@ Function Maintenance()
     CoL.Log("SexLab detected")
 
     succubus = GetTargetActor()
+    CoL.Log(succubus.GetDisplayName())
     if succubus == None
         Dispel()
     endif
