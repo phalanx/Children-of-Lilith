@@ -12,7 +12,7 @@ float Property playerSuccubusXP Hidden
         playerSuccubusXP_var = newVal
         CoL.Log("Xp Gained: " + newVal)
         CoL.Log("Current Xp: " + playerSuccubusXP_var)
-        if playerSuccubusXP_var >= xpForNextLevel
+        if playerSuccubusXP_var > xpForNextLevel
             LevelUp()
         EndIf
     EndFunction
@@ -48,11 +48,10 @@ int Property perkPointsOnLevelUp = 1 Auto
 State Initialize
     Event OnBeginState()
         CoL.Log("Initializing Level Handler")
-        int i = 0
-        while i < playerSuccubusLevel.GetValueInt()
-            LevelUp(true)
-            i += 1
-        endwhile
+        if playerSuccubusLevel.GetValueInt() < 1
+            playerSuccubusLevel.SetValueInt(1)
+        endif
+        GrantLevelledSpells()
         GoToState("Running")
     EndEvent
 EndState
@@ -65,7 +64,6 @@ State Running
         endif
         playerSuccubusXP += (xpPerDrain * xpMod)
     EndFunction
-
 
     Function addPerkPoint()
         CoL.Log("Adding Perk")
@@ -91,34 +89,38 @@ EndState
 Function gainXP(bool applyDeathMult)
 EndFunction
 
-Function LevelUp(bool catchup=false)
-    if !catchup
-        playerSuccubusLevel.Mod(1)
-    endif
+Function LevelUp()
+    
+    playerSuccubusLevel.Mod(1)
 
     if (playerSuccubusLevel.GetValueInt() % levelsForPerk) == 0
         AddPerkPoint()
     endif
-    if (playerSuccubusLevel.GetValueInt() == 1)
-        CoL.GrantSpells(CoL.levelOneSpells)
-    endif
-    if (playerSuccubusLevel.GetValueInt() == 2)
-        CoL.GrantSpells(CoL.levelTwoSpells)
-    endif
-    if (playerSuccubusLevel.GetValueInt() == 5)
-        CoL.GrantSpells(CoL.levelFiveSpells)
-    endif
-    if (playerSuccubusLevel.GetValueInt() == 10)
-        CoL.GrantSpells(CoL.levelTenSpells)
-    endif
+    
+    GrantLevelledSpells()
 
     calculateXpForNextLevel()
     CoL.Log("XP For Next Level: " + xpForNextLevel)
-    if playerSuccubusXP >= xpForNextLevel
+    if playerSuccubusXP > xpForNextLevel
         LevelUp()
     else
         Debug.Notification("Succubus Level Increased")
         Debug.Notification("New Level: " + playerSuccubusLevel.GetValueInt())
+    endif
+EndFunction
+
+Function GrantLevelledSpells()
+    if (playerSuccubusLevel.GetValueInt() >= 1)
+        CoL.GrantSpells(CoL.levelOneSpells)
+    endif
+    if (playerSuccubusLevel.GetValueInt() >= 2)
+        CoL.GrantSpells(CoL.levelTwoSpells)
+    endif
+    if (playerSuccubusLevel.GetValueInt() >= 5)
+        CoL.GrantSpells(CoL.levelFiveSpells)
+    endif
+    if (playerSuccubusLevel.GetValueInt() >= 10)
+        CoL.GrantSpells(CoL.levelTenSpells)
     endif
 EndFunction
 
