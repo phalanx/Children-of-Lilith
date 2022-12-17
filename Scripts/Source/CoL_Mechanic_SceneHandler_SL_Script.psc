@@ -152,7 +152,12 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
     ModEvent.Send(sceneEndEvent)
     CoL.Log(succubusName +" involved animation ended")
     UnregisterForModEvent("SexLabOrgasmSeparate")
-    currentVictims = RemoveDupeActor(currentVictims)
+    if PapyrusUtil.GetVersion() >= 40
+        currentVictims = RemoveDupeActor(currentVictims)
+    else
+        ; Deal with SE PapyrusUtils
+        currentVictims = MergeActorArray(currentVictims, currentVictims, true)
+    endif
     Actor[] actors = SexLab.Positions(threadId)
     int i = 0
     while i < actors.Length

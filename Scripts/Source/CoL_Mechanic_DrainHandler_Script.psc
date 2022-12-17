@@ -150,7 +150,7 @@ State DrainingToDeath
         Actor drainee = draineeForm as Actor
 
         CoL.Log("Recieved Start Drain Event for " + draineeName)
-        CoL.Log("Drained by " + drainee.GetBaseObject().GetName())
+        CoL.Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
 
         float drainAmount
         if drainee.isEssential()

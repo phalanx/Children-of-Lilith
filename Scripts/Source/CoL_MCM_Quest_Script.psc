@@ -1779,5 +1779,12 @@ Form[] function getEquippedItems(Actor actorRef)
 		endif
 		i -= 1
 	endwhile
-	return RemoveDupeForm(ClearNone(equippedItems))
+    equippedItems = ClearNone(equippedItems)
+    if PapyrusUtil.GetVersion() >= 40
+        equippedItems = RemoveDupeForm(equippedItems)
+    else
+        ; Deal with SE PapyrusUtils
+        equippedItems = MergeFormArray(equippedItems, equippedItems, true)
+    endif
+	return equippedItems
 EndFunction
