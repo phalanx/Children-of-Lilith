@@ -3,7 +3,6 @@ Scriptname CoL_Mechanic_SceneHandler_TL_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-; CoL_Interface_SLAR_Script Property SLAR Auto
 string currentSceneName
 
 Actor[] victims
