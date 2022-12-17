@@ -64,6 +64,7 @@
             <Include NoRecurse="true">*.bsa</Include>
             <Match In="Handlers">*</Match>
             <Match In="Compatibility">*</Match>
+            <Match In="Extras">*</Match>
             <Match In="fomod">*</Match>
             <Match In="Scripts\Source">*.psc</Match>
             <Match In="Scripts">*.pex</Match>
