@@ -11,6 +11,7 @@ Quest Property SexLab_Interfaces Auto
 
 string[] settingsPageEnergyCastingConcStyleOptions
 bool meterBarChanged = false
+bool loadEquipment = false
 Form[] equippedItems
 
 ; String values to make translating the menu easier once I figure out how translation files work
@@ -206,6 +207,7 @@ Form[] equippedItems
     string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
     string transformPageTransformAnimation = "Play Transformation Animation"
     string transformPageTransformAnimationHelp = "Should an animation play when you transform\n the smoke effect will play either way"
+    string transformPageLoadEquipment = "Load Equipment Strip Options"
 
 int Function GetVersion()
     return 6
@@ -252,6 +254,7 @@ Event OnConfigInit()
 EndEvent
 
 Event OnConfigClose()
+    loadEquipment = false
     if meterBarChanged
         CoL.widgetHandler.GoToState("MoveEnergyMeter")
         meterBarChanged = false
@@ -438,26 +441,31 @@ Event OnPageReset(string page)
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
-        AddHeaderOption(transformPageNoStripAddHeader)
-        int i = 0
-		while i < equippedItems.Length
-			if !CoL.ddLibs || !equippedItems[i].hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device, if compatibility patch installed
-				if CoL.NoStripList.Find(equippedItems[i]) == -1
-					string itemName = equippedItems[i].GetName()
-					if itemName != "" && itemName != " "
-						AddTextOptionST("transformAddStrippable+" + i, itemName, None)
-					endif
-				endif
-			endif
-			i += 1
-		endwhile
-        AddHeaderOption(transformPageNoStripRemoveHeader)
-		i = 0
-		while i < CoL.NoStripList.Length
-			string itemName = CoL.NoStripList[i].GetName()
-			AddTextOptionST("transformRemoveStrippable+" + i, itemName, None)
-			i += 1
-		endwhile
+        if !loadEquipment
+            AddTextOptionST("transformLoadEquipment", transformPageLoadEquipment , None)
+        endif
+        if loadEquipment
+            AddHeaderOption(transformPageNoStripAddHeader)
+            int i = 0
+            while i < equippedItems.Length
+                if !CoL.ddLibs || !equippedItems[i].hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device, if compatibility patch installed
+                    if CoL.NoStripList.Find(equippedItems[i]) == -1
+                        string itemName = equippedItems[i].GetName()
+                        if itemName != "" && itemName != " "
+                            AddTextOptionST("transformAddStrippable+" + i, itemName, None)
+                        endif
+                    endif
+                endif
+                i += 1
+            endwhile
+            AddHeaderOption(transformPageNoStripRemoveHeader)
+            i = 0
+            while i < CoL.NoStripList.Length
+                string itemName = CoL.NoStripList[i].GetName()
+                AddTextOptionST("transformRemoveStrippable+" + i, itemName, None)
+                i += 1
+            endwhile
+        endif
 ; Page 7 - Compatibilities
     elseif page == "Compatibility Checks"
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -1504,6 +1512,12 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageTransformAnimationHelp)
+        EndEvent
+    EndState
+    State transformLoadEquipment
+        Event OnSelectST()
+            loadEquipment = true
+            ForcePageReset()
         EndEvent
     EndState
     Event OnSelectST()
