@@ -4,6 +4,10 @@ bool Function IsPlayerInvolved(Quest OStim) Global
     return (Ostim as OSexIntegrationMain).IsPlayerInvolved()
 EndFunction
 
+bool Function IsActorActive(Quest OStim, Actor actorRef) Global
+    return (Ostim as OSexIntegrationMain).IsActorActive(actorRef)
+EndFunction
+
 Actor[] Function GetActors(Quest OStim) Global
     return (OStim as OSexIntegrationMain).GetActors()
 EndFunction

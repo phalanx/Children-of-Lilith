@@ -27,6 +27,10 @@ State Installed
     bool Function IsPlayerInvolved()
         return CoL_Global_OStim_Script.IsPlayerInvolved(OStim)
     EndFunction
+    
+    bool Function IsActorActive(Actor actorRef)
+        return CoL_Global_Ostim_Script.IsActorActive(OStim, actorRef)
+    EndFunction
 
     Actor[] Function GetActors()
         return CoL_Global_OStim_Script.GetActors(OStim)
@@ -54,6 +58,7 @@ bool Function IsInterfaceActive()
 EndFunction
 
 bool Function IsPlayerInvolved()
+    return false
 EndFunction
 
 Actor[] Function GetActors()
@@ -69,4 +74,8 @@ bool Function IsSceneAggressiveThemed()
 EndFunction
 
 Function ClearStrippedGear(Actor victim)
+EndFunction
+
+bool Function IsActorActive(Actor actorRef)
+    return false
 EndFunction

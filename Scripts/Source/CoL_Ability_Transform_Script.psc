@@ -6,12 +6,19 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 Idle Property IdleVampireTransformation Auto
 Faction Property playerWerewolfFaction Auto
 
+; Transform Buff Settings
+
+
 Form[] originalEquipment
 Form[] succubusEquipment
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Utility.Wait(1.5)
     if CoL.isTransformed
+        if CoL.lockTransform
+            Debug.Notification("Arousal preventing untransforming")
+            return
+        endif
         UnTransform()
     else
         Transform()
@@ -25,6 +32,7 @@ Function Transform()
     CoL.playerRef.GetActorbase().SetHairColor(CoL.succuHairColor)
     Utility.Wait(0.1)
     CharGen.LoadPreset(CoL.succuPresetName)
+    CoL.UpdateTattoo()
     ; Equipment Transform
     if CoL.transformSwapsEquipment
         originalEquipment = StripEquipment(CoL.playerRef)
@@ -42,6 +50,7 @@ Function Transform()
         CoL.playerRef.SetAttackActorOnSight()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
+
 EndFunction
 
 Function UnTransform()
@@ -74,11 +83,29 @@ function AddAdditionalPowers()
     if CoL.healingForm
         ToggleHealRateBoost(true)
     endif
+    if CoL.transformBuffsEnabled
+        CoL.playerRef.ModActorValue("Health", CoL.extraHealth)
+        CoL.playerRef.ModActorValue("Stamina", CoL.extraStamina)
+        CoL.playerRef.ModActorValue("Magicka", CoL.extraMagicka)
+        CoL.playerRef.ModActorValue("CarryWeight", CoL.extraCarryWeight)
+        CoL.playerRef.ModActorValue("attackDamageMult", CoL.extraMeleeDamage)
+        CoL.playerRef.ModActorValue("DamageResist", CoL.extraArmor)
+        CoL.playerRef.ModActorValue("MagicResist", CoL.extraMagicResist)
+    endif
 endfunction
 
 function RemoveAdditionalPowers()
     if CoL.healingForm
         ToggleHealRateBoost(false)
+    endif
+    if CoL.transformBuffsEnabled
+        CoL.playerRef.ModActorValue("Health", 0.0 - CoL.extraHealth)
+        CoL.playerRef.ModActorValue("Stamina", 0 - CoL.extraStamina)
+        CoL.playerRef.ModActorValue("Magicka", 0 - CoL.extraMagicka)
+        CoL.playerRef.ModActorValue("CarryWeight", 0 - CoL.extraCarryWeight)
+        CoL.playerRef.ModActorValue("attackDamageMult", 0 - CoL.extraMeleeDamage)
+        CoL.playerRef.ModActorValue("DamageResist", 0 - CoL.extraArmor)
+        CoL.playerRef.ModActorValue("MagicResist", 0 - CoL.extraMagicResist)
     endif
 endfunction
 
@@ -90,15 +117,13 @@ Form[] function StripEquipment(Actor actorRef)
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30)) 
 		if itemRef 
-            if CoL.DebugLogging
-                Debug.Trace("[CoL] Checking Item: " + itemRef.GetName())
-            endif
+            CoL.Log("Checking Item: " + itemRef.GetName())
 			if  NoStripList.Find(itemRef) == -1    ; Make sure list exists and item is not part of no strip list
                 if CoL.DebugLogging
-                    Debug.Trace("[CoL] Item not found in striplist. List contains:")
+                    CoL.Log("Item not found in striplist. List contains:")
                     int x = 0
                     while x < NoStripList.Length
-                    	Debug.Trace(NoStripList[x])
+                    	CoL.Log(NoStripList[x])
                     	x += 1
                     endwhile
                 endif
@@ -134,7 +159,12 @@ function EquipEquipment(Actor actorRef, Form[] equipmentList)
 endfunction
 
 Function ToggleHealRateBoost(bool enable)
-    float healRateBoost = CoL.playerRef.GetBaseActorValue("HealRate") * CoL.healRateBoostMult
+    float healRateBoost
+    if CoL.healRateBoostFlat
+        healRateBoost = CoL.healRateBoostMult
+    else
+        healRateBoost = CoL.playerRef.GetBaseActorValue("HealRate") * CoL.healRateBoostMult
+    endif
     if enable
         CoL.playerRef.ModActorValue("HealRate", healRateBoost)
     else

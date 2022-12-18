@@ -10,11 +10,9 @@ float Property playerSuccubusXP Hidden
     EndFunction
     Function Set(float newVal)
         playerSuccubusXP_var = newVal
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Xp Gained: " + newVal)
-            Debug.Trace("[CoL] Current Xp: " + playerSuccubusXP_var)
-        Endif
-        if playerSuccubusXP_var >= xpForNextLevel
+        CoL.Log("Xp Gained: " + newVal)
+        CoL.Log("Current Xp: " + playerSuccubusXP_var)
+        if playerSuccubusXP_var > xpForNextLevel
             LevelUp()
         EndIf
     EndFunction
@@ -49,14 +47,11 @@ int Property perkPointsOnLevelUp = 1 Auto
 
 State Initialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Initializing Level Handler")
+        CoL.Log("Initializing Level Handler")
+        if playerSuccubusLevel.GetValueInt() < 1
+            playerSuccubusLevel.SetValueInt(1)
         endif
-        int i = 0
-        while i < playerSuccubusLevel.GetValueInt()
-            LevelUp(true)
-            i += 1
-        endwhile
+        GrantLevelledSpells()
         GoToState("Running")
     EndEvent
 EndState
@@ -70,11 +65,8 @@ State Running
         playerSuccubusXP += (xpPerDrain * xpMod)
     EndFunction
 
-
     Function addPerkPoint()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Adding Perk")
-        endif
+        CoL.Log("Adding Perk")
         CoL.availablePerkPoints += perkPointsOnLevelUp 
     EndFunction
 
@@ -85,9 +77,7 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Uninitializing Level Handler")
-        endif
+        CoL.Log("Uninitializing Level Handler")
         CoL.RemoveSpells(CoL.levelOneSpells)
         CoL.RemoveSpells(CoL.levelTwoSpells)
         CoL.RemoveSpells(CoL.levelFiveSpells)
@@ -99,36 +89,38 @@ EndState
 Function gainXP(bool applyDeathMult)
 EndFunction
 
-Function LevelUp(bool catchup=false)
-    if !catchup
-        playerSuccubusLevel.Mod(1)
-    endif
+Function LevelUp()
+    
+    playerSuccubusLevel.Mod(1)
 
     if (playerSuccubusLevel.GetValueInt() % levelsForPerk) == 0
         AddPerkPoint()
     endif
-    if (playerSuccubusLevel.GetValueInt() == 1)
-        CoL.GrantSpells(CoL.levelOneSpells)
-    endif
-    if (playerSuccubusLevel.GetValueInt() == 2)
-        CoL.GrantSpells(CoL.levelTwoSpells)
-    endif
-    if (playerSuccubusLevel.GetValueInt() == 5)
-        CoL.GrantSpells(CoL.levelFiveSpells)
-    endif
-    if (playerSuccubusLevel.GetValueInt() == 10)
-        CoL.GrantSpells(CoL.levelTenSpells)
-    endif
+    
+    GrantLevelledSpells()
 
     calculateXpForNextLevel()
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] XP For Next Level: " + xpForNextLevel)
-    endif
-    if playerSuccubusXP >= xpForNextLevel
+    CoL.Log("XP For Next Level: " + xpForNextLevel)
+    if playerSuccubusXP > xpForNextLevel
         LevelUp()
     else
         Debug.Notification("Succubus Level Increased")
         Debug.Notification("New Level: " + playerSuccubusLevel.GetValueInt())
+    endif
+EndFunction
+
+Function GrantLevelledSpells()
+    if (playerSuccubusLevel.GetValueInt() >= 1)
+        CoL.GrantSpells(CoL.levelOneSpells, true)
+    endif
+    if (playerSuccubusLevel.GetValueInt() >= 2)
+        CoL.GrantSpells(CoL.levelTwoSpells, true)
+    endif
+    if (playerSuccubusLevel.GetValueInt() >= 5)
+        CoL.GrantSpells(CoL.levelFiveSpells, true)
+    endif
+    if (playerSuccubusLevel.GetValueInt() >= 10)
+        CoL.GrantSpells(CoL.levelTenSpells, true)
     endif
 EndFunction
 

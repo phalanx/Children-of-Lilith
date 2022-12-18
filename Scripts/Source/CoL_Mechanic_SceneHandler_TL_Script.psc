@@ -3,10 +3,11 @@ Scriptname CoL_Mechanic_SceneHandler_TL_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-CoL_Interface_SLAR_Script Property SLAR Auto
 string currentSceneName
 
 Actor[] victims
+Actor succubus
+String succubusName
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Maintenance()
@@ -18,18 +19,21 @@ EndEvent
 
 Function Maintenance()
     if Game.IsPluginInstalled("Toys.esm")
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Toys and Love Detected")
-        endif
+        CoL.Log("Toys and Love Detected")
+        succubus = GetTargetActor()
+        succubusName = succubus.GetActorBase().GetName()
         RegisterForEvents()
     endif
 EndFunction
 
 Function RegisterForEvents()
-    ; Register for Toys and Loves's player tracking so we know when a scene involving the player starts
-    RegisterForModEvent("ToysStartLove", "startScene")
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Registered for Toys&Love Player Start Scene Event")
+    ; Register for Toys and Loves's scene tracking so we know when a scene starts
+    if succubus == CoL.playerRef
+        RegisterForModEvent("ToysStartLove", "startScene")
+        CoL.Log("Registered for Toys&Love Player Start Scene Event")
+    Else
+        RegisterForModEvent("ToysStartPlayerlessLove", "startScene")
+        CoL.Log("Registered for Toys&Love "+ succubusName +" Start Scene Event")
     endif
 EndFunction
 
@@ -41,16 +45,20 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
     while i < victims.length
         if victims[i] != None
             string actorName = victims[i].GetLeveledActorBase().GetName()
-            int drainHandle = ModEvent.Create("CoL_startDrain")
-            float arousal = SLAR.GetActorArousal(victims[i])
+            float arousal = ToysGlobal.GetRousing()
+            int drainHandle 
+            if succubus == CoL.playerRef
+                drainHandle = ModEvent.Create("CoL_startDrain")
+            else
+                drainHandle = ModEvent.Create("CoL_startDrain_NPC")
+            endif
             if drainHandle
+                ModEvent.pushForm(drainHandle, succubus)
                 ModEvent.pushForm(drainHandle, victims[i])
                 ModEvent.PushString(drainHandle, actorName)
                 ModEvent.PushFloat(drainHandle, arousal)
                 ModEvent.Send(drainHandle)
-                if CoL.DebugLogging
-                    Debug.Trace("[CoL] Drain start event sent for " + actorName)
-                endif
+                CoL.Log("Drain start event sent for " + actorName)
             endif
         endif
         i += 1
@@ -61,13 +69,17 @@ Function triggerDrainEnd()
     int i = 0
     while i < victims.length
         if victims[i] != None
-            int drainHandle = ModEvent.Create("CoL_endDrain")
+            int drainHandle
+            if succubus == CoL.playerRef
+                drainHandle = ModEvent.Create("CoL_endDrain")
+            else
+                drainHandle = ModEvent.Create("CoL_endDrain_NPC")
+            endif
             if drainHandle
+                ModEvent.pushForm(drainHandle, succubus)
                 ModEvent.pushForm(drainHandle, victims[i])
                 ModEvent.Send(drainHandle)
-                if CoL.DebugLogging
-                    Debug.Trace("[CoL] Drain end event sent for " + victims[i].GetLeveledActorBase().GetName())
-                endif
+                CoL.Log("Drain end event sent for " + victims[i].GetLeveledActorBase().GetName())
             endif
         endif
         i += 1
@@ -75,60 +87,52 @@ Function triggerDrainEnd()
 EndFunction
 
 Event startScene(string EventName, string strArg, float numArg, Form sender)
-    int sceneStartEvent = ModEvent.Create("CoL_startScene")
-    ModEvent.Send(sceneStartEvent)
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Player involved animation started")
+    int sceneStartEvent
+    if succubus == CoL.playerRef
+        sceneStartEvent = ModEvent.Create("CoL_startScene")
+    else
+        sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+    endif
+    if sceneStartEvent
+        ModEvent.Send(sceneStartEvent)
+        CoL.Log(succubusName + " involved animation started")
     endif
 
     currentSceneName = strArg
     RegisterForModEvent("ToysClimaxNPC", "triggerDrainStart")
     RegisterForModEvent("ToysLoveSceneInfo", "sceneInfo")
     RegisterForModEvent("ToysLoveSceneEnd", "endScene")
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Registered for TL Events")
-    endif
+    CoL.Log("Registered for TL Scene Events")
 EndEvent
 
 Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerConsent, Form ActInPos1, Form ActInPos2, Form ActInPos3, Form ActInPos4, Form ActInPos5)
-    if LoveName != currentSceneName || !PlayerInScene
+    if LoveName != currentSceneName
         return
     endif
 
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Scene Info: ")
-    endif
+    UnRegisterForModEvent("ToysLoveSceneInfo")
+    CoL.Log("Scene Info: ")
 
     Actor victim
-    if ActInPos1 && ActInPos1 != CoL.playerRef
+    if ActInPos1 && ActInPos1 != succubus
         victims = PushActor(victims, ActInPos1 as Actor)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Victim 1: " + (ActInPos1 as Actor).GetLeveledActorBase().GetName())
-        endif
+        CoL.Log("    Victim 1: " + (ActInPos1 as Actor).GetLeveledActorBase().GetName())
     endif
-    if ActInPos2 && ActInPos2 != CoL.playerRef
+    if ActInPos2 && ActInPos2 != succubus
         victims = PushActor(victims, ActInPos2 as Actor)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Victim 2: " +  (ActInPos2 as Actor).GetLeveledActorBase().GetName())
-        endif
+        CoL.Log("    Victim 2: " +  (ActInPos2 as Actor).GetLeveledActorBase().GetName())
     endif
-    if ActInPos3 && ActInPos3 != CoL.playerRef
+    if ActInPos3 && ActInPos3 != succubus
         victims = PushActor(victims, ActInPos3 as Actor)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Victim 3: " +  (ActInPos3 as Actor).GetLeveledActorBase().GetName())
-        endif
+        CoL.Log("    Victim 3: " +  (ActInPos3 as Actor).GetLeveledActorBase().GetName())
     endif
-    if ActInPos4 && ActInPos4 != CoL.playerRef
+    if ActInPos4 && ActInPos4 != succubus
         victims = PushActor(victims, ActInPos4 as Actor)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Victim 4: " +  (ActInPos4 as Actor).GetLeveledActorBase().GetName())
-        endif
+        CoL.Log("    Victim 4: " +  (ActInPos4 as Actor).GetLeveledActorBase().GetName())
     endif
-    if ActInPos5 && ActInPos5 != CoL.playerRef
+    if ActInPos5 && ActInPos5 != succubus
         victims = PushActor(victims, ActInPos5 as Actor)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Victim 5: " +  (ActInPos5 as Actor).GetLeveledActorBase().GetName())
-        endif
+        CoL.Log("    Victim 5: " +  (ActInPos5 as Actor).GetLeveledActorBase().GetName())
     endif
 
 EndEvent
@@ -138,12 +142,17 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
         return
     endif
 
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Player involved animation ended")
-    endif
+    CoL.Log(succubusName +" involved animation ended")
 
     triggerDrainEnd()
-    int sceneEndEvent = ModEvent.Create("CoL_endScene")
-    ModEvent.Send(sceneEndEvent)
+    int sceneEndEvent
+    if succubus == CoL.playerRef
+        sceneEndEvent = ModEvent.Create("CoL_endScene")
+    else
+        sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+    endif
+    if sceneEndEvent
+        ModEvent.Send(sceneEndEvent)
+    endif
     victims = new Actor[1]
 EndEvent

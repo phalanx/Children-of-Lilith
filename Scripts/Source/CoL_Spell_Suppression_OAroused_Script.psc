@@ -9,9 +9,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
     if OAroused.IsInterfaceActive()
         int ArousalDecrease = (CoL.suppressionBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * CoL.suppressionLevelMult) as int)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Decreasing target OAroused Arousal by " + ArousalDecrease)
-        endif
+        CoL.Log("Decreasing target OAroused Arousal by " + ArousalDecrease)
         OAroused.ModifyArousal(akTarget, (0 - ArousalDecrease))
     endif
 EndEvent

@@ -8,6 +8,8 @@ Quest Property oDefeat Auto Hidden
 bool oStimInstalled = False
 bool oDefeatInstalled = False
 bool oArousedInstalled = False
+Actor succubus
+String succubusName
 
 import PapyrusUtil
 
@@ -28,10 +30,13 @@ Function Maintenance()
     if !oStimInstalled
         return
     endif
+    CoL.Log("OStim detected")
 
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] OStim detected")
+    succubus = GetTargetActor()
+    if succubus == None
+        Dispel()
     endif
+    succubusName = succubus.GetActorBase().GetName()
 
     currentVictims = new Actor[1]
     CheckForAddons()
@@ -45,33 +50,25 @@ Function CheckForAddons()
     endif
     oArousedInstalled = OAroused.IsInterfaceActive()
 
-    if CoL.DebugLogging
-        if oArousedInstalled
-            Debug.Trace("[CoL] OAroused Detected")
-        endif
-        if oDefeatInstalled
-            Debug.Trace("[CoL] ODefeat Detected")
-        endif
+    if oArousedInstalled
+       CoL.Log("OAroused Detected")
+    endif
+    if oDefeatInstalled
+        CoL.Log("ODefeat Detected")
     endif
 EndFunction
 
 State Waiting
     Event OnBeginState()
-
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Registered for OStim Events")
-        endif
-
+        CoL.Log("Registered for OStim Events for " + succubusName)
         RegisterForModEvent("ostim_start", "startScene")
     EndEvent
 
     Event startScene(string eventName, string strArg, float numArg, Form sender)
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] OStim animation started")
-        endif
+        CoL.Log(succubusName + " involved OStim animation started")
 
-        if !oStim.IsPlayerInvolved()
+        if !oStim.IsActorActive(succubus)
             return
         endif
 
@@ -83,9 +80,14 @@ State Waiting
             i += 1
         endwhile
 
-        int sceneStartEvent = ModEvent.Create("CoL_startScene")
+        int sceneStartEvent
+        if succubus == CoL.playerRef
+            sceneStartEvent = ModEvent.Create("CoL_startScene")
+        else
+            sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+        endif
         if sceneStartEvent
-            Debug.Trace("[CoL] Sending Scene Start Event")
+            CoL.Log("Sending Scene Start Event")
             ModEvent.Send(sceneStartEvent)
         endif
 
@@ -93,6 +95,7 @@ State Waiting
     EndEvent
 
     Event OnEndState()
+        CoL.Log("OS Handler Exited Wait")
         UnregisterForModEvent("ostim_start")
     EndEvent
 
@@ -107,13 +110,12 @@ State Running
     Event orgasmHandler(string eventName, string strArg, float numArg, Form sender)
         Actor victim = oStim.GetMostRecentOrgasmedActor()
 
-        if victim == None || victim == CoL.playerRef 
+        if victim == None || victim == succubus || currentPartners.Find(victim) == -1
+            CoL.Log("Detected orgasm not related to " + succubusName + " scene")
             return
         endif
 
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Entered orgasm handler")
-        endif
+        CoL.Log("Entered orgasm handler")
 
         if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
             Ostim.ClearStrippedGear(victim)
@@ -127,12 +129,17 @@ State Running
     EndEvent
 
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Player involved animation ended")
-        endif
+        CoL.Log(succubusName + " involved animation ended")
 
-        int sceneEndEvent = ModEvent.Create("CoL_endScene")
-        ModEvent.Send(sceneEndEvent)
+        int sceneEndEvent
+        if succubus == CoL.playerRef
+            sceneEndEvent = ModEvent.Create("CoL_endScene")
+        else
+            sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+        endif
+        if sceneEndEvent
+            ModEvent.Send(sceneEndEvent)
+        endif
         int i = 0
         while i < currentVictims.Length
             if currentVictims[i] != None
@@ -154,38 +161,44 @@ EndState
 
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Trigger drain start for " + actorName)
-    endif
+    CoL.Log("Trigger drain start for " + actorName)
 
     int index = currentPartners.Find(victim)
     float arousal = currentPartnerArousal[index]
 
-    int drainHandle = ModEvent.Create("CoL_startDrain")
+    int drainHandle
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_startDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_startDrain_NPC")
+    endif
     if drainHandle
+        ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain start event sent")
-        endif
+        CoL.Log("Drain start event sent")
     endif
 EndFunction
 
 Function triggerDrainEnd(Actor victim)
-    if CoL.DebugLogging
-        Debug.Trace("[CoL] Trigger drain end for " + victim.GetBaseObject().GetName())
-    endif
+    CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
     if oDefeat && CoL.drainHandler.drainingToDeath
-        Debug.Trace("[CoL] oDefeat Detected")
+        CoL.Log("oDefeat Detected")
         Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
     endif
 
-    int drainHandle = ModEvent.Create("CoL_endDrain")
+    int drainHandle
+    if succubus == CoL.playerRef
+        drainHandle = ModEvent.Create("CoL_endDrain")
+    else
+        drainHandle = ModEvent.Create("CoL_endDrain_NPC")
+    endif
     if drainHandle
+        ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
         if CoL.DebugLogging

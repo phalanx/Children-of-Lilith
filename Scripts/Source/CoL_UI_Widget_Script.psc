@@ -50,9 +50,7 @@ EndFunction
 
 State Initialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Initializing Widgets")
-        endif
+        CoL.Log("Initializing Widgets")
         energyMeter = iWidgets.loadMeter(energyMeterXPos, energyMeterYPos, True)
         iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
         iWidgets.setMeterFillDirection(energyMeter, "both")
@@ -69,9 +67,7 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Uninitializing Widgets")
-        endif
+        CoL.Log("Uninitializing Widgets")
         iWidgets.Destroy(energyMeter)
         UnregisterForModEvent("iWantWidgetsReset")
         GoToState("")
@@ -90,14 +86,9 @@ EndState
 
 State UpdateMeter
     Event OnBeginState()
-        UnRegisterForUpdate()
-        if autoFade
-            ShowMeter()
-        endif
+        UpdateColor()
         iWidgets.setMeterPercent(energyMeter, ((CoL.playerEnergyCurrent / CoL.playerEnergyMax) * 100) as int)
-        if autoFade
-            RegisterForSingleUpdate(autoFadeTime)
-        endif
+        ShowMeter()
         GoToState("Running")
     EndEvent
 EndState
@@ -122,6 +113,9 @@ EndFunction
 
 Function ShowMeter()
     iWidgets.setVisible(energyMeter, 1)
+    if autofade
+        RegisterForSingleUpdate(autoFadeTime)
+    endif
 EndFunction
 
 
