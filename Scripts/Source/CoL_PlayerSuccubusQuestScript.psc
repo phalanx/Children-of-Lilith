@@ -29,6 +29,7 @@ Faction Property drainVictimFaction Auto
 Actor Property playerRef Auto                       ; The player reference
 Actor[] Property succubusList Auto Hidden           ; List of actors that have been turned into a succubus
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
+
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
@@ -36,6 +37,40 @@ Spell[] Property levelTenSpells Auto                ; Spells granted to player a
 Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 bool Property EnergyScaleTestEnabled = false Auto Hidden       ; Enable Energy Scale test when Drain to Death button pushed
+
+; Path Variables
+int followedPath_var = 0
+; 0 - Sanguine
+; 1 - Molag
+; 2 - Vaermina
+int Property followedPath Hidden
+    int Function Get()
+        return followedPath_var
+    endFunction
+    Function Set(int newPath)
+        if followedPath_var == 0
+            RemoveSpells(sanguineTraits)
+        elseif followedPath_var == 1
+            RemoveSpells(molagTraits)
+        elseif followedPath_var == 2
+            RemoveSpells(VaerminaTraits)
+        endif
+        followedPath_var = newPath        
+        if followedPath_var == 0
+            GrantSpells(sanguineTraits, false)
+            Debug.Notification("Path of Sanguine added")
+        elseif followedPath_var == 1
+            GrantSpells(molagTraits, false)
+            Debug.Notification("Path of Molag Bal added")
+        elseif followedPath_var == 2
+            GrantSpells(VaerminaTraits, false)
+            Debug.Notification("Path of Vaermina added")
+        endif
+    EndFunction
+EndProperty
+Spell[] Property sanguineTraits Auto                ; Spells to provide passives for Path of Sanguine
+Spell[] Property molagTraits Auto                   ; Spells to provide passives for Path of Molag Bal
+Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
 
 ; Hotkeys
 int toggleDrainHotKey_var = 29
@@ -223,33 +258,14 @@ State Initialize
         Log("Initializing")
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
+        followedPath = followedPath_var
         isPlayerSuccubus.SetValue(1.0)
+        Maintenance()
         GotoState("Running")
     EndEvent
 EndState
 
 State Running
-    Event OnBeginState()
-        Maintenance()
-    EndEvent
-    
-    Function Maintenance()
-        Log("Maintenance running")
-        if Game.IsPluginInstalled("Devious Devices - Assets.esm")
-            ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
-        endif
-        if Game.IsPluginInstalled("Toys.esm")
-            toysToy = Game.GetFormFromFile(0x000815, "Toys.esm") as Keyword
-        endif
-        if Game.IsPluginInstalled("3BBB.esp")
-            BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
-        endif
-        widgetHandler.GoToState("Running")
-        drainHandler.GoToState("Initialize")
-        levelHandler.GoToState("Running")
-        RegisterForEvents()
-    EndFunction
-    
     Event OnKeyDown(int keyCode)
         if EnergyScaleTestEnabled
             if keyCode == toggleDrainToDeathHotKey
@@ -282,17 +298,22 @@ State Uninitialize
         uninitializeQuest.GoToState("Run")
         UnregisterForEvents()
 
+        RemoveSpells(sanguineTraits)
+        RemoveSpells(molagTraits)
+        RemoveSpells(VaerminaTraits)
+
         int uninitEvent = ModEvent.Create("CoL_Uninitialize")
         ModEvent.Send(uninitEvent)
         isPlayerSuccubus.SetValue(0.0)
+
         GoToState("")
     EndEvent
 EndState
 
-Function GrantSpells(Spell[] spellList)
+Function GrantSpells(Spell[] spellList, bool verbose = true)
     int i = 0
     while i < spellList.Length
-        playerRef.AddSpell(spellList[i])
+        playerRef.AddSpell(spellList[i], verbose)
         i += 1
     endwhile
 EndFunction
@@ -306,6 +327,20 @@ Function RemoveSpells(Spell[] spellList)
 EndFunction
 
 Function Maintenance()
+    Log("Maintenance running")
+    if Game.IsPluginInstalled("Devious Devices - Assets.esm")
+        ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
+    endif
+    if Game.IsPluginInstalled("Toys.esm")
+        toysToy = Game.GetFormFromFile(0x000815, "Toys.esm") as Keyword
+    endif
+    if Game.IsPluginInstalled("3BBB.esp")
+        BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
+    endif
+    widgetHandler.GoToState("Running")
+    drainHandler.GoToState("Initialize")
+    levelHandler.GoToState("Running")
+    RegisterForEvents()
 EndFunction
 
 Function RegisterForEvents()
@@ -330,7 +365,7 @@ Function StartScene()
 EndFunction
 
 Function EndScene()
-    GoToState("")
+    GoToState("Running")
 EndFunction
 
 bool Function IsStrippable(Form itemRef)
@@ -343,12 +378,6 @@ bool Function IsStrippable(Form itemRef)
     endif
     return false
 endFunction
-
-Event OnKeyDown(int keyCode)
-    if keyCode == toggleDrainToDeathHotKey
-        ScaleEnergyTest()
-    endif
-EndEvent
 
 Function UpdateTattoo()
     Float newAlpha = playerEnergyCurrent/playerEnergyMax

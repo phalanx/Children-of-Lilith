@@ -43,6 +43,9 @@ Form[] equippedItems
     string statusPageEnergyScaleTestHelp = "Enable energy scale test\n Push Drain to Death hotkey to run\n Energy will empty, increase to max, then decrease to 0"
     string statusPageNPCHeader = "NPC Succubi"
     string statusPageNPCHelp = "Click on an entry to End Succubus for the NPC"
+    string statusPageFollowedPath = "Followed Path"
+    string statusPageFollowedPathHelp = "Choose your path. Effects which set of passive bonuses you get"
+    string[] statusPageFollowedPathOptions
 
 ; Page 2 - Settings
     string settingsPageName = "Settings"
@@ -233,28 +236,35 @@ Form[] equippedItems
     string transformPageBuffsExtraCarryWeightHelp = "Increase carry weight by this amount"
 
 int Function GetVersion()
-    return 6
+    return 7
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
     Debug.Trace("[CoL] New Version Detected " + newVersion)
     if isPlayerSuccubus.GetValueInt() > 0
-        if newVersion >= 2
-            CoL.levelHandler.GoToState("Initialize")
-        endif
-        if newVersion >= 3
-            CoL.Maintenance()
-        endif
-        if newVersion >= 4
-            if !CoL.playerRef.HasSpell(CoL.transformSpell)
-                CoL.playerRef.AddSpell(CoL.transformSpell)
-            endif
-        endif
-        if newVersion >= 6
-            CoL.levelHandler.GoToState("Uninitialize")
-            Utility.Wait(1)
-            CoL.levelHandler.GoToState("Initialize")
-        endif
+        Utility.Wait(1)
+        CoL.GoToState("Uninitialize")
+        Utility.Wait(1)
+        CoL.GoToState("Initialize")
+        Utility.Wait(1)
+    ;     if newVersion >= 2
+    ;         if CoL.levelHandler.GetState() != "Running"
+    ;             CoL.levelHandler.GoToState("Initialize")
+    ;         endif
+    ;     endif
+    ;     if newVersion >= 3
+    ;         CoL.Maintenance()
+    ;     endif
+    ;     if newVersion >= 4
+    ;         if !CoL.playerRef.HasSpell(CoL.transformSpell)
+    ;             CoL.playerRef.AddSpell(CoL.transformSpell)
+    ;         endif
+    ;     endif
+    ;     if newVersion >= 6
+    ;         CoL.levelHandler.GoToState("Uninitialize")
+    ;         Utility.Wait(1)
+    ;         CoL.levelHandler.GoToState("Initialize")
+    ;     endif
     endif
     OnConfigInit()
 EndEvent
@@ -274,6 +284,11 @@ Event OnConfigInit()
     settingsPageEnergyCastingConcStyleOptions[1] = settingsPageEnergyCastingConcStyleBothHands
     settingsPageEnergyCastingConcStyleOptions[2] = settingsPageEnergyCastingConcStyleRightOnly 
     settingsPageEnergyCastingConcStyleOptions[3] = settingsPageEnergyCastingConcStyleNone
+
+    statusPageFollowedPathOptions = new string[3]
+    statusPageFollowedPathOptions[0] = "Path of Sanguine"
+    statusPageFollowedPathOptions[1] = "Path of Molag Bal"
+    statusPageFollowedPathOptions[2] = "Path of Vaermina"
 EndEvent
 
 Event OnConfigClose()
@@ -296,6 +311,7 @@ Event OnPageReset(string page)
             AddTextOptionST("SuccubusNextLevelXP", statusPageNextLevelXP+": ", (CoL.levelHandler.xpForNextLevel as int), OPTION_FLAG_DISABLED)
             AddTextOptionST("EnergyCurrentTextOption", statusPageEnergyCurrent+": ", CoL.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
             AddSliderOptionST("EnergyMaxSlider", statusPageEnergyMax+": ", CoL.playerEnergyMax)
+            AddMenuOptionST("PathMenu", statusPageFollowedPath, statusPageFollowedPathOptions[CoL.followedPath])
             SetCursorPosition(1)
             AddHeaderOption(statusPageHeaderTwo)
             AddTextOptionST("EndSuccubus", statusPageEndSuccubus, None)
@@ -582,6 +598,22 @@ endfunction
         EndEvent
     EndState
 
+    State PathMenu
+        Event OnMenuOpenST()
+            SetMenuDialogOptions(statusPageFollowedPathOptions)
+            SetMenuDialogStartIndex(CoL.followedPath)
+            SetMenuDialogDefaultIndex(0)
+        EndEvent
+        Event OnMenuAcceptST(int index)
+            CoL.followedPath = index
+            SetMenuOptionValueST(statusPageFollowedPathOptions[index])
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(statusPageFollowedPathHelp)
+        EndEvent
+        
+    EndState
+
     State EnergyRefill
         Event OnSelectST()
             CoL.playerEnergyCurrent = CoL.playerEnergyMax
@@ -623,6 +655,7 @@ endfunction
             SetInfoText(statusPageEnergyScaleTestHelp)
         EndEvent
     EndState
+
 
 ; Page 2 State Handlers
     State DrainToggleOption

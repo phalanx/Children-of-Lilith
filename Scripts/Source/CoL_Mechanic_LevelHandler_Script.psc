@@ -111,16 +111,16 @@ EndFunction
 
 Function GrantLevelledSpells()
     if (playerSuccubusLevel.GetValueInt() >= 1)
-        CoL.GrantSpells(CoL.levelOneSpells)
+        CoL.GrantSpells(CoL.levelOneSpells, true)
     endif
     if (playerSuccubusLevel.GetValueInt() >= 2)
-        CoL.GrantSpells(CoL.levelTwoSpells)
+        CoL.GrantSpells(CoL.levelTwoSpells, true)
     endif
     if (playerSuccubusLevel.GetValueInt() >= 5)
-        CoL.GrantSpells(CoL.levelFiveSpells)
+        CoL.GrantSpells(CoL.levelFiveSpells, true)
     endif
     if (playerSuccubusLevel.GetValueInt() >= 10)
-        CoL.GrantSpells(CoL.levelTenSpells)
+        CoL.GrantSpells(CoL.levelTenSpells, true)
     endif
 EndFunction
 

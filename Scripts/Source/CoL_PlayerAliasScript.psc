@@ -36,7 +36,7 @@ Event OnPlayerLoadGame()
     HandleOrdinatorVancian()
     if CoL.isPlayerSuccubus.GetValueInt() > 0
         CoL.Log("Maintenance Should Run")
-        CoL.GoToState("Running")
+        CoL.Maintenance()
         if VancianMagicPerk && CoL.playerRef.HasPerk(VancianMagicPerk)
             GoToState("Vancian")
         else
