@@ -111,10 +111,8 @@ Form[] equippedItems
     string settingsPageBecomeEtherealCostHelp = "Per Second Energy Cost of Succubus Become Ethereal"
     string settingsPageHealRateBoostCost = "HealRate Boost Cost"
     string settingsPageHealRateBoostCostHelp = "Per Second Cost of Succubus Heal Rate Boost"
-    string settingsPageHealRateBoostMult = "HealRate Boost Multiplier"
-    string settingsPageHealRateBoostMultHelp = "Multiplier applied to HealRate during Succubus Heal Rate Boost"
-    string settingsPageHealRateBoostFlat = "Enable Flat Regen Boost"
-    string settingsPageHealRateBoostFlatHelp = "Instead of a Multiplier, HealRate Boost Multiplier gets applied as a flat amount of Health Regen\n Useful if you use other mods which remove your base regen\n Set HealRate Boost Multiplier to 7 to match the current default"
+    string settingsPageHealRateBoostMult = "HealRate Boost Amount"
+    string settingsPageHealRateBoostMultHelp = "Amount added to HealRate during Succubus Heal Rate Boost"
     string settingsPageEnergyCastingMult = "Energy Casting Cost Multiplier"
     string settingsPageEnergyCastingMultHelp = "Multiplier applied to spells Magicka cost before being removed from Energy Pool \n (Spell Magicka Cost * [This Value]) = Energy Cost of Spell"
     string settingsPageEnergyCastingConcStyle = "Cost Calculation Style"
@@ -376,7 +374,6 @@ Event OnPageReset(string page)
         AddEmptyOption()
         AddSliderOptionST("HealRateBoostCostSlider", settingsPageHealRateBoostCost, CoL.healRateBoostCost)
         AddSliderOptionST("HealRateBoostMultSlider", settingsPageHealRateBoostMult, CoL.healRateBoostMult)
-        AddToggleOptionST("HealRateBoostFlat", settingsPageHealRateBoostFlat, CoL.healRateBoostFlat)
         AddEmptyOption()
         AddSliderOptionST("EnergyCastingMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
         AddMenuOptionST("EnergyCastingConcStyleMenu", settingsPageEnergyCastingConcStyle, settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
@@ -1001,15 +998,6 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageHealRateBoostMultHelp)
-        EndEvent
-    EndState
-    State HealRateBoostFlat
-        Event OnSelectST()
-            CoL.healRateBoostFlat = !CoL.hungerEnabled
-            SetToggleOptionValueST(CoL.healRateBoostFlat)
-        EndEvent
-        Event OnHighlightST()
-            SetInfoText(settingsPageHealRateBoostFlatHelp)
         EndEvent
     EndState
 
