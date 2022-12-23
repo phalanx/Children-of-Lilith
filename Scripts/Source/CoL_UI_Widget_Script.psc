@@ -60,7 +60,7 @@ State Initialize
             Debug.Trace("[CoL] Failed to load energy meter")
             GoToState("")
         else
-            GoToState("UpdateMeter")
+            GoToState("MoveEnergyMeter")
         endif
     EndEvent
 EndState
