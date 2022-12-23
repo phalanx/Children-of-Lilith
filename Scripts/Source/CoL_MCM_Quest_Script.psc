@@ -1184,6 +1184,11 @@ endfunction
 ; Page 3 State Handlers
     State DrainKeyMapOption
         Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.toggleDrainHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
             bool continue = true
             if (conflictControl != "")
                 string msg
@@ -1207,6 +1212,11 @@ endfunction
     EndState
     State DrainToDeathKeyMapOption
         Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.toggleDrainHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
             bool continue = true
             if (conflictControl != "")
                 string msg
