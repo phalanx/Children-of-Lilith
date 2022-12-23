@@ -20,7 +20,6 @@ State Initialize
     EndEvent
 EndState
 
-; TODO - Steal isBusy from toys and love, credit VirginMarie
 State Polling
     Event OnBeginState()
         RegisterForSingleUpdate(30)
@@ -70,8 +69,16 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        RegisterForModEvent("CoL_GameLoad", "Maintenance")
+        UnregisterForModEvent("CoL_GameLoad")
+        if CoL.isTransformed
+            CoL.lockTransform = false
+        endif
     EndEvent
+
+    Function Maintenance()
+        UnregisterForModEvent("CoL_GameLoad")
+        UnregisterForUpdate()
+    EndFunction
 EndState
 
 Function Maintenance()
