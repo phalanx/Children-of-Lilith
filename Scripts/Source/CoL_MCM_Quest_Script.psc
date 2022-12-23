@@ -236,7 +236,7 @@ Form[] equippedItems
     string transformPageBuffsExtraCarryWeightHelp = "Increase carry weight by this amount"
 
 int Function GetVersion()
-    return 7
+    return 8
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
@@ -247,24 +247,8 @@ Event OnVersionUpdate(int newVersion)
         Utility.Wait(1)
         CoL.GoToState("Initialize")
         Utility.Wait(1)
-    ;     if newVersion >= 2
-    ;         if CoL.levelHandler.GetState() != "Running"
-    ;             CoL.levelHandler.GoToState("Initialize")
-    ;         endif
-    ;     endif
-    ;     if newVersion >= 3
-    ;         CoL.Maintenance()
-    ;     endif
-    ;     if newVersion >= 4
-    ;         if !CoL.playerRef.HasSpell(CoL.transformSpell)
-    ;             CoL.playerRef.AddSpell(CoL.transformSpell)
-    ;         endif
-    ;     endif
-    ;     if newVersion >= 6
-    ;         CoL.levelHandler.GoToState("Uninitialize")
-    ;         Utility.Wait(1)
-    ;         CoL.levelHandler.GoToState("Initialize")
-    ;     endif
+        CoL.transformArousalLowerThreshold = CoL.transformArousalLowerThreshold
+        CoL.transformArousalUpperThreshold = CoL.transformArousalUpperThreshold
     endif
     OnConfigInit()
 EndEvent
