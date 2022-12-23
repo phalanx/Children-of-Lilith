@@ -159,15 +159,9 @@ function EquipEquipment(Actor actorRef, Form[] equipmentList)
 endfunction
 
 Function ToggleHealRateBoost(bool enable)
-    float healRateBoost
-    if CoL.healRateBoostFlat
-        healRateBoost = CoL.healRateBoostMult
-    else
-        healRateBoost = CoL.playerRef.GetBaseActorValue("HealRate") * CoL.healRateBoostMult
-    endif
     if enable
-        CoL.playerRef.ModActorValue("HealRate", healRateBoost)
+        CoL.playerRef.ModActorValue("HealRate", CoL.healRateBoostMult)
     else
-        CoL.playerRef.ModActorValue("HealRate", 0.0 - healRateBoost)
+        CoL.playerRef.ModActorValue("HealRate", 0.0 - CoL.healRateBoostMult)
     endif
 endFunction
