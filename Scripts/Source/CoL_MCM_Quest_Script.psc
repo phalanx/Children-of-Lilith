@@ -217,6 +217,7 @@ Form[] equippedItems
     string transformPageTransformArousalLowerThresholdHelp = "Force transform when below this threshold \n Set to 0 to disable"
     ; Buffs
     string transformPageBuffsHeader = "Transform Buffs"
+    string transformPageNoBuffChange = "Cannot Change Buffs While Transformed"
     string transformPageBuffsEnabled = "Enable Transform Buffs"
     string transformPageBuffsArmor = "Extra Armor"
     string transformPageBuffsArmorHelp = "Increases Armor Rating by this amount"
@@ -462,14 +463,18 @@ Event OnPageReset(string page)
         AddSliderOptionST("transformArousalUpperThreshold", transformPageTransformArousalUpperThreshold, CoL.transformArousalUpperThreshold)
         AddSliderOptionST("transformArousalLowerThreshold", transformPageTransformArousalLowerThreshold, CoL.transformArousalLowerThreshold)
         AddHeaderOption(transformPageBuffsHeader)
-        AddToggleOptionST("transformBuffsEnable", transformPageBuffsEnabled, CoL.transformBuffsEnabled)
-        AddSliderOptionST("transformBuffsArmor", transformPageBuffsArmor, CoL.extraArmor)
-        AddSliderOptionST("transformBuffsMagicResist", transformPageBuffsMagicResist, CoL.extraMagicResist)
-        AddSliderOptionST("transformBuffsHealth", transformPageBuffsHealth, CoL.extraHealth)
-        AddSliderOptionST("transformBuffsMagicka", transformPageBuffsMagicka, CoL.extraMagicka)
-        AddSliderOptionST("transformBuffsStamina", transformPageBuffsStamina, CoL.extraStamina)
-        AddSliderOptionST("transformBuffsExtraMeleeDamage", transformPageBuffsExtraMeleeDamage, CoL.extraMeleeDamage, "{1}")
-        AddSliderOptionST("transformBuffsExtraCarryWeight", transformPageBuffsExtraCarryWeight, CoL.extraCarryWeight)
+        if CoL.isTransformed
+            AddTextOptionST("NoTransformBuffChange", transformPageNoBuffChange, None)
+        else
+            AddToggleOptionST("transformBuffsEnable", transformPageBuffsEnabled, CoL.transformBuffsEnabled)
+            AddSliderOptionST("transformBuffsArmor", transformPageBuffsArmor, CoL.extraArmor)
+            AddSliderOptionST("transformBuffsMagicResist", transformPageBuffsMagicResist, CoL.extraMagicResist)
+            AddSliderOptionST("transformBuffsHealth", transformPageBuffsHealth, CoL.extraHealth)
+            AddSliderOptionST("transformBuffsMagicka", transformPageBuffsMagicka, CoL.extraMagicka)
+            AddSliderOptionST("transformBuffsStamina", transformPageBuffsStamina, CoL.extraStamina)
+            AddSliderOptionST("transformBuffsExtraMeleeDamage", transformPageBuffsExtraMeleeDamage, CoL.extraMeleeDamage, "{1}")
+            AddSliderOptionST("transformBuffsExtraCarryWeight", transformPageBuffsExtraCarryWeight, CoL.extraCarryWeight)
+        endif
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
