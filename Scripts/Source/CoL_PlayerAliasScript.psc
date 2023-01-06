@@ -23,11 +23,6 @@ Event OnInit()
         CoL.GoToState("Initialize")
     endif
     HandleOrdinatorVancian()
-    if VancianMagicPerk && CoL.playerRef.HasPerk(VancianMagicPerk)
-        GoToState("Vancian")
-    else
-        GoToState("Standard")
-    endif
 EndEvent
 
 Event OnPlayerLoadGame()
@@ -37,11 +32,6 @@ Event OnPlayerLoadGame()
     if CoL.isPlayerSuccubus.GetValueInt() > 0
         CoL.Log("Maintenance Should Run")
         CoL.Maintenance()
-        if VancianMagicPerk && CoL.playerRef.HasPerk(VancianMagicPerk)
-            GoToState("Vancian")
-        else
-            GoToState("Standard")
-        endif
     endif
 
     int gameLoadEvent = ModEvent.Create("CoL_GameLoad")
