@@ -95,6 +95,9 @@ State Running
 
     Event OnKeyDown(int keyCode)
         if keyCode == CoL.temptationHotkey
+            if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+                return
+            endif
             if victim1 != None
                 CoL.temptationSpell.Cast(CoL.playerRef, victim1)
             endif

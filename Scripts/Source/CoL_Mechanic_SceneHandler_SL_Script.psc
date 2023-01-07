@@ -109,9 +109,7 @@ Event SceneStartHandler(Form actorRef, int threadId)
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
 
-        if CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(CoL.temptationHotkey)
-        endif
+        RegisterForKey(CoL.temptationHotkey)
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
@@ -135,11 +133,14 @@ EndEvent
 
 Event OnKeyDown(int keyCode)
     if keyCode == CoL.temptationHotkey
+        if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+            return
+        endif
         int i = 0
         while i < currentParticipants.Length
             CoL.temptationSpell.Cast(CoL.playerRef, currentParticipants[i])
             i += 1
-            endwhile
+        endwhile
     endif
 EndEvent
 

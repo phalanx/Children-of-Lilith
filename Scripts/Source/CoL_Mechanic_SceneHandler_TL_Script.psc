@@ -163,6 +163,9 @@ EndEvent
 
 Event OnKeyDown(int keyCode)
     if keyCode == CoL.temptationHotkey
+        if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+            return
+        endif
         int i = 0
         while i < victims.Length
             if victims[i] != succubus
