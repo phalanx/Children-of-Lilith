@@ -1,4 +1,6 @@
-Scriptname CoL_PlayerAliasScript extends ReferenceAlias  
+Scriptname CoL_PlayerAliasScript extends ReferenceAlias
+
+import MiscUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 ImageSpaceModifier Property EnergyCastingIMod Auto
@@ -145,3 +147,33 @@ Function ExpendEnergyVancian()
 		Debug.Notification("Not Enough Energy: Energy Casting Disabled")
 	endif
 EndFunction
+
+Event OnVampirismStateChanged(bool isVampire)
+    CoL.Log("Player vampire status chaged")
+    string mortalRaceId = MiscUtil.GetRaceEditorID(CoL.mortalRace)
+    string succubusRaceId = MiscUtil.GetRaceEditorID(CoL.succuRace)
+    Race newMortalRace
+    Race newSuccubusRace
+    CoL.Log("Mortal race id before: " + mortalRaceId)
+    CoL.Log("Succubus race id before: " + succubusRaceId)
+    if isVampire
+        CoL.mortalCureRace = CoL.mortalRace
+        CoL.succuCureRace = CoL.succuRace
+        mortalRaceId += "Vampire"
+        succubusRaceId +="Vampire"
+        newMortalRace = Race.GetRace(mortalRaceId)
+        newSuccubusRace = Race.GetRace(succubusRaceId)
+    else
+        newMortalRace = CoL.mortalCureRace
+        newSuccubusRace = CoL.succuCureRace
+    endif
+    
+    if (newMortalRace == None || newSuccubusRace == None)
+        Debug.MessageBox("Could not automatically update succubus races.\nFollow the steps on the mod page to resave succubus forms")
+    else
+        CoL.Log("Mortal race id after: " + MiscUtil.GetRaceEditorID(newMortalRace))
+        CoL.Log("Succubus race id after: " + MiscUtil.GetRaceEditorID(newSuccubusRace))
+        CoL.mortalRace = newMortalRace
+        CoL.succuRace = newSuccubusRace
+    endif
+EndEvent

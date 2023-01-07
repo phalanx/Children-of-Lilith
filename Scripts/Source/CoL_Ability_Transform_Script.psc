@@ -3,7 +3,6 @@ Scriptname CoL_Ability_Transform_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-Idle Property IdleVampireTransformation Auto
 Faction Property playerWerewolfFaction Auto
 
 ; Transform Buff Settings
@@ -13,7 +12,7 @@ Form[] originalEquipment
 Form[] succubusEquipment
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Utility.Wait(1.5)
+    Utility.Wait(1)
     if CoL.isTransformed
         if CoL.lockTransform
             Debug.Notification("Arousal preventing untransforming")
@@ -28,11 +27,8 @@ EndEvent
 Function Transform()
     CoL.isTransformed = true
     ; Body Transform
-    CoL.playerRef.SetRace(CoL.succuRace)
-    CoL.playerRef.GetActorbase().SetHairColor(CoL.succuHairColor)
-    Utility.Wait(0.1)
-    CharGen.LoadPreset(CoL.succuPresetName)
-    CoL.UpdateTattoo()
+    CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
+    
     ; Equipment Transform
     if CoL.transformSwapsEquipment
         originalEquipment = StripEquipment(CoL.playerRef)
@@ -56,10 +52,8 @@ EndFunction
 Function UnTransform()
     CoL.isTransformed = false
     ; Body Transform
-    CoL.playerRef.SetRace(CoL.mortalRace)
-    CoL.playerRef.GetActorbase().SetHairColor(CoL.mortalHairColor)
-    Utility.Wait(0.1)
-    CharGen.LoadPreset(CoL.mortalPresetName)
+    CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
+
     ; Equipment Transform
     if CoL.transformSwapsEquipment
         succubusEquipment = StripEquipment(CoL.playerRef)
@@ -80,32 +74,48 @@ Function UnTransform()
 EndFunction
 
 function AddAdditionalPowers()
+    CoL.Log("Adding additional powers")
     if CoL.healingForm
         ToggleHealRateBoost(true)
     endif
     if CoL.transformBuffsEnabled
         CoL.playerRef.ModActorValue("Health", CoL.extraHealth)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("Stamina", CoL.extraStamina)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("Magicka", CoL.extraMagicka)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("CarryWeight", CoL.extraCarryWeight)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("attackDamageMult", CoL.extraMeleeDamage)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("DamageResist", CoL.extraArmor)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("MagicResist", CoL.extraMagicResist)
+        Utility.Wait(0.1)
     endif
 endfunction
 
 function RemoveAdditionalPowers()
+    CoL.Log("Removing additional powers")
     if CoL.healingForm
         ToggleHealRateBoost(false)
     endif
     if CoL.transformBuffsEnabled
         CoL.playerRef.ModActorValue("Health", 0.0 - CoL.extraHealth)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("Stamina", 0 - CoL.extraStamina)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("Magicka", 0 - CoL.extraMagicka)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("CarryWeight", 0 - CoL.extraCarryWeight)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("attackDamageMult", 0 - CoL.extraMeleeDamage)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("DamageResist", 0 - CoL.extraArmor)
+        Utility.Wait(0.1)
         CoL.playerRef.ModActorValue("MagicResist", 0 - CoL.extraMagicResist)
+        Utility.Wait(0.1)
     endif
 endfunction
 
@@ -160,8 +170,8 @@ endfunction
 
 Function ToggleHealRateBoost(bool enable)
     if enable
-        CoL.playerRef.ModActorValue("HealRate", CoL.healRateBoostMult)
+        CoL.playerRef.ModActorValue("HealRate", (CoL.healRateBoostMult / 2))
     else
-        CoL.playerRef.ModActorValue("HealRate", 0.0 - CoL.healRateBoostMult)
+        CoL.playerRef.ModActorValue("HealRate", 0.0 - (CoL.healRateBoostMult / 2))
     endif
 endFunction

@@ -182,6 +182,7 @@ Form[] equippedItems
     string perkpageSlakeThirst = "Slake Thirst"
     string perkpageSlakeThirstHelp = "Add Succubus Arousal Level to Drain Amount\nIf multiple arousal frameworks detected, uses the average\nMultiplied by Drain Arousal Multiplier"
 ; Page 6 - Transformation
+    string transformPageExternalMessageBox = "RaceMenu's external character save is not enabled.\nTransform may not function properly"
     string transformPageName = "Transformation"
     string transformPagePresetHeader = "Preset"
     string transformPageSaveSuccuPreset = "Save Succubus Form"
@@ -207,8 +208,6 @@ Form[] equippedItems
     string transformPageTransformCrimeHelp = "Should Transformation be a Crime"
     string transformPageEquipmentSwap = "Transform Swaps Equipment"
     string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
-    string transformPageTransformAnimation = "Play Transformation Animation"
-    string transformPageTransformAnimationHelp = "Should an animation play when you transform\n the smoke effect will play either way"
     string transformPageTransformCost = "Transform Energy Cost"
     string transformPageTransformCostHelp = "Per second energy cost of being transformed"
     string transformPageTransformArousalUpperThreshold = "Transform Upper Threshold"
@@ -235,12 +234,13 @@ Form[] equippedItems
     string transformPageBuffsExtraCarryWeightHelp = "Increase carry weight by this amount"
 
 int Function GetVersion()
-    return 8
+    return 9
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
     Debug.Trace("[CoL] New Version Detected " + newVersion)
     if isPlayerSuccubus.GetValueInt() > 0
+        Debug.Notification("[CoL] Updating...")
         Utility.Wait(1)
         CoL.GoToState("Uninitialize")
         Utility.Wait(1)
@@ -248,6 +248,7 @@ Event OnVersionUpdate(int newVersion)
         Utility.Wait(1)
         CoL.transformArousalLowerThreshold = CoL.transformArousalLowerThreshold
         CoL.transformArousalUpperThreshold = CoL.transformArousalUpperThreshold
+        Debug.Notification("[CoL] Finished Updating")
     endif
     OnConfigInit()
 EndEvent
@@ -441,8 +442,10 @@ Event OnPageReset(string page)
         endif
 ; Page 6 - Transform
     elseif page == transformPageName
-        equippedItems = getEquippedItems(CoL.playerRef)
         SetCursorFillMode(TOP_TO_BOTTOM)
+        if !CharGen.IsExternalEnabled()
+            AddTextOptionST("transformExternalWarning", transformPageExternalMessageBox, None)
+        endif
         AddHeaderOption(transformPagePresetHeader)
         AddTextOptionST("transformSaveMortalPreset", transformPageSaveMortalPreset, None)
         if CoL.mortalPresetSaved
@@ -458,7 +461,6 @@ Event OnPageReset(string page)
         endif
         AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
         AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
-        AddToggleOptionST("transformAnimation", transformPageTransformAnimation, CoL.transformAnimation)
         AddSliderOptionST("transformCost", transformPageTransformCost, CoL.transformCost)
         AddSliderOptionST("transformArousalUpperThreshold", transformPageTransformArousalUpperThreshold, CoL.transformArousalUpperThreshold)
         AddSliderOptionST("transformArousalLowerThreshold", transformPageTransformArousalLowerThreshold, CoL.transformArousalLowerThreshold)
@@ -482,6 +484,7 @@ Event OnPageReset(string page)
             AddTextOptionST("transformLoadEquipment", transformPageLoadEquipment , None)
         endif
         if loadEquipment
+            equippedItems = getEquippedItems(CoL.playerRef)
             AddHeaderOption(transformPageNoStripAddHeader)
             int i = 0
             while i < equippedItems.Length
@@ -1484,10 +1487,9 @@ endfunction
         Event OnSelectST()
             CoL.mortalRace = CoL.playerRef.GetRace()
             CoL.mortalHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-            CharGen.SavePreset(CoL.mortalPresetName)
-            CoL.mortalPresetSaved = True
             Debug.MessageBox(transformPageSaveMortalPresetMsg)
-            ForcePageReset()
+            CoL.SavePreset(CoL.mortalPresetName)
+            CoL.mortalPresetSaved = true
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageSaveMortalPresetHelp)
@@ -1495,12 +1497,9 @@ endfunction
     EndState
     State transformLoadMortalPreset
         Event OnSelectST()
-            CoL.playerRef.SetRace(CoL.mortalRace)
-            CoL.playerRef.GetActorbase().SetHairColor(CoL.mortalHairColor)
             Debug.MessageBox(transformPageLoadMortalPresetMsg)
             Utility.Wait(0.1)
-            CharGen.LoadPreset(CoL.mortalPresetName)
-            ForcePageReset()
+            CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageLoadMortalPresetHelp)
@@ -1510,10 +1509,9 @@ endfunction
         Event OnSelectST()
             CoL.succuRace = CoL.playerRef.GetRace()
             CoL.succuHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-            CharGen.SavePreset(CoL.succuPresetName)
-            CoL.succuPresetSaved = True
             Debug.MessageBox(transformPageSaveSuccuPresetMsg)
-            ForcePageReset()
+            CoL.SavePreset(CoL.succuPresetName)
+            CoL.succuPresetSaved = True
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageSaveSuccuPresetHelp)
@@ -1521,11 +1519,9 @@ endfunction
     EndState
     State transformLoadSuccuPreset
         Event OnSelectST()
-            CoL.playerRef.SetRace(CoL.succuRace)
-            CoL.playerRef.GetActorbase().SetHairColor(CoL.succuHairColor)
             Debug.MessageBox(transformPageLoadSuccuPresetMsg)
             Utility.Wait(0.1)
-            CharGen.LoadPreset(CoL.succuPresetName)
+            CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
             ForcePageReset()
         EndEvent
         Event OnHighlightST()
@@ -1558,15 +1554,6 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageEquipmentSwap)
-        EndEvent
-    EndState
-    State transformAnimation
-        Event OnSelectST()
-            CoL.transformAnimation = !CoL.transformAnimation
-            SetToggleOptionValueST(CoL.transformAnimation)
-        EndEvent
-        Event OnHighlightST()
-            SetInfoText(transformPageTransformAnimationHelp)
         EndEvent
     EndState
     State transformCost

@@ -1,6 +1,8 @@
 Scriptname CoL_PlayerSuccubusQuestScript extends Quest  
 
 import PapyrusUtil
+import CharGen
+
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
@@ -199,12 +201,13 @@ bool Property transformSwapsEquipment = true Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden
+Race Property succuCureRace Auto Hidden
 ColorForm Property succuHairColor Auto Hidden
 bool Property transformCrime = false Auto Hidden
-bool Property transformAnimation = true Auto Hidden
 bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
 Race Property mortalRace Auto Hidden
+Race Property mortalCureRace Auto Hidden
 ColorForm Property mortalHairColor Auto Hidden
 Form[] Property NoStripList Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
@@ -255,6 +258,8 @@ EndEvent
 State Initialize
     Event OnBeginState()
         Log("Initializing")
+        mortalPresetName = "CoL_Mortal_Form_" + playerRef.GetDisplayName()
+        succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
         followedPath = followedPath_var
@@ -339,6 +344,7 @@ Function Maintenance()
     widgetHandler.GoToState("Running")
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
+    DebugLogging = true
     RegisterForEvents()
 EndFunction
 
@@ -435,4 +441,45 @@ bool Function isBusy()
 		return True
 	endIf
 	return False
+EndFunction
+
+Function savePreset(string presetName)
+    if CharGen.IsExternalEnabled()
+        CharGen.SaveExternalCharacter(presetName)
+    else
+        CharGen.SaveCharacter(presetName)
+    endif
+    CharGen.SavePreset(presetName)
+    Log("Finished Saving Preset")
+EndFunction
+
+Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
+    Log("Transforming Player")
+    Race currentRace = playerRef.GetRace()
+    playerRef.GetActorbase().SetHairColor(presetHairColor)
+    playerRef.SetRace(presetRace)
+    Utility.Wait(0.1)
+    CharGen.LoadPreset(presetName)
+    Utility.Wait(0.1)
+    if Chargen.IsExternalEnabled()
+        CharGen.LoadExternalCharacter(playerRef, presetRace, presetRace)
+    else
+        CharGen.LoadCharacter(playerRef, presetRace, presetName)
+    endif
+
+    playerRef.GetActorbase().SetHairColor(presetHairColor)
+    playerRef.SetRace(currentRace)
+    Utility.Wait(0.1)
+    playerRef.SetRace(presetRace)
+    Utility.Wait(0.1)
+    CharGen.LoadPreset(presetName)
+    Utility.Wait(0.1)
+    if Chargen.IsExternalEnabled()
+        CharGen.LoadExternalCharacter(playerRef, presetRace, presetName)
+    else
+        CharGen.LoadCharacter(playerRef, presetRace, presetName)
+    endif
+    Utility.Wait(0.1)
+    UpdateTattoo()
+    Log("Finished Transforming Player")
 EndFunction
