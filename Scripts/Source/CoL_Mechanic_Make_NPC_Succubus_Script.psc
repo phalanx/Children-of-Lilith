@@ -16,9 +16,6 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
     if  newSuccubus != None && newSuccubus != CoL.playerRef && CoL.succubusList.Find(newSuccubus) == -1
         CoL.Log("New Succubus Being Created")
         newSuccubus.AddSpell(CoL.sceneHandlerSpell)
-        if CoL.isPlayerSuccubus.GetValueInt() == 0
-            CoL.npcDrainHandler.GoToState("Initialize")
-        endif
         CoL.succubusList = PushActor(CoL.succubusList, newSuccubus)
     endif
 EndEvent
