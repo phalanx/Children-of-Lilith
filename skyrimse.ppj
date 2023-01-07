@@ -16,14 +16,12 @@
         <Variable Name="ModsFolder" Value="F:\Skyrim Mods\Mods" />
     </Variables>
     <Imports>
-        <Import>@ModsFolder\skse\Scripts\Source</Import>
         <Import>@ModsFolder\SexLabFrameworkAE\Scripts\Source</Import>
         <Import>@ModsFolder\SkyUI SDK\Scripts\Source</Import>
         <Import>@ModsFolder\Fores New Idles in Skyrim SE - FNIS SE\source\scripts</Import>
         <Import>@ModsFolder\iWant Widgets\source\scripts</Import>
         <Import>@ModsFolder\Mfg Fix\source\scripts</Import>
         <Import>@ModsFolder\Race-Menu-Modders Package\Source\Scripts</Import>
-        <Import>@ModsFolder\Creation Kit Scripts\Scripts\Source</Import>
         <Import>@ModsFolder\PapyrusUtil SE - Modders Scripting Utility Functions\Scripts\Source</Import>
         <Import>@ModsFolder\Devious Devices\Scripts\Source</Import>
         <Import>@ModsFolder\SexLabArousedSSELoose\Scripts\Source</Import>
@@ -40,6 +38,8 @@
         <Import>@ModsFolder\Toys and Love\Source\Scripts</Import>
         <Import>@ModsFolder\WildLife for Toys SE V\Source\Scripts</Import>
         <Import>@ModsFolder\CreatureFrameworkV\scripts\source</Import>
+        <Import>@ModsFolder\skse\Scripts\Source</Import>
+        <Import>@ModsFolder\Creation Kit Scripts\Scripts\Source</Import>
     </Imports>
     <Folders>
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->
