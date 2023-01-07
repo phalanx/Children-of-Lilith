@@ -105,7 +105,7 @@ State Running
     Event OnBeginState()
         RegisterForModEvent("ostim_orgasm", "orgasmHandler")
         RegisterForModEvent("ostim_totalend", "stopScene")
-        if succubus == CoL.playerRef
+        if succubus == CoL.playerRef && CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
             RegisterForKey(CoL.temptationHotkey)
         endif
     EndEvent

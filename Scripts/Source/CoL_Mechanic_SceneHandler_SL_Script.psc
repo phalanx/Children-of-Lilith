@@ -108,7 +108,10 @@ Event SceneStartHandler(Form actorRef, int threadId)
     int sceneStartEvent
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
-        RegisterForKey(CoL.temptationHotkey)
+
+        if CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
+            RegisterForKey(CoL.temptationHotkey)
+        endif
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
