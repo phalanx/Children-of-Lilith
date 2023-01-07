@@ -6,7 +6,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 Faction Property playerWerewolfFaction Auto
 
 ; Transform Buff Settings
-
+Spell Property transformBuffSpell Auto
 
 Form[] originalEquipment
 Form[] succubusEquipment
@@ -66,6 +66,7 @@ Function UnTransform()
         EquipEquipment(CoL.playerRef, originalEquipment)
         SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, succubusEquipment)
     endif
+    Utility.Wait(0.5)
     RemoveAdditionalPowers()
     if CoL.transformCrime
         CoL.playerRef.SetAttackActorOnSight(false)
@@ -76,46 +77,27 @@ EndFunction
 function AddAdditionalPowers()
     CoL.Log("Adding additional powers")
     if CoL.healingForm
-        ToggleHealRateBoost(true)
+        CoL.playerRef.ModActorValue("HealRate", (CoL.healRateBoostMult / 2))
     endif
     if CoL.transformBuffsEnabled
-        CoL.playerRef.ModActorValue("Health", CoL.extraHealth)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("Stamina", CoL.extraStamina)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("Magicka", CoL.extraMagicka)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("CarryWeight", CoL.extraCarryWeight)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("attackDamageMult", CoL.extraMeleeDamage)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("DamageResist", CoL.extraArmor)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("MagicResist", CoL.extraMagicResist)
-        Utility.Wait(0.1)
+        transformBuffSpell.SetNthEffectMagnitude(0, CoL.extraHealth)
+        transformBuffSpell.SetNthEffectMagnitude(1, CoL.extraStamina)
+        transformBuffSpell.SetNthEffectMagnitude(2, CoL.extraMagicka)
+        transformBuffSpell.SetNthEffectMagnitude(3, CoL.extraCarryWeight)
+        transformBuffSpell.SetNthEffectMagnitude(4, CoL.extraMeleeDamage)
+        transformBuffSpell.SetNthEffectMagnitude(5, CoL.extraArmor)
+        transformBuffSpell.SetNthEffectMagnitude(6, CoL.extraMagicResist)
+        CoL.playerRef.AddSpell(transformBuffSpell, false)
     endif
 endfunction
 
 function RemoveAdditionalPowers()
     CoL.Log("Removing additional powers")
     if CoL.healingForm
-        ToggleHealRateBoost(false)
+        CoL.playerRef.ModActorValue("HealRate", 0.0 - (CoL.healRateBoostMult / 2))
     endif
     if CoL.transformBuffsEnabled
-        CoL.playerRef.ModActorValue("Health", 0.0 - CoL.extraHealth)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("Stamina", 0 - CoL.extraStamina)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("Magicka", 0 - CoL.extraMagicka)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("CarryWeight", 0 - CoL.extraCarryWeight)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("attackDamageMult", 0 - CoL.extraMeleeDamage)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("DamageResist", 0 - CoL.extraArmor)
-        Utility.Wait(0.1)
-        CoL.playerRef.ModActorValue("MagicResist", 0 - CoL.extraMagicResist)
-        Utility.Wait(0.1)
+        CoL.playerRef.RemoveSpell(transformBuffSpell)
     endif
 endfunction
 
@@ -167,11 +149,3 @@ function EquipEquipment(Actor actorRef, Form[] equipmentList)
 		endwhile
 	endif
 endfunction
-
-Function ToggleHealRateBoost(bool enable)
-    if enable
-        CoL.playerRef.ModActorValue("HealRate", (CoL.healRateBoostMult / 2))
-    else
-        CoL.playerRef.ModActorValue("HealRate", 0.0 - (CoL.healRateBoostMult / 2))
-    endif
-endFunction
