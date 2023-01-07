@@ -512,3 +512,17 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
     UpdateTattoo()
     Log("Finished Transforming Player")
 EndFunction
+
+Function ApplyRankedPerks()
+    int i = 0
+    while i < efficientFeeder
+        energyConversionRate += 0.1
+        i += 1
+    endwhile
+
+    i = 0
+    while i < energyStorage
+        playerEnergyMax += 10        
+        i += 1
+    endwhile
+EndFunction

@@ -23,7 +23,7 @@ Form[] equippedItems
     string statusPageNextLevelXP = "Exp Required for Next Level"
     string statusPageEnergyCurrent = "Current energy"
     string statusPageEnergyMax = "Maximum energy"
-    string statusPageEnergyMaxHelp = "Set Your Maximum Energy. Could be considered a cheat"
+    string statusPageEnergyMaxHelp = "Set Your Maximum Energy. Could be considered a cheat \n Perks will be applied after the change"
     string statusPageBecomeSuccubus = "Become Succubus"
     string statusPageBecomeSuccubusHelp = "Enables the mod, turning you into a succubus"
     string statusPageEndSuccubus = "End Succubus"
@@ -63,7 +63,7 @@ Form[] equippedItems
     string settingsPageDrainArousalMult = "Drain Arousal Multiplier"
     string settingsPageDrainArousalMultHelp = "Value to Multiply arousal by before adding it to the amount of energy gained \n Only has an effect if a supported Arousal Framework is installed"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
-    string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
+    string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained \n Perks will be applied after the change"
     string settingsPageDrainFeedsVampire = "Drain Feeds Vampires"
     string settingsPageDrainFeedsVampireHelp = "Should drain victims also trigger a vampire feeding"
     string settingsPageNpcDrainHeader = "NPC Drain Settings"
@@ -586,6 +586,7 @@ endfunction
         EndEvent
         Event OnSliderAcceptST(float value)
             CoL.playerEnergyMax = value
+            CoL.ApplyRankedPerks()
             SetSliderOptionValueST(CoL.playerEnergyMax)
         EndEvent
         Event OnHighlightST()
@@ -734,6 +735,7 @@ endfunction
         EndEvent
         Event OnSliderAcceptST(float value)
             CoL.energyConversionRate = value
+            CoL.ApplyRankedPerks()
             SetSliderOptionValueST(CoL.energyConversionRate, "{1}")
         EndEvent
         Event OnHighlightST()
