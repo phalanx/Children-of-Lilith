@@ -6,6 +6,7 @@ Idle Property SuccubusTransformationIdle Auto
 Sound Property SuccubusTransformSound Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    Game.ForceThirdPerson()
     SuccubusTransformSound.Play(akTarget)
     if !CoL.isTransformed
         float cost
