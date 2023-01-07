@@ -90,6 +90,7 @@ Event startScene(string EventName, string strArg, float numArg, Form sender)
     int sceneStartEvent
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
+        RegisterForKey(CoL.temptationHotkey)
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
@@ -143,6 +144,7 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
     endif
 
     CoL.Log(succubusName +" involved animation ended")
+    UnregisterForKey(CoL.temptationHotkey)
 
     triggerDrainEnd()
     int sceneEndEvent
@@ -155,4 +157,16 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
         ModEvent.Send(sceneEndEvent)
     endif
     victims = new Actor[1]
+EndEvent
+
+Event OnKeyDown(int keyCode)
+    if keyCode == CoL.temptationHotkey
+        int i = 0
+        while i < victims.Length
+            if victims[i] != succubus
+                CoL.temptationSpell.Cast(CoL.playerRef, victims[i])
+            endif
+            i += 1
+        endwhile
+    endif
 EndEvent

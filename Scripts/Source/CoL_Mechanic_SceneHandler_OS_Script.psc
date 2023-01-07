@@ -105,6 +105,9 @@ State Running
     Event OnBeginState()
         RegisterForModEvent("ostim_orgasm", "orgasmHandler")
         RegisterForModEvent("ostim_totalend", "stopScene")
+        if succubus == CoL.playerRef
+            RegisterForKey(CoL.temptationHotkey)
+        endif
     EndEvent
 
     Event orgasmHandler(string eventName, string strArg, float numArg, Form sender)
@@ -151,9 +154,20 @@ State Running
         GoToState("Waiting")
     EndEvent
 
+    Event OnKeyDown(int keyCode)
+        if keyCode == CoL.temptationHotkey
+            int i = 0
+            while i < currentPartners.Length
+                CoL.temptationSpell.Cast(CoL.playerRef, currentPartners[i])
+                i += 1
+            endwhile
+        endif
+    EndEvent
+
     Event OnEndState()
         UnregisterForModEvent("ostim_orgasm")
         UnregisterForModEvent("ostim_end")
+        UnregisterForKey(CoL.temptationHotkey)
         currentVictims = new Actor[1]
     EndEvent
 

@@ -37,6 +37,8 @@ Spell[] Property levelTwoSpells Auto                ; Spells granted to player a
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
 Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
+Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
+
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 bool Property EnergyScaleTestEnabled = false Auto Hidden       ; Enable Energy Scale test when Drain to Death button pushed
 
@@ -96,6 +98,30 @@ int Property toggleDrainToDeathHotkey Hidden    ; Default Toggle Drain to Death 
         UnregisterForKey(toggleDrainToDeathHotKey_var)
         toggleDrainToDeathHotKey_var = newKey
         RegisterForKey(toggleDrainToDeathHotKey_var)
+    EndFunction
+EndProperty
+
+int transformHotKey_var = -1
+int Property transformHotkey Hidden    ; Default Toggle Drain to Death key to right alt
+    int Function Get()
+        return transformHotkey_var 
+    EndFunction
+    Function Set(int newKey)
+        UnregisterForKey(transformHotKey_var)
+        transformHotKey_var = newKey
+        RegisterForKey(transformHotKey_var)
+    EndFunction
+EndProperty
+
+int temptationHotKey_var = -1
+int Property temptationHotkey Hidden    ; Default Toggle Drain to Death key to right alt
+    int Function Get()
+        return temptationHotkey_var 
+    EndFunction
+    Function Set(int newKey)
+        UnregisterForKey(temptationHotKey_var)
+        temptationHotKey_var = newKey
+        RegisterForKey(temptationHotKey_var)
     EndFunction
 EndProperty
 
@@ -276,6 +302,9 @@ State Running
                 ScaleEnergyTest()
             endif
         endif
+        if keyCode == transformHotkey
+            transformSpell.Cast(playerRef, playerRef)
+        endif
     EndEvent
 EndState
 
@@ -284,12 +313,11 @@ State SceneRunning
         Log("Entered SceneRunning State")
     EndEvent
     Event OnKeyDown(int keyCode)
-        Log("KeyDown Detected")
-        Log("Detected Key: " + keyCode)
         if keyCode == toggleDrainHotkey
             drainHandler.draining = !drainHandler.draining
         elseif keyCode == toggleDrainToDeathHotkey
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
+        elseif keyCode == temptationHotkey
         endif
     EndEvent
 EndState
@@ -352,6 +380,7 @@ Function RegisterForEvents()
     ; Register for Events
     RegisterForKey(toggleDrainHotKey)
     RegisterForKey(toggleDrainToDeathHotKey)
+    RegisterForKey(transformHotkey)
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
     Log("Registered for Hotkeys and Events")

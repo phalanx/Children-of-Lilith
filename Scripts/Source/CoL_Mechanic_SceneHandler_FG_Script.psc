@@ -35,7 +35,7 @@ State Waiting
     EndEvent
 
     Event startScene(Form participant1, Form participant2)
-        if !Succubus.HasKeyword(IsHavingSex) 
+        if !succubus.HasKeyword(IsHavingSex) 
             return
         endif
 
@@ -68,6 +68,9 @@ EndState
 State Running
     Event OnBeginState()
         RegisterForModEvent("CoL_FG_Climax", "climax")
+        if succubus == CoL.playerRef
+            RegisterForKey(CoL.temptationHotkey)
+        endif
     EndEvent
 
     Event climax(Form participant1, Form participant2)
@@ -90,6 +93,20 @@ State Running
         GoToState("Ending")
     EndEvent
 
+    Event OnKeyDown(int keyCode)
+        if keyCode == CoL.temptationHotkey
+            if victim1 != None
+                CoL.temptationSpell.Cast(CoL.playerRef, victim1)
+            endif
+            if victim2 != None
+                CoL.temptationSpell.Cast(CoL.playerRef, victim2)
+            endif
+        endif
+    EndEvent
+
+    Event OnEndState()
+        UnregisterForKey(CoL.temptationHotkey)
+    EndEvent
 EndState
 
 State Ending

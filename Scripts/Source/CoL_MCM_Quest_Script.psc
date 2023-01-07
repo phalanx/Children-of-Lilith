@@ -145,6 +145,10 @@ Form[] equippedItems
     string hotkeysPageToggleDrainHotkeyHelp = "Hotkey to Toggle Drain \n Only registers during sex scenes"
     string hotkeysPageToggleDrainToDeathHotkey = "Toggle Drain to Death Key"
     string hotkeysPageToggleDrainToDeathHotkeyHelp = "Hotkey to Toggle Drain to Death \n Only registers during sex scenes"
+    string hotkeysPageTransformHotkey = "Transform Hotkey"
+    string hotkeysPageTransformHotkeyHelp = "Hotkey to trigger transform power"
+    string hotkeysPageTemptationHotkey = "Temptation Hotkey"
+    string hotkeysPageTemptationHotkeyHelp = "Hotkey to cast Succubus Temptation during Scene"
 ; Page 4 - Widgets
     string widgetsPageName = "Widgets"
     string widgetsPageEnergyMeterXPos = "Energy Meter X Position"
@@ -396,6 +400,8 @@ Event OnPageReset(string page)
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddKeyMapOptionST("DrainKeyMapOption", hotkeysPageToggleDrainHotkey, CoL.toggleDrainHotkey)
         AddKeyMapOptionST("DrainToDeathKeyMapOption", hotkeysPageToggleDrainToDeathHotkey, CoL.toggleDrainToDeathHotkey)
+        AddKeyMapOptionST("TransformKeyMapOption", hotkeysPageTransformHotkey, CoL.transformHotkey)
+        AddKeyMapOptionST("TemptationKeyMapOption", hotkeysPageTemptationHotkey, CoL.temptationHotkey)
 ; Page 4 - Widgets
     elseif page == widgetsPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -1209,7 +1215,7 @@ endfunction
     State DrainToDeathKeyMapOption
         Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
             if keyCode == 1
-                CoL.toggleDrainHotkey = -1
+                CoL.toggleDrainToDeathHotkey = -1
                 SetKeyMapOptionValueST(-1)
                 return
             endif
@@ -1232,6 +1238,62 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(hotkeysPageToggleDrainToDeathHotkeyHelp)
+        EndEvent
+    EndState
+    State TransformKeyMapOption
+        Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.transformHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
+            bool continue = true
+            if (conflictControl != "")
+                string msg
+                if (conflictName != "")
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+                else
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n\nAre you sure you want to continue?"
+                endIf
+
+                continue = ShowMessage(msg, true, "$Yes", "$No")
+            endIf
+
+            if (continue)
+                CoL.transformHotkey = keyCode
+                SetKeyMapOptionValueST(keyCode)
+            endIf
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(hotkeysPageTransformHotkeyHelp)
+        EndEvent
+    EndState
+    State TemptationKeyMapOption
+        Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.temptationHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
+            bool continue = true
+            if (conflictControl != "")
+                string msg
+                if (conflictName != "")
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+                else
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n\nAre you sure you want to continue?"
+                endIf
+
+                continue = ShowMessage(msg, true, "$Yes", "$No")
+            endIf
+
+            if (continue)
+                CoL.temptationHotkey = keyCode
+                SetKeyMapOptionValueST(keyCode)
+            endIf
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(hotkeysPageTemptationHotkeyHelp)
         EndEvent
     EndState
 ; Page 4 State Handlers
