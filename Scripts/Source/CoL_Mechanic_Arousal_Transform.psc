@@ -2,14 +2,10 @@ Scriptname CoL_Mechanic_Arousal_Transform extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 
-; Transform on Toys OverSexed Event
-; Register for RegisterForModEvent("OSLA_ActorArousalUpdated", "OnActorArousalUpdated")
-; Transform on High Ostim Arousal
-; Transform on High Sexlab Arousal
-
 bool slarActive
 bool oarousedActive
 bool toysActive
+bool oslActive
 
 Event OnInit()
 EndEvent
@@ -87,7 +83,8 @@ Function Maintenance()
     toysActive = CoL.Toys.IsInterfaceActive()
     slarActive = CoL.SLAR.IsInterfaceActive()
     oarousedActive = CoL.OAroused.IsInterfaceActive()
-    if toysActive || slarActive || oarousedActive
+    oslActive = CoL.OSL.IsInterfaceActive()
+    if toysActive || slarActive || oarousedActive || oslActive
         GoToState("Polling")
     endif
 
