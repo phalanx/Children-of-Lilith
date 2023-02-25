@@ -10,7 +10,8 @@ EndEvent
 
 Function OnGameLoad()
     SLAR = Quest.GetQuest("sla_Framework")
-    if SLAR != None
+    bool isOSLInstalled = Game.IsPluginInstalled("OSLAroused.esp")
+    if SLAR != None && !isOSLInstalled
         GoToState("Installed")
     endif
 EndFunction

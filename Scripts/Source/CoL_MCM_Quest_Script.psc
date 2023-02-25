@@ -549,6 +549,8 @@ Event OnPageReset(string page)
         AddToggleOptionST("SLAR", "SexLab Aroused", (SexLab_Interfaces as CoL_Interface_SLAR_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
         AddHeaderOption("Toys & Love")
         AddToggleOptionST("TL", "Toys & Love", Game.IsPluginInstalled("Toys.esm"), OPTION_FLAG_DISABLED)
+        AddHeaderOption("OSL Aroused")
+        AddToggleOptionST("OSL", "OSL Aroused", Game.IsPluginInstalled("OSLAroused.esp"), OPTION_FLAG_DISABLED)
 
     endif
 EndEvent
