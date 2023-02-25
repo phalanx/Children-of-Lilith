@@ -551,6 +551,8 @@ Event OnPageReset(string page)
         AddToggleOptionST("TL", "Toys & Love", Game.IsPluginInstalled("Toys.esm"), OPTION_FLAG_DISABLED)
         AddHeaderOption("OSL Aroused")
         AddToggleOptionST("OSL", "OSL Aroused", Game.IsPluginInstalled("OSLAroused.esp"), OPTION_FLAG_DISABLED)
+        AddHeaderOption("SlaveTats")
+        AddToggleOptionST("SlaveTats", "SlaveTats", Game.IsPluginInstalled("SlaveTats.esp"), OPTION_FLAG_DISABLED)
 
     endif
 EndEvent
