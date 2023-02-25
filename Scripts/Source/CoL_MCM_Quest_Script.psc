@@ -95,6 +95,8 @@ Form[] equippedItems
     string settingsPageHungerThresholdHelp = "When Energy falls this below this percentage, activate Hunger effects"
     string settingsPageHungerAmount = "Hunger Amount"
     string settingsPageHungerAmountHelp = "If Hunger is enabled, this sets the amount of Energy lost on a daily basis"
+    string settingsPageHungerIsPercent = "Hunger Is Percentage"
+    string settingsPageHungerIsPercentHelp = "The hunger value will be treated as a percentage of max energy lost instead of a flat value"
     string settingsPageHungerDamage = "Deadly Hunger"
     string settingsPageHungerDamageHelp = "If Hunger is enabled, this sets whether or not running out of Energy will periodically reduce Max Health"
     string settingsPageHungerDamageAmount = "Hunger Damage Amount"
@@ -378,6 +380,7 @@ Event OnPageReset(string page)
         AddToggleOptionST("HungerToggle", settingsPageHungerToggle, CoL.hungerEnabled)
         AddSliderOptionST("HungerThresholdSlider", settingsPageHungerThreshold, CoL.hungerThreshold)
         AddSliderOptionST("HungerAmountSlider", settingsPageHungerAmount, CoL.dailyHungerAmount)
+        AddToggleOptionST("HungerIsPercent", settingsPageHungerIsPercent, CoL.hungerIsPercent)
         AddToggleOptionST("HungerDamageToggle", settingsPageHungerDamage, CoL.hungerDamageEnabled)
         AddSliderOptionST("HungerDamageAmountSlider", settingsPageHungerDamageAmount, CoL.hungerDamageAmount)
         AddToggleOptionST("HungerArousalToggle", settingsPageHungerArousal, CoL.hungerArousalEnabled)
@@ -912,6 +915,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageHungerAmountHelp)
+        EndEvent
+    EndState
+    State HungerIsPercent
+        Event OnSelectST()
+            CoL.hungerIsPercent = !CoL.hungerIsPercent
+            SetToggleOptionValueST(CoL.hungerIsPercent)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerIsPercentHelp)
         EndEvent
     EndState
     State HungerThresholdSlider

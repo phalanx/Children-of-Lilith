@@ -13,7 +13,12 @@ State HungerEnabled
 
     Event OnUpdate()
         float timePassed = CoL.GameDaysPassed.GetValue() - lastCheckTime
-        float hungerAmount = CoL.dailyHungerAmount * timePassed
+        float hungerAmount
+        if CoL.hungerIsPercent
+            hungerAmount = (CoL.playerEnergyMax * (CoL.dailyHungerAmount / 100)) * timePassed
+        else
+            hungerAmount = CoL.dailyHungerAmount * timePassed
+        endif
         if ((CoL.playerEnergyCurrent/CoL.playerEnergyMax ) * 100) < CoL.hungerThreshold
             if CoL.hungerDamageEnabled
                 CoL.playerRef.RemoveSpell(starvationSpell)

@@ -162,6 +162,7 @@ bool Property hungerEnabled Hidden
         endif
     EndFunction
 EndProperty
+bool Property hungerIsPercent = false Auto Hidden
 float Property dailyHungerAmount = 10.0 Auto Hidden
 bool Property hungerDamageEnabled = false Auto Hidden
 float Property hungerDamageAmount = 5.0 Auto Hidden
