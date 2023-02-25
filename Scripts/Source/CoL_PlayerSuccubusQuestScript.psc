@@ -223,6 +223,7 @@ bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubu
 
 ; Transform Stuff
 Spell Property transformSpell Auto
+bool Property transformAnimation = true Auto Hidden
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
@@ -509,13 +510,16 @@ EndFunction
 
 Function __Transform(string presetName, Race presetRace, ColorForm presetHairColor, Race currentRace)
     playerRef.GetActorbase().SetHairColor(presetHairColor)
-    playerRef.SetRace(presetRace)
-    Utility.Wait(0.1)
-    playerRef.SetRace(currentRace)
-    Utility.Wait(0.1)
-    playerRef.SetRace(presetRace)
+   
+    if currentRace != presetRace
+        playerRef.SetRace(presetRace)
+        Utility.Wait(0.1)
+        playerRef.SetRace(currentRace)
+        Utility.Wait(0.1)
+        playerRef.SetRace(presetRace)
+        Utility.Wait(0.1)
+    endif
     CharGen.LoadPreset(presetName)
-    Utility.Wait(0.1)
 
     if Chargen.IsExternalEnabled()
         CharGen.LoadExternalCharacter(playerRef, presetRace, presetName)

@@ -216,6 +216,8 @@ Form[] equippedItems
     string transformPageTransformCrimeHelp = "Should Transformation be a Crime"
     string transformPageEquipmentSwap = "Transform Swaps Equipment"
     string transformPageEquipmentSwapHelp = "Should transformation also swap equipment"
+    string transformPageTransformAnimation = "Play Transformation Animation"
+    string transformPageTransformAnimationHelp = "Should an animation play when you transform\n the smoke effect will play either way"
     string transformPageTransformCost = "Transform Energy Cost"
     string transformPageTransformCostHelp = "Per second energy cost of being transformed"
     string transformPageTransformArousalUpperThreshold = "Transform Upper Threshold"
@@ -1561,6 +1563,7 @@ endfunction
             SetInfoText(perkpageSafeTransformationHelp)
         EndEvent
     EndState
+    
     State perkSlakeThirst
         Event OnSelectST()
             if CoL.availablePerkPoints > 0
@@ -1648,6 +1651,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageEquipmentSwap)
+        EndEvent
+    EndState
+    State transformAnimation
+        Event OnSelectST()
+            CoL.transformAnimation = !CoL.transformAnimation
+            SetToggleOptionValueST(CoL.transformAnimation)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageTransformAnimationHelp)
         EndEvent
     EndState
     State transformCost

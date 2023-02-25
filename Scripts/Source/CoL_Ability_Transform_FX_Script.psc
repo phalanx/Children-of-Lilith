@@ -15,6 +15,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             CoL.becomeEtherealCost = 0
             CoL.playerRef.AddSpell(CoL.becomeEthereal, false)
         endif
+        if CoL.transformAnimation && CoL.succuRace == CoL.mortalRace
+            Game.ForceThirdPerson()
+            akTarget.PlayIdle(SuccubusTransformationIdle)
+            Utility.Wait(5)
+            Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
+        endif
         if CoL.safeTransformation
             CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
             CoL.becomeEtherealCost = cost
