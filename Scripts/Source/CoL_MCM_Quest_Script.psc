@@ -73,6 +73,10 @@ Form[] equippedItems
     string settingsPageNpcDrainHeader = "NPC Drain Settings"
     string settingsPageNpcDeathChance = "NPC Drain to Death Chance"
     string settingsPageNpcDeathChanceHelp = "Percentage Chance NPC drains victim to death"
+    string settingsPageforcedDrainMinimum = "Forced Drain Percentage"
+    string settingsPageforcedDrainMinimumHelp = "If energy is below this percentage, partners will always be drained\nSet to -1 to disable"
+    string settingsPageforcedDrainToDeathMinimum = "Forced Drain To Death Percentage"
+    string settingsPageforcedDrainToDeathMinimumHelp = "If energy is below this percentage, partners will always be drained to death\nSet to -1 to disable"
 
     string settingsPageLevelHeader = "Leveling Settings"
     string settingsPageLevelXpPerDrain = "XP Per Drain"
@@ -359,6 +363,8 @@ Event OnPageReset(string page)
         AddToggleOptionST("lockDrain", settingsPageLockDrainType, CoL.lockDrainType)
         AddToggleOptionST("deadlyWhenTransformed", settingsPageDeadlyDrainWhileTransformed, CoL.deadlyDrainWhenTransformed)
         AddToggleOptionST("DrainVerbosityToggleOption", settingsPageDrainVerbosity, CoL.drainNotificationsEnabled)
+        AddSliderOptionST("forcedDrainMinimumSlider", settingsPageforcedDrainMinimum, CoL.forcedDrainMinimum, "{0}")
+        AddSliderOptionST("forcedDrainToDeathMinimumSlider", settingsPageforcedDrainToDeathMinimum, CoL.forcedDrainToDeathMinimum, "{0}")
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
         AddSliderOptionST("DrainArousalMultiSlider", settingsPageDrainArousalMult, CoL.drainArousalMult, "{1}")
@@ -799,6 +805,38 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageNpcDeathChanceHelp)
+        EndEvent
+    EndState
+    State forcedDrainMinimumSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.forcedDrainMinimum)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(-1, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.forcedDrainMinimum = value
+            SetSliderOptionValueST(CoL.forcedDrainMinimum,"{0}")
+            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageforcedDrainMinimumHelp)
+        EndEvent
+    EndState
+    State forcedDrainToDeathMinimumSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.forcedDrainToDeathMinimum)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(-1, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.forcedDrainToDeathMinimum = value
+            SetSliderOptionValueST(CoL.forcedDrainToDeathMinimum,"{0}")
+            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageforcedDrainToDeathMinimumHelp)
         EndEvent
     EndState
 

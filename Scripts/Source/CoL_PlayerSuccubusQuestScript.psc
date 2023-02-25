@@ -145,6 +145,17 @@ float Property playerEnergyCurrent Hidden
         if tattooFade
             UpdateTattoo()
         endif
+        float energyPercentage = ((newVal / playerEnergyMax) * 100) 
+        if  energyPercentage  <= forcedDrainToDeathMinimum
+            drainHandler.draining = false
+            drainHandler.drainingToDeath = true
+        elseif energyPercentage <= forcedDrainMinimum
+            drainHandler.draining = true
+            drainHandler.drainingToDeath = false
+        else
+            drainHandler.draining = false
+            drainHandler.drainingToDeath = false
+        endif
     EndFunction
 EndProperty
 float Property playerEnergyMax = 100.0 Auto Hidden
@@ -182,6 +193,8 @@ bool Property drainFeedsVampire = true Auto Hidden              ; Should drainin
 bool Property drainNotificationsEnabled = true Auto Hidden      ; Should notifications play when drain style is changed
 bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
 bool Property deadlyDrainWhenTransformed = false Auto Hidden    ; Always deadly drain while transformed
+float Property forcedDrainMinimum = -1.0 Auto Hidden             ; Minimum energy to always drain
+float Property forcedDrainToDeathMinimum = -1.0 Auto Hidden      ; Minimum energy to always drain to death
 
 ; NPC Drain Properties
 int Property npcDrainToDeathChance = 0 Auto Hidden

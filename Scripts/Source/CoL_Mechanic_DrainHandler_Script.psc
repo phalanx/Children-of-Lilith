@@ -9,8 +9,10 @@ bool Property draining Hidden
         return draining_var
     EndFunction
     Function Set(bool newVal)
-        draining_var = newVal
-        CheckDraining(CoL.drainNotificationsEnabled)
+        if draining_var != newVal
+            draining_var = newVal
+            CheckDraining(CoL.drainNotificationsEnabled)
+        endif
     EndFunction
 EndProperty
 bool drainingToDeath_var = false
@@ -19,8 +21,10 @@ bool Property drainingToDeath Hidden
         return drainingToDeath_var
     EndFunction
     Function Set(bool newVal)
-        drainingToDeath_var = newVal
-        CheckDraining(CoL.drainNotificationsEnabled)
+        if drainingToDeath_var != newVal
+            drainingToDeath_var = newVal
+            CheckDraining(CoL.drainNotificationsEnabled)
+        endif
     EndFunction
 EndProperty
 
