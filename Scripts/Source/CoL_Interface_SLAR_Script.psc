@@ -13,6 +13,8 @@ Function OnGameLoad()
     bool isOSLInstalled = Game.IsPluginInstalled("OSLAroused.esp")
     if SLAR != None && !isOSLInstalled
         GoToState("Installed")
+    else
+        GoToState("")
     endif
 EndFunction
 

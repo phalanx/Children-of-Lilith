@@ -15,6 +15,8 @@ Function Maintenance()
     SexLab = Quest.GetQuest("SexLabQuestFramework")
     if SexLab != None
         GoToState("Installed")
+    else
+        GoToState("")
     endif
 EndFunction
 

@@ -11,6 +11,8 @@ Function OnGameLoad()
     OStim = Quest.GetQuest("OSexIntegrationMainQuest")
     if OStim != None
         GoToState("Installed")
+    else
+        GoToState("")
     endif
 EndFunction
 

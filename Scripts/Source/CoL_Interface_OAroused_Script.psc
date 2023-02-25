@@ -10,8 +10,11 @@ EndEvent
 
 Function OnGameLoad()
     OAroused = Quest.GetQuest("OArousedQuest")
-    if OAroused != None
+    bool isOSLInstalled = Game.IsPluginInstalled("OSLAroused.esp")
+    if OAroused != None && !isOSLInstalled
         GoToState("Installed")
+    else
+        GoToState("")
     endif
 EndFunction
 

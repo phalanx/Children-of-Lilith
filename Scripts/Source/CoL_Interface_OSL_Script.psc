@@ -8,6 +8,8 @@ Function Maintenance()
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
     if Game.IsPluginInstalled("OSLAroused.esp")
         GoToState("Installed")
+    else
+        GoToState("")
     endif
 EndFunction
 
