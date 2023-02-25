@@ -166,10 +166,12 @@ Event OnVampirismStateChanged(bool isVampire)
     else
         newMortalRace = CoL.mortalCureRace
         newSuccubusRace = CoL.succuCureRace
+        CoL.mortalCureRace = None
+        CoL.succuCureRace = None
     endif
     
     if (newMortalRace == None || newSuccubusRace == None)
-        Debug.MessageBox("Could not automatically update succubus races.\nFollow the steps on the mod page to resave succubus forms")
+        Debug.MessageBox("Could not automatically update succubus races.\nProceed with caution")
     else
         CoL.Log("Mortal race id after: " + MiscUtil.GetRaceEditorID(newMortalRace))
         CoL.Log("Succubus race id after: " + MiscUtil.GetRaceEditorID(newSuccubusRace))

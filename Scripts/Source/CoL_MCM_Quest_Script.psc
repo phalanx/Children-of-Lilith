@@ -56,6 +56,10 @@ Form[] equippedItems
     string settingsPageDrainToDeathToggleHelp = "Toggle Drain to Death. Takes precedent over Drain setting"
     string settingsPageDrainVerbosity = "Enable Drain Notifications"
     string settingsPageDrainVerbosityHelp = "Should switching drain modes trigger a notification in the top left"
+    string settingsPageLockDrainType = "Lock Drain Type"
+    string settingsPageLockDrainTypeHelp = "Disable Drain Selection Hotkeys"
+    string settingsPageDeadlyDrainWhileTransformed = "Enable Deadly Drain While Transformed"
+    string settingsPageDeadlyDrainWhileTransformedHelp = "Deadly Drain automatically gets enabled when transformed, and disabled when not transformed"
     string settingsPageDrainDuration = "Drain Duration"
     string settingsPageDrainDurationHelp = "How long the Drain health debuff lasts, in game hours"
     string settingsPageHealthDrainMult = "Health Drain Multiplier"
@@ -341,8 +345,15 @@ Event OnPageReset(string page)
         SetCursorFillMode(TOP_TO_BOTTOM)
         ; Drain Settings
         AddHeaderOption(settingsPageDrainHeader)
-        AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining)
-        AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
+        if CoL.lockDrainType
+            AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath, OPTION_FLAG_DISABLED)
+        else
+            AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining)
+            AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
+        endif
+        AddToggleOptionST("lockDrain", settingsPageLockDrainType, CoL.lockDrainType)
+        AddToggleOptionST("deadlyWhenTransformed", settingsPageDeadlyDrainWhileTransformed, CoL.deadlyDrainWhenTransformed)
         AddToggleOptionST("DrainVerbosityToggleOption", settingsPageDrainVerbosity, CoL.drainNotificationsEnabled)
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
@@ -670,6 +681,25 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageDrainToDeathToggleHelp)
+        EndEvent
+    EndState
+    State lockDrain
+        Event OnSelectST()
+            CoL.lockDrainType = !CoL.lockDrainType
+            SetToggleOptionValueST(CoL.lockDrainType)
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageLockDrainTypeHelp)
+        EndEvent
+    EndState
+    State DeadlyWhenTransformed
+        Event OnSelectST()
+            CoL.deadlyDrainWhenTransformed = !CoL.deadlyDrainWhenTransformed
+            SetToggleOptionValueST(CoL.deadlyDrainWhenTransformed)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDeadlyDrainWhileTransformedHelp)
         EndEvent
     EndState
     State DrainVerbosityToggleOption

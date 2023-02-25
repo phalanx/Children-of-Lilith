@@ -172,13 +172,15 @@ bool Property tattooFade = false Auto Hidden
 int Property tattooSlot = 6 Auto Hidden
 
 ; Drain Properties
-float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
-float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
-float Property drainArousalMult = 0.1 Auto Hidden           ; Multiplier applied to arousal before being added to drain amount
-float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
-float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
-bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
-bool Property drainNotificationsEnabled = true Auto Hidden  ; Should notifications play when drain style is changed
+float Property drainDurationInGameTime = 24.0 Auto Hidden       ; How long, in game hours, does the drain debuff last
+float Property healthDrainMult = 0.2 Auto Hidden                ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
+float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier applied to arousal before being added to drain amount
+float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
+float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
+bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
+bool Property drainNotificationsEnabled = true Auto Hidden      ; Should notifications play when drain style is changed
+bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
+bool Property deadlyDrainWhenTransformed = false Auto Hidden    ; Always deadly drain while transformed
 
 ; NPC Drain Properties
 int Property npcDrainToDeathChance = 0 Auto Hidden
@@ -234,6 +236,7 @@ bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
 Race Property mortalRace Auto Hidden
 Race Property mortalCureRace Auto Hidden
+bool isVampire = false
 ColorForm Property mortalHairColor Auto Hidden
 Form[] Property NoStripList Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
@@ -312,12 +315,18 @@ State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
     EndEvent
+
     Event OnKeyDown(int keyCode)
         if keyCode == toggleDrainHotkey
+            if lockDrainType
+                return
+            endif
             drainHandler.draining = !drainHandler.draining
         elseif keyCode == toggleDrainToDeathHotkey
+            if lockDrainType
+                return
+            endif
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
-        elseif keyCode == temptationHotkey
         endif
     EndEvent
 EndState
@@ -485,32 +494,34 @@ EndFunction
 Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
     Log("Transforming Player")
     Race currentRace = playerRef.GetRace()
+    if mortalCureRace != None && !isVampire
+        isVampire = true
+    endif
+ 
+    __Transform(presetName, presetRace, presetHairColor, currentRace)
+    Utility.Wait(0.1)
+    __Transform(presetName, presetRace, presetHairColor, currentRace)
+
+    Utility.Wait(0.1)
+    UpdateTattoo()
+    Log("Finished Transforming Player")
+EndFunction
+
+Function __Transform(string presetName, Race presetRace, ColorForm presetHairColor, Race currentRace)
     playerRef.GetActorbase().SetHairColor(presetHairColor)
     playerRef.SetRace(presetRace)
     Utility.Wait(0.1)
-    CharGen.LoadPreset(presetName)
-    Utility.Wait(0.1)
-    if Chargen.IsExternalEnabled()
-        CharGen.LoadExternalCharacter(playerRef, presetRace, presetRace)
-    else
-        CharGen.LoadCharacter(playerRef, presetRace, presetName)
-    endif
-
-    playerRef.GetActorbase().SetHairColor(presetHairColor)
     playerRef.SetRace(currentRace)
     Utility.Wait(0.1)
     playerRef.SetRace(presetRace)
-    Utility.Wait(0.1)
     CharGen.LoadPreset(presetName)
     Utility.Wait(0.1)
+
     if Chargen.IsExternalEnabled()
         CharGen.LoadExternalCharacter(playerRef, presetRace, presetName)
     else
         CharGen.LoadCharacter(playerRef, presetRace, presetName)
     endif
-    Utility.Wait(0.1)
-    UpdateTattoo()
-    Log("Finished Transforming Player")
 EndFunction
 
 Function ApplyRankedPerks()

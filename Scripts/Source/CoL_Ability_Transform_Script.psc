@@ -47,6 +47,10 @@ Function Transform()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
 
+    if CoL.deadlyDrainWhenTransformed
+        CoL.drainHandler.drainingToDeath = true
+    endif
+
 EndFunction
 
 Function UnTransform()
@@ -72,6 +76,12 @@ Function UnTransform()
         CoL.playerRef.SetAttackActorOnSight(false)
         CoL.playerRef.RemoveFromFaction(playerWerewolfFaction)
     endif
+
+    if CoL.deadlyDrainWhenTransformed
+        CoL.drainHandler.drainingToDeath = false
+        CoL.drainHandler.draining = true
+    endif
+
 EndFunction
 
 function AddAdditionalPowers()
