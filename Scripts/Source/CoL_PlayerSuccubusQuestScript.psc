@@ -241,6 +241,7 @@ bool Property transformAnimation = true Auto Hidden
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
+bool Property transformSavesNiOverrides = false Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden
@@ -508,6 +509,10 @@ EndFunction
 
 Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
     Log("Transforming Player")
+    int jmorphs
+    if transformSavesNiOverrides
+        jmorphs = __saveBodyMorphs()
+    endif
     Race currentRace = playerRef.GetRace()
     if mortalCureRace != None && !isVampire
         isVampire = true
@@ -516,8 +521,12 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
     __Transform(presetName, presetRace, presetHairColor, currentRace)
     Utility.Wait(0.1)
     __Transform(presetName, presetRace, presetHairColor, currentRace)
-
     Utility.Wait(0.1)
+
+    if transformSavesNiOverrides
+        __restoreBodyMorphs(jmorphs)
+    endif
+
     UpdateTattoo()
     Log("Finished Transforming Player")
 EndFunction
@@ -541,6 +550,45 @@ Function __Transform(string presetName, Race presetRace, ColorForm presetHairCol
         CharGen.LoadCharacter(playerRef, presetRace, presetName)
     endif
 EndFunction
+
+int function __saveBodyMorphs()
+    int jmorphs = JMap.object()
+    string[] listmorphNames = NiOverride.GetMorphNames(playerRef)
+    int lmn = 0
+    while (lmn < listmorphNames.Length)
+        int jkeys = JMap.object()
+        JMap.setObj(jmorphs, listmorphNames[lmn], jkeys)
+        string[] listmorphKeys = NiOverride.GetMorphKeys(playerRef, listmorphNames[lmn])
+        int lmk = 0
+        while (lmk < listmorphKeys.Length)
+            JMap.setFlt(jkeys, listmorphKeys[lmk], NiOverride.GetBodyMorph(playerRef, listmorphNames[lmn], listmorphKeys[lmk]))
+            lmk += 1
+        endWhile
+        lmn += 1
+    endWhile
+    return jmorphs
+endfunction
+
+function __restoreBodyMorphs(int jmorphs)
+    string jmkey = JMap.nextKey(jmorphs, previousKey="", endKey="")
+    bool restored = false
+    while jmkey != ""
+        int jkeys = JMap.getObj(jmorphs, jmkey)
+        string jkkey = JMap.nextKey(jkeys, previousKey="", endKey="")
+        while jkkey != ""
+            float v = JMap.getFlt(jkeys, jkkey)
+            Log(jmkey + " | " + jkkey + " :=: " + v)
+            NiOverride.SetBodyMorph(playerRef, jmkey, jkkey, v)
+            restored = true
+            jkkey = JMap.nextKey(jkeys, jkkey, endKey="")
+        endwhile
+        jmkey = JMap.nextKey(jmorphs, jmkey, endKey="")
+    endwhile
+    JValue.release(jmorphs)
+    if (restored)
+        NiOverride.UpdateModelWeight(playerRef)
+    endif
+endfunction
 
 Function ApplyRankedPerks()
     int i = 0

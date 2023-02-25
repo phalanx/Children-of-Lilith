@@ -230,6 +230,8 @@ Form[] equippedItems
     string transformPageTransformArousalUpperThresholdHelp = "Force transform when above this threshold \n Set to 0 to disable"
     string transformPageTransformArousalLowerThreshold = "Transform Lower Threshold"
     string transformPageTransformArousalLowerThresholdHelp = "Force transform when below this threshold \n Set to 0 to disable"
+    string transformPageSaveNiOverrides = "Save NiOverrides"
+    string transformPageSaveNiOverridesHelp = "Save NiOverrides before transformation and reapply after\nWARNING: This will slow down the transformation a bit"
     ; Buffs
     string transformPageBuffsHeader = "Transform Buffs"
     string transformPageNoBuffChange = "Cannot Change Buffs While Transformed"
@@ -489,6 +491,7 @@ Event OnPageReset(string page)
         endif
         AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
         AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
+        AddToggleOptionST("transformNiOverrides", transformPageSaveNiOverrides, CoL.transformSavesNiOverrides)
         AddSliderOptionST("transformCost", transformPageTransformCost, CoL.transformCost)
         AddSliderOptionST("transformArousalUpperThreshold", transformPageTransformArousalUpperThreshold, CoL.transformArousalUpperThreshold)
         AddSliderOptionST("transformArousalLowerThreshold", transformPageTransformArousalLowerThreshold, CoL.transformArousalLowerThreshold)
@@ -1701,6 +1704,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageEquipmentSwap)
+        EndEvent
+    EndState
+    State transformNiOverrides
+        Event OnSelectST()
+            CoL.transformSavesNiOverrides = !CoL.transformSavesNiOverrides
+            SetToggleOptionValueST(CoL.transformSavesNiOverrides)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageSaveNiOverridesHelp)
         EndEvent
     EndState
     State transformAnimation
