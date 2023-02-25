@@ -51,7 +51,7 @@ State Initialize
         if playerSuccubusLevel.GetValueInt() < 1
             playerSuccubusLevel.SetValueInt(1)
         endif
-        GrantLevelledSpells()
+        GrantLevelledSpells(false)
         GoToState("Running")
     EndEvent
 EndState
@@ -109,18 +109,18 @@ Function LevelUp()
     endif
 EndFunction
 
-Function GrantLevelledSpells()
+Function GrantLevelledSpells(bool verbose = true)
     if (playerSuccubusLevel.GetValueInt() >= 1)
-        CoL.GrantSpells(CoL.levelOneSpells, true)
+        CoL.GrantSpells(CoL.levelOneSpells, verbose)
     endif
     if (playerSuccubusLevel.GetValueInt() >= 2)
-        CoL.GrantSpells(CoL.levelTwoSpells, true)
+        CoL.GrantSpells(CoL.levelTwoSpells, verbose)
     endif
     if (playerSuccubusLevel.GetValueInt() >= 5)
-        CoL.GrantSpells(CoL.levelFiveSpells, true)
+        CoL.GrantSpells(CoL.levelFiveSpells, verbose)
     endif
     if (playerSuccubusLevel.GetValueInt() >= 10)
-        CoL.GrantSpells(CoL.levelTenSpells, true)
+        CoL.GrantSpells(CoL.levelTenSpells, verbose)
     endif
 EndFunction
 

@@ -1,4 +1,6 @@
-Scriptname CoL_PlayerAliasScript extends ReferenceAlias  
+Scriptname CoL_PlayerAliasScript extends ReferenceAlias
+
+import MiscUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 ImageSpaceModifier Property EnergyCastingIMod Auto
@@ -23,11 +25,6 @@ Event OnInit()
         CoL.GoToState("Initialize")
     endif
     HandleOrdinatorVancian()
-    if VancianMagicPerk && CoL.playerRef.HasPerk(VancianMagicPerk)
-        GoToState("Vancian")
-    else
-        GoToState("Standard")
-    endif
 EndEvent
 
 Event OnPlayerLoadGame()
@@ -37,11 +34,6 @@ Event OnPlayerLoadGame()
     if CoL.isPlayerSuccubus.GetValueInt() > 0
         CoL.Log("Maintenance Should Run")
         CoL.Maintenance()
-        if VancianMagicPerk && CoL.playerRef.HasPerk(VancianMagicPerk)
-            GoToState("Vancian")
-        else
-            GoToState("Standard")
-        endif
     endif
 
     int gameLoadEvent = ModEvent.Create("CoL_GameLoad")
@@ -155,3 +147,35 @@ Function ExpendEnergyVancian()
 		Debug.Notification("Not Enough Energy: Energy Casting Disabled")
 	endif
 EndFunction
+
+Event OnVampirismStateChanged(bool isVampire)
+    CoL.Log("Player vampire status chaged")
+    string mortalRaceId = MiscUtil.GetRaceEditorID(CoL.mortalRace)
+    string succubusRaceId = MiscUtil.GetRaceEditorID(CoL.succuRace)
+    Race newMortalRace
+    Race newSuccubusRace
+    CoL.Log("Mortal race id before: " + mortalRaceId)
+    CoL.Log("Succubus race id before: " + succubusRaceId)
+    if isVampire
+        CoL.mortalCureRace = CoL.mortalRace
+        CoL.succuCureRace = CoL.succuRace
+        mortalRaceId += "Vampire"
+        succubusRaceId +="Vampire"
+        newMortalRace = Race.GetRace(mortalRaceId)
+        newSuccubusRace = Race.GetRace(succubusRaceId)
+    else
+        newMortalRace = CoL.mortalCureRace
+        newSuccubusRace = CoL.succuCureRace
+        CoL.mortalCureRace = None
+        CoL.succuCureRace = None
+    endif
+    
+    if (newMortalRace == None || newSuccubusRace == None)
+        Debug.MessageBox("Could not automatically update succubus races.\nProceed with caution")
+    else
+        CoL.Log("Mortal race id after: " + MiscUtil.GetRaceEditorID(newMortalRace))
+        CoL.Log("Succubus race id after: " + MiscUtil.GetRaceEditorID(newSuccubusRace))
+        CoL.mortalRace = newMortalRace
+        CoL.succuRace = newSuccubusRace
+    endif
+EndEvent

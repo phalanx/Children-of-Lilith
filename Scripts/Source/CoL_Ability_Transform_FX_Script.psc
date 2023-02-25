@@ -6,6 +6,7 @@ Idle Property SuccubusTransformationIdle Auto
 Sound Property SuccubusTransformSound Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    Game.ForceThirdPerson()
     SuccubusTransformSound.Play(akTarget)
     if !CoL.isTransformed
         float cost
@@ -14,7 +15,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             CoL.becomeEtherealCost = 0
             CoL.playerRef.AddSpell(CoL.becomeEthereal, false)
         endif
-        if CoL.transformAnimation
+        if CoL.transformAnimation && CoL.succuRace == CoL.mortalRace
             Game.ForceThirdPerson()
             akTarget.PlayIdle(SuccubusTransformationIdle)
             Utility.Wait(5)

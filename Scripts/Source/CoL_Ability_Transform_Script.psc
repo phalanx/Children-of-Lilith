@@ -3,17 +3,16 @@ Scriptname CoL_Ability_Transform_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-Idle Property IdleVampireTransformation Auto
 Faction Property playerWerewolfFaction Auto
 
 ; Transform Buff Settings
-
+Spell Property transformBuffSpell Auto
 
 Form[] originalEquipment
 Form[] succubusEquipment
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Utility.Wait(1.5)
+    Utility.Wait(1)
     if CoL.isTransformed
         if CoL.lockTransform
             Debug.Notification("Arousal preventing untransforming")
@@ -28,11 +27,8 @@ EndEvent
 Function Transform()
     CoL.isTransformed = true
     ; Body Transform
-    CoL.playerRef.SetRace(CoL.succuRace)
-    CoL.playerRef.GetActorbase().SetHairColor(CoL.succuHairColor)
-    Utility.Wait(0.1)
-    CharGen.LoadPreset(CoL.succuPresetName)
-    CoL.UpdateTattoo()
+    CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
+    
     ; Equipment Transform
     if CoL.transformSwapsEquipment
         originalEquipment = StripEquipment(CoL.playerRef)
@@ -51,15 +47,17 @@ Function Transform()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
 
+    if CoL.deadlyDrainWhenTransformed
+        CoL.drainHandler.drainingToDeath = true
+    endif
+
 EndFunction
 
 Function UnTransform()
     CoL.isTransformed = false
     ; Body Transform
-    CoL.playerRef.SetRace(CoL.mortalRace)
-    CoL.playerRef.GetActorbase().SetHairColor(CoL.mortalHairColor)
-    Utility.Wait(0.1)
-    CharGen.LoadPreset(CoL.mortalPresetName)
+    CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
+
     ; Equipment Transform
     if CoL.transformSwapsEquipment
         succubusEquipment = StripEquipment(CoL.playerRef)
@@ -72,40 +70,44 @@ Function UnTransform()
         EquipEquipment(CoL.playerRef, originalEquipment)
         SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, succubusEquipment)
     endif
+    Utility.Wait(0.5)
     RemoveAdditionalPowers()
     if CoL.transformCrime
         CoL.playerRef.SetAttackActorOnSight(false)
         CoL.playerRef.RemoveFromFaction(playerWerewolfFaction)
     endif
+
+    if CoL.deadlyDrainWhenTransformed
+        CoL.drainHandler.drainingToDeath = false
+        CoL.drainHandler.draining = true
+    endif
+
 EndFunction
 
 function AddAdditionalPowers()
+    CoL.Log("Adding additional powers")
     if CoL.healingForm
-        ToggleHealRateBoost(true)
+        CoL.playerRef.ModActorValue("HealRate", (CoL.healRateBoostMult / 2))
     endif
     if CoL.transformBuffsEnabled
-        CoL.playerRef.ModActorValue("Health", CoL.extraHealth)
-        CoL.playerRef.ModActorValue("Stamina", CoL.extraStamina)
-        CoL.playerRef.ModActorValue("Magicka", CoL.extraMagicka)
-        CoL.playerRef.ModActorValue("CarryWeight", CoL.extraCarryWeight)
-        CoL.playerRef.ModActorValue("attackDamageMult", CoL.extraMeleeDamage)
-        CoL.playerRef.ModActorValue("DamageResist", CoL.extraArmor)
-        CoL.playerRef.ModActorValue("MagicResist", CoL.extraMagicResist)
+        transformBuffSpell.SetNthEffectMagnitude(0, CoL.extraHealth)
+        transformBuffSpell.SetNthEffectMagnitude(1, CoL.extraStamina)
+        transformBuffSpell.SetNthEffectMagnitude(2, CoL.extraMagicka)
+        transformBuffSpell.SetNthEffectMagnitude(3, CoL.extraCarryWeight)
+        transformBuffSpell.SetNthEffectMagnitude(4, CoL.extraMeleeDamage)
+        transformBuffSpell.SetNthEffectMagnitude(5, CoL.extraArmor)
+        transformBuffSpell.SetNthEffectMagnitude(6, CoL.extraMagicResist)
+        CoL.playerRef.AddSpell(transformBuffSpell, false)
     endif
 endfunction
 
 function RemoveAdditionalPowers()
+    CoL.Log("Removing additional powers")
     if CoL.healingForm
-        ToggleHealRateBoost(false)
+        CoL.playerRef.ModActorValue("HealRate", 0.0 - (CoL.healRateBoostMult / 2))
     endif
     if CoL.transformBuffsEnabled
-        CoL.playerRef.ModActorValue("Health", 0.0 - CoL.extraHealth)
-        CoL.playerRef.ModActorValue("Stamina", 0 - CoL.extraStamina)
-        CoL.playerRef.ModActorValue("Magicka", 0 - CoL.extraMagicka)
-        CoL.playerRef.ModActorValue("CarryWeight", 0 - CoL.extraCarryWeight)
-        CoL.playerRef.ModActorValue("attackDamageMult", 0 - CoL.extraMeleeDamage)
-        CoL.playerRef.ModActorValue("DamageResist", 0 - CoL.extraArmor)
-        CoL.playerRef.ModActorValue("MagicResist", 0 - CoL.extraMagicResist)
+        CoL.playerRef.RemoveSpell(transformBuffSpell)
     endif
 endfunction
 
@@ -157,17 +159,3 @@ function EquipEquipment(Actor actorRef, Form[] equipmentList)
 		endwhile
 	endif
 endfunction
-
-Function ToggleHealRateBoost(bool enable)
-    float healRateBoost
-    if CoL.healRateBoostFlat
-        healRateBoost = CoL.healRateBoostMult
-    else
-        healRateBoost = CoL.playerRef.GetBaseActorValue("HealRate") * CoL.healRateBoostMult
-    endif
-    if enable
-        CoL.playerRef.ModActorValue("HealRate", healRateBoost)
-    else
-        CoL.playerRef.ModActorValue("HealRate", 0.0 - healRateBoost)
-    endif
-endFunction

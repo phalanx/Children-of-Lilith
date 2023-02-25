@@ -23,7 +23,7 @@ Form[] equippedItems
     string statusPageNextLevelXP = "Exp Required for Next Level"
     string statusPageEnergyCurrent = "Current energy"
     string statusPageEnergyMax = "Maximum energy"
-    string statusPageEnergyMaxHelp = "Set Your Maximum Energy. Could be considered a cheat"
+    string statusPageEnergyMaxHelp = "Set Your Maximum Energy. Could be considered a cheat \n Perks will be applied after the change"
     string statusPageBecomeSuccubus = "Become Succubus"
     string statusPageBecomeSuccubusHelp = "Enables the mod, turning you into a succubus"
     string statusPageEndSuccubus = "End Succubus"
@@ -56,6 +56,10 @@ Form[] equippedItems
     string settingsPageDrainToDeathToggleHelp = "Toggle Drain to Death. Takes precedent over Drain setting"
     string settingsPageDrainVerbosity = "Enable Drain Notifications"
     string settingsPageDrainVerbosityHelp = "Should switching drain modes trigger a notification in the top left"
+    string settingsPageLockDrainType = "Lock Drain Type"
+    string settingsPageLockDrainTypeHelp = "Disable Drain Selection Hotkeys"
+    string settingsPageDeadlyDrainWhileTransformed = "Enable Deadly Drain While Transformed"
+    string settingsPageDeadlyDrainWhileTransformedHelp = "Deadly Drain automatically gets enabled when transformed, and disabled when not transformed"
     string settingsPageDrainDuration = "Drain Duration"
     string settingsPageDrainDurationHelp = "How long the Drain health debuff lasts, in game hours"
     string settingsPageHealthDrainMult = "Health Drain Multiplier"
@@ -63,12 +67,16 @@ Form[] equippedItems
     string settingsPageDrainArousalMult = "Drain Arousal Multiplier"
     string settingsPageDrainArousalMultHelp = "Value to Multiply arousal by before adding it to the amount of energy gained \n Only has an effect if a supported Arousal Framework is installed"
     string settingsPageEnergyConversionRate = "Energy Conversion Rate"
-    string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained"
+    string settingsPageEnergyConversionRateHelp = "Percentage of Drained Health that is converted to Energy \n (Health Drained * [This Value]) = Energy Gained \n Perks will be applied after the change"
     string settingsPageDrainFeedsVampire = "Drain Feeds Vampires"
     string settingsPageDrainFeedsVampireHelp = "Should drain victims also trigger a vampire feeding"
     string settingsPageNpcDrainHeader = "NPC Drain Settings"
     string settingsPageNpcDeathChance = "NPC Drain to Death Chance"
     string settingsPageNpcDeathChanceHelp = "Percentage Chance NPC drains victim to death"
+    string settingsPageforcedDrainMinimum = "Forced Drain Percentage"
+    string settingsPageforcedDrainMinimumHelp = "If energy is below this percentage, partners will always be drained\nSet to -1 to disable"
+    string settingsPageforcedDrainToDeathMinimum = "Forced Drain To Death Percentage"
+    string settingsPageforcedDrainToDeathMinimumHelp = "If energy is below this percentage, partners will always be drained to death\nSet to -1 to disable"
 
     string settingsPageLevelHeader = "Leveling Settings"
     string settingsPageLevelXpPerDrain = "XP Per Drain"
@@ -91,6 +99,8 @@ Form[] equippedItems
     string settingsPageHungerThresholdHelp = "When Energy falls this below this percentage, activate Hunger effects"
     string settingsPageHungerAmount = "Hunger Amount"
     string settingsPageHungerAmountHelp = "If Hunger is enabled, this sets the amount of Energy lost on a daily basis"
+    string settingsPageHungerIsPercent = "Hunger Is Percentage"
+    string settingsPageHungerIsPercentHelp = "The hunger value will be treated as a percentage of max energy lost instead of a flat value"
     string settingsPageHungerDamage = "Deadly Hunger"
     string settingsPageHungerDamageHelp = "If Hunger is enabled, this sets whether or not running out of Energy will periodically reduce Max Health"
     string settingsPageHungerDamageAmount = "Hunger Damage Amount"
@@ -111,10 +121,8 @@ Form[] equippedItems
     string settingsPageBecomeEtherealCostHelp = "Per Second Energy Cost of Succubus Become Ethereal"
     string settingsPageHealRateBoostCost = "HealRate Boost Cost"
     string settingsPageHealRateBoostCostHelp = "Per Second Cost of Succubus Heal Rate Boost"
-    string settingsPageHealRateBoostMult = "HealRate Boost Multiplier"
-    string settingsPageHealRateBoostMultHelp = "Multiplier applied to HealRate during Succubus Heal Rate Boost"
-    string settingsPageHealRateBoostFlat = "Enable Flat Regen Boost"
-    string settingsPageHealRateBoostFlatHelp = "Instead of a Multiplier, HealRate Boost Multiplier gets applied as a flat amount of Health Regen\n Useful if you use other mods which remove your base regen\n Set HealRate Boost Multiplier to 7 to match the current default"
+    string settingsPageHealRateBoostMult = "HealRate Boost Amount"
+    string settingsPageHealRateBoostMultHelp = "Amount added to HealRate during Succubus Heal Rate Boost"
     string settingsPageEnergyCastingMult = "Energy Casting Cost Multiplier"
     string settingsPageEnergyCastingMultHelp = "Multiplier applied to spells Magicka cost before being removed from Energy Pool \n (Spell Magicka Cost * [This Value]) = Energy Cost of Spell"
     string settingsPageEnergyCastingConcStyle = "Cost Calculation Style"
@@ -147,6 +155,10 @@ Form[] equippedItems
     string hotkeysPageToggleDrainHotkeyHelp = "Hotkey to Toggle Drain \n Only registers during sex scenes"
     string hotkeysPageToggleDrainToDeathHotkey = "Toggle Drain to Death Key"
     string hotkeysPageToggleDrainToDeathHotkeyHelp = "Hotkey to Toggle Drain to Death \n Only registers during sex scenes"
+    string hotkeysPageTransformHotkey = "Transform Hotkey"
+    string hotkeysPageTransformHotkeyHelp = "Hotkey to trigger transform power"
+    string hotkeysPageTemptationHotkey = "Temptation Hotkey"
+    string hotkeysPageTemptationHotkeyHelp = "Hotkey to cast Succubus Temptation during Scene"
 ; Page 4 - Widgets
     string widgetsPageName = "Widgets"
     string widgetsPageEnergyMeterXPos = "Energy Meter X Position"
@@ -184,6 +196,7 @@ Form[] equippedItems
     string perkpageSlakeThirst = "Slake Thirst"
     string perkpageSlakeThirstHelp = "Add Succubus Arousal Level to Drain Amount\nIf multiple arousal frameworks detected, uses the average\nMultiplied by Drain Arousal Multiplier"
 ; Page 6 - Transformation
+    string transformPageExternalMessageBox = "RaceMenu's external character save is not enabled.\nTransform may not function properly"
     string transformPageName = "Transformation"
     string transformPagePresetHeader = "Preset"
     string transformPageSaveSuccuPreset = "Save Succubus Form"
@@ -217,8 +230,11 @@ Form[] equippedItems
     string transformPageTransformArousalUpperThresholdHelp = "Force transform when above this threshold \n Set to 0 to disable"
     string transformPageTransformArousalLowerThreshold = "Transform Lower Threshold"
     string transformPageTransformArousalLowerThresholdHelp = "Force transform when below this threshold \n Set to 0 to disable"
+    string transformPageSaveNiOverrides = "Save NiOverrides"
+    string transformPageSaveNiOverridesHelp = "Save NiOverrides before transformation and reapply after\nWARNING: This will slow down the transformation a bit"
     ; Buffs
     string transformPageBuffsHeader = "Transform Buffs"
+    string transformPageNoBuffChange = "Cannot Change Buffs While Transformed"
     string transformPageBuffsEnabled = "Enable Transform Buffs"
     string transformPageBuffsArmor = "Extra Armor"
     string transformPageBuffsArmorHelp = "Increases Armor Rating by this amount"
@@ -236,35 +252,21 @@ Form[] equippedItems
     string transformPageBuffsExtraCarryWeightHelp = "Increase carry weight by this amount"
 
 int Function GetVersion()
-    return 7
+    return 9
 EndFunction
 
 Event OnVersionUpdate(int newVersion)
     Debug.Trace("[CoL] New Version Detected " + newVersion)
     if isPlayerSuccubus.GetValueInt() > 0
+        Debug.Notification("[CoL] Updating...")
         Utility.Wait(1)
         CoL.GoToState("Uninitialize")
         Utility.Wait(1)
         CoL.GoToState("Initialize")
         Utility.Wait(1)
-    ;     if newVersion >= 2
-    ;         if CoL.levelHandler.GetState() != "Running"
-    ;             CoL.levelHandler.GoToState("Initialize")
-    ;         endif
-    ;     endif
-    ;     if newVersion >= 3
-    ;         CoL.Maintenance()
-    ;     endif
-    ;     if newVersion >= 4
-    ;         if !CoL.playerRef.HasSpell(CoL.transformSpell)
-    ;             CoL.playerRef.AddSpell(CoL.transformSpell)
-    ;         endif
-    ;     endif
-    ;     if newVersion >= 6
-    ;         CoL.levelHandler.GoToState("Uninitialize")
-    ;         Utility.Wait(1)
-    ;         CoL.levelHandler.GoToState("Initialize")
-    ;     endif
+        CoL.transformArousalLowerThreshold = CoL.transformArousalLowerThreshold
+        CoL.transformArousalUpperThreshold = CoL.transformArousalUpperThreshold
+        Debug.Notification("[CoL] Finished Updating")
     endif
     OnConfigInit()
 EndEvent
@@ -353,9 +355,18 @@ Event OnPageReset(string page)
         SetCursorFillMode(TOP_TO_BOTTOM)
         ; Drain Settings
         AddHeaderOption(settingsPageDrainHeader)
-        AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining)
-        AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
+        if CoL.lockDrainType
+            AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath, OPTION_FLAG_DISABLED)
+        else
+            AddToggleOptionST("DrainToggleOption", settingsPageDrainToggle, CoL.drainHandler.draining)
+            AddToggleOptionST("DrainToDeathToggleOption", settingsPageDrainToDeathToggle, CoL.drainHandler.drainingToDeath)
+        endif
+        AddToggleOptionST("lockDrain", settingsPageLockDrainType, CoL.lockDrainType)
+        AddToggleOptionST("deadlyWhenTransformed", settingsPageDeadlyDrainWhileTransformed, CoL.deadlyDrainWhenTransformed)
         AddToggleOptionST("DrainVerbosityToggleOption", settingsPageDrainVerbosity, CoL.drainNotificationsEnabled)
+        AddSliderOptionST("forcedDrainMinimumSlider", settingsPageforcedDrainMinimum, CoL.forcedDrainMinimum, "{0}")
+        AddSliderOptionST("forcedDrainToDeathMinimumSlider", settingsPageforcedDrainToDeathMinimum, CoL.forcedDrainToDeathMinimum, "{0}")
         AddSliderOptionST("DrainDurationSlider", settingsPageDrainDuration, CoL.drainDurationInGameTime)
         AddSliderOptionST("HealthDrainMultiSlider", settingsPageHealthDrainMult, CoL.healthDrainMult, "{1}")
         AddSliderOptionST("DrainArousalMultiSlider", settingsPageDrainArousalMult, CoL.drainArousalMult, "{1}")
@@ -377,6 +388,7 @@ Event OnPageReset(string page)
         AddToggleOptionST("HungerToggle", settingsPageHungerToggle, CoL.hungerEnabled)
         AddSliderOptionST("HungerThresholdSlider", settingsPageHungerThreshold, CoL.hungerThreshold)
         AddSliderOptionST("HungerAmountSlider", settingsPageHungerAmount, CoL.dailyHungerAmount)
+        AddToggleOptionST("HungerIsPercent", settingsPageHungerIsPercent, CoL.hungerIsPercent)
         AddToggleOptionST("HungerDamageToggle", settingsPageHungerDamage, CoL.hungerDamageEnabled)
         AddSliderOptionST("HungerDamageAmountSlider", settingsPageHungerDamageAmount, CoL.hungerDamageAmount)
         AddToggleOptionST("HungerArousalToggle", settingsPageHungerArousal, CoL.hungerArousalEnabled)
@@ -392,7 +404,6 @@ Event OnPageReset(string page)
         AddEmptyOption()
         AddSliderOptionST("HealRateBoostCostSlider", settingsPageHealRateBoostCost, CoL.healRateBoostCost)
         AddSliderOptionST("HealRateBoostMultSlider", settingsPageHealRateBoostMult, CoL.healRateBoostMult)
-        AddToggleOptionST("HealRateBoostFlat", settingsPageHealRateBoostFlat, CoL.healRateBoostFlat)
         AddEmptyOption()
         AddSliderOptionST("EnergyCastingMultSlider", settingsPageEnergyCastingMult, CoL.energyCastingMult, "{1}")
         AddMenuOptionST("EnergyCastingConcStyleMenu", settingsPageEnergyCastingConcStyle, settingsPageEnergyCastingConcStyleOptions[CoL.energyCastingConcStyle])
@@ -413,6 +424,8 @@ Event OnPageReset(string page)
         SetCursorFillMode(TOP_TO_BOTTOM)
         AddKeyMapOptionST("DrainKeyMapOption", hotkeysPageToggleDrainHotkey, CoL.toggleDrainHotkey)
         AddKeyMapOptionST("DrainToDeathKeyMapOption", hotkeysPageToggleDrainToDeathHotkey, CoL.toggleDrainToDeathHotkey)
+        AddKeyMapOptionST("TransformKeyMapOption", hotkeysPageTransformHotkey, CoL.transformHotkey)
+        AddKeyMapOptionST("TemptationKeyMapOption", hotkeysPageTemptationHotkey, CoL.temptationHotkey)
 ; Page 4 - Widgets
     elseif page == widgetsPageName
         SetCursorFillMode(TOP_TO_BOTTOM)
@@ -459,8 +472,10 @@ Event OnPageReset(string page)
         endif
 ; Page 6 - Transform
     elseif page == transformPageName
-        equippedItems = getEquippedItems(CoL.playerRef)
         SetCursorFillMode(TOP_TO_BOTTOM)
+        if !CharGen.IsExternalEnabled()
+            AddTextOptionST("transformExternalWarning", transformPageExternalMessageBox, None)
+        endif
         AddHeaderOption(transformPagePresetHeader)
         AddTextOptionST("transformSaveMortalPreset", transformPageSaveMortalPreset, None)
         if CoL.mortalPresetSaved
@@ -476,19 +491,23 @@ Event OnPageReset(string page)
         endif
         AddToggleOptionST("transformCrime", transformPageTransformCrime, CoL.transformCrime)
         AddToggleOptionST("transformEquipment", transformPageEquipmentSwap, CoL.transformSwapsEquipment)
-        AddToggleOptionST("transformAnimation", transformPageTransformAnimation, CoL.transformAnimation)
+        AddToggleOptionST("transformNiOverrides", transformPageSaveNiOverrides, CoL.transformSavesNiOverrides)
         AddSliderOptionST("transformCost", transformPageTransformCost, CoL.transformCost)
         AddSliderOptionST("transformArousalUpperThreshold", transformPageTransformArousalUpperThreshold, CoL.transformArousalUpperThreshold)
         AddSliderOptionST("transformArousalLowerThreshold", transformPageTransformArousalLowerThreshold, CoL.transformArousalLowerThreshold)
         AddHeaderOption(transformPageBuffsHeader)
-        AddToggleOptionST("transformBuffsEnable", transformPageBuffsEnabled, CoL.transformBuffsEnabled)
-        AddSliderOptionST("transformBuffsArmor", transformPageBuffsArmor, CoL.extraArmor)
-        AddSliderOptionST("transformBuffsMagicResist", transformPageBuffsMagicResist, CoL.extraMagicResist)
-        AddSliderOptionST("transformBuffsHealth", transformPageBuffsHealth, CoL.extraHealth)
-        AddSliderOptionST("transformBuffsMagicka", transformPageBuffsMagicka, CoL.extraMagicka)
-        AddSliderOptionST("transformBuffsStamina", transformPageBuffsStamina, CoL.extraStamina)
-        AddSliderOptionST("transformBuffsExtraMeleeDamage", transformPageBuffsExtraMeleeDamage, CoL.extraMeleeDamage, "{1}")
-        AddSliderOptionST("transformBuffsExtraCarryWeight", transformPageBuffsExtraCarryWeight, CoL.extraCarryWeight)
+        if CoL.isTransformed
+            AddTextOptionST("NoTransformBuffChange", transformPageNoBuffChange, None)
+        else
+            AddToggleOptionST("transformBuffsEnable", transformPageBuffsEnabled, CoL.transformBuffsEnabled)
+            AddSliderOptionST("transformBuffsArmor", transformPageBuffsArmor, CoL.extraArmor)
+            AddSliderOptionST("transformBuffsMagicResist", transformPageBuffsMagicResist, CoL.extraMagicResist)
+            AddSliderOptionST("transformBuffsHealth", transformPageBuffsHealth, CoL.extraHealth)
+            AddSliderOptionST("transformBuffsMagicka", transformPageBuffsMagicka, CoL.extraMagicka)
+            AddSliderOptionST("transformBuffsStamina", transformPageBuffsStamina, CoL.extraStamina)
+            AddSliderOptionST("transformBuffsExtraMeleeDamage", transformPageBuffsExtraMeleeDamage, CoL.extraMeleeDamage, "{1}")
+            AddSliderOptionST("transformBuffsExtraCarryWeight", transformPageBuffsExtraCarryWeight, CoL.extraCarryWeight)
+        endif
         SetCursorPosition(1)
         AddHeaderOption(transformPageEquipmentHeader)
         AddTextOptionST("transformActivateEquipmentChest", transformPageEquipmentSave , None)
@@ -496,6 +515,7 @@ Event OnPageReset(string page)
             AddTextOptionST("transformLoadEquipment", transformPageLoadEquipment , None)
         endif
         if loadEquipment
+            equippedItems = getEquippedItems(CoL.playerRef)
             AddHeaderOption(transformPageNoStripAddHeader)
             int i = 0
             while i < equippedItems.Length
@@ -529,6 +549,10 @@ Event OnPageReset(string page)
         AddToggleOptionST("SLAR", "SexLab Aroused", (SexLab_Interfaces as CoL_Interface_SLAR_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
         AddHeaderOption("Toys & Love")
         AddToggleOptionST("TL", "Toys & Love", Game.IsPluginInstalled("Toys.esm"), OPTION_FLAG_DISABLED)
+        AddHeaderOption("OSL Aroused")
+        AddToggleOptionST("OSL", "OSL Aroused", Game.IsPluginInstalled("OSLAroused.esp"), OPTION_FLAG_DISABLED)
+        AddHeaderOption("SlaveTats")
+        AddToggleOptionST("SlaveTats", "SlaveTats", Game.IsPluginInstalled("SlaveTats.esp"), OPTION_FLAG_DISABLED)
 
     endif
 EndEvent
@@ -591,6 +615,7 @@ endfunction
         EndEvent
         Event OnSliderAcceptST(float value)
             CoL.playerEnergyMax = value
+            CoL.ApplyRankedPerks()
             SetSliderOptionValueST(CoL.playerEnergyMax)
         EndEvent
         Event OnHighlightST()
@@ -676,6 +701,25 @@ endfunction
             SetInfoText(settingsPageDrainToDeathToggleHelp)
         EndEvent
     EndState
+    State lockDrain
+        Event OnSelectST()
+            CoL.lockDrainType = !CoL.lockDrainType
+            SetToggleOptionValueST(CoL.lockDrainType)
+            ForcePageReset()
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageLockDrainTypeHelp)
+        EndEvent
+    EndState
+    State DeadlyWhenTransformed
+        Event OnSelectST()
+            CoL.deadlyDrainWhenTransformed = !CoL.deadlyDrainWhenTransformed
+            SetToggleOptionValueST(CoL.deadlyDrainWhenTransformed)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageDeadlyDrainWhileTransformedHelp)
+        EndEvent
+    EndState
     State DrainVerbosityToggleOption
         Event OnSelectST()
             CoL.drainNotificationsEnabled = !CoL.drainNotificationsEnabled
@@ -739,6 +783,7 @@ endfunction
         EndEvent
         Event OnSliderAcceptST(float value)
             CoL.energyConversionRate = value
+            CoL.ApplyRankedPerks()
             SetSliderOptionValueST(CoL.energyConversionRate, "{1}")
         EndEvent
         Event OnHighlightST()
@@ -767,6 +812,38 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageNpcDeathChanceHelp)
+        EndEvent
+    EndState
+    State forcedDrainMinimumSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.forcedDrainMinimum)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(-1, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.forcedDrainMinimum = value
+            SetSliderOptionValueST(CoL.forcedDrainMinimum,"{0}")
+            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageforcedDrainMinimumHelp)
+        EndEvent
+    EndState
+    State forcedDrainToDeathMinimumSlider
+        Event OnSliderOpenST()
+            SetSliderDialogStartValue(CoL.forcedDrainToDeathMinimum)
+            SetSliderDialogDefaultValue(0)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(-1, 100)
+        EndEvent
+        Event OnSliderAcceptST(float value)
+            CoL.forcedDrainToDeathMinimum = value
+            SetSliderOptionValueST(CoL.forcedDrainToDeathMinimum,"{0}")
+            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageforcedDrainToDeathMinimumHelp)
         EndEvent
     EndState
 
@@ -883,6 +960,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageHungerAmountHelp)
+        EndEvent
+    EndState
+    State HungerIsPercent
+        Event OnSelectST()
+            CoL.hungerIsPercent = !CoL.hungerIsPercent
+            SetToggleOptionValueST(CoL.hungerIsPercent)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(settingsPageHungerIsPercentHelp)
         EndEvent
     EndState
     State HungerThresholdSlider
@@ -1017,15 +1103,6 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(settingsPageHealRateBoostMultHelp)
-        EndEvent
-    EndState
-    State HealRateBoostFlat
-        Event OnSelectST()
-            CoL.healRateBoostFlat = !CoL.hungerEnabled
-            SetToggleOptionValueST(CoL.healRateBoostFlat)
-        EndEvent
-        Event OnHighlightST()
-            SetInfoText(settingsPageHealRateBoostFlatHelp)
         EndEvent
     EndState
 
@@ -1200,6 +1277,11 @@ endfunction
 ; Page 3 State Handlers
     State DrainKeyMapOption
         Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.toggleDrainHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
             bool continue = true
             if (conflictControl != "")
                 string msg
@@ -1223,6 +1305,11 @@ endfunction
     EndState
     State DrainToDeathKeyMapOption
         Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.toggleDrainToDeathHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
             bool continue = true
             if (conflictControl != "")
                 string msg
@@ -1242,6 +1329,62 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(hotkeysPageToggleDrainToDeathHotkeyHelp)
+        EndEvent
+    EndState
+    State TransformKeyMapOption
+        Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.transformHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
+            bool continue = true
+            if (conflictControl != "")
+                string msg
+                if (conflictName != "")
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+                else
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n\nAre you sure you want to continue?"
+                endIf
+
+                continue = ShowMessage(msg, true, "$Yes", "$No")
+            endIf
+
+            if (continue)
+                CoL.transformHotkey = keyCode
+                SetKeyMapOptionValueST(keyCode)
+            endIf
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(hotkeysPageTransformHotkeyHelp)
+        EndEvent
+    EndState
+    State TemptationKeyMapOption
+        Event OnKeyMapChangeST(int keyCode, string conflictControl, string conflictName)
+            if keyCode == 1
+                CoL.temptationHotkey = -1
+                SetKeyMapOptionValueST(-1)
+                return
+            endif
+            bool continue = true
+            if (conflictControl != "")
+                string msg
+                if (conflictName != "")
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+                else
+                    msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n\nAre you sure you want to continue?"
+                endIf
+
+                continue = ShowMessage(msg, true, "$Yes", "$No")
+            endIf
+
+            if (continue)
+                CoL.temptationHotkey = keyCode
+                SetKeyMapOptionValueST(keyCode)
+            endIf
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(hotkeysPageTemptationHotkeyHelp)
         EndEvent
     EndState
 ; Page 4 State Handlers
@@ -1477,6 +1620,7 @@ endfunction
             SetInfoText(perkpageSafeTransformationHelp)
         EndEvent
     EndState
+    
     State perkSlakeThirst
         Event OnSelectST()
             if CoL.availablePerkPoints > 0
@@ -1497,10 +1641,9 @@ endfunction
         Event OnSelectST()
             CoL.mortalRace = CoL.playerRef.GetRace()
             CoL.mortalHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-            CharGen.SavePreset(CoL.mortalPresetName)
-            CoL.mortalPresetSaved = True
             Debug.MessageBox(transformPageSaveMortalPresetMsg)
-            ForcePageReset()
+            CoL.SavePreset(CoL.mortalPresetName)
+            CoL.mortalPresetSaved = true
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageSaveMortalPresetHelp)
@@ -1508,12 +1651,9 @@ endfunction
     EndState
     State transformLoadMortalPreset
         Event OnSelectST()
-            CoL.playerRef.SetRace(CoL.mortalRace)
-            CoL.playerRef.GetActorbase().SetHairColor(CoL.mortalHairColor)
             Debug.MessageBox(transformPageLoadMortalPresetMsg)
             Utility.Wait(0.1)
-            CharGen.LoadPreset(CoL.mortalPresetName)
-            ForcePageReset()
+            CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageLoadMortalPresetHelp)
@@ -1523,10 +1663,9 @@ endfunction
         Event OnSelectST()
             CoL.succuRace = CoL.playerRef.GetRace()
             CoL.succuHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-            CharGen.SavePreset(CoL.succuPresetName)
-            CoL.succuPresetSaved = True
             Debug.MessageBox(transformPageSaveSuccuPresetMsg)
-            ForcePageReset()
+            CoL.SavePreset(CoL.succuPresetName)
+            CoL.succuPresetSaved = True
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageSaveSuccuPresetHelp)
@@ -1534,11 +1673,9 @@ endfunction
     EndState
     State transformLoadSuccuPreset
         Event OnSelectST()
-            CoL.playerRef.SetRace(CoL.succuRace)
-            CoL.playerRef.GetActorbase().SetHairColor(CoL.succuHairColor)
             Debug.MessageBox(transformPageLoadSuccuPresetMsg)
             Utility.Wait(0.1)
-            CharGen.LoadPreset(CoL.succuPresetName)
+            CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
             ForcePageReset()
         EndEvent
         Event OnHighlightST()
@@ -1571,6 +1708,15 @@ endfunction
         EndEvent
         Event OnHighlightST()
             SetInfoText(transformPageEquipmentSwap)
+        EndEvent
+    EndState
+    State transformNiOverrides
+        Event OnSelectST()
+            CoL.transformSavesNiOverrides = !CoL.transformSavesNiOverrides
+            SetToggleOptionValueST(CoL.transformSavesNiOverrides)
+        EndEvent
+        Event OnHighlightST()
+            SetInfoText(transformPageSaveNiOverridesHelp)
         EndEvent
     EndState
     State transformAnimation

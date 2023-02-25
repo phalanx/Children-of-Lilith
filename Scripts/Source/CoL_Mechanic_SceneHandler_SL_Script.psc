@@ -10,6 +10,7 @@ bool SexLabInstalled
 bool SLSOInstalled
 bool SLARInstalled
 Actor[] currentVictims
+Actor[] currentParticipants
 Actor succubus
 String succubusName
 
@@ -107,11 +108,16 @@ Event SceneStartHandler(Form actorRef, int threadId)
     int sceneStartEvent
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
+
+        RegisterForKey(CoL.temptationHotkey)
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
     ModEvent.Send(sceneStartEvent)
     CoL.Log(succubusName +" involved animation started")
+
+    currentParticipants = SexLab.Positions(threadId)
+
     SexLab.SetHook(threadId, "CoLSLSceneHook")
     ; Register for thread specific SL Hooks
     if SLSOInstalled
@@ -123,6 +129,19 @@ Event SceneStartHandler(Form actorRef, int threadId)
     endif
     RegisterForModEvent("HookAnimationEnd_CoLSLSceneHook", "CoL_SLAnimationEndHandler")
     CoL.Log("Registered for SexLab events")
+EndEvent
+
+Event OnKeyDown(int keyCode)
+    if keyCode == CoL.temptationHotkey
+        if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+            return
+        endif
+        int i = 0
+        while i < currentParticipants.Length
+            CoL.temptationSpell.Cast(CoL.playerRef, currentParticipants[i])
+            i += 1
+        endwhile
+    endif
 EndEvent
 
 Event CoL_SLOrgasmHandler(int threadId, bool hasPlayer)
@@ -146,6 +165,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
     int sceneEndEvent
     if succubus == CoL.playerRef
         sceneEndEvent = ModEvent.Create("CoL_endScene")
+        UnRegisterForKey(CoL.temptationHotkey)
     else
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
     endif

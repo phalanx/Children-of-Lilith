@@ -1,6 +1,8 @@
 Scriptname CoL_PlayerSuccubusQuestScript extends Quest  
 
 import PapyrusUtil
+import CharGen
+
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
@@ -12,6 +14,7 @@ CoL_Interface_OAroused_Script Property OAroused Auto
 CoL_Interface_Toys_Script Property Toys Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
+CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
@@ -35,6 +38,8 @@ Spell[] Property levelTwoSpells Auto                ; Spells granted to player a
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
 Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
+Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
+
 bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
 bool Property EnergyScaleTestEnabled = false Auto Hidden       ; Enable Energy Scale test when Drain to Death button pushed
 
@@ -97,6 +102,30 @@ int Property toggleDrainToDeathHotkey Hidden    ; Default Toggle Drain to Death 
     EndFunction
 EndProperty
 
+int transformHotKey_var = -1
+int Property transformHotkey Hidden    ; Default Toggle Drain to Death key to right alt
+    int Function Get()
+        return transformHotkey_var 
+    EndFunction
+    Function Set(int newKey)
+        UnregisterForKey(transformHotKey_var)
+        transformHotKey_var = newKey
+        RegisterForKey(transformHotKey_var)
+    EndFunction
+EndProperty
+
+int temptationHotKey_var = -1
+int Property temptationHotkey Hidden    ; Default Toggle Drain to Death key to right alt
+    int Function Get()
+        return temptationHotkey_var 
+    EndFunction
+    Function Set(int newKey)
+        UnregisterForKey(temptationHotKey_var)
+        temptationHotKey_var = newKey
+        RegisterForKey(temptationHotKey_var)
+    EndFunction
+EndProperty
+
 ; Energy Properties
 float playerEnergyCurrent_var = 50.0
 float Property playerEnergyCurrent Hidden
@@ -117,6 +146,17 @@ float Property playerEnergyCurrent Hidden
         if tattooFade
             UpdateTattoo()
         endif
+        float energyPercentage = ((newVal / playerEnergyMax) * 100) 
+        if  energyPercentage  <= forcedDrainToDeathMinimum
+            drainHandler.draining = false
+            drainHandler.drainingToDeath = true
+        elseif energyPercentage <= forcedDrainMinimum
+            drainHandler.draining = true
+            drainHandler.drainingToDeath = false
+        else
+            drainHandler.draining = false
+            drainHandler.drainingToDeath = false
+        endif
     EndFunction
 EndProperty
 float Property playerEnergyMax = 100.0 Auto Hidden
@@ -134,6 +174,7 @@ bool Property hungerEnabled Hidden
         endif
     EndFunction
 EndProperty
+bool Property hungerIsPercent = false Auto Hidden
 float Property dailyHungerAmount = 10.0 Auto Hidden
 bool Property hungerDamageEnabled = false Auto Hidden
 float Property hungerDamageAmount = 5.0 Auto Hidden
@@ -144,13 +185,17 @@ bool Property tattooFade = false Auto Hidden
 int Property tattooSlot = 6 Auto Hidden
 
 ; Drain Properties
-float Property drainDurationInGameTime = 24.0 Auto Hidden   ; How long, in game hours, does the drain debuff last
-float Property healthDrainMult = 0.2 Auto Hidden            ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
-float Property drainArousalMult = 0.1 Auto Hidden           ; Multiplier applied to arousal before being added to drain amount
-float Property drainToDeathMult = 2.0 Auto Hidden           ; Multiplier applied energy conversion when victim is drained to death
-float Property energyConversionRate = 0.5 Auto Hidden       ; Rate at which drained health is converted to Energy
-bool Property drainFeedsVampire = true Auto Hidden          ; Should draining trigger a vampire feeding
-bool Property drainNotificationsEnabled = true Auto Hidden  ; Should notifications play when drain style is changed
+float Property drainDurationInGameTime = 24.0 Auto Hidden       ; How long, in game hours, does the drain debuff last
+float Property healthDrainMult = 0.2 Auto Hidden                ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
+float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier applied to arousal before being added to drain amount
+float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
+float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
+bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
+bool Property drainNotificationsEnabled = true Auto Hidden      ; Should notifications play when drain style is changed
+bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
+bool Property deadlyDrainWhenTransformed = false Auto Hidden    ; Always deadly drain while transformed
+float Property forcedDrainMinimum = -1.0 Auto Hidden             ; Minimum energy to always drain
+float Property forcedDrainToDeathMinimum = -1.0 Auto Hidden      ; Minimum energy to always drain to death
 
 ; NPC Drain Properties
 int Property npcDrainToDeathChance = 0 Auto Hidden
@@ -158,8 +203,7 @@ int Property npcDrainToDeathChance = 0 Auto Hidden
 ; Power Properties
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
-float Property healRateBoostMult = 10.0 Auto Hidden     ; Multiply HealRate value by this then add it to the max. (New Healrate = Current + Current * Mult)
-bool Property healRateBoostFlat = false Auto Hidden     ; If true, apply healRateBoostMult as a flat amount instead of a multiplier
+float Property healRateBoostMult = 10.0 Auto Hidden     ; Modify healRate by this amount
 float Property energyCastingMult = 1.0 Auto  Hidden     ; Modify the energy cost of spells
 int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
 
@@ -194,18 +238,22 @@ bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubu
 
 ; Transform Stuff
 Spell Property transformSpell Auto
+bool Property transformAnimation = true Auto Hidden
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
+bool Property transformSavesNiOverrides = false Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 Race Property succuRace Auto Hidden
+Race Property succuCureRace Auto Hidden
 ColorForm Property succuHairColor Auto Hidden
 bool Property transformCrime = false Auto Hidden
-bool Property transformAnimation = true Auto Hidden
 bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
 Race Property mortalRace Auto Hidden
+Race Property mortalCureRace Auto Hidden
+bool isVampire = false
 ColorForm Property mortalHairColor Auto Hidden
 Form[] Property NoStripList Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
@@ -256,6 +304,8 @@ EndEvent
 State Initialize
     Event OnBeginState()
         Log("Initializing")
+        mortalPresetName = "CoL_Mortal_Form_" + playerRef.GetDisplayName()
+        succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
         followedPath = followedPath_var
@@ -272,6 +322,9 @@ State Running
                 ScaleEnergyTest()
             endif
         endif
+        if keyCode == transformHotkey
+            transformSpell.Cast(playerRef, playerRef)
+        endif
     EndEvent
 EndState
 
@@ -279,12 +332,17 @@ State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
     EndEvent
+
     Event OnKeyDown(int keyCode)
-        Log("KeyDown Detected")
-        Log("Detected Key: " + keyCode)
         if keyCode == toggleDrainHotkey
+            if lockDrainType
+                return
+            endif
             drainHandler.draining = !drainHandler.draining
         elseif keyCode == toggleDrainToDeathHotkey
+            if lockDrainType
+                return
+            endif
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
         endif
     EndEvent
@@ -340,6 +398,7 @@ Function Maintenance()
     widgetHandler.GoToState("Running")
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
+    DebugLogging = true
     RegisterForEvents()
 EndFunction
 
@@ -347,6 +406,7 @@ Function RegisterForEvents()
     ; Register for Events
     RegisterForKey(toggleDrainHotKey)
     RegisterForKey(toggleDrainToDeathHotKey)
+    RegisterForKey(transformHotkey)
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
     Log("Registered for Hotkeys and Events")
@@ -436,4 +496,112 @@ bool Function isBusy()
 		return True
 	endIf
 	return False
+EndFunction
+
+Function savePreset(string presetName)
+    if CharGen.IsExternalEnabled()
+        CharGen.SaveExternalCharacter(presetName)
+    else
+        CharGen.SaveCharacter(presetName)
+    endif
+    CharGen.SavePreset(presetName)
+    Log("Finished Saving Preset")
+EndFunction
+
+Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
+    Log("Transforming Player")
+    int jmorphs
+    if transformSavesNiOverrides
+        jmorphs = __saveBodyMorphs()
+    endif
+    Race currentRace = playerRef.GetRace()
+    if mortalCureRace != None && !isVampire
+        isVampire = true
+    endif
+ 
+    __Transform(presetName, presetRace, presetHairColor, currentRace)
+    Utility.Wait(0.1)
+    __Transform(presetName, presetRace, presetHairColor, currentRace)
+    Utility.Wait(0.1)
+
+    if transformSavesNiOverrides
+        __restoreBodyMorphs(jmorphs)
+    endif
+
+    iSlaveTats.ReapplySlaveTats(playerRef, true)
+    UpdateTattoo()
+    Log("Finished Transforming Player")
+EndFunction
+
+Function __Transform(string presetName, Race presetRace, ColorForm presetHairColor, Race currentRace)
+    playerRef.GetActorbase().SetHairColor(presetHairColor)
+   
+    if currentRace != presetRace
+        playerRef.SetRace(presetRace)
+        Utility.Wait(0.1)
+        playerRef.SetRace(currentRace)
+        Utility.Wait(0.1)
+        playerRef.SetRace(presetRace)
+        Utility.Wait(0.1)
+    endif
+    CharGen.LoadPreset(presetName)
+
+    if Chargen.IsExternalEnabled()
+        CharGen.LoadExternalCharacter(playerRef, presetRace, presetName)
+    else
+        CharGen.LoadCharacter(playerRef, presetRace, presetName)
+    endif
+EndFunction
+
+int function __saveBodyMorphs()
+    int jmorphs = JMap.object()
+    string[] listmorphNames = NiOverride.GetMorphNames(playerRef)
+    int lmn = 0
+    while (lmn < listmorphNames.Length)
+        int jkeys = JMap.object()
+        JMap.setObj(jmorphs, listmorphNames[lmn], jkeys)
+        string[] listmorphKeys = NiOverride.GetMorphKeys(playerRef, listmorphNames[lmn])
+        int lmk = 0
+        while (lmk < listmorphKeys.Length)
+            JMap.setFlt(jkeys, listmorphKeys[lmk], NiOverride.GetBodyMorph(playerRef, listmorphNames[lmn], listmorphKeys[lmk]))
+            lmk += 1
+        endWhile
+        lmn += 1
+    endWhile
+    return jmorphs
+endfunction
+
+function __restoreBodyMorphs(int jmorphs)
+    string jmkey = JMap.nextKey(jmorphs, previousKey="", endKey="")
+    bool restored = false
+    while jmkey != ""
+        int jkeys = JMap.getObj(jmorphs, jmkey)
+        string jkkey = JMap.nextKey(jkeys, previousKey="", endKey="")
+        while jkkey != ""
+            float v = JMap.getFlt(jkeys, jkkey)
+            Log(jmkey + " | " + jkkey + " :=: " + v)
+            NiOverride.SetBodyMorph(playerRef, jmkey, jkkey, v)
+            restored = true
+            jkkey = JMap.nextKey(jkeys, jkkey, endKey="")
+        endwhile
+        jmkey = JMap.nextKey(jmorphs, jmkey, endKey="")
+    endwhile
+    JValue.release(jmorphs)
+    if (restored)
+        NiOverride.UpdateModelWeight(playerRef)
+    endif
+endfunction
+
+Function ApplyRankedPerks()
+    int i = 0
+    while i < efficientFeeder
+        energyConversionRate += 0.1
+        i += 1
+    endwhile
+
+    i = 0
+    while i < energyStorage
+        playerEnergyMax += 10        
+        i += 1
+    endwhile
 EndFunction
