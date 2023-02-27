@@ -13,6 +13,7 @@ CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_Interface_OAroused_Script Property OAroused Auto
 CoL_Interface_Toys_Script Property Toys Auto
 CoL_Interface_OStim_Script Property oStim Auto
+CoL_Interface_OSL_Script Property OSL Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
@@ -147,13 +148,13 @@ float Property playerEnergyCurrent Hidden
             UpdateTattoo()
         endif
         float energyPercentage = ((newVal / playerEnergyMax) * 100) 
-        if  energyPercentage  <= forcedDrainToDeathMinimum
+        if  energyPercentage <= forcedDrainToDeathMinimum && forcedDrainToDeathMinimum != -1
             drainHandler.draining = false
             drainHandler.drainingToDeath = true
-        elseif energyPercentage <= forcedDrainMinimum
+        elseif energyPercentage <= forcedDrainMinimum && forcedDrainMinimum != -1
             drainHandler.draining = true
             drainHandler.drainingToDeath = false
-        else
+        elseif forcedDrainMinimum != -1 && forcedDrainToDeathMinimum != -1
             drainHandler.draining = false
             drainHandler.drainingToDeath = false
         endif
