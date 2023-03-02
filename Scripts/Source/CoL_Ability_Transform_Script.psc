@@ -3,6 +3,7 @@ Scriptname CoL_Ability_Transform_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 Faction Property playerWerewolfFaction Auto
 
 ; Transform Buff Settings
@@ -121,7 +122,7 @@ Form[] function StripEquipment(Actor actorRef)
 		if itemRef 
             CoL.Log("Checking Item: " + itemRef.GetName())
 			if  NoStripList.Find(itemRef) == -1    ; Make sure list exists and item is not part of no strip list
-                if CoL.DebugLogging
+                if configHandler.DebugLogging
                     CoL.Log("Item not found in striplist. List contains:")
                     int x = 0
                     while x < NoStripList.Length

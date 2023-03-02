@@ -3,6 +3,9 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 import PapyrusUtil
 import CharGen
 
+Quest Property playerSuccubusQuest Auto
+CoL_ConfigHandler_Script configHandler
+
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
@@ -31,7 +34,6 @@ GlobalVariable Property TimeScale Auto
 Faction Property drainVictimFaction Auto
 
 Actor Property playerRef Auto                       ; The player reference
-Actor[] Property succubusList Auto Hidden           ; List of actors that have been turned into a succubus
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
@@ -41,39 +43,6 @@ Spell[] Property levelTenSpells Auto                ; Spells granted to player a
 Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
 
-bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
-bool Property EnergyScaleTestEnabled = false Auto Hidden       ; Enable Energy Scale test when Drain to Death button pushed
-
-; Path Variables
-int followedPath_var = 0
-; 0 - Sanguine
-; 1 - Molag
-; 2 - Vaermina
-int Property followedPath Hidden
-    int Function Get()
-        return followedPath_var
-    endFunction
-    Function Set(int newPath)
-        if followedPath_var == 0
-            RemoveSpells(sanguineTraits)
-        elseif followedPath_var == 1
-            RemoveSpells(molagTraits)
-        elseif followedPath_var == 2
-            RemoveSpells(VaerminaTraits)
-        endif
-        followedPath_var = newPath        
-        if followedPath_var == 0
-            GrantSpells(sanguineTraits, false)
-            Debug.Notification("Path of Sanguine added")
-        elseif followedPath_var == 1
-            GrantSpells(molagTraits, false)
-            Debug.Notification("Path of Molag Bal added")
-        elseif followedPath_var == 2
-            GrantSpells(VaerminaTraits, false)
-            Debug.Notification("Path of Vaermina added")
-        endif
-    EndFunction
-EndProperty
 Spell[] Property sanguineTraits Auto                ; Spells to provide passives for Path of Sanguine
 Spell[] Property molagTraits Auto                   ; Spells to provide passives for Path of Molag Bal
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
@@ -135,14 +104,12 @@ float Property playerEnergyCurrent Hidden
     EndFunction
     Function Set(float newVal)
         if newVal > playerEnergyMax
-            newVal = playerEnergyMax
+            newVal = playerEnergyMax as float
         elseif newVal < 0
             newVal = 0
         endif
         playerEnergyCurrent_var = newVal
-        if DebugLogging
-            Debug.Trace("[CoL] Player Energy is now " + playerEnergyCurrent)
-        endif
+        Log("Player Energy is now " + playerEnergyCurrent)
         widgetHandler.GoToState("UpdateMeter")
         if tattooFade
             UpdateTattoo()
@@ -300,6 +267,7 @@ float Property extraMeleeDamage Auto Hidden
 float Property extraCarryWeight Auto Hidden
 
 Event OnInit()
+    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
 EndEvent
 
 State Initialize
@@ -309,7 +277,6 @@ State Initialize
         succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
-        followedPath = followedPath_var
         isPlayerSuccubus.SetValue(1.0)
         Maintenance()
         GotoState("Running")
@@ -318,7 +285,7 @@ EndState
 
 State Running
     Event OnKeyDown(int keyCode)
-        if EnergyScaleTestEnabled
+        if configHandler.EnergyScaleTestEnabled
             if keyCode == toggleDrainToDeathHotKey
                 ScaleEnergyTest()
             endif
@@ -399,7 +366,6 @@ Function Maintenance()
     widgetHandler.GoToState("Running")
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
-    DebugLogging = true
     RegisterForEvents()
 EndFunction
 
@@ -462,7 +428,7 @@ Function ScaleEnergyTest()
 EndFunction
 
 Function Log(string msg)
-    if DebugLogging
+    if configHandler.DebugLogging
         Debug.Trace("[CoL] " + msg)
     endif
 EndFunction
@@ -601,8 +567,25 @@ Function ApplyRankedPerks()
     endwhile
 
     i = 0
+    playerEnergyMax = configHandler.baseMaxEnergy
     while i < energyStorage
-        playerEnergyMax += 10        
+        playerEnergyMax += 10
         i += 1
     endwhile
+EndFunction
+
+Function UpdatePath()
+    RemoveSpells(sanguineTraits)
+    RemoveSpells(molagTraits)
+    RemoveSpells(VaerminaTraits)
+    if configHandler.selectedPath == 0
+        GrantSpells(sanguineTraits, false)
+        Debug.Notification("Path of Sanguine added")
+    elseif configHandler.selectedPath == 1
+        GrantSpells(molagTraits, false)
+        Debug.Notification("Path of Molag Bal added")
+    elseif configHandler.selectedPath == 2
+        GrantSpells(VaerminaTraits, false)
+        Debug.Notification("Path of Vaermina added")
+    endif
 EndFunction

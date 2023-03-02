@@ -218,9 +218,7 @@ Function triggerDrainEnd(Actor victim)
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain end event sent")
-        endif
+        CoL.Log("Drain end event sent")
     endif
 EndFunction
 
