@@ -118,7 +118,7 @@ State Draining
         
         float drainAmount = applyDrainSpell(drainee, arousal)
 
-        CoL.playerEnergyCurrent += drainAmount
+        CoL.playerEnergyCurrent += (drainAmount * CoL.energyConversionRate)
         CoL.levelHandler.gainXP(false)
         doVampireDrain(drainee)
     EndEvent
@@ -175,7 +175,7 @@ State DrainingToDeath
             drainAmount = CalculateDrainAmount(drainee, arousal)
         endif
 
-        CoL.playerEnergyCurrent += drainAmount 
+        CoL.playerEnergyCurrent += (drainAmount * CoL.energyConversionRate)
         CoL.levelHandler.gainXP(true)
         doVampireDrain(drainee)
     EndEvent
