@@ -4,13 +4,13 @@ GlobalVariable Property isPlayerSuccubus Auto
 Quest Property playerSuccubusQuest Auto
 Quest Property npcSuccubusQuest Auto
 
-CoL_Mechanic_LevelHandler_Script levelHandler
 CoL_PlayerSuccubusQuestScript psq
+CoL_Mechanic_LevelHandler_Script levelHandler
 CoL_ConfigHandler_Script configHandler
 CoL_NpcSuccubusQuest_Script npcQuest
 
 Event OnInit()
-    RegisterModule("$COL_STATUSPAGE_NAME")
+    RegisterModule("$COL_STATUSPAGE_NAME", 10)
 EndEvent
 
 Event OnPageInit()
@@ -24,11 +24,12 @@ EndEvent
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     if isPlayerSuccubus.GetValue() as int == 1
+        AddHeaderOption("$COL_STATUSPAGE_HEADER_ONE")
         AddTextOptionST("Text_CurrentLevel", "$COL_STATUSPAGE_CURRENTLEVEL", levelHandler.playerSuccubusLevel.GetValue() as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_CurrentXP", "$COL_STATUSPAGE_CURRENTXP", levelHandler.playerSuccubusXP as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_NextLevelXP", "$COL_STATUSPAGE_NEXTLEVELXP", levelHandler.playerSuccubusXP as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_EnergyCurrent", "$COL_STATUSPAGE_ENERGYCURRENT", psq.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
-        AddSliderOptionST("Slider_EnergyMax", "$COL_STATUSPAGE_ENERGYMAX", psq.playerEnergyMax)
+        AddTextOptionST("Text_MaxEnergy", "$COL_STATUSPAGE_MAXENERGY", psq.playerEnergyMax, OPTION_FLAG_DISABLED)
         AddMenuOptionST("Menu_FollowedPath", "$COL_STATUSPAGE_FOLLOWEDPATH", configHandler.followedPathOptions[configHandler.selectedPath])
     endif
     SetCursorPosition(1)
@@ -61,24 +62,6 @@ Function LoadNpcSuccubi()
     endwhile
 EndFunction
 
-State Slider_EnergyMax
-    Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.baseMaxEnergy)
-        SetSliderDialogDefaultValue(100)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(1, 1000)
-    EndEvent
-
-    Event OnSliderAcceptST(string state_id, float value)
-        configHandler.baseMaxEnergy = value
-        psq.ApplyRankedPerks()
-        SetSliderOptionValueST(psq.playerEnergyMax)
-    EndEvent
-
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_STATUSPAGE_ENERGYMAX_HELP")
-    EndEvent
-EndState
 
 State Menu_FollowedPath
     Event OnMenuOpenST(string state_id)

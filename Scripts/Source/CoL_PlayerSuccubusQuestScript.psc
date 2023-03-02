@@ -115,13 +115,13 @@ float Property playerEnergyCurrent Hidden
             UpdateTattoo()
         endif
         float energyPercentage = ((newVal / playerEnergyMax) * 100) 
-        if  energyPercentage <= forcedDrainToDeathMinimum && forcedDrainToDeathMinimum != -1
+        if  energyPercentage <= configHandler.forcedDrainToDeathMinimum && configHandler.forcedDrainToDeathMinimum != -1
             drainHandler.draining = false
             drainHandler.drainingToDeath = true
-        elseif energyPercentage <= forcedDrainMinimum && forcedDrainMinimum != -1
+        elseif energyPercentage <= configHandler.forcedDrainMinimum && configHandler.forcedDrainMinimum != -1
             drainHandler.draining = true
             drainHandler.drainingToDeath = false
-        elseif forcedDrainMinimum != -1 && forcedDrainToDeathMinimum != -1
+        elseif configHandler.forcedDrainMinimum != -1 && configHandler.forcedDrainToDeathMinimum != -1
             drainHandler.draining = false
             drainHandler.drainingToDeath = false
         endif
@@ -153,17 +153,6 @@ bool Property tattooFade = false Auto Hidden
 int Property tattooSlot = 6 Auto Hidden
 
 ; Drain Properties
-float Property drainDurationInGameTime = 24.0 Auto Hidden       ; How long, in game hours, does the drain debuff last
-float Property healthDrainMult = 0.2 Auto Hidden                ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
-float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier applied to arousal before being added to drain amount
-float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
-float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
-bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
-bool Property drainNotificationsEnabled = true Auto Hidden      ; Should notifications play when drain style is changed
-bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
-bool Property deadlyDrainWhenTransformed = false Auto Hidden    ; Always deadly drain while transformed
-float Property forcedDrainMinimum = -1.0 Auto Hidden             ; Minimum energy to always drain
-float Property forcedDrainToDeathMinimum = -1.0 Auto Hidden      ; Minimum energy to always drain to death
 
 ; NPC Drain Properties
 int Property npcDrainToDeathChance = 0 Auto Hidden
@@ -303,12 +292,12 @@ State SceneRunning
 
     Event OnKeyDown(int keyCode)
         if keyCode == toggleDrainHotkey
-            if lockDrainType
+            if configHandler.lockDrainType
                 return
             endif
             drainHandler.draining = !drainHandler.draining
         elseif keyCode == toggleDrainToDeathHotkey
-            if lockDrainType
+            if configHandler.lockDrainType
                 return
             endif
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
@@ -562,7 +551,7 @@ endfunction
 Function ApplyRankedPerks()
     int i = 0
     while i < efficientFeeder
-        energyConversionRate += 0.1
+        configHandler.energyConversionRate += 0.1
         i += 1
     endwhile
 

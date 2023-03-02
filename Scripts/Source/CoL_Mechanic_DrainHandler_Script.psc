@@ -1,6 +1,7 @@
 Scriptname CoL_Mechanic_DrainHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 VisualEffect Property drainToDeathVFX Auto
 
 bool draining_var = false
@@ -11,7 +12,7 @@ bool Property draining Hidden
     Function Set(bool newVal)
         if draining_var != newVal
             draining_var = newVal
-            CheckDraining(CoL.drainNotificationsEnabled)
+            CheckDraining(configHandler.drainNotificationsEnabled)
         endif
     EndFunction
 EndProperty
@@ -23,7 +24,7 @@ bool Property drainingToDeath Hidden
     Function Set(bool newVal)
         if drainingToDeath_var != newVal
             drainingToDeath_var = newVal
-            CheckDraining(CoL.drainNotificationsEnabled)
+            CheckDraining(configHandler.drainNotificationsEnabled)
         endif
     EndFunction
 EndProperty
@@ -95,12 +96,11 @@ State Draining
             endif
         endif
 
-        float drainAmount = ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult))
+        float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
         if drainAmount > victimHealth
-            return victimHealth - 1
-        else
-            return drainAmount
+            drainAmount = victimHealth - 1
         endif
+            return drainAmount
     EndFunction
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
@@ -118,7 +118,7 @@ State Draining
         
         float drainAmount = applyDrainSpell(drainee, arousal)
 
-        CoL.playerEnergyCurrent += drainAmount
+        CoL.playerEnergyCurrent += (drainAmount * configHandler.energyConversionRate)
         CoL.levelHandler.gainXP(false)
         doVampireDrain(drainee)
     EndEvent
@@ -147,7 +147,7 @@ State DrainingToDeath
             endif
         endif
 
-        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult) + (succubusArousal * CoL.drainArousalMult)) * CoL.drainToDeathMult
+        return ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult)) * configHandler.drainToDeathMult
     EndFunction
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
@@ -175,7 +175,7 @@ State DrainingToDeath
             drainAmount = CalculateDrainAmount(drainee, arousal)
         endif
 
-        CoL.playerEnergyCurrent += drainAmount 
+        CoL.playerEnergyCurrent += (drainAmount * configHandler.energyConversionRate)
         CoL.levelHandler.gainXP(true)
         doVampireDrain(drainee)
     EndEvent
@@ -199,14 +199,14 @@ State DrainingToDeath
 EndState
 
 Function doVampireDrain(Actor drainee)
-    if CoL.playerRef.HasKeyword(vampireKeyword) && CoL.drainFeedsVampire
+    if CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
         CoL.vampireHandler.Feed(drainee)
     endif
 EndFunction
 
 Float Function applyDrainSpell(Actor drainee, float arousal)
     float drainAmount = CalculateDrainAmount(drainee, arousal)
-    float removalday = CoL.GameDaysPassed.GetValue() + (coL.drainDurationInGameTime / 24)
+    float removalday = CoL.GameDaysPassed.GetValue() + (configHandler.drainDurationInGameTime / 24)
     StorageUtil.SetFloatValue(drainee, "CoL_drainAmount", drainAmount)
     StorageUtil.SetFloatValue(drainee, "CoL_drainRemovalDay", removalday)
     drainee.AddToFaction(CoL.drainVictimFaction)

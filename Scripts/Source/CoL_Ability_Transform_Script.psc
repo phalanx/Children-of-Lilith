@@ -48,7 +48,7 @@ Function Transform()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
 
-    if CoL.deadlyDrainWhenTransformed
+    if configHandler.deadlyDrainWhenTransformed
         CoL.drainHandler.drainingToDeath = true
     endif
 
@@ -78,7 +78,7 @@ Function UnTransform()
         CoL.playerRef.RemoveFromFaction(playerWerewolfFaction)
     endif
 
-    if CoL.deadlyDrainWhenTransformed
+    if configHandler.deadlyDrainWhenTransformed
         CoL.drainHandler.drainingToDeath = false
         CoL.drainHandler.draining = true
     endif
