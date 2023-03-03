@@ -48,7 +48,7 @@ EndFunction
 Function StartSceneNPC()
     int random = Utility.RandomInt()
     CoL.Log("NPC Scene Start Detected")
-    if random < CoL.npcDrainToDeathChance
+    if random < configHandler.npcDrainToDeathChance
         npcDrainHandler.GoToState("DrainingToDeath")
         CoL.Log("NPC will Drain to Death")
     else

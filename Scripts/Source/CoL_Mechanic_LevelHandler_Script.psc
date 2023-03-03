@@ -2,6 +2,7 @@ Scriptname CoL_Mechanic_LevelHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property playerSuccubusLevel Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 float playerSuccubusXP_var = 0.0
 float Property playerSuccubusXP Hidden
@@ -17,33 +18,7 @@ float Property playerSuccubusXP Hidden
         EndIf
     EndFunction
 EndProperty
-int Property playerMaxLevel = 100 Auto
-float Property xpPerDrain = 1.0 Auto
-float Property drainToDeathXPMult = 2.0 Auto
 float Property xpForNextLevel = 1.0 Auto Hidden
-
-float xpConstant_var = 0.75
-float Property xpConstant Hidden
-    float Function Get()
-        return xpConstant_var
-    EndFunction
-    Function Set(float new_val)
-        xpConstant_var = new_val
-        calculateXpForNextLevel()
-    EndFunction
-endProperty
-float xpPower_var = 1.5
-float Property xpPower Hidden
-    float Function Get()
-        return xpPower_var
-    EndFunction
-    Function Set(float new_val)
-        xpPower_var = new_val
-        calculateXpForNextLevel()
-    EndFunction
-endProperty
-int Property levelsForPerk = 1 Auto
-int Property perkPointsOnLevelUp = 1 Auto
 
 State Initialize
     Event OnBeginState()
@@ -60,18 +35,18 @@ State Running
     Function gainXP(bool applyDeathMult)
         float xpMod = 1.0
         if applyDeathMult
-            xpMod = drainToDeathXPMult
+            xpMod = configHandler.drainToDeathXPMult
         endif
-        playerSuccubusXP += (xpPerDrain * xpMod)
+        playerSuccubusXP += (configHandler.xpPerDrain * xpMod)
     EndFunction
 
     Function addPerkPoint()
         CoL.Log("Adding Perk")
-        CoL.availablePerkPoints += perkPointsOnLevelUp 
+        CoL.availablePerkPoints += configHandler.perkPointsRecieved
     EndFunction
 
     Function calculateXpForNextLevel()
-        xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/xpConstant), xpPower)
+        xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/configHandler.xpConstant), configHandler.xpPower)
     EndFunction
 EndState
 
@@ -93,7 +68,7 @@ Function LevelUp()
     
     playerSuccubusLevel.Mod(1)
 
-    if (playerSuccubusLevel.GetValueInt() % levelsForPerk) == 0
+    if (playerSuccubusLevel.GetValueInt() % configHandler.levelsForPerk) == 0
         AddPerkPoint()
     endif
     

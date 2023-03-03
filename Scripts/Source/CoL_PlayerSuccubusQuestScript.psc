@@ -152,11 +152,6 @@ int Property hungerThreshold = 10 Auto Hidden
 bool Property tattooFade = false Auto Hidden
 int Property tattooSlot = 6 Auto Hidden
 
-; Drain Properties
-
-; NPC Drain Properties
-int Property npcDrainToDeathChance = 0 Auto Hidden
-
 ; Power Properties
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect

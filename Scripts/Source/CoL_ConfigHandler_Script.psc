@@ -20,6 +20,17 @@ float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier app
 float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
 
+; NPC Drain Settings
+int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
+
+; Levelling Settings
+float Property xpConstant = 0.75 Auto Hidden
+float Property xpPower = 1.5 Auto Hidden
+int Property levelsForPerk = 1 Auto Hidden
+int Property perkPointsRecieved = 1 Auto Hidden
+float Property xpPerDrain = 1.0 Auto
+float Property drainToDeathXPMult = 2.0 Auto
+
 Event OnInit()
     followedPathOptions = new string[3]
     followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANQUINE"

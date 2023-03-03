@@ -5,6 +5,7 @@ Quest Property playerSuccubusQuest Auto
 CoL_PlayerSuccubusQuestScript psq
 CoL_ConfigHandler_Script configHandler
 CoL_Mechanic_DrainHandler_Script drainHandler
+CoL_Mechanic_LevelHandler_Script levelHandler
 
 Event OnInit()
     RegisterModule("$COL_SETTINGSPAGE_NAME", 20)
@@ -14,12 +15,14 @@ Event OnPageInit()
     psq = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     drainHandler = playerSuccubusQuest as CoL_Mechanic_DrainHandler_Script
+    levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
 EndEvent
 
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddSliderOptionST("Slider_maxEnergyBase", "$COL_SETTINGSPAGE_MAXENERGYBASE", configHandler.baseMaxEnergy, "{0}")
-    AddHeaderOption("$COL_SETTINGSPAGE_HEADER_ONE")
+    ; Player Drain Settings
+    AddHeaderOption("$COL_SETTINGSPAGE_HEADER_PLAYERDRAINSETTINGS")
     if configHandler.lockDrainType
         AddToggleOptionST("Toggle_Drain", "$COL_SETTINGSPAGE_DRAINTOGGLE", drainHandler.draining, OPTION_FLAG_DISABLED)
         AddToggleOptionST("Toggle_DrainToDeath", "$COL_SETTINGSPAGE_DRAINTODEATHTOGGLE", drainHandler.drainingToDeath, OPTION_FLAG_DISABLED)
@@ -37,6 +40,17 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_drainArousalMulti", "$COL_SETTINGSPAGE_DRAINAROUSALMULT", configHandler.drainArousalMult, "{1}")
     AddSliderOptionST("Slider_energyConversionRate", "$COL_SETTINGSPAGE_ENERGYCONVERSIONRATE", configHandler.energyConversionRate, "{1}")
     AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
+    ; NPC Drain Settings
+    AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
+    AddSliderOptionST("Slider_npcDeathChance", "$COL_SETTINGSPAGE_NPCDEATHCHANCE", configHandler.npcDrainToDeathChance, "{1}")
+    ; Levelling Settings
+    AddHeaderOption("$COL_SETTINGSPAGE_LEVELLINGSETTINGS")
+    AddSliderOptionST("Slider_xpPerDrain", "$COL_SETTINGSPAGE_XPPERDRAIN", configHandler.xpPerDrain)
+    AddSliderOptionST("Slider_xpDeathMult", "$COL_SETTINGSPAGE_XPDEATHMULT", configHandler.drainToDeathXPMult)
+    AddSliderOptionST("Slider_XpConstant", "$COL_SETTINGSPAGE_XPCONSTANT", configHandler.xpConstant, "{2}")
+    AddSliderOptionST("Slider_XpPower", "$COL_SETTINGSPAGE_XPPOWER", configHandler.xpPower, "{2}")
+    AddSliderOptionST("Slider_LevelsForPerk", "$COL_SETTINGSPAGE_LEVELSFORPERK", configHandler.levelsForPerk)
+    AddSliderOptionST("Slider_PerksRecieved", "$COL_SETTINGSPAGE_PERKSRECIEVED", configHandler.perkPointsRecieved)
 EndEvent
 
 State Toggle_Drain
@@ -222,5 +236,129 @@ State Toggle_drainFeedsVampire
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE_HELP")
+    EndEvent
+EndState
+
+State Slider_npcDeathChance
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialogStartValue(configHandler.npcDrainToDeathChance)
+        SetSliderDialogDefaultValue(0)
+        SetSliderDialogInterval(1)
+        SetSliderDialogRange(0, 100)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.npcDrainToDeathChance = value as int
+        SetSliderOptionValueST(configHandler.npcDrainToDeathChance,"{1}")
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_SETTINGSPAGE_NPCDEATHCHANCE_HELP")
+    EndEvent
+EndState
+
+State Slider_xpPerDrain
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialogStartValue(configHandler.xpPerDrain)
+        SetSliderDialogDefaultValue(1.0)
+        SetSliderDialogInterval(1.0)
+        SetSliderDialogRange(1.0, 100.0)
+    EndEvent
+
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.xpPerDrain = value
+        SetSliderOptionValueST(configHandler.xpPerDrain)
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_SETTINGSPAGE_XPPERDRAIN_HELP")
+    EndEvent
+EndState
+
+State Slider_xpDeathMult
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialogStartValue(configHandler.drainToDeathXPMult)
+        SetSliderDialogDefaultValue(2.0)
+        SetSliderDialogInterval(1.0)
+        SetSliderDialogRange(1.0, 100.0)
+    EndEvent
+
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.drainToDeathXPMult = value
+        SetSliderOptionValueST(configHandler.drainToDeathXPMult)
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_SETTINGSPAGE_XPDEATHMULT_HELP")
+    EndEvent
+EndState
+
+State Slider_XpConstant
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialogStartValue(configHandler.xpConstant)
+        SetSliderDialogDefaultValue(0.75)
+        SetSliderDialogInterval(0.01)
+        SetSliderDialogRange(0.01, 5.0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.xpConstant = value
+        SetSliderOptionValueST(configHandler.xpConstant, "{2}")
+        levelHandler.calculateXpForNextLevel()
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_SETTINGSPAGE_XPCONSTANT_HELP")
+    EndEvent
+EndState
+
+State Slider_XpPower
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialogStartValue(configHandler.xpPower)
+        SetSliderDialogDefaultValue(1.5)
+        SetSliderDialogInterval(0.01)
+        SetSliderDialogRange(0.01, 5.0)
+    EndEvent
+
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.xpPower = value
+        SetSliderOptionValueST(configHandler.xpPower,"{2}")
+        levelHandler.calculateXpForNextLevel()
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_SETTINGSPAGE_XPPOWER_HELP")
+    EndEvent
+EndState
+
+State Slider_LevelsForPerk
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialogStartValue(configHandler.levelsForPerk)
+        SetSliderDialogDefaultValue(1)
+        SetSliderDialogInterval(1)
+        SetSliderDialogRange(1, 10)
+    EndEvent
+
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.levelsForPerk = value as int
+        SetSliderOptionValueST(configHandler.levelsForPerk)
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_SETTINGSPAGE_LEVELSFORPERK_HELP")
+    EndEvent
+EndState
+
+State Slider_PerksRecieved
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialogStartValue(configHandler.perkPointsRecieved)
+        SetSliderDialogDefaultValue(1)
+        SetSliderDialogInterval(1)
+        SetSliderDialogRange(1, 10)
+    EndEvent
+
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.perkPointsRecieved = value as int
+        SetSliderOptionValueST(configHandler.perkPointsRecieved)
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_SETTINGSPAGE_PERKSRECIEVED_HELP")
     EndEvent
 EndState
