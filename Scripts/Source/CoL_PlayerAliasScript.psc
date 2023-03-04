@@ -3,6 +3,7 @@ Scriptname CoL_PlayerAliasScript extends ReferenceAlias
 import MiscUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 ImageSpaceModifier Property EnergyCastingIMod Auto
 
 Perk Property VancianMagicPerk = None Auto Hidden
@@ -63,7 +64,7 @@ Event OnSpellCast(Form akSpell)
 EndEvent
 
 Event OnUpdate()
-    if CoL.energyCastingConcStyle == 0 ; if we want to calculate costs using only left hand
+    if configHandler.energyCastingConcStyle == 0 ; if we want to calculate costs using only left hand
         Spell leftHandSpell = CoL.playerRef.GetEquippedSpell(0)
         if CoL.playerRef.GetAnimationVariableBool("bWantCastLeft") && leftHandSpell
             ExpendEnergy(leftHandSpell, 0.2)
@@ -71,7 +72,7 @@ Event OnUpdate()
             return
         endif
 
-    elseif Col.energyCastingConcStyle == 1; if we want to calculate costs using both
+    elseif configHandler.energyCastingConcStyle == 1; if we want to calculate costs using both
         Spell leftHandSpell = CoL.playerRef.GetEquippedSpell(0)
         if CoL.playerRef.GetAnimationVariableBool("bWantCastLeft") && leftHandSpell
             ExpendEnergy(leftHandSpell, 0.2)
@@ -88,7 +89,7 @@ Event OnUpdate()
             return
         endif
 
-    elseif Col.energyCastingConcStyle == 2; if we want to calculate costs using only right hand
+    elseif configHandler.energyCastingConcStyle == 2; if we want to calculate costs using only right hand
         Spell rightHandSpell = CoL.playerRef.GetEquippedSpell(1)
         if CoL.playerRef.GetAnimationVariableBool("bWantCastRight") && rightHandSpell
             ExpendEnergy(rightHandSpell, 0.2)
@@ -101,7 +102,7 @@ EndEvent
 
 Function ExpendEnergy(Spell spellCast, float costModifier = 1.0)
     CoL.playerRef.RemovePerk(CoL.energyCastingPerk)
-    float spellCost = (spellCast.GetEffectiveMagickaCost(CoL.playerRef) * CoL.energyCastingMult) * costModifier
+    float spellCost = (spellCast.GetEffectiveMagickaCost(CoL.playerRef) * configHandler.energyCastingMult) * costModifier
     if CoL.energyWeaver
         if CoL.isTransformed
             spellCost -= spellCost * 0.5
@@ -130,7 +131,7 @@ EndFunction
 
 Function ExpendEnergyVancian()
     LastVancianCharges = CurrentVancianCharges.GetValue()
-	float spellCost = 10.0*CoL.energyCastingMult
+	float spellCost = 10.0*configHandler.energyCastingMult
     if CoL.energyWeaver
         if CoL.isTransformed
             spellCost -= spellCost * 0.5

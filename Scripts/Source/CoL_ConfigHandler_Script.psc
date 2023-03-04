@@ -1,11 +1,11 @@
 Scriptname CoL_ConfigHandler_Script extends Quest
 
-float Property baseMaxEnergy = 100.0 Auto Hidden                ;Base line maximum energy, before perks are applied
-string[] Property followedPathOptions Auto Hidden               ;Holds available path options
-int Property selectedPath = 0 Auto Hidden                       ;Which path is the player following
-bool Property DebugLogging = false Auto Hidden                  ;Are debug logs enabled
-bool Property EnergyScaleTestEnabled = false Auto Hidden        ;Is the energy scale test enabled
-bool Property npcSuccubusEnabled = false Auto Hidden            ;Are NPC succubi enabled
+float Property baseMaxEnergy = 100.0 Auto Hidden                ; Base line maximum energy, before perks are applied
+string[] Property followedPathOptions Auto Hidden               ; Holds available path options
+int Property selectedPath = 0 Auto Hidden                       ; Which path is the player following
+bool Property DebugLogging = false Auto Hidden                  ; Are debug logs enabled
+bool Property EnergyScaleTestEnabled = false Auto Hidden        ; Is the energy scale test enabled
+bool Property npcSuccubusEnabled = false Auto Hidden            ; Are NPC succubi enabled
 
 ; Player Drain Settings
 bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
@@ -31,9 +31,55 @@ int Property perkPointsRecieved = 1 Auto Hidden
 float Property xpPerDrain = 1.0 Auto
 float Property drainToDeathXPMult = 2.0 Auto
 
+; Hunger Settings
+bool Property hungerEnabled Auto Hidden
+bool Property hungerIsPercent = false Auto Hidden
+float Property dailyHungerAmount = 10.0 Auto Hidden
+bool Property deadlyHunger = false Auto Hidden
+float Property hungerDamageAmount = 5.0 Auto Hidden
+bool Property hungerArousalEnabled = false Auto Hidden
+float Property hungerArousalAmount = 5.0 Auto Hidden
+int Property hungerThreshold = 10 Auto Hidden
+
+; Tattoo Fade
+bool Property tattooFade = false Auto Hidden
+int Property tattooSlot = 6 Auto Hidden
+
+; Power Settings
+float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Succubus Become Ethereal
+float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Succubus HealRate Boost
+float Property healRateBoostAmount = 10.0 Auto Hidden   ; Modify healRate by this amount
+float Property energyCastingMult = 1.0 Auto Hidden      ; Modify the energy cost of spells
+string[] Property energyCastingConcStyleOptions Auto Hidden
+int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
+
+int Property excitementCost = 10 Auto Hidden
+int Property excitementBaseIncrease = 1 Auto Hidden
+float Property excitementLevelMult = 1.0 Auto Hidden
+
+int Property suppressionCost = 10 Auto Hidden
+int Property suppressionBaseIncrease = 1 Auto Hidden
+float Property suppressionLevelMult = 1.0 Auto Hidden
+
+int Property temptationCost = 10 Auto Hidden
+int Property temptationBaseIncrease = 1 Auto Hidden
+float Property temptationLevelMult = 1.0 Auto Hidden
+
+
 Event OnInit()
+    Maintenance()
+EndEvent
+
+Function Maintenance()
     followedPathOptions = new string[3]
     followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANQUINE"
     followedPathOptions[1] = "$COL_STATUSPAGE_PATH_MOLAG"
     followedPathOptions[2] = "$COL_STATUSPAGE_PATH_VAERMINA"
-EndEvent
+
+    energyCastingConcStyleOptions = new string[4]
+    energyCastingConcStyleOptions[0] = "$COL_POWERSPAGE_COSTCALCSTYLE_LEFT"
+    energyCastingConcStyleOptions[1] = "$COL_POWERSPAGE_COSTCALCSTYLE_BOTH"
+    energyCastingConcStyleOptions[2] = "$COL_POWERSPAGE_COSTCALCSTYLE_RIGHT"
+    energyCastingConcStyleOptions[3] = "$COL_POWERSPAGE_COSTCALCSTYLE_NONE"
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
+EndFunction

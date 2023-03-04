@@ -111,7 +111,7 @@ float Property playerEnergyCurrent Hidden
         playerEnergyCurrent_var = newVal
         Log("Player Energy is now " + playerEnergyCurrent)
         widgetHandler.GoToState("UpdateMeter")
-        if tattooFade
+        if configHandler.tattooFade
             UpdateTattoo()
         endif
         float energyPercentage = ((newVal / playerEnergyMax) * 100) 
@@ -128,36 +128,6 @@ float Property playerEnergyCurrent Hidden
     EndFunction
 EndProperty
 float Property playerEnergyMax = 100.0 Auto Hidden
-bool hungerEnabled_var
-bool Property hungerEnabled Hidden
-    bool Function Get()
-        return hungerEnabled_var
-    EndFunction
-    Function Set(bool newValue)
-        hungerEnabled_var = newValue
-        if hungerEnabled_var
-            hungerHandler.GoToState("HungerEnabled")
-        else
-            hungerHandler.GoToState("HungerDisabled")
-        endif
-    EndFunction
-EndProperty
-bool Property hungerIsPercent = false Auto Hidden
-float Property dailyHungerAmount = 10.0 Auto Hidden
-bool Property hungerDamageEnabled = false Auto Hidden
-float Property hungerDamageAmount = 5.0 Auto Hidden
-bool Property hungerArousalEnabled = false Auto Hidden
-float Property hungerArousalAmount = 5.0 Auto Hidden
-int Property hungerThreshold = 10 Auto Hidden
-bool Property tattooFade = false Auto Hidden
-int Property tattooSlot = 6 Auto Hidden
-
-; Power Properties
-float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
-float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
-float Property healRateBoostMult = 10.0 Auto Hidden     ; Modify healRate by this amount
-float Property energyCastingMult = 1.0 Auto  Hidden     ; Modify the energy cost of spells
-int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
 
 ; Togglable Spells
 Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
@@ -166,17 +136,6 @@ Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
 
 ; Spell Properties
-int Property excitementCost = 10 Auto Hidden
-int Property excitementBaseIncrease = 1 Auto Hidden
-float Property excitementLevelMult = 1.0 Auto Hidden
-
-int Property suppressionCost = 10 Auto Hidden
-int Property suppressionBaseIncrease = 1 Auto Hidden
-float Property suppressionLevelMult = 1.0 Auto Hidden
-
-int Property temptationCost = 10 Auto Hidden
-int Property temptationBaseIncrease = 1 Auto Hidden
-float Property temptationLevelMult = 1.0 Auto Hidden
 
 ; Perk Stuff
 int Property availablePerkPoints = 0 Auto Hidden
@@ -392,7 +351,7 @@ endFunction
 
 Function UpdateTattoo()
     Float newAlpha = playerEnergyCurrent/playerEnergyMax
-    int correctedSlot = tattooSlot - 1
+    int correctedSlot = configHandler.tattooSlot - 1
     string bodySlot = "Body [Ovl" + correctedSlot + "]"
     NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
 EndFunction

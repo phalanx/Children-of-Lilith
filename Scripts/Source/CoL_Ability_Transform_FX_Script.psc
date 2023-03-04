@@ -1,6 +1,7 @@
 Scriptname CoL_Ability_Transform_FX_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 Idle Property SuccubusTransformationIdle Auto
 Sound Property SuccubusTransformSound Auto
@@ -11,8 +12,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     if !CoL.isTransformed
         float cost
         if CoL.safeTransformation
-            cost = CoL.becomeEtherealCost
-            CoL.becomeEtherealCost = 0
+            cost = configHandler.becomeEtherealCost
+            configHandler.becomeEtherealCost = 0
             CoL.playerRef.AddSpell(CoL.becomeEthereal, false)
         endif
         if CoL.transformAnimation && CoL.succuRace == CoL.mortalRace
@@ -23,7 +24,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         endif
         if CoL.safeTransformation
             CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
-            CoL.becomeEtherealCost = cost
+            configHandler.becomeEtherealCost = cost
         endif
         if CoL.transformCost > 0
             CoL.transformDrain()

@@ -88,7 +88,7 @@ EndFunction
 function AddAdditionalPowers()
     CoL.Log("Adding additional powers")
     if CoL.healingForm
-        CoL.playerRef.ModActorValue("HealRate", (CoL.healRateBoostMult / 2))
+        CoL.playerRef.ModActorValue("HealRate", (configHandler.healRateBoostAmount / 2))
     endif
     if CoL.transformBuffsEnabled
         transformBuffSpell.SetNthEffectMagnitude(0, CoL.extraHealth)
@@ -105,7 +105,7 @@ endfunction
 function RemoveAdditionalPowers()
     CoL.Log("Removing additional powers")
     if CoL.healingForm
-        CoL.playerRef.ModActorValue("HealRate", 0.0 - (CoL.healRateBoostMult / 2))
+        CoL.playerRef.ModActorValue("HealRate", 0.0 - (configHandler.healRateBoostAmount / 2))
     endif
     if CoL.transformBuffsEnabled
         CoL.playerRef.RemoveSpell(transformBuffSpell)

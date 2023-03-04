@@ -1,9 +1,10 @@
 Scriptname CoL_Spell_Temptation_TL_Script extends activemagiceffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if CoL.playerEnergyCurrent < CoL.temptationCost
+    if CoL.playerEnergyCurrent < configHandler.temptationCost
         return
     endif
     Bool ToysInstalled = Quest.GetQuest("toysframework")

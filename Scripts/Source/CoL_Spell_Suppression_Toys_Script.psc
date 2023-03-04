@@ -1,14 +1,15 @@
 Scriptname CoL_Spell_Suppression_Toys_Script extends activemagiceffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if CoL.playerEnergyCurrent < CoL.suppressionCost
+    if CoL.playerEnergyCurrent < configHandler.suppressionCost
         return
     endif
     Bool ToysInstalled = Quest.GetQuest("toysframework")
     if ToysInstalled
-        int rousingDecrease = (CoL.suppressionBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * CoL.suppressionLevelMult) as int)
+        int rousingDecrease = (configHandler.suppressionBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.suppressionLevelMult) as int)
         CoL.Log("Decreasing target Toys Rousing by " + rousingDecrease) 
         ToysGlobal.ArousalAdjust(0 - rousingDecrease)
     endif
