@@ -5,6 +5,7 @@ import PapyrusUtil
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 bool SexLabInstalled
 bool SLSOInstalled
@@ -109,7 +110,7 @@ Event SceneStartHandler(Form actorRef, int threadId)
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
 
-        RegisterForKey(CoL.temptationHotkey)
+        RegisterForKey(configHandler.temptationHotkey)
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
@@ -132,7 +133,7 @@ Event SceneStartHandler(Form actorRef, int threadId)
 EndEvent
 
 Event OnKeyDown(int keyCode)
-    if keyCode == CoL.temptationHotkey
+    if keyCode == configHandler.temptationHotkey
         if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
             return
         endif
@@ -165,7 +166,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
     int sceneEndEvent
     if succubus == CoL.playerRef
         sceneEndEvent = ModEvent.Create("CoL_endScene")
-        UnRegisterForKey(CoL.temptationHotkey)
+        UnRegisterForKey(configHandler.temptationHotkey)
     else
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
     endif

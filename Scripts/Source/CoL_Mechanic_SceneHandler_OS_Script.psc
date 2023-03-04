@@ -1,6 +1,7 @@
 Scriptname CoL_Mechanic_SceneHandler_OS_Script extends activemagiceffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_OAroused_Script Property OAroused Auto
 Quest Property oDefeat Auto Hidden
@@ -106,7 +107,7 @@ State Running
         RegisterForModEvent("ostim_orgasm", "orgasmHandler")
         RegisterForModEvent("ostim_totalend", "stopScene")
         if succubus == CoL.playerRef && CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(CoL.temptationHotkey)
+            RegisterForKey(configHandler.temptationHotkey)
         endif
     EndEvent
 
@@ -155,7 +156,7 @@ State Running
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == CoL.temptationHotkey
+        if keyCode == configHandler.temptationHotkey
             if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
                 return
             endif
@@ -170,7 +171,7 @@ State Running
     Event OnEndState()
         UnregisterForModEvent("ostim_orgasm")
         UnregisterForModEvent("ostim_end")
-        UnregisterForKey(CoL.temptationHotkey)
+        UnregisterForKey(configHandler.temptationHotkey)
         currentVictims = new Actor[1]
     EndEvent
 

@@ -47,55 +47,6 @@ Spell[] Property sanguineTraits Auto                ; Spells to provide passives
 Spell[] Property molagTraits Auto                   ; Spells to provide passives for Path of Molag Bal
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
 
-; Hotkeys
-int toggleDrainHotKey_var = 29
-int Property toggleDrainHotkey Hidden     ; Default Toggle Drain key to left shift
-    int Function Get()
-        return toggleDrainHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(toggleDrainHotKey_var)
-        toggleDrainHotKey_var = newKey
-        RegisterForKey(toggleDrainHotKey_var)
-    EndFunction
-EndProperty
-
-int toggleDrainToDeathHotKey_var = 157
-int Property toggleDrainToDeathHotkey Hidden    ; Default Toggle Drain to Death key to right alt
-    int Function Get()
-        return toggleDrainToDeathHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(toggleDrainToDeathHotKey_var)
-        toggleDrainToDeathHotKey_var = newKey
-        RegisterForKey(toggleDrainToDeathHotKey_var)
-    EndFunction
-EndProperty
-
-int transformHotKey_var = -1
-int Property transformHotkey Hidden    ; Default Toggle Drain to Death key to right alt
-    int Function Get()
-        return transformHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(transformHotKey_var)
-        transformHotKey_var = newKey
-        RegisterForKey(transformHotKey_var)
-    EndFunction
-EndProperty
-
-int temptationHotKey_var = -1
-int Property temptationHotkey Hidden    ; Default Toggle Drain to Death key to right alt
-    int Function Get()
-        return temptationHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(temptationHotKey_var)
-        temptationHotKey_var = newKey
-        RegisterForKey(temptationHotKey_var)
-    EndFunction
-EndProperty
-
 ; Energy Properties
 float playerEnergyCurrent_var = 50.0
 float Property playerEnergyCurrent Hidden
@@ -229,11 +180,11 @@ EndState
 State Running
     Event OnKeyDown(int keyCode)
         if configHandler.EnergyScaleTestEnabled
-            if keyCode == toggleDrainToDeathHotKey
+            if keyCode == configHandler.toggleDrainToDeathHotKey
                 ScaleEnergyTest()
             endif
         endif
-        if keyCode == transformHotkey
+        if keyCode == configHandler.transformHotkey
             transformSpell.Cast(playerRef, playerRef)
         endif
     EndEvent
@@ -245,12 +196,12 @@ State SceneRunning
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == toggleDrainHotkey
+        if keyCode == configHandler.toggleDrainHotkey
             if configHandler.lockDrainType
                 return
             endif
             drainHandler.draining = !drainHandler.draining
-        elseif keyCode == toggleDrainToDeathHotkey
+        elseif keyCode == configHandler.toggleDrainToDeathHotkey
             if configHandler.lockDrainType
                 return
             endif
@@ -312,19 +263,29 @@ Function Maintenance()
     RegisterForEvents()
 EndFunction
 
+Function RegisterForHotkeys()
+    RegisterForKey(configHandler.toggleDrainHotKey)
+    RegisterForKey(configHandler.toggleDrainToDeathHotKey)
+    RegisterForKey(configHandler.transformHotkey)
+EndFunction
+
 Function RegisterForEvents()
     ; Register for Events
-    RegisterForKey(toggleDrainHotKey)
-    RegisterForKey(toggleDrainToDeathHotKey)
-    RegisterForKey(transformHotkey)
+    RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
     Log("Registered for Hotkeys and Events")
 EndFunction
 
+Function UnregisterForHotkeys()
+    UnregisterForKey(configHandler.toggleDrainHotKey)
+    UnregisterForKey(configHandler.toggleDrainToDeathHotKey)
+    UnregisterForKey(configHandler.transformHotkey)
+EndFunction
+
 Function UnregisterForEvents()
     ; Register for Hotkeys
-    UnregisterForKey(toggleDrainHotKey_var)
+    UnregisterForHotkeys()
     UnregisterForModEvent("CoL_startScene")
     UnregisterForModEvent("CoL_endScene")
     Log("Unregistered for Hotkeys and Events")

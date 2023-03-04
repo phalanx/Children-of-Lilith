@@ -65,6 +65,11 @@ int Property temptationCost = 10 Auto Hidden
 int Property temptationBaseIncrease = 1 Auto Hidden
 float Property temptationLevelMult = 1.0 Auto Hidden
 
+; Hotkeys
+int Property toggleDrainHotkey = 29 Auto Hidden     ; Default Toggle Drain key to left shift
+int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
+int Property transformHotkey = -1 Auto Hidden    ; Default Toggle Drain to Death key to right alt
+int Property temptationHotkey = -1 Auto Hidden    ; Default Toggle Drain to Death key to right alt
 
 Event OnInit()
     Maintenance()
