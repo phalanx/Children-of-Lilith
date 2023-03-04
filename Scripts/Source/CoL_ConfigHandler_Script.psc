@@ -65,11 +65,20 @@ int Property temptationCost = 10 Auto Hidden
 int Property temptationBaseIncrease = 1 Auto Hidden
 float Property temptationLevelMult = 1.0 Auto Hidden
 
-; Hotkeys
+; Hotkey Settings
 int Property toggleDrainHotkey = 29 Auto Hidden     ; Default Toggle Drain key to left shift
 int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
 int Property transformHotkey = -1 Auto Hidden    ; Default Toggle Drain to Death key to right alt
 int Property temptationHotkey = -1 Auto Hidden    ; Default Toggle Drain to Death key to right alt
+
+; Widget Settings
+int Property energyMeterAlpha = 100 Auto Hidden
+int Property energyMeterXPos = 640 Auto Hidden
+int Property energyMeterYPos = 700 Auto Hidden
+int Property energyMeterXScale = 70 Auto Hidden
+int Property energyMeterYScale = 70 Auto Hidden
+bool Property autoFade = false Auto Hidden
+int Property autoFadeTime = 5 Auto Hidden
 
 Event OnInit()
     Maintenance()

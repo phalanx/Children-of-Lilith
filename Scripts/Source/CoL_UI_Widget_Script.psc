@@ -1,16 +1,10 @@
 Scriptname CoL_UI_Widget_Script extends Quest  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 iWant_Widgets Property iWidgets Auto
 
 int energyMeter
-int Property energyMeterAlpha = 100 Auto Hidden
-int Property energyMeterXPos = 640 Auto Hidden
-int Property energyMeterYPos = 700 Auto Hidden
-int Property energyMeterXScale = 70 Auto Hidden
-int Property energyMeterYScale = 70 Auto Hidden
-bool Property autoFade = false Auto Hidden
-int Property autoFadeTime = 5 Auto Hidden
 
 int[] Function GetColor()
     int[] disabledColor = new int[6]
@@ -51,8 +45,8 @@ EndFunction
 State Initialize
     Event OnBeginState()
         CoL.Log("Initializing Widgets")
-        energyMeter = iWidgets.loadMeter(energyMeterXPos, energyMeterYPos, True)
-        iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
+        energyMeter = iWidgets.loadMeter(configHandler.energyMeterXPos, configHandler.energyMeterYPos, True)
+        iWidgets.setZoom(energyMeter, configHandler.energyMeterXScale, configHandler.energyMeterYScale)
         iWidgets.setMeterFillDirection(energyMeter, "both")
         int[] color = GetColor()
         iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
@@ -95,16 +89,16 @@ EndState
 
 State MoveEnergyMeter
     Event OnBeginState()
-        iWidgets.setPos(energyMeter, energyMeterXPos, energyMeterYPos)
-        iWidgets.setTransparency(energyMeter, energyMeterAlpha)
-        iWidgets.setZoom(energyMeter, energyMeterXScale, energyMeterYScale)
+        iWidgets.setPos(energyMeter, configHandler.energyMeterXPos, configHandler.energyMeterYPos)
+        iWidgets.setTransparency(energyMeter, configHandler.energyMeterAlpha)
+        iWidgets.setZoom(energyMeter, configHandler.energyMeterXScale, configHandler.energyMeterYScale)
         GoToState("UpdateMeter")
     EndEvent
 EndState
 
 Function OnUpdate()
     UnRegisterForUpdate()
-    if autoFade
+    if configHandler.autoFade
         iWidgets.setVisible(energyMeter, 0)
     else
         ShowMeter()
@@ -113,11 +107,10 @@ EndFunction
 
 Function ShowMeter()
     iWidgets.setVisible(energyMeter, 1)
-    if autofade
-        RegisterForSingleUpdate(autoFadeTime)
+    if configHandler.autofade
+        RegisterForSingleUpdate(configHandler.autoFadeTime)
     endif
 EndFunction
-
 
 ; Empty Functions for Empty State
 Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)
