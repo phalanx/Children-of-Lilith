@@ -80,6 +80,8 @@ int Property energyMeterYScale = 70 Auto Hidden
 bool Property autoFade = false Auto Hidden
 int Property autoFadeTime = 5 Auto Hidden
 
+
+
 Event OnInit()
     Maintenance()
 EndEvent

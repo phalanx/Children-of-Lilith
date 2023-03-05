@@ -96,6 +96,7 @@ State Draining
             endif
         endif
 
+        float healthConversionMult = configHandler.healthDrainMult + (0.1 * CoL.efficientFeeder)
         float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
         if drainAmount > victimHealth
             drainAmount = victimHealth - 1
@@ -117,8 +118,9 @@ State Draining
         endif
         
         float drainAmount = applyDrainSpell(drainee, arousal)
+        float energyConversionMult = configHandler.energyConversionRate * (0.1 * CoL.efficientFeeder)
 
-        CoL.playerEnergyCurrent += (drainAmount * configHandler.energyConversionRate)
+        CoL.playerEnergyCurrent += (drainAmount * energyConversionMult)
         CoL.levelHandler.gainXP(false)
         doVampireDrain(drainee)
     EndEvent
@@ -206,7 +208,11 @@ EndFunction
 
 Float Function applyDrainSpell(Actor drainee, float arousal)
     float drainAmount = CalculateDrainAmount(drainee, arousal)
-    float removalday = CoL.GameDaysPassed.GetValue() + (configHandler.drainDurationInGameTime / 24)
+    float drainDuration = configHandler.drainDurationInGameTime / 24
+    if CoL.gentleDrainer
+        drainDuration = drainDuration / 2
+    endif
+    float removalday = CoL.GameDaysPassed.GetValue() + drainDuration
     StorageUtil.SetFloatValue(drainee, "CoL_drainAmount", drainAmount)
     StorageUtil.SetFloatValue(drainee, "CoL_drainRemovalDay", removalday)
     drainee.AddToFaction(CoL.drainVictimFaction)
