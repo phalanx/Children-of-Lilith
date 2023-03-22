@@ -1,6 +1,7 @@
 Scriptname CoL_Mechanic_Arousal_Transform extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 bool slarActive
 bool oarousedActive
@@ -46,12 +47,12 @@ State Polling
         endif
 
         CoL.Log("Average arousal: " + averageArousal)
-        CoL.Log("Upper Threshold: " + CoL.transformArousalUpperThreshold)
-        CoL.Log("Lower Threshold: " + CoL.transformArousalLowerThreshold)
+        CoL.Log("Upper Threshold: " + configHandler.transformArousalUpperThreshold)
+        CoL.Log("Lower Threshold: " + configHandler.transformArousalLowerThreshold)
 
-        if ((CoL.transformArousalUpperThreshold != 0 && averageArousal >= CoL.transformArousalUpperThreshold) || ( CoL.transformArousalLowerThreshold != 0 && averageArousal < CoL.transformArousalLowerThreshold ))
+        if ((configHandler.transformArousalUpperThreshold != 0 && averageArousal >= configHandler.transformArousalUpperThreshold) || ( configHandler.transformArousalLowerThreshold != 0 && averageArousal < configHandler.transformArousalLowerThreshold ))
             forceTransform()
-        elseif ((CoL.transformArousalUpperThreshold == 0 || averageArousal <= CoL.transformArousalUpperThreshold) && (CoL.transformArousalLowerThreshold == 0 || averageArousal > CoL.transformArousalLowerThreshold))
+        elseif ((configHandler.transformArousalUpperThreshold == 0 || averageArousal <= configHandler.transformArousalUpperThreshold) && (configHandler.transformArousalLowerThreshold == 0 || averageArousal > configHandler.transformArousalLowerThreshold))
             forceUntransform()
         endif
 
@@ -112,4 +113,12 @@ Function forceUntransform()
     endif
     CoL.lockTransform = false
     CoL.transformSpell.Cast(Col.playerRef)
+EndFunction
+
+Function UpdateConfig()
+    if configHandler.transformArousalUpperThreshold == 0 && configHandler.transformArousalUpperThreshold == 0
+        GoToState("Uninitialize")
+    elseif GetState() != "Polling"
+        GoToState("Initialize")
+    endif
 EndFunction

@@ -102,55 +102,22 @@ Perk Property energyCastingPerk Auto             ; The perk that reduces magicka
 
 ; Transform Stuff
 Spell Property transformSpell Auto
-bool Property transformAnimation = true Auto Hidden
+
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
-bool Property transformSwapsEquipment = true Auto Hidden
-bool Property transformSavesNiOverrides = false Auto Hidden
-bool Property succuPresetSaved = false Auto Hidden
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
+bool Property succuPresetSaved = false Auto Hidden
 Race Property succuRace Auto Hidden
 Race Property succuCureRace Auto Hidden
 ColorForm Property succuHairColor Auto Hidden
-bool Property transformCrime = false Auto Hidden
-bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
+bool Property mortalPresetSaved = false Auto Hidden
 Race Property mortalRace Auto Hidden
 Race Property mortalCureRace Auto Hidden
 bool isVampire = false
 ColorForm Property mortalHairColor Auto Hidden
-Form[] Property NoStripList Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
-float Property transformCost = 1.0 Auto Hidden
-float transformArousalUpperThreshold_var
-float Property transformArousalUpperThreshold Hidden
-    float Function Get()
-        return transformArousalUpperThreshold_var
-    EndFunction
-    Function Set(float newValue)
-        if newValue != 0 && arousalTransformHandler.GetState() != "Polling"
-            arousalTransformHandler.GoToState("Initialize")
-        elseif transformArousalLowerThreshold == 0 && arousalTransformHandler.GetState() == "Polling"
-            arousalTransformHandler.GoToState("Uninitialize")
-        endif
-        transformArousalUpperThreshold_var = newValue
-    EndFunction
-EndProperty
 
-float transformArousalLowerThreshold_var
-float Property transformArousalLowerThreshold Hidden
-    float Function Get()
-        return transformArousalLowerThreshold_var
-    EndFunction
-    Function Set(float newValue)
-        if newValue != 0 && arousalTransformHandler.GetState() != "Polling"
-            arousalTransformHandler.GoToState("Initialize")
-        elseif transformArousalUpperThreshold == 0 && arousalTransformHandler.GetState() == "Polling"
-            arousalTransformHandler.GoToState("Uninitialize")
-        endif
-    transformArousalLowerThreshold_var = newValue
-    EndFunction
-EndProperty
 
 ; Transform Buffs
 bool Property transformBuffsEnabled Auto Hidden
@@ -344,9 +311,9 @@ Function transformDrain()
 EndFunction
 
 Event OnUpdate()
-    if isTransformed && transformCost > 0
-        if playerEnergyCurrent > transformCost
-            playerEnergyCurrent -= transformCost
+    if isTransformed && configHandler.transformCost > 0
+        if playerEnergyCurrent > configHandler.transformCost
+            playerEnergyCurrent -= configHandler.transformCost
             RegisterForSingleUpdate(1)
         elseif !lockTransform
             playerEnergyCurrent = 0
@@ -384,7 +351,7 @@ EndFunction
 Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
     Log("Transforming Player")
     int jmorphs
-    if transformSavesNiOverrides
+    if configHandler.transformSavesNiOverrides
         jmorphs = __saveBodyMorphs()
     endif
     Race currentRace = playerRef.GetRace()
@@ -397,7 +364,7 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
     __Transform(presetName, presetRace, presetHairColor, currentRace)
     Utility.Wait(0.1)
 
-    if transformSavesNiOverrides
+    if configHandler.transformSavesNiOverrides
         __restoreBodyMorphs(jmorphs)
     endif
 

@@ -16,7 +16,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             configHandler.becomeEtherealCost = 0
             CoL.playerRef.AddSpell(CoL.becomeEthereal, false)
         endif
-        if CoL.transformAnimation && CoL.succuRace == CoL.mortalRace
+        if configHandler.transformAnimation && CoL.succuRace == CoL.mortalRace
             Game.ForceThirdPerson()
             akTarget.PlayIdle(SuccubusTransformationIdle)
             Utility.Wait(5)
@@ -26,7 +26,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
             configHandler.becomeEtherealCost = cost
         endif
-        if CoL.transformCost > 0
+        if configHandler.transformCost > 0
             CoL.transformDrain()
         endif
     endif

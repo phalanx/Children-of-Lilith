@@ -31,7 +31,7 @@ Function Transform()
     CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
     
     ; Equipment Transform
-    if CoL.transformSwapsEquipment
+    if configHandler.transformSwapsEquipment
         originalEquipment = StripEquipment(CoL.playerRef)
         int i = 0
         while i < CoL.succuEquipmentChest.GetNumItems()
@@ -43,7 +43,7 @@ Function Transform()
         SwapEquipment(CoL.playerRef, CoL.succuEquipmentChest, originalEquipment)
     endif
     AddAdditionalPowers()
-    if CoL.transformCrime
+    if configHandler.transformCrime
         CoL.playerRef.SetAttackActorOnSight()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
@@ -60,7 +60,7 @@ Function UnTransform()
     CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
 
     ; Equipment Transform
-    if CoL.transformSwapsEquipment
+    if configHandler.transformSwapsEquipment
         succubusEquipment = StripEquipment(CoL.playerRef)
         int i = 0
         while i < CoL.succuEquipmentChest.GetNumItems()
@@ -73,7 +73,7 @@ Function UnTransform()
     endif
     Utility.Wait(0.5)
     RemoveAdditionalPowers()
-    if CoL.transformCrime
+    if configHandler.transformCrime
         CoL.playerRef.SetAttackActorOnSight(false)
         CoL.playerRef.RemoveFromFaction(playerWerewolfFaction)
     endif
@@ -116,7 +116,7 @@ Form[] function StripEquipment(Actor actorRef)
     int i = 31
     Form itemRef
     Form[] stripped = new Form[32]
-	form[] NoStripList = CoL.NoStripList
+	form[] NoStripList = configHandler.NoStripList
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30)) 
 		if itemRef 

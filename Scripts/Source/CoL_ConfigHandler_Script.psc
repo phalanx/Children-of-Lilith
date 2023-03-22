@@ -80,7 +80,23 @@ int Property energyMeterYScale = 70 Auto Hidden
 bool Property autoFade = false Auto Hidden
 int Property autoFadeTime = 5 Auto Hidden
 
-
+; Transform Settings
+Form[] Property NoStripList Auto Hidden
+bool Property transformAnimation = true Auto Hidden
+bool Property transformSwapsEquipment = true Auto Hidden
+bool Property transformSavesNiOverrides = false Auto Hidden
+float Property transformCost = 1.0 Auto Hidden
+bool Property transformCrime = false Auto Hidden
+float Property transformArousalUpperThreshold Auto Hidden
+float Property transformArousalLowerThreshold Auto Hidden
+bool Property transformBuffsEnabled Auto Hidden
+float Property extraArmor Auto Hidden
+float Property extraMagicResist Auto Hidden
+float Property extraHealth Auto Hidden
+float Property extraMagicka Auto Hidden
+float Property extraStamina Auto Hidden
+float Property extraMeleeDamage Auto Hidden
+float Property extraCarryWeight Auto Hidden
 
 Event OnInit()
     Maintenance()
