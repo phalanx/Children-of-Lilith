@@ -58,29 +58,38 @@ Event OnPageDraw()
         AddTextOptionST("Text_LoadEquipment", "$COL_TRANSFORMPAGE_LOADEQUIPMENT" , None)
     endif
     if loadEquipment
-        equippedItems = getEquippedItems(psq.playerRef)
-        AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_ADDNOSTRIP")
-        int i = 0
-        while i < equippedItems.Length
-            if !psq.ddLibs || !equippedItems[i].hasKeyword(psq.ddLibs) ; Make sure it's not a devious device
-                if configHandler.NoStripList.Find(equippedItems[i]) == -1
-                    string itemName = equippedItems[i].GetName()
-                    if itemName != "" && itemName != " "
-                        AddTextOptionST("transformAddStrippable+" + i, itemName, None)
-                    endif
-                endif
-            endif
-            i += 1
-        endwhile
-        AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_REMOVENOSTRIP")
-        i = 0
-        while i < configHandler.NoStripList.Length
-            string itemName = configHandler.NoStripList[i].GetName()
-            AddTextOptionST("transformRemoveStrippable+" + i, itemName, None)
-            i += 1
-        endwhile
+        LoadEquipmentList()
     endif
 EndEvent
+
+Event OnConfigClose()
+    equippedItems = None
+    loadEquipment = false
+EndEvent
+
+Function LoadEquipmentList()
+    equippedItems = getEquippedItems(psq.playerRef)
+    AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_ADDNOSTRIP")
+    int i = 0
+    while i < equippedItems.Length
+        if !psq.ddLibs || !equippedItems[i].hasKeyword(psq.ddLibs) ; Make sure it's not a devious device
+            if configHandler.NoStripList.Find(equippedItems[i]) == -1
+                string itemName = equippedItems[i].GetName()
+                if itemName != "" && itemName != " "
+                    AddTextOptionST("Text_AddStrippable___" + i, itemName, None)
+                endif
+            endif
+        endif
+        i += 1
+    endwhile
+    AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_REMOVENOSTRIP")
+    i = 0
+    while i < configHandler.NoStripList.Length
+        string itemName = configHandler.NoStripList[i].GetName()
+        AddTextOptionST("Text_RemoveStrippable___" + i, itemName, None)
+        i += 1
+    endwhile
+EndFunction
 
 Form[] function getEquippedItems(Actor actorRef)
 	int i = 31
@@ -361,4 +370,42 @@ State Slider_ArousalLowerThreshold
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD_HELP")
     EndEvent
 
+EndState
+State Text_AddStrippable
+    Event OnSelectST(string state_id)
+        int index = state_id as int
+        Form itemRef = equippedItems[index]
+        configHandler.NoStripList = PapyrusUtil.PushForm(configHandler.NoStripList, itemRef)
+
+        if configHandler.DebugLogging
+            psq.Log("Adding " + itemRef.getName())
+            int i = 0
+            psq.Log("Don't strip list contains:")
+            while i < configHandler.NoStripList.Length
+                psq.Log(configHandler.NoStripList[i].getName())
+                i += 1
+            endwhile
+        endif
+
+        ForcePageReset()
+    EndEvent
+EndState
+State Text_RemoveStrippable
+    Event OnSelectST(string state_id)
+        int index = state_id as int
+        Form itemRef = configHandler.NoStripList[index]
+        configHandler.NoStripList = PapyrusUtil.RemoveForm(configHandler.NoStripList, itemRef)
+
+        if configHandler.DebugLogging
+            psq.Log("Removing " + itemRef.GetName())
+            int i = 0
+            psq.Log("Worn Item List contains:")
+            while i < equippedItems.Length
+                psq.Log(equippedItems[i].getName())
+                i += 1
+            endwhile
+        endif
+
+        ForcePageReset()
+    EndEvent
 EndState

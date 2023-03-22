@@ -62,7 +62,6 @@ Function LoadNpcSuccubi()
     endwhile
 EndFunction
 
-
 State Menu_FollowedPath
     Event OnMenuOpenST(string state_id)
         SetMenuDialogOptions(configHandler.followedPathOptions)
