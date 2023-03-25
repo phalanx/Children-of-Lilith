@@ -90,14 +90,14 @@ function AddAdditionalPowers()
     if CoL.healingForm
         CoL.playerRef.ModActorValue("HealRate", (configHandler.healRateBoostAmount / 2))
     endif
-    if CoL.transformBuffsEnabled
-        transformBuffSpell.SetNthEffectMagnitude(0, CoL.extraHealth)
-        transformBuffSpell.SetNthEffectMagnitude(1, CoL.extraStamina)
-        transformBuffSpell.SetNthEffectMagnitude(2, CoL.extraMagicka)
-        transformBuffSpell.SetNthEffectMagnitude(3, CoL.extraCarryWeight)
-        transformBuffSpell.SetNthEffectMagnitude(4, CoL.extraMeleeDamage)
-        transformBuffSpell.SetNthEffectMagnitude(5, CoL.extraArmor)
-        transformBuffSpell.SetNthEffectMagnitude(6, CoL.extraMagicResist)
+    if configHandler.transformBuffsEnabled
+        transformBuffSpell.SetNthEffectMagnitude(0, configHandler.extraHealth)
+        transformBuffSpell.SetNthEffectMagnitude(1, configHandler.extraStamina)
+        transformBuffSpell.SetNthEffectMagnitude(2, configHandler.extraMagicka)
+        transformBuffSpell.SetNthEffectMagnitude(3, configHandler.extraCarryWeight)
+        transformBuffSpell.SetNthEffectMagnitude(4, configHandler.extraMeleeDamage)
+        transformBuffSpell.SetNthEffectMagnitude(5, configHandler.extraArmor)
+        transformBuffSpell.SetNthEffectMagnitude(6, configHandler.extraMagicResist)
         CoL.playerRef.AddSpell(transformBuffSpell, false)
     endif
 endfunction
