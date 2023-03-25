@@ -19,18 +19,23 @@ EndEvent
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_PRESET")
-    AddTextOptionST("Text_saveMortalPreset", "$COL_TRANSFORMPAGE_SAVEMORTALFORM", None)
-    if psq.mortalPresetSaved
-        AddTextOptionST("Text_LoadMortalPreset", "$COL_TRANSFORMPAGE_LOADMORTALFORM", None)
+    if psq.isPlayerSuccubus.GetValueInt() == 0
+        AddTextOptionST("Text_initFirst", "$COL_TRANSFORMPAGE_INITFIRST", None)
     else
-        AddTextOptionST("Text_LoadMortalPreset", "$COL_TRANSFORMPAGE_LOADMORTALFORM", None, OPTION_FLAG_DISABLED)
+        AddTextOptionST("Text_saveMortalPreset", "$COL_TRANSFORMPAGE_SAVEMORTALFORM", None)
+        if psq.mortalPresetSaved
+            AddTextOptionST("Text_LoadMortalPreset", "$COL_TRANSFORMPAGE_LOADMORTALFORM", None)
+        else
+            AddTextOptionST("Text_LoadMortalPreset", "$COL_TRANSFORMPAGE_LOADMORTALFORM", None, OPTION_FLAG_DISABLED)
+        endif
+        AddTextOptionST("Text_SaveSuccuPreset", "$COL_TRANSFORMPAGE_SAVESUCCUBUSFORM", None)
+        if psq.succuPresetSaved
+            AddTextOptionST("Text_LoadSuccuPreset", "$COL_TRANSFORMPAGE_LOADSUCCUBUSFORM", None)
+        else
+            AddTextOptionST("Text_LoadSuccuPreset", "$COL_TRANSFORMPAGE_LOADSUCCUBUSFORM", None, OPTION_FLAG_DISABLED)
+        endif
     endif
-    AddTextOptionST("Text_SaveSuccuPreset", "$COL_TRANSFORMPAGE_SAVESUCCUBUSFORM", None)
-    if psq.succuPresetSaved
-        AddTextOptionST("Text_LoadSuccuPreset", "$COL_TRANSFORMPAGE_LOADSUCCUBUSFORM", None)
-    else
-        AddTextOptionST("Text_LoadSuccuPreset", "$COL_TRANSFORMPAGE_LOADSUCCUBUSFORM", None, OPTION_FLAG_DISABLED)
-    endif
+    AddHeaderOption("")
     AddToggleOptionST("Toggle_TransformAnimation", "$COL_TRANSFORMPAGE_ANIMATION", configHandler.transformAnimation)
     AddToggleOptionST("Toggle_TransformCrime", "$COL_TRANSFORMPAGE_TRANSFORMCRIME", configHandler.transformCrime)
     AddToggleOptionST("Toggle_TransformEquipment", "$COL_TRANSFORMPAGE_EQUIPMENTSWAP", configHandler.transformSwapsEquipment)
@@ -63,7 +68,7 @@ Event OnPageDraw()
 EndEvent
 
 Event OnConfigClose()
-    equippedItems = None
+    equippedItems = new Form[1]
     loadEquipment = false
 EndEvent
 
