@@ -62,7 +62,7 @@ DebugReloadId = 0xA23
 # Node0 is the root node, this should not have coordinates or a perk assigned to it. This must exist even if you don't want to have any perks.
 # Use Node0.Links to point to first perk(s). If you don't want any perks then remove the links line or set to ""
 Node0.Enable = true
-Node0.Links = "1"
+Node0.Links = "1 7"
 
 # Actual perks begin from here. When you are making a condition on perk for specific level of skill required instead of GetBaseActorValue use GetGlobalValue
 # for the global variable you set in the "Level" option. This will generate correct requirement description in-game.
@@ -137,4 +137,14 @@ Node6.X = 0
 Node6.Y = 0
 Node6.GridX = 3
 Node6.GridY = 3
+# Node6.Links = "6"
+
+# Gentle Drainer
+Node7.Enable = true
+Node7.PerkFile = "ChildrenOfLilith.esp"
+Node7.PerkId = 0x2AA3CF
+Node7.X = 0
+Node7.Y = 0
+Node7.GridX = 5
+Node7.GridY = 0
 # Node6.Links = "6"

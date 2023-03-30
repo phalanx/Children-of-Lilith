@@ -24,7 +24,7 @@ CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
 ; Advancement Settings
 int Property availablePerkPoints = 0 Auto Hidden
-bool Property gentleDrainer = false Auto Hidden      ; Perk that reduces base drain duration by half
+Perk Property gentleDrainer Auto                     ; Perk that reduces base drain duration by half
 int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
 int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
 bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
@@ -95,10 +95,6 @@ Spell Property becomeEthereal Auto                    ; Spell that contains the 
 Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
 Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
-
-; Spell Properties
-
-; Perk Stuff
 
 ; Transform Stuff
 Spell Property transformSpell Auto

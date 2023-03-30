@@ -209,7 +209,7 @@ EndFunction
 Float Function applyDrainSpell(Actor drainee, float arousal)
     float drainAmount = CalculateDrainAmount(drainee, arousal)
     float drainDuration = configHandler.drainDurationInGameTime / 24
-    if CoL.gentleDrainer
+    if CoL.playerRef.HasPerk(CoL.gentleDrainer)
         drainDuration = drainDuration / 2
     endif
     float removalday = CoL.GameDaysPassed.GetValue() + drainDuration

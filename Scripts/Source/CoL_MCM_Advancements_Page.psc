@@ -19,10 +19,10 @@ Event OnPageDraw()
     AddTextOptionST("Text_perksAvailable", "$COL_ADVANCEMENTPAGE_AVAILABLEPOINTS", psq.availablePerkPoints)
     AddTextOptionST("Text_perkReset", "$COL_ADVANCEMENTPAGE_RESETPERKS", None)
     AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_GENERAL")
-    if !psq.gentleDrainer
-        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", psq.gentleDrainer)
+    if !psq.playerRef.HasPerk(psq.gentleDrainer)
+        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", psq.playerRef.HasPerk(psq.gentleDrainer))
     else
-        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", psq.gentleDrainer, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", psq.playerRef.HasPerk(psq.gentleDrainer), OPTION_FLAG_DISABLED)
     endif
     AddTextOptionST("Text_perkEfficientFeeder", "$COL_ADVANCEMENTPAGE_EFFICIENTFEEDER", psq.efficientFeeder)
     AddTextOptionST("Text_perkEnergyStorage", "$COL_ADVANCEMENTPAGE_ENERGYSTORAGE", psq.energyStorage)
@@ -60,8 +60,8 @@ EndState
 
 State Text_perkReset
     Event OnSelectST(string state_id)
-        if psq.gentleDrainer
-            psq.gentleDrainer = false
+        if psq.playerRef.HasPerk(psq.gentleDrainer)
+            psq.playerRef.HasPerk(psq.gentleDrainer)
             psq.availablePerkPoints += 1
         endif
         if psq.efficientFeeder > 0
@@ -89,8 +89,8 @@ EndState
 State Toggle_perkGentleDrainer
     Event OnSelectST(string state_id)
         if psq.availablePerkPoints > 0
-            psq.gentleDrainer = !psq.gentleDrainer
-            SetToggleOptionValueST(psq.gentleDrainer)
+            psq.playerRef.AddPerk(psq.gentleDrainer)
+            SetToggleOptionValueST(psq.playerRef.HasPerk(psq.gentleDrainer))
             psq.availablePerkPoints -= 1
             ForcePageReset()
         else
