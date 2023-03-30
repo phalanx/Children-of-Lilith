@@ -398,7 +398,9 @@ int function __saveBodyMorphs()
         string[] listmorphKeys = NiOverride.GetMorphKeys(playerRef, listmorphNames[lmn])
         int lmk = 0
         while (lmk < listmorphKeys.Length)
-            JMap.setFlt(jkeys, listmorphKeys[lmk], NiOverride.GetBodyMorph(playerRef, listmorphNames[lmn], listmorphKeys[lmk]))
+            if listmorphKeys[lmk] != "XPMSE.esp" && listmorphKeys[lmk] != "RaceMenuMorphsCBBE.esp"
+                JMap.setFlt(jkeys, listmorphKeys[lmk], NiOverride.GetBodyMorph(playerRef, listmorphNames[lmn], listmorphKeys[lmk]))
+            endif
             lmk += 1
         endWhile
         lmn += 1

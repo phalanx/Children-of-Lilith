@@ -120,7 +120,11 @@ State Draining
         float drainAmount = applyDrainSpell(drainee, arousal)
         float energyConversionMult = configHandler.energyConversionRate * (0.1 * CoL.efficientFeeder)
 
+<<<<<<< HEAD
         CoL.playerEnergyCurrent += (drainAmount * energyConversionMult)
+=======
+        CoL.playerEnergyCurrent += (drainAmount * CoL.energyConversionRate)
+>>>>>>> hotfix
         CoL.levelHandler.gainXP(false)
         doVampireDrain(drainee)
     EndEvent
