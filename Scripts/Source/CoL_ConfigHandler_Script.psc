@@ -90,13 +90,24 @@ bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold Auto Hidden
 float Property transformArousalLowerThreshold Auto Hidden
 bool Property transformBuffsEnabled Auto Hidden
-float Property extraArmor Auto Hidden
-float Property extraMagicResist Auto Hidden
-float Property extraHealth Auto Hidden
-float Property extraMagicka Auto Hidden
-float Property extraStamina Auto Hidden
-float Property extraMeleeDamage Auto Hidden
-float Property extraCarryWeight Auto Hidden
+
+; Transform Baseline Buffs
+float Property transformBaseHealth Auto Hidden
+float Property transformBaseStamina Auto Hidden
+float Property transformBaseMagicka Auto Hidden
+float Property transformBaseCarryWeight Auto Hidden
+float Property transformBaseMeleeDamage Auto Hidden
+float Property transformBaseArmor Auto Hidden
+float Property transformBaseMagicResist Auto Hidden
+
+; Transform buffs per rank
+float Property transformHealthPerRank = 10.0 Auto Hidden
+float Property transformStaminaPerRank = 10.0 Auto Hidden
+float Property transformMagickaPerRank = 10.0 Auto Hidden
+float Property transformCarryWeightPerRank = 10.0 Auto Hidden
+float Property transformMeleeDamagePerRank = 0.1 Auto Hidden
+float Property transformArmorPerRank = 10.0 Auto Hidden
+float Property transformMagicResistPerRank = 1.0 Auto Hidden
 
 Event OnInit()
     Maintenance()

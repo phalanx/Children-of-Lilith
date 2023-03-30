@@ -48,13 +48,13 @@ Event OnPageDraw()
         AddTextOptionST("Text_NoTransformBuffChange", "$COL_TRANSFORMPAGE_CANTCHANGEBUFFS_MSQ", None)
     else
         AddToggleOptionST("Toggle_BuffsEnable", "$COL_TRANSFORMPAGE_BUFFSENABLED", configHandler.transformBuffsEnabled)
-        AddSliderOptionST("Slider_BuffsArmor", "$COL_TRANSFORMPAGE_EXTRAARMOR", configHandler.extraArmor)
-        AddSliderOptionST("Slider_BuffsMagicResist", "$COL_TRANSFORMPAGE_EXTRAMAGICRESIST", configHandler.extraMagicResist)
-        AddSliderOptionST("Slider_BuffsHealth", "$COL_TRANSFORMPAGE_EXTRAHEALTH", configHandler.extraHealth)
-        AddSliderOptionST("Slider_BuffsMagicka", "$COL_TRANSFORMPAGE_EXTRAMAGICKA", configHandler.extraMagicka)
-        AddSliderOptionST("Slider_BuffsStamina", "$COL_TRANSFORMPAGE_EXTRASTAMINA", configHandler.extraStamina)
-        AddSliderOptionST("Slider_BuffsExtraMeleeDamage", "$COL_TRANSFORMPAGE_EXTRAMELEEDAMAGE", configHandler.extraMeleeDamage, "{1}")
-        AddSliderOptionST("Slider_BuffsExtraCarryWeight", "$COL_TRANSFORMPAGE_EXTRACARRYRATE", configHandler.extraCarryWeight)
+        AddSliderOptionST("Slider_BuffsHealth", "$COL_TRANSFORMPAGE_EXTRAHEALTH", configHandler.transformBaseHealth)
+        AddSliderOptionST("Slider_BuffsMagicka", "$COL_TRANSFORMPAGE_EXTRAMAGICKA", configHandler.transformBaseMagicka)
+        AddSliderOptionST("Slider_BuffsStamina", "$COL_TRANSFORMPAGE_EXTRASTAMINA", configHandler.transformBaseStamina)
+        AddSliderOptionST("Slider_BuffsExtraCarryWeight", "$COL_TRANSFORMPAGE_EXTRACARRYRATE", configHandler.transformBaseCarryWeight)
+        AddSliderOptionST("Slider_BuffsExtraMeleeDamage", "$COL_TRANSFORMPAGE_EXTRAMELEEDAMAGE", configHandler.transformBaseMeleeDamage, "{1}")
+        AddSliderOptionST("Slider_BuffsArmor", "$COL_TRANSFORMPAGE_EXTRAARMOR", configHandler.transformBaseArmor)
+        AddSliderOptionST("Slider_BuffsMagicResist", "$COL_TRANSFORMPAGE_EXTRAMAGICRESIST", configHandler.transformBaseMagicResist)
     endif
     SetCursorPosition(1)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_EQUIPMENT")
@@ -242,14 +242,14 @@ State Toggle_BuffsEnable
 EndState
 State Slider_BuffsArmor
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.extraArmor)
+        SetSliderDialogStartValue(configHandler.transformBaseArmor)
         SetSliderDialogDefaultValue(0)
         SetSliderDialogInterval(1)
         SetSliderDialogRange(0, 1000)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.extraArmor = value
-        SetSliderOptionValueST(configHandler.extraArmor)
+        configHandler.transformBaseArmor = value
+        SetSliderOptionValueST(configHandler.transformBaseArmor)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_EXTRAARMOR_HELP")
@@ -257,14 +257,14 @@ State Slider_BuffsArmor
 EndState
 State Slider_BuffsMagicResist
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.extraMagicResist)
+        SetSliderDialogStartValue(configHandler.transformBaseMagicResist)
         SetSliderDialogDefaultValue(0)
         SetSliderDialogInterval(1)
         SetSliderDialogRange(0, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.extraMagicResist = value
-        SetSliderOptionValueST(configHandler.extraMagicResist)
+        configHandler.transformBaseMagicResist = value
+        SetSliderOptionValueST(configHandler.transformBaseMagicResist)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_EXTRAMAGICRESIST_HELP")
@@ -272,14 +272,14 @@ State Slider_BuffsMagicResist
 EndState
 State Slider_BuffsHealth
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.extraHealth)
+        SetSliderDialogStartValue(configHandler.transformBaseHealth)
         SetSliderDialogDefaultValue(0)
         SetSliderDialogInterval(1)
         SetSliderDialogRange(0, 1000)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.extraHealth = value
-        SetSliderOptionValueST(configHandler.extraHealth)
+        configHandler.transformBaseHealth = value
+        SetSliderOptionValueST(configHandler.transformBaseHealth)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_EXTRAHEALTH_HELP")
@@ -287,14 +287,14 @@ State Slider_BuffsHealth
 EndState
 State Slider_BuffsMagicka
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.extraMagicka)
+        SetSliderDialogStartValue(configHandler.transformBaseMagicka)
         SetSliderDialogDefaultValue(0)
         SetSliderDialogInterval(1)
         SetSliderDialogRange(0, 1000)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.extraMagicka = value
-        SetSliderOptionValueST(configHandler.extraMagicka)
+        configHandler.transformBaseMagicka = value
+        SetSliderOptionValueST(configHandler.transformBaseMagicka)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_EXTRAMAGICKA_HELP")
@@ -302,14 +302,14 @@ State Slider_BuffsMagicka
 EndState
 State Slider_BuffsStamina
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.extraStamina)
+        SetSliderDialogStartValue(configHandler.transformBaseStamina)
         SetSliderDialogDefaultValue(0)
         SetSliderDialogInterval(1)
         SetSliderDialogRange(0, 1000)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.extraStamina = value
-        SetSliderOptionValueST(configHandler.extraStamina)
+        configHandler.transformBaseStamina = value
+        SetSliderOptionValueST(configHandler.transformBaseStamina)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_EXTRASTAMINA_HELP")
@@ -317,14 +317,14 @@ State Slider_BuffsStamina
 EndState
 State Slider_BuffsExtraMeleeDamage
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.extraMeleeDamage)
+        SetSliderDialogStartValue(configHandler.transformBaseMeleeDamage)
         SetSliderDialogDefaultValue(0)
         SetSliderDialogInterval(0.1)
         SetSliderDialogRange(0, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.extraMeleeDamage = value
-        SetSliderOptionValueST(configHandler.extraMeleeDamage, "{1}")
+        configHandler.transformBaseMeleeDamage= value
+        SetSliderOptionValueST(configHandler.transformBaseMeleeDamage, "{1}")
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_EXTRAMELEEDAMAGE_HELP")
@@ -332,14 +332,14 @@ State Slider_BuffsExtraMeleeDamage
 EndState
 State Slider_BuffsExtraCarryWeight
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.extraCarryWeight)
+        SetSliderDialogStartValue(configHandler.transformBaseCarryWeight)
         SetSliderDialogDefaultValue(0)
         SetSliderDialogInterval(1)
         SetSliderDialogRange(0, 1000)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.extraCarryWeight = value
-        SetSliderOptionValueST(configHandler.extraCarryWeight)
+        configHandler.transformBaseCarryWeight = value
+        SetSliderOptionValueST(configHandler.transformBaseCarryWeight)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_EXTRACARRYRATE_HELP")

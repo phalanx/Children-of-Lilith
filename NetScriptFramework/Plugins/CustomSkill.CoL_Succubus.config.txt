@@ -36,7 +36,7 @@ ShowMenuId = 0x282A22
 # This can be used to have custom amount of perk points just for this skill. If this is not set then it will default to using
 # player's regular perk points for skills.
 PerkPointsFile = "ChildrenOfLilith.esp"
-PerkPointsId = 0x13B614
+PerkPointsId = 0x2A7C35
 
 # Optional! This should point to a global variable that contains the count of how many times this skill has been legendaried.
 # If this is not set then the skill can not be made legendary at all.
@@ -69,11 +69,72 @@ Node0.Links = "1"
 # Use GridX and GridY to place the node (negative value not supported), X and Y is extra offset for more precise placement (can have fractions and can be negative)
 # GridX goes from right to left (lower value to higher), GridY goes from bottom to top (lower value to higher)
 
+# Transform Health Perk
 Node1.Enable = true
 Node1.PerkFile = "ChildrenOfLilith.esp"
-Node1.PerkId = 0x28A0F2
+Node1.PerkId = 0x2A5496
 Node1.X = 0
 Node1.Y = 0
 Node1.GridX = 0
 Node1.GridY = 0
-# Node1.Links = "2"
+Node1.Links = "2"
+
+# Transform Stamina Perk
+Node2.Enable = true
+Node2.PerkFile = "ChildrenOfLilith.esp"
+Node2.PerkId = 0x2A5497
+Node2.X = 0.5
+Node2.Y = 0.5
+Node2.GridX = 0
+Node2.GridY = 0
+Node2.Links = "3"
+
+# Transform Magicka Perk
+Node3.Enable = true
+Node3.PerkFile = "ChildrenOfLilith.esp"
+Node3.PerkId = 0x2A5498
+Node3.X = 0
+Node3.Y = 0
+Node3.GridX = 1
+Node3.GridY = 1
+Node3.Links = "4"
+
+# Transform Carry Weight Perk
+Node4.Enable = true
+Node4.PerkFile = "ChildrenOfLilith.esp"
+Node4.PerkId = 0x2A5499
+Node4.X = 0.5
+Node4.Y = 0.5
+Node4.GridX = 1
+Node4.GridY = 1
+Node4.Links = "5"
+
+# Transform Melee Damage Perk
+Node5.Enable = true
+Node5.PerkFile = "ChildrenOfLilith.esp"
+Node5.PerkId = 0x2A549A
+Node5.X = 0
+Node5.Y = 0
+Node5.GridX = 2
+Node5.GridY = 2
+Node5.Links = "6"
+
+# Transform Armor Perk
+Node6.Enable = true
+Node6.PerkFile = "ChildrenOfLilith.esp"
+Node6.PerkId = 0x28A0F2
+Node6.X = 0.5
+Node6.Y = 0.5
+Node6.GridX = 2
+Node6.GridY = 2
+Node6.Links = "6"
+
+# Transform Magic Resist Perk
+Node6.Enable = true
+Node6.PerkFile = "ChildrenOfLilith.esp"
+Node6.PerkId = 0x2A549B
+Node6.X = 0
+Node6.Y = 0
+Node6.GridX = 3
+Node6.GridY = 3
+# Node6.Links = "6"

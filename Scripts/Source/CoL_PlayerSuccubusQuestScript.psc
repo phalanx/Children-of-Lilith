@@ -120,14 +120,13 @@ ObjectReference Property succuEquipmentChest Auto
 
 
 ; Transform Buffs
-bool Property transformBuffsEnabled Auto Hidden
-float Property extraArmor Auto Hidden
-float Property extraMagicResist Auto Hidden
-float Property extraHealth Auto Hidden
-float Property extraMagicka Auto Hidden
-float Property extraStamina Auto Hidden
-float Property extraMeleeDamage Auto Hidden
-float Property extraCarryWeight Auto Hidden
+float Property transformHealth Auto Hidden
+float Property transformStamina Auto Hidden
+float Property transformMagicka Auto Hidden
+float Property transformCarryWeight Auto Hidden
+float Property transformMeleeDamage Auto Hidden
+float Property transformArmor Auto Hidden
+float Property transformMagicResist Auto Hidden
 
 Event OnInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
