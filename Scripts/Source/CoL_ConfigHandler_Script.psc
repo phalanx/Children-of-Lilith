@@ -24,12 +24,14 @@ bool Property drainFeedsVampire = true Auto Hidden              ; Should drainin
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
 
 ; Levelling Settings
-float Property xpConstant = 0.75 Auto Hidden
+float Property xpConstant = 0.3 Auto Hidden
 float Property xpPower = 1.5 Auto Hidden
 int Property levelsForPerk = 1 Auto Hidden
 int Property perkPointsRecieved = 1 Auto Hidden
-float Property xpPerDrain = 1.0 Auto
-float Property drainToDeathXPMult = 2.0 Auto
+float Property xpPerDrain = 0.0 Auto Hidden
+float Property xpDrainMult = 0.5 Auto Hidden
+float Property drainToDeathXPMult = 2.0 Auto Hidden
+int Property extraXP = 0 Auto Hidden
 
 ; Hunger Settings
 bool Property hungerEnabled Auto Hidden

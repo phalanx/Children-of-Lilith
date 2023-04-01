@@ -6,6 +6,7 @@ Perk Property energyWeaver Auto
 Perk Property healingForm Auto
 Perk Property safeTransformation Auto
 Perk Property slakeThirst Auto
+GlobalVariable Property perkPointsAvailable Auto
 CoL_ConfigHandler_Script configHandler
 CoL_PlayerSuccubusQuestScript CoL
 
@@ -21,7 +22,7 @@ EndEvent
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_POINTS")
-    AddTextOptionST("Text_perksAvailable", "$COL_ADVANCEMENTPAGE_AVAILABLEPOINTS", CoL.availablePerkPoints)
+    AddTextOptionST("Text_perksAvailable", "$COL_ADVANCEMENTPAGE_AVAILABLEPOINTS", perkPointsAvailable.GetValueInt())
     AddTextOptionST("Text_perkReset", "$COL_ADVANCEMENTPAGE_RESETPERKS", None)
     AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_GENERAL")
     if !CoL.playerRef.HasPerk(gentleDrainer)
@@ -55,7 +56,7 @@ EndEvent
     
 State Text_perksAvailable
     Event OnSelectST(string state_id)
-        CoL.availablePerkPoints += 1
+        perkPointsAvailable.Mod(1)
         ForcePageReset()
     EndEvent
     Event OnHighlightST(string state_id)
@@ -66,20 +67,20 @@ EndState
 State Text_perkReset
     Event OnSelectST(string state_id)
         if CoL.playerRef.HasPerk(gentleDrainer)
-            CoL.playerRef.HasPerk(gentleDrainer)
-            CoL.availablePerkPoints += 1
+            CoL.playerRef.RemovePerk(gentleDrainer)
+            perkPointsAvailable.Mod(1)
         endif
         if CoL.efficientFeeder > 0
             int i = 0
             while i < CoL.efficientFeeder
-                CoL.availablePerkPoints += 1
+                perkPointsAvailable.Mod(1)
                 CoL.efficientFeeder -= 1
             endwhile
         endif
         if CoL.energyStorage > 0
             int i = 0
             while i < CoL.energyStorage
-                CoL.availablePerkPoints += 1
+                perkPointsAvailable.Mod(1)
                 CoL.energyStorage -= 1
                 CoL.playerEnergyMax -= 10
             endwhile
@@ -93,10 +94,10 @@ EndState
 
 State Toggle_perkGentleDrainer
     Event OnSelectST(string state_id)
-        if CoL.availablePerkPoints > 0
+        if perkPointsAvailable.GetValue() > 0
             CoL.playerRef.AddPerk(gentleDrainer)
             SetToggleOptionValueST(CoL.playerRef.HasPerk(gentleDrainer))
-            CoL.availablePerkPoints -= 1
+            perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -109,10 +110,10 @@ EndState
 
 State Text_perkEfficientFeeder
     Event OnSelectST(string state_id)
-        if CoL.availablePerkPoints > 0
+        if perkPointsAvailable.GetValue() > 0
             CoL.efficientFeeder += 1
             SetTextOptionValueST(CoL.efficientFeeder)
-            CoL.availablePerkPoints -= 1
+            perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -125,11 +126,11 @@ EndState
 
 State Text_perkEnergyStorage
     Event OnSelectST(string state_id)
-        if CoL.availablePerkPoints > 0
+        if perkPointsAvailable.GetValue() > 0
             CoL.energyStorage += 1
             CoL.playerEnergyMax += 10
             SetTextOptionValueST(CoL.energyStorage)
-            CoL.availablePerkPoints -= 1
+            perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -142,10 +143,10 @@ EndState
 
 State Toggle_perkEnergyWeaver
     Event OnSelectST(string state_id)
-        if CoL.availablePerkPoints > 0
+        if perkPointsAvailable.GetValue() > 0
             CoL.playerRef.AddPerk(energyWeaver)
             SetToggleOptionValueST(true)
-            CoL.availablePerkPoints -= 1
+            perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -157,10 +158,10 @@ State Toggle_perkEnergyWeaver
 EndState
 State Toggle_perkHealingForm
     Event OnSelectST(string state_id)
-        if CoL.availablePerkPoints > 0
+        if perkPointsAvailable.GetValue() > 0
             CoL.playerRef.AddPerk(healingForm)
             SetToggleOptionValueST(true)
-            CoL.availablePerkPoints -= 1
+            perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -172,10 +173,10 @@ State Toggle_perkHealingForm
 EndState
 State Toggle_perkSafeTransformation
     Event OnSelectST(string state_id)
-        if CoL.availablePerkPoints > 0
+        if perkPointsAvailable.GetValue() > 0
             CoL.playerRef.AddPerk(safeTransformation)
             SetToggleOptionValueST(true)
-            CoL.availablePerkPoints -= 1
+            perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -187,10 +188,10 @@ State Toggle_perkSafeTransformation
 EndState
 State Toggle_perkSlakeThirst
     Event OnSelectST(string state_id)
-        if CoL.availablePerkPoints > 0
+        if perkPointsAvailable.GetValue() > 0
             CoL.playerRef.AddPerk(slakeThirst)
             SetToggleOptionValueST(true)
-            CoL.availablePerkPoints -= 1
+            perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")

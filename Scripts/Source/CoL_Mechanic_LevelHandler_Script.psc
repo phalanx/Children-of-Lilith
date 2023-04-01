@@ -2,6 +2,9 @@ Scriptname CoL_Mechanic_LevelHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property playerSuccubusLevel Auto
+GlobalVariable Property perkPointsAvailable Auto
+GlobalVariable Property levelUpRatio Auto
+GlobalVariable Property levelUpMessage Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 float playerSuccubusXP_var = 0.0
@@ -11,14 +14,15 @@ float Property playerSuccubusXP Hidden
     EndFunction
     Function Set(float newVal)
         playerSuccubusXP_var = newVal
-        CoL.Log("Xp Gained: " + newVal)
         CoL.Log("Current Xp: " + playerSuccubusXP_var)
-        if playerSuccubusXP_var > xpForNextLevel
+        if playerSuccubusXP_var >= xpForNextLevel
             LevelUp()
         EndIf
+        levelUpRatio.SetValue((playerSuccubusXP_var - xpForPreviousLevel)/(xpForNextLevel - xpForPreviousLevel))
     EndFunction
 EndProperty
-float Property xpForNextLevel = 1.0 Auto Hidden
+int Property xpForNextLevel = 1 Auto Hidden
+int Property xpForPreviousLevel Auto Hidden
 
 State Initialize
     Event OnBeginState()
@@ -26,27 +30,31 @@ State Initialize
         if playerSuccubusLevel.GetValueInt() < 1
             playerSuccubusLevel.SetValueInt(1)
         endif
+        calculateXpForNextLevel()
         GrantLevelledSpells(false)
         GoToState("Running")
     EndEvent
 EndState
 
 State Running
-    Function gainXP(bool applyDeathMult)
+    Function gainXP(float healthDrained, bool applyDeathMult)
         float xpMod = 1.0
         if applyDeathMult
             xpMod = configHandler.drainToDeathXPMult
         endif
-        playerSuccubusXP += (configHandler.xpPerDrain * xpMod)
+        float xpGained = (healthDrained * configHandler.xpDrainMult * xpMod) + configHandler.xpPerDrain
+        CoL.Log("Xp Gained: " + xpGained)
+        playerSuccubusXP += xpGained
     EndFunction
 
     Function addPerkPoint()
         CoL.Log("Adding Perk")
-        CoL.availablePerkPoints += configHandler.perkPointsRecieved
+        perkPointsAvailable.Mod(1)
     EndFunction
 
     Function calculateXpForNextLevel()
-        xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/configHandler.xpConstant), configHandler.xpPower)
+        xpForPreviousLevel = xpForNextLevel
+        xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/configHandler.xpConstant), configHandler.xpPower) as int
     EndFunction
 EndState
 
@@ -61,7 +69,7 @@ State Uninitialize
     EndEvent
 EndState
 
-Function gainXP(bool applyDeathMult)
+Function gainXP(float healthDrained, bool applyDeathMult)
 EndFunction
 
 Function LevelUp()
@@ -76,11 +84,12 @@ Function LevelUp()
 
     calculateXpForNextLevel()
     CoL.Log("XP For Next Level: " + xpForNextLevel)
-    if playerSuccubusXP > xpForNextLevel
+    if playerSuccubusXP >= xpForNextLevel
         LevelUp()
     else
         Debug.Notification("Succubus Level Increased")
         Debug.Notification("New Level: " + playerSuccubusLevel.GetValueInt())
+        levelUpMessage.SetValueInt(playerSuccubusLevel.GetValueInt())
     endif
 EndFunction
 

@@ -53,6 +53,7 @@ Event OnPageDraw()
         SetCursorPosition(1)
         AddHeaderOption("$COL_SETTINGSPAGE_LEVELLINGSETTINGS")
         AddSliderOptionST("Slider_xpPerDrain", "$COL_SETTINGSPAGE_XPPERDRAIN", configHandler.xpPerDrain)
+        AddSliderOptionST("Slider_xpDrainMult", "$COL_SETTINGSPAGE_XPDRAINMULT", configHandler.xpDrainMult,"{1}")
         AddSliderOptionST("Slider_xpDeathMult", "$COL_SETTINGSPAGE_XPDEATHMULT", configHandler.drainToDeathXPMult)
         AddSliderOptionST("Slider_xpConstant", "$COL_SETTINGSPAGE_XPCONSTANT", configHandler.xpConstant, "{2}")
         AddSliderOptionST("Slider_xpPower", "$COL_SETTINGSPAGE_XPPOWER", configHandler.xpPower, "{2}")
@@ -277,9 +278,9 @@ EndEvent
     State Slider_xpPerDrain
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.xpPerDrain)
-            SetSliderDialogDefaultValue(1.0)
+            SetSliderDialogDefaultValue(0.0)
             SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(1.0, 100.0)
+            SetSliderDialogRange(0.0, 100.0)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -289,6 +290,24 @@ EndEvent
 
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_XPPERDRAIN_HELP")
+        EndEvent
+    EndState
+
+    State Slider_xpDrainMult
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.xpDrainMult)
+            SetSliderDialogDefaultValue(0.5)
+            SetSliderDialogInterval(0.1)
+            SetSliderDialogRange(0.0, 100.0)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.xpDrainMult = value
+            SetSliderOptionValueST(configHandler.xpDrainMult)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_XPDRAINMULT_HELP")
         EndEvent
     EndState
 
