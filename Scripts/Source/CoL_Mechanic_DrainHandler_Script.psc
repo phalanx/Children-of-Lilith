@@ -3,6 +3,7 @@ Scriptname CoL_Mechanic_DrainHandler_Script extends Quest
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 VisualEffect Property drainToDeathVFX Auto
+Perk Property gentleDrainer Auto
 
 bool draining_var = false
 bool Property draining Hidden
@@ -209,7 +210,7 @@ EndFunction
 Float Function applyDrainSpell(Actor drainee, float arousal)
     float drainAmount = CalculateDrainAmount(drainee, arousal)
     float drainDuration = configHandler.drainDurationInGameTime / 24
-    if CoL.playerRef.HasPerk(CoL.gentleDrainer)
+    if CoL.playerRef.HasPerk(gentleDrainer)
         drainDuration = drainDuration / 2
     endif
     float removalday = CoL.GameDaysPassed.GetValue() + drainDuration
