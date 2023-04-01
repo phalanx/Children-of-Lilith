@@ -29,7 +29,7 @@ int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increase
 ; bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
 ; bool Property healingForm = false Auto Hidden        ; Perk that adds Heal Rate Boost to transformed form
 ; bool Property safeTransformation = false Auto Hidden ; Perk that turns you ethereal while transforming
-bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubus arousal to drain amount
+; bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubus arousal to drain amount
 
 ; Keyword Definitions
 Keyword Property ddLibs Auto Hidden
@@ -457,4 +457,30 @@ Function UpdatePath()
         GrantSpells(VaerminaTraits, false)
         Debug.Notification("Path of Vaermina added")
     endif
+EndFunction
+
+float Function GetActorArousal(Actor target)
+    int arousalMods = 0
+    float targetArousal = 0.0
+    if OAroused.IsInterfaceActive()
+        targetArousal += OAroused.GetArousal(target)
+        arousalMods += 1
+    endif
+    if SLAR.IsInterfaceActive()
+        targetArousal += SLAR.GetActorArousal(target)
+        arousalMods += 1
+    endif
+    if OSL.IsInterfaceActive()
+        targetArousal += OSL.GetArousal(target)
+        arousalMods += 1
+    endif
+    if Toys.IsInterfaceActive() && target == playerRef
+        targetArousal += Toys.GetRousing()
+    endif
+    if arousalMods > 0
+        targetArousal = targetArousal / arousalMods
+    else
+        targetArousal = 0.0
+    endif
+    return targetArousal
 EndFunction

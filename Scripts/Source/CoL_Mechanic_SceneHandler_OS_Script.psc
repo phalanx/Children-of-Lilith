@@ -77,7 +77,7 @@ State Waiting
         currentPartnerArousal = new float[3]
         int i = 0
         while i < currentPartners.Length
-            currentPartnerArousal[i] = OAroused.GetArousal(currentPartners[i])
+            currentPartnerArousal[i] = CoL.GetActorArousal(currentPartners[i])
             i += 1
         endwhile
 

@@ -5,6 +5,7 @@ Perk Property gentleDrainer Auto
 Perk Property energyWeaver Auto
 Perk Property healingForm Auto
 Perk Property safeTransformation Auto
+Perk Property slakeThirst Auto
 CoL_ConfigHandler_Script configHandler
 CoL_PlayerSuccubusQuestScript CoL
 
@@ -45,10 +46,10 @@ Event OnPageDraw()
     else
         AddToggleOptionST("Toggle_perkSafeTransformation", "$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION", CoL.playerRef.HasPerk(safeTransformation), OPTION_FLAG_DISABLED)
     endif
-    if !CoL.slakeThirst
-        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.slakeThirst)
+    if !CoL.playerRef.HasPerk(slakeThirst)
+        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.playerRef.HasPerk(slakeThirst))
     else
-        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.slakeThirst, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.playerRef.HasPerk(slakeThirst), OPTION_FLAG_DISABLED)
     endif
 EndEvent
     
@@ -187,8 +188,8 @@ EndState
 State Toggle_perkSlakeThirst
     Event OnSelectST(string state_id)
         if CoL.availablePerkPoints > 0
-            CoL.slakeThirst = !CoL.slakeThirst
-            SetToggleOptionValueST(CoL.slakeThirst)
+            CoL.playerRef.AddPerk(slakeThirst)
+            SetToggleOptionValueST(true)
             CoL.availablePerkPoints -= 1
             ForcePageReset()
         else

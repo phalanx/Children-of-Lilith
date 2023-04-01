@@ -197,4 +197,14 @@ Node12.X = 0
 Node12.Y = 0
 Node12.GridX = 5
 Node12.GridY = 5
+Node12.Links = "13"
+
+# Safe Transformation
+Node13.Enable = true
+Node13.PerkFile = "ChildrenOfLilith.esp"
+Node13.PerkId = 0x2C0836
+Node13.X = 0
+Node13.Y = 0
+Node13.GridX = 6
+Node13.GridY = 5
 # Node11.Links = "11"

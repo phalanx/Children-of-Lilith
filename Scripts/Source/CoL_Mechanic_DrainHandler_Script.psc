@@ -4,6 +4,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
+Perk Property slakeThirst Auto
 
 bool draining_var = false
 bool Property draining Hidden
@@ -83,28 +84,6 @@ State Draining
         CoL.widgetHandler.UpdateColor()
     EndEvent
 
-    float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
-        float victimHealth = drainVictim.GetActorValue("Health")
-        float succubusArousal = 0.0
-
-        if CoL.slakeThirst
-            if CoL.SLAR.IsInterfaceActive() && CoL.OAroused.IsInterfaceActive()
-                succubusArousal = (CoL.SLAR.GetActorArousal(CoL.playerRef) + CoL.OAroused.GetArousal(CoL.playerRef)) / 2
-            elseif CoL.OAroused.IsInterfaceActive()
-                succubusArousal = CoL.OAroused.GetArousal(CoL.playerRef)
-            elseif CoL.SLAR.IsInterfaceActive()
-                succubusArousal = CoL.SLAR.GetActorArousal(CoL.playerRef)
-            endif
-        endif
-
-        float healthConversionMult = configHandler.healthDrainMult + (0.1 * CoL.efficientFeeder)
-        float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
-        if drainAmount > victimHealth
-            drainAmount = victimHealth - 1
-        endif
-            return drainAmount
-    EndFunction
-
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
@@ -118,8 +97,9 @@ State Draining
             return
         endif
         
-        float drainAmount = applyDrainSpell(drainee, arousal)
-        float energyConversionMult = configHandler.energyConversionRate * (0.1 * CoL.efficientFeeder)
+        float drainAmount = CalculateDrainAmount(drainee, arousal)
+        applyDrainSpell(drainee, drainAmount)
+        float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
 
         CoL.playerEnergyCurrent += (drainAmount * energyConversionMult)
         CoL.levelHandler.gainXP(false)
@@ -136,30 +116,13 @@ State DrainingToDeath
         CoL.widgetHandler.UpdateColor()
     EndEvent
 
-    float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
-        float victimHealth = drainVictim.GetActorValue("Health")
-        float succubusArousal = 0.0
-
-        if CoL.slakeThirst
-            if CoL.SLAR.IsInterfaceActive() && CoL.OAroused.IsInterfaceActive()
-                succubusArousal = (CoL.SLAR.GetActorArousal(CoL.playerRef) + CoL.OAroused.GetArousal(CoL.playerRef)) / 2
-            elseif CoL.OAroused.IsInterfaceActive()
-                succubusArousal = CoL.OAroused.GetArousal(CoL.playerRef)
-            elseif CoL.SLAR.IsInterfaceActive()
-                succubusArousal = CoL.SLAR.GetActorArousal(CoL.playerRef)
-            endif
-        endif
-
-        return ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult)) * configHandler.drainToDeathMult
-    EndFunction
-
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
 
         CoL.Log("Recieved Start Drain Event for " + draineeName)
         CoL.Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
 
-        float drainAmount
+        float drainAmount = CalculateDrainAmount(drainee, arousal)
         if drainee.isEssential()
             CoL.Log("Victim is essential")
             string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the weave of fate"
@@ -170,15 +133,17 @@ State DrainingToDeath
                 Debug.Notification(notifyMsg)
                 return
             else
-                drainAmount = applyDrainSpell(drainee, arousal)
+                applyDrainSpell(drainee, drainAmount)
             endif
             Debug.Notification(notifyMsg)
         else
             drainToDeathVFX.Play(drainee, 1, (drainerForm as Actor))
-            drainAmount = CalculateDrainAmount(drainee, arousal)
         endif
-
-        CoL.playerEnergyCurrent += (drainAmount * configHandler.energyConversionRate)
+        
+        float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
+        
+        drainAmount = drainAmount * configHandler.drainToDeathMult
+        CoL.playerEnergyCurrent += (drainAmount * energyConversionMult)
         CoL.levelHandler.gainXP(true)
         doVampireDrain(drainee)
     EndEvent
@@ -207,8 +172,7 @@ Function doVampireDrain(Actor drainee)
     endif
 EndFunction
 
-Float Function applyDrainSpell(Actor drainee, float arousal)
-    float drainAmount = CalculateDrainAmount(drainee, arousal)
+Float Function applyDrainSpell(Actor drainee, float drainAmount)
     float drainDuration = configHandler.drainDurationInGameTime / 24
     if CoL.playerRef.HasPerk(gentleDrainer)
         drainDuration = drainDuration / 2
@@ -222,7 +186,22 @@ Float Function applyDrainSpell(Actor drainee, float arousal)
 EndFunction
 
 float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
+    float victimHealth = drainVictim.GetActorValue("Health")
+    float succubusArousal = 0.0
+
+    if CoL.playerRef.HasPerk(slakeThirst)
+        succubusArousal = CoL.GetActorArousal(CoL.playerRef)
+        CoL.Log("Succubus Arousal: " + succubusArousal)
+    endif
+
+    float healthConversionMult = configHandler.healthDrainMult + (0.1 * CoL.efficientFeeder)
+    float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
+    if drainAmount > victimHealth
+        drainAmount = victimHealth - 1
+    endif
+    return drainAmount
 EndFunction
+
 Event StartDrain( Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
 EndEvent
 Event EndDrain(Form drainerForm, Form draineeForm)

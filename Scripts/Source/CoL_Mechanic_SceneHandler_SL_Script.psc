@@ -68,10 +68,7 @@ EndFunction
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
     CoL.Log("Trigger drain start for " + actorName)
-    float arousal = 0.0
-    if SLARInstalled
-        arousal = (SLAR.GetActorArousal(victim) as float)
-    endif
+    float arousal = CoL.GetActorArousal(victim)
 
     int drainHandle
     if succubus == CoL.playerRef

@@ -23,28 +23,7 @@ State Polling
     EndEvent
 
     Event OnUpdate()
-        float averageArousal = 0
-        int i = 0
-        if oarousedActive
-            averageArousal += CoL.OAroused.GetArousal(CoL.playerRef)
-            i += 1
-        endif
-        if slarActive
-            averageArousal += CoL.SLAR.GetActorArousal(CoL.playerRef)
-            i += 1
-        endif
-        if toysActive
-            averageArousal += ToysGlobal.GetRousing()
-            i += 1
-        endif
-
-        CoL.Log("Total arousal: " + averageArousal)
-        
-        if i > 0
-            averageArousal = averageArousal / i
-        else
-            averageArousal = 0
-        endif
+        float averageArousal = CoL.GetActorArousal(CoL.playerRef)
 
         CoL.Log("Average arousal: " + averageArousal)
         CoL.Log("Upper Threshold: " + configHandler.transformArousalUpperThreshold)

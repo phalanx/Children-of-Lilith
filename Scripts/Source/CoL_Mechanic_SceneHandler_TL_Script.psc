@@ -46,7 +46,7 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
     while i < victims.length
         if victims[i] != None
             string actorName = victims[i].GetLeveledActorBase().GetName()
-            float arousal = ToysGlobal.GetRousing()
+            float arousal = 0.0
             int drainHandle 
             if succubus == CoL.playerRef
                 drainHandle = ModEvent.Create("CoL_startDrain")
