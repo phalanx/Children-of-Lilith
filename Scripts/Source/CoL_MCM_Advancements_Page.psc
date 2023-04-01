@@ -2,6 +2,7 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
 Perk Property gentleDrainer Auto
+Perk Property energyWeaver Auto
 CoL_ConfigHandler_Script configHandler
 CoL_PlayerSuccubusQuestScript psq
 
@@ -27,10 +28,10 @@ Event OnPageDraw()
     endif
     AddTextOptionST("Text_perkEfficientFeeder", "$COL_ADVANCEMENTPAGE_EFFICIENTFEEDER", psq.efficientFeeder)
     AddTextOptionST("Text_perkEnergyStorage", "$COL_ADVANCEMENTPAGE_ENERGYSTORAGE", psq.energyStorage)
-    if !psq.energyWeaver
-        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", psq.EnergyWeaver)
+    if !psq.playerRef.HasPerk(energyWeaver)
+        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", psq.playerRef.HasPerk(energyWeaver))
     else
-        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", psq.energyWeaver, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", psq.playerRef.HasPerk(energyWeaver), OPTION_FLAG_DISABLED)
     endif
     if !psq.healingForm
         AddToggleOptionST("Toggle_perkHealingForm", "$COL_ADVANCEMENTPAGE_HEALINGFORM", psq.HealingForm)
@@ -139,8 +140,8 @@ EndState
 State Toggle_perkEnergyWeaver
     Event OnSelectST(string state_id)
         if psq.availablePerkPoints > 0
-            psq.energyWeaver = !psq.energyWeaver
-            SetToggleOptionValueST(psq.energyWeaver)
+            psq.playerRef.AddPerk(energyWeaver)
+            SetToggleOptionValueST(true)
             psq.availablePerkPoints -= 1
             ForcePageReset()
         else

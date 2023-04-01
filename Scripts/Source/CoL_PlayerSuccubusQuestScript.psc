@@ -26,7 +26,7 @@ CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 int Property availablePerkPoints = 0 Auto Hidden
 int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
 int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
-bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
+; bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
 bool Property healingForm = false Auto Hidden        ; Perk that adds Heal Rate Boost to transformed form
 bool Property safeTransformation = false Auto Hidden ; Perk that turns you ethereal while transforming
 bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubus arousal to drain amount

@@ -5,6 +5,7 @@ import MiscUtil
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 ImageSpaceModifier Property EnergyCastingIMod Auto
+Perk Property energyWeaver Auto
 
 Perk Property VancianMagicPerk = None Auto Hidden
 GlobalVariable Property CurrentVancianCharges = None Auto Hidden
@@ -103,7 +104,7 @@ EndEvent
 Function ExpendEnergy(Spell spellCast, float costModifier = 1.0)
     CoL.playerRef.RemovePerk(CoL.energyCastingPerk)
     float spellCost = (spellCast.GetEffectiveMagickaCost(CoL.playerRef) * configHandler.energyCastingMult) * costModifier
-    if CoL.energyWeaver
+    if CoL.playerRef.HasPerk(energyWeaver)
         if CoL.isTransformed
             spellCost -= spellCost * 0.5
         else
@@ -132,7 +133,7 @@ EndFunction
 Function ExpendEnergyVancian()
     LastVancianCharges = CurrentVancianCharges.GetValue()
 	float spellCost = 10.0*configHandler.energyCastingMult
-    if CoL.energyWeaver
+    if CoL.playerRef.HasPerk(energyWeaver)
         if CoL.isTransformed
             spellCost -= spellCost * 0.5
         else

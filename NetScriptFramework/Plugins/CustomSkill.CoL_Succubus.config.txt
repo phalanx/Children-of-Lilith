@@ -167,4 +167,14 @@ Node9.X = 0
 Node9.Y = 0
 Node9.GridX = 5
 Node9.GridY = 2
+Node9.Links = "10"
+
+# Energy Weaver
+Node10.Enable = true
+Node10.PerkFile = "ChildrenOfLilith.esp"
+Node10.PerkId = 0x2B9168
+Node10.X = 0
+Node10.Y = 0
+Node10.GridX = 5
+Node10.GridY = 3
 # Node6.Links = "6"
