@@ -7,6 +7,8 @@ Perk Property transformCarryWeightPerk Auto
 Perk Property transformMeleeDamagePerk Auto
 Perk Property transformArmorPerk Auto
 Perk Property transformMagicResistPerk Auto
+Perk Property effecientFeeder Auto
+Perk Property energyStorage Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -52,5 +54,18 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         CoL.transformMagicResist += 1
         CoL.Log("Transform Magic Resist Ranks: " + CoL.transformMagicResist)
         CoL.playerRef.RemovePerk(transformMagicResistPerk)
+    endif
+    if CoL.playerRef.HasPerk(effecientFeeder)
+        CoL.Log("Efficient Feeder Perk detected")
+        CoL.efficientFeeder += 1
+        CoL.Log("Efficient Feeder Ranks: " + CoL.efficientFeeder)
+        CoL.playerRef.RemovePerk(effecientFeeder)
+    endif
+    if CoL.playerRef.HasPerk(energyStorage)
+        CoL.Log("Energy Storage Perk detected")
+        CoL.energyStorage += 1
+        CoL.Log("Energy Storage Ranks: " + CoL.energyStorage)
+        CoL.playerEnergyMax += 10
+        CoL.playerRef.RemovePerk(energyStorage)
     endif
 EndEvent

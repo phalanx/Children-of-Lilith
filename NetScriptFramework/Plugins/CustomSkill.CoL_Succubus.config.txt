@@ -57,7 +57,7 @@ ColorId = 0
 # again and see how the nodes changed. This is not recommended for normal play! It creates a memory leak or worse. Remember that
 # perks menu must be closed when reloading the files.
 DebugReloadFile = "ChildrenOfLilith.esp"
-DebugReloadId = 0xA23
+DebugReloadId = 0x282A23
 
 # Node0 is the root node, this should not have coordinates or a perk assigned to it. This must exist even if you don't want to have any perks.
 # Use Node0.Links to point to first perk(s). If you don't want any perks then remove the links line or set to ""
@@ -139,12 +139,32 @@ Node6.GridX = 3
 Node6.GridY = 3
 # Node6.Links = "6"
 
-# Gentle Drainer
+# Energy Storage
 Node7.Enable = true
 Node7.PerkFile = "ChildrenOfLilith.esp"
-Node7.PerkId = 0x2AA3CF
+Node7.PerkId = 0x2B4235
 Node7.X = 0
 Node7.Y = 0
 Node7.GridX = 5
 Node7.GridY = 0
+Node7.Links = "8"
+
+# Efficient Feeder
+Node8.Enable = true
+Node8.PerkFile = "ChildrenOfLilith.esp"
+Node8.PerkId = 0x2B1A9B
+Node8.X = 0
+Node8.Y = 0
+Node8.GridX = 5
+Node8.GridY = 1
+Node8.Links = "9"
+
+# Gentle Drainer
+Node9.Enable = true
+Node9.PerkFile = "ChildrenOfLilith.esp"
+Node9.PerkId = 0x2AA3CF
+Node9.X = 0
+Node9.Y = 0
+Node9.GridX = 5
+Node9.GridY = 2
 # Node6.Links = "6"
