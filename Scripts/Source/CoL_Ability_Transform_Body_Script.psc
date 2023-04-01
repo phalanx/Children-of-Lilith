@@ -22,7 +22,6 @@ EndEvent
 Function Transform()
     CoL.Log("Transforming Body")
     CoL.isTransformed = true
-    ; Body Transform
     CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
     
     if configHandler.transformCrime
@@ -39,7 +38,6 @@ EndFunction
 Function UnTransform()
     CoL.Log("Untransforming Body")
     CoL.isTransformed = false
-    ; Body Transform
     CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
 
     Utility.Wait(0.5)
