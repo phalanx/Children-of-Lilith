@@ -10,7 +10,8 @@ Sound Property SuccubusTransformSound Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Game.ForceThirdPerson()
     SuccubusTransformSound.Play(akTarget)
-    if !CoL.isTransformed
+    bool isTransformed = CoL.isTransformed
+    if !isTransformed
         float cost
         if CoL.playerRef.HasPerk(safeTransformation)
             cost = configHandler.becomeEtherealCost
