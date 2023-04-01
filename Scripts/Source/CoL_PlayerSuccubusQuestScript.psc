@@ -39,6 +39,7 @@ Faction Property drainVictimFaction Auto
 
 Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
+Spell Property showperkMenu Auto                    ; Spell that when cast will open the CSF perk menu
 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
@@ -137,13 +138,14 @@ EndState
 
 State Running
     Event OnKeyDown(int keyCode)
-        if configHandler.EnergyScaleTestEnabled
-            if keyCode == configHandler.toggleDrainToDeathHotKey
+        if keyCode == configHandler.toggleDrainToDeathHotKey
+            if configHandler.EnergyScaleTestEnabled
                 ScaleEnergyTest()
             endif
-        endif
-        if keyCode == configHandler.transformHotkey
+        elseif keyCode == configHandler.transformHotkey
             transformSpell.Cast(playerRef, playerRef)
+        elseif keyCode == configHandler.csfMenuHotkey
+            showperkMenu.Cast(playerRef)
         endif
     EndEvent
 EndState
@@ -225,6 +227,7 @@ Function RegisterForHotkeys()
     RegisterForKey(configHandler.toggleDrainHotKey)
     RegisterForKey(configHandler.toggleDrainToDeathHotKey)
     RegisterForKey(configHandler.transformHotkey)
+    RegisterForKey(configHandler.csfMenuHotkey)
 EndFunction
 
 Function RegisterForEvents()
@@ -239,6 +242,7 @@ Function UnregisterForHotkeys()
     UnregisterForKey(configHandler.toggleDrainHotKey)
     UnregisterForKey(configHandler.toggleDrainToDeathHotKey)
     UnregisterForKey(configHandler.transformHotkey)
+    UnregisterForKey(configHandler.csfMenuHotkey)
 EndFunction
 
 Function UnregisterForEvents()

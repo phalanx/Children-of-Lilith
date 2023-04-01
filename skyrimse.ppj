@@ -42,6 +42,7 @@
         <Import>@ModsFolder\OSL Aroused\Scripts\Source</Import>
         <Import>@ModsFolder\SlaveTatsSE\Source\Scripts</Import>
         <Import>@ModsFolder\NL_MCM - A Modular MCM Framework - SDK\scripts\Source</Import>
+        <Import>@ModsFolder\Custom Skills Framework\Source\Scripts</Import>
         <!-- <Import>@ModsFolder\MCM Helper SDK\Source\Scripts</Import> -->
     </Imports>
     <Folders>

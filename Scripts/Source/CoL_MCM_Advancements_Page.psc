@@ -52,6 +52,9 @@ Event OnPageDraw()
     else
         AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.playerRef.HasPerk(slakeThirst), OPTION_FLAG_DISABLED)
     endif
+    SetCursorPosition(1)
+    AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_CSF")
+    AddToggleOptionST("Toggle_grantCsfPower","$COL_ADVANCEMENTPAGE_GRANTCSFPOWER", configHandler.grantCSFPower )
 EndEvent
     
 State Text_perksAvailable
@@ -199,5 +202,22 @@ State Toggle_perkSlakeThirst
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVANCEMENTPAGE_SLAKETHIRST_HELP")
+    EndEvent
+EndState
+
+State Toggle_grantCsfPower
+    Event OnSelectST(string state_id)
+        if configHandler.grantCSFPower
+            configHandler.grantCSFPower = false
+            CoL.playerRef.RemoveSpell(CoL.showperkMenu)
+            SetToggleOptionValueST(false)
+        else
+            CoL.playerRef.AddSpell(CoL.showperkMenu)
+            configHandler.grantCSFPower = true
+            SetToggleOptionValueST(true)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_GRANTCSFPOWER_HELP")
     EndEvent
 EndState

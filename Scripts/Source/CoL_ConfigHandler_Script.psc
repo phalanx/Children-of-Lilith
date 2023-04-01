@@ -48,6 +48,7 @@ bool Property tattooFade = false Auto Hidden
 int Property tattooSlot = 6 Auto Hidden
 
 ; Power Settings
+bool Property grantCSFPower = false Auto Hidden                 ; Should the CSF Power Menu be given
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Succubus Become Ethereal
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Succubus HealRate Boost
 float Property healRateBoostAmount = 10.0 Auto Hidden   ; Modify healRate by this amount
@@ -68,10 +69,11 @@ int Property temptationBaseIncrease = 1 Auto Hidden
 float Property temptationLevelMult = 1.0 Auto Hidden
 
 ; Hotkey Settings
-int Property toggleDrainHotkey = 29 Auto Hidden     ; Default Toggle Drain key to left shift
+int Property toggleDrainHotkey = 29 Auto Hidden            ; Default Toggle Drain key to left shift
 int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
-int Property transformHotkey = -1 Auto Hidden    ; Default Toggle Drain to Death key to right alt
-int Property temptationHotkey = -1 Auto Hidden    ; Default Toggle Drain to Death key to right alt
+int Property transformHotkey = -1 Auto Hidden
+int Property temptationHotkey = -1 Auto Hidden
+int Property csfMenuHotkey = -1 Auto Hidden
 
 ; Widget Settings
 int Property energyMeterAlpha = 100 Auto Hidden

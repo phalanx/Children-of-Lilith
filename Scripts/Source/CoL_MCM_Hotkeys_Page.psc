@@ -19,6 +19,7 @@ Event OnPageDraw()
     AddKeyMapOptionST("CoLKey___drainToDeath", "$COL_HOTKEYSPAGE_TOGGLEDRAINTODEATH", configHandler.toggleDrainToDeathHotkey)
     AddKeyMapOptionST("CoLKey___transform", "$COL_HOTKEYSPAGE_TRANSFORM", configHandler.transformHotkey)
     AddKeyMapOptionST("CoLKey___temptation", "$COL_HOTKEYSPAGE_TEMPTATION", configHandler.temptationHotkey)
+    AddKeyMapOptionST("CoLKey___csfMenu", "$COL_HOTKEYSPAGE_CSFMENU", configHandler.csfMenuHotkey)
 EndEvent
 
 State CoLKey
@@ -34,6 +35,8 @@ State CoLKey
             configHandler.transformHotkey = keyCode
         elseif state_id == "temptation"
             configHandler.temptationHotkey = keyCode
+        elseif state_id == "csfMenu"
+            configHandler.csfMenuHotkey = keyCode
         endif
         SetKeyMapOptionValueST(keyCode, false, "CoLKey___" + state_id)
         CoL.UnregisterForHotkeys()
