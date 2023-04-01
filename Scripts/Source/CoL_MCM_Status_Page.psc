@@ -44,7 +44,7 @@ Event OnPageDraw()
     endif
     AddToggleOptionST("Toggle_DebugLogging", "$COL_STATUSPAGE_DEBUGLOGGING", configHandler.DebugLogging)
 
-    if configHandler.npcSuccubusEnabled
+    if npcSuccubusQuest.GetState() != "" && npcSuccubusQuest.GetState() != "Uninitialize"
         AddTextOptionST("Text_DisableNPCSuccubus", "$COL_STATUSPAGE_DISABLENPCSUCCUBUS", None)
         AddHeaderOption("$COL_STATUSPAGE_NPCHEADER")
         LoadNpcSuccubi()

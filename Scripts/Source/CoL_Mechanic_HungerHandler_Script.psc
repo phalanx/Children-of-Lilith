@@ -6,6 +6,16 @@ Spell Property starvationSpell Auto
 
 float lastCheckTime = 0.0
 int starvationStack = 0
+
+Event OnInit()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
+EndEvent
+
+Function Maintenance()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
+    RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
+EndFunction
+
 State HungerEnabled
     Event OnBeginState()
         lastCheckTime = CoL.GameDaysPassed.GetValue()

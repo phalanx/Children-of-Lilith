@@ -109,7 +109,6 @@ bool isVampire = false
 ColorForm Property mortalHairColor Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
 
-
 ; Transform Buffs
 float Property transformHealth Auto Hidden
 float Property transformStamina Auto Hidden
@@ -131,6 +130,7 @@ State Initialize
         widgetHandler.GoToState("Initialize")
         levelHandler.GoToState("Initialize")
         isPlayerSuccubus.SetValue(1.0)
+        UpdateConfig()
         Maintenance()
         GotoState("Running")
     EndEvent
@@ -235,6 +235,7 @@ Function RegisterForEvents()
     RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
+    RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     Log("Registered for Hotkeys and Events")
 EndFunction
 
@@ -482,4 +483,22 @@ float Function GetActorArousal(Actor target)
         targetArousal = 0.0
     endif
     return targetArousal
+EndFunction
+
+Function UpdateCSFPower()
+    if configHandler.grantCSFPower
+        playerRef.RemoveSpell(showperkMenu)
+    else
+        playerRef.AddSpell(showperkMenu)
+    endif
+EndFunction
+
+Function UpdateConfig()
+    Log("PSQ Recieved Config Update")
+    UnregisterForHotkeys()
+    RegisterForHotkeys()
+    playerEnergyCurrent = playerEnergyCurrent
+    ApplyRankedPerks()
+    UpdatePath()
+    UpdateCSFPower()
 EndFunction

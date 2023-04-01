@@ -28,7 +28,6 @@ State Running
         RegisterForModEvent("CoL_startScene_NPC", "StartSceneNPC")
         RegisterForModEvent("CoL_endSceneNPC", "EndSceneNPC")
         RegisterForModEvent("CoL_GameLoad", "Maintenance")
-        configHandler.npcSuccubusEnabled = true
     EndFunction
 EndState
 
@@ -38,7 +37,6 @@ State Uninitialize
         UnRegisterForModEvent("CoL_startScene_NPC")
         UnRegisterForModEvent("CoL_endSceneNPC")
         UnRegisterForModEvent("CoL_GameLoad")
-        configHandler.npcSuccubusEnabled = false
     EndEvent
 EndState
 

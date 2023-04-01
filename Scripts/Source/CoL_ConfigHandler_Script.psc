@@ -5,7 +5,6 @@ string[] Property followedPathOptions Auto Hidden               ; Holds availabl
 int Property selectedPath = 0 Auto Hidden                       ; Which path is the player following
 bool Property DebugLogging = false Auto Hidden                  ; Are debug logs enabled
 bool Property EnergyScaleTestEnabled = false Auto Hidden        ; Is the energy scale test enabled
-bool Property npcSuccubusEnabled = false Auto Hidden            ; Are NPC succubi enabled
 
 ; Player Drain Settings
 bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
@@ -48,7 +47,7 @@ bool Property tattooFade = false Auto Hidden
 int Property tattooSlot = 6 Auto Hidden
 
 ; Power Settings
-bool Property grantCSFPower = false Auto Hidden                 ; Should the CSF Power Menu be given
+bool Property grantCSFPower = false Auto Hidden         ; Should the CSF Power Menu be given
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Succubus Become Ethereal
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Succubus HealRate Boost
 float Property healRateBoostAmount = 10.0 Auto Hidden   ; Modify healRate by this amount
@@ -93,16 +92,16 @@ float Property transformCost = 1.0 Auto Hidden
 bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold Auto Hidden
 float Property transformArousalLowerThreshold Auto Hidden
-bool Property transformBuffsEnabled Auto Hidden
+bool Property transformBuffsEnabled = false Auto Hidden
 
 ; Transform Baseline Buffs
-float Property transformBaseHealth Auto Hidden
-float Property transformBaseStamina Auto Hidden
-float Property transformBaseMagicka Auto Hidden
-float Property transformBaseCarryWeight Auto Hidden
-float Property transformBaseMeleeDamage Auto Hidden
-float Property transformBaseArmor Auto Hidden
-float Property transformBaseMagicResist Auto Hidden
+float Property transformBaseHealth = 0.0 Auto Hidden
+float Property transformBaseStamina = 0.0 Auto Hidden
+float Property transformBaseMagicka = 0.0 Auto Hidden
+float Property transformBaseCarryWeight = 0.0 Auto Hidden
+float Property transformBaseMeleeDamage = 0.0 Auto Hidden
+float Property transformBaseArmor = 0.0 Auto Hidden
+float Property transformBaseMagicResist = 0.0 Auto Hidden
 
 ; Transform buffs per rank
 float Property transformHealthPerRank = 10.0 Auto Hidden
@@ -129,4 +128,11 @@ Function Maintenance()
     energyCastingConcStyleOptions[2] = "$COL_POWERSPAGE_COSTCALCSTYLE_RIGHT"
     energyCastingConcStyleOptions[3] = "$COL_POWERSPAGE_COSTCALCSTYLE_NONE"
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
+EndFunction
+
+Function SendConfigUpdateEvent()
+    int handle = ModEvent.Create("CoL_configUpdated")
+    if handle
+        ModEvent.Send(handle)
+    endif
 EndFunction

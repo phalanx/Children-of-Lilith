@@ -207,15 +207,9 @@ EndState
 
 State Toggle_grantCsfPower
     Event OnSelectST(string state_id)
-        if configHandler.grantCSFPower
-            configHandler.grantCSFPower = false
-            CoL.playerRef.RemoveSpell(CoL.showperkMenu)
-            SetToggleOptionValueST(false)
-        else
-            CoL.playerRef.AddSpell(CoL.showperkMenu)
-            configHandler.grantCSFPower = true
-            SetToggleOptionValueST(true)
-        endif
+        configHandler.grantCSFPower = !configHandler.grantCSFPower
+        SetToggleOptionValueST(configHandler.grantCSFPower)
+        CoL.UpdateCSFPower()
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVANCEMENTPAGE_GRANTCSFPOWER_HELP")

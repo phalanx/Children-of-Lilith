@@ -115,3 +115,7 @@ EndFunction
 ; Empty Functions for Empty State
 Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)
 EndEvent
+
+Function UpdateConfig()
+    GoToState("MoveEnergyMeter")
+EndFunction
