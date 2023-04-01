@@ -186,7 +186,7 @@ Float Function applyDrainSpell(Actor drainee, float drainAmount)
 EndFunction
 
 float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
-    float victimHealth = drainVictim.GetActorValue("Health")
+    float victimHealth = drainVictim.GetBaseActorValue("Health")
     float succubusArousal = 0.0
 
     if CoL.playerRef.HasPerk(slakeThirst)
