@@ -177,4 +177,14 @@ Node10.X = 0
 Node10.Y = 0
 Node10.GridX = 5
 Node10.GridY = 3
-# Node6.Links = "6"
+Node10.Links = "11"
+
+# Healing Form
+Node11.Enable = true
+Node11.PerkFile = "ChildrenOfLilith.esp"
+Node11.PerkId = 0x2BB902
+Node11.X = 0
+Node11.Y = 0
+Node11.GridX = 5
+Node11.GridY = 4
+# Node11.Links = "11"

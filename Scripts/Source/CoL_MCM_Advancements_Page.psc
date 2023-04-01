@@ -3,8 +3,9 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 Quest Property playerSuccubusQuest Auto
 Perk Property gentleDrainer Auto
 Perk Property energyWeaver Auto
+Perk Property healingForm Auto
 CoL_ConfigHandler_Script configHandler
-CoL_PlayerSuccubusQuestScript psq
+CoL_PlayerSuccubusQuestScript CoL
 
 Event OnInit()
     RegisterModule("$COL_ADVANCEMENTPAGE_NAME", 60)
@@ -12,47 +13,47 @@ EndEvent
 
 Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    psq = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
 EndEvent
 
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_POINTS")
-    AddTextOptionST("Text_perksAvailable", "$COL_ADVANCEMENTPAGE_AVAILABLEPOINTS", psq.availablePerkPoints)
+    AddTextOptionST("Text_perksAvailable", "$COL_ADVANCEMENTPAGE_AVAILABLEPOINTS", CoL.availablePerkPoints)
     AddTextOptionST("Text_perkReset", "$COL_ADVANCEMENTPAGE_RESETPERKS", None)
     AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_GENERAL")
-    if !psq.playerRef.HasPerk(gentleDrainer)
-        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", psq.playerRef.HasPerk(gentleDrainer))
+    if !CoL.playerRef.HasPerk(gentleDrainer)
+        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", CoL.playerRef.HasPerk(gentleDrainer))
     else
-        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", psq.playerRef.HasPerk(gentleDrainer), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkGentleDrainer", "$COL_ADVANCEMENTPAGE_GENTLEDRAINER", CoL.playerRef.HasPerk(gentleDrainer), OPTION_FLAG_DISABLED)
     endif
-    AddTextOptionST("Text_perkEfficientFeeder", "$COL_ADVANCEMENTPAGE_EFFICIENTFEEDER", psq.efficientFeeder)
-    AddTextOptionST("Text_perkEnergyStorage", "$COL_ADVANCEMENTPAGE_ENERGYSTORAGE", psq.energyStorage)
-    if !psq.playerRef.HasPerk(energyWeaver)
-        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", psq.playerRef.HasPerk(energyWeaver))
+    AddTextOptionST("Text_perkEfficientFeeder", "$COL_ADVANCEMENTPAGE_EFFICIENTFEEDER", CoL.efficientFeeder)
+    AddTextOptionST("Text_perkEnergyStorage", "$COL_ADVANCEMENTPAGE_ENERGYSTORAGE", CoL.energyStorage)
+    if !CoL.playerRef.HasPerk(energyWeaver)
+        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", CoL.playerRef.HasPerk(energyWeaver))
     else
-        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", psq.playerRef.HasPerk(energyWeaver), OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkEnergyWeaver", "$COL_ADVANCEMENTPAGE_ENERGYWEAVER", CoL.playerRef.HasPerk(energyWeaver), OPTION_FLAG_DISABLED)
     endif
-    if !psq.healingForm
-        AddToggleOptionST("Toggle_perkHealingForm", "$COL_ADVANCEMENTPAGE_HEALINGFORM", psq.HealingForm)
+    if !CoL.playerRef.HasPerk(healingForm)
+        AddToggleOptionST("Toggle_perkHealingForm", "$COL_ADVANCEMENTPAGE_HEALINGFORM", CoL.playerRef.HasPerk(healingForm))
     else
-        AddToggleOptionST("Toggle_perkHealingForm", "$COL_ADVANCEMENTPAGE_HEALINGFORM", psq.HealingForm, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkHealingForm", "$COL_ADVANCEMENTPAGE_HEALINGFORM", CoL.playerRef.HasPerk(healingForm), OPTION_FLAG_DISABLED)
     endif
-    if !psq.safeTransformation
-        AddToggleOptionST("Toggle_perkSafeTransformation", "$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION", psq.safeTransformation)
+    if !CoL.safeTransformation
+        AddToggleOptionST("Toggle_perkSafeTransformation", "$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION", CoL.safeTransformation)
     else
-        AddToggleOptionST("Toggle_perkSafeTransformation", "$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION", psq.safeTransformation, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkSafeTransformation", "$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION", CoL.safeTransformation, OPTION_FLAG_DISABLED)
     endif
-    if !psq.slakeThirst
-        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", psq.slakeThirst)
+    if !CoL.slakeThirst
+        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.slakeThirst)
     else
-        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", psq.slakeThirst, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.slakeThirst, OPTION_FLAG_DISABLED)
     endif
 EndEvent
     
 State Text_perksAvailable
     Event OnSelectST(string state_id)
-        psq.availablePerkPoints += 1
+        CoL.availablePerkPoints += 1
         ForcePageReset()
     EndEvent
     Event OnHighlightST(string state_id)
@@ -62,23 +63,23 @@ EndState
 
 State Text_perkReset
     Event OnSelectST(string state_id)
-        if psq.playerRef.HasPerk(gentleDrainer)
-            psq.playerRef.HasPerk(gentleDrainer)
-            psq.availablePerkPoints += 1
+        if CoL.playerRef.HasPerk(gentleDrainer)
+            CoL.playerRef.HasPerk(gentleDrainer)
+            CoL.availablePerkPoints += 1
         endif
-        if psq.efficientFeeder > 0
+        if CoL.efficientFeeder > 0
             int i = 0
-            while i < psq.efficientFeeder
-                psq.availablePerkPoints += 1
-                psq.efficientFeeder -= 1
+            while i < CoL.efficientFeeder
+                CoL.availablePerkPoints += 1
+                CoL.efficientFeeder -= 1
             endwhile
         endif
-        if psq.energyStorage > 0
+        if CoL.energyStorage > 0
             int i = 0
-            while i < psq.energyStorage
-                psq.availablePerkPoints += 1
-                psq.energyStorage -= 1
-                psq.playerEnergyMax -= 10
+            while i < CoL.energyStorage
+                CoL.availablePerkPoints += 1
+                CoL.energyStorage -= 1
+                CoL.playerEnergyMax -= 10
             endwhile
         endif
         ForcePageReset()
@@ -90,10 +91,10 @@ EndState
 
 State Toggle_perkGentleDrainer
     Event OnSelectST(string state_id)
-        if psq.availablePerkPoints > 0
-            psq.playerRef.AddPerk(gentleDrainer)
-            SetToggleOptionValueST(psq.playerRef.HasPerk(gentleDrainer))
-            psq.availablePerkPoints -= 1
+        if CoL.availablePerkPoints > 0
+            CoL.playerRef.AddPerk(gentleDrainer)
+            SetToggleOptionValueST(CoL.playerRef.HasPerk(gentleDrainer))
+            CoL.availablePerkPoints -= 1
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -106,10 +107,10 @@ EndState
 
 State Text_perkEfficientFeeder
     Event OnSelectST(string state_id)
-        if psq.availablePerkPoints > 0
-            psq.efficientFeeder += 1
-            SetTextOptionValueST(psq.efficientFeeder)
-            psq.availablePerkPoints -= 1
+        if CoL.availablePerkPoints > 0
+            CoL.efficientFeeder += 1
+            SetTextOptionValueST(CoL.efficientFeeder)
+            CoL.availablePerkPoints -= 1
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -122,11 +123,11 @@ EndState
 
 State Text_perkEnergyStorage
     Event OnSelectST(string state_id)
-        if psq.availablePerkPoints > 0
-            psq.energyStorage += 1
-            psq.playerEnergyMax += 10
-            SetTextOptionValueST(psq.energyStorage)
-            psq.availablePerkPoints -= 1
+        if CoL.availablePerkPoints > 0
+            CoL.energyStorage += 1
+            CoL.playerEnergyMax += 10
+            SetTextOptionValueST(CoL.energyStorage)
+            CoL.availablePerkPoints -= 1
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -139,10 +140,10 @@ EndState
 
 State Toggle_perkEnergyWeaver
     Event OnSelectST(string state_id)
-        if psq.availablePerkPoints > 0
-            psq.playerRef.AddPerk(energyWeaver)
+        if CoL.availablePerkPoints > 0
+            CoL.playerRef.AddPerk(energyWeaver)
             SetToggleOptionValueST(true)
-            psq.availablePerkPoints -= 1
+            CoL.availablePerkPoints -= 1
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -154,10 +155,10 @@ State Toggle_perkEnergyWeaver
 EndState
 State Toggle_perkHealingForm
     Event OnSelectST(string state_id)
-        if psq.availablePerkPoints > 0
-            psq.healingForm = !psq.healingForm
-            SetToggleOptionValueST(psq.healingForm)
-            psq.availablePerkPoints -= 1
+        if CoL.availablePerkPoints > 0
+            CoL.playerRef.AddPerk(healingForm)
+            SetToggleOptionValueST(true)
+            CoL.availablePerkPoints -= 1
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -169,10 +170,10 @@ State Toggle_perkHealingForm
 EndState
 State Toggle_perkSafeTransformation
     Event OnSelectST(string state_id)
-        if psq.availablePerkPoints > 0
-            psq.safeTransformation = !psq.safeTransformation
-            SetToggleOptionValueST(psq.safeTransformation)
-            psq.availablePerkPoints -= 1
+        if CoL.availablePerkPoints > 0
+            CoL.safeTransformation = !CoL.safeTransformation
+            SetToggleOptionValueST(CoL.safeTransformation)
+            CoL.availablePerkPoints -= 1
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
@@ -184,10 +185,10 @@ State Toggle_perkSafeTransformation
 EndState
 State Toggle_perkSlakeThirst
     Event OnSelectST(string state_id)
-        if psq.availablePerkPoints > 0
-            psq.slakeThirst = !psq.slakeThirst
-            SetToggleOptionValueST(psq.slakeThirst)
-            psq.availablePerkPoints -= 1
+        if CoL.availablePerkPoints > 0
+            CoL.slakeThirst = !CoL.slakeThirst
+            SetToggleOptionValueST(CoL.slakeThirst)
+            CoL.availablePerkPoints -= 1
             ForcePageReset()
         else
             Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")

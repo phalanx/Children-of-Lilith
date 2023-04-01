@@ -2,7 +2,7 @@ Scriptname CoL_MCM_Settings_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
 
-CoL_PlayerSuccubusQuestScript psq
+CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 CoL_Mechanic_DrainHandler_Script drainHandler
 CoL_Mechanic_LevelHandler_Script levelHandler
@@ -13,7 +13,7 @@ Event OnInit()
 EndEvent
 
 Event OnPageInit()
-    psq = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     drainHandler = playerSuccubusQuest as CoL_Mechanic_DrainHandler_Script
     levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
@@ -133,7 +133,7 @@ EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainMinimum = value
             SetSliderOptionValueST(configHandler.forcedDrainMinimum,"{0}")
-            psq.playerEnergyCurrent = psq.playerEnergyCurrent
+            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_FORCEDDRAINMINIMUM_HELP")
@@ -150,7 +150,7 @@ EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainToDeathMinimum = value
             SetSliderOptionValueST(configHandler.forcedDrainToDeathMinimum,"{0}")
-            psq.playerEnergyCurrent = psq.playerEnergyCurrent
+            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_FORCEDDRAINTODEATHMINIMUM_HELP")
@@ -221,7 +221,7 @@ EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.baseMaxEnergy = value
-            psq.ApplyRankedPerks()
+            CoL.ApplyRankedPerks()
             SetSliderOptionValueST(configHandler.baseMaxEnergy)
         EndEvent
 
@@ -239,7 +239,7 @@ EndEvent
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.energyConversionRate = value
-            psq.ApplyRankedPerks()
+            CoL.ApplyRankedPerks()
             SetSliderOptionValueST(configHandler.energyConversionRate, "{1}")
         EndEvent
         Event OnHighlightST(string state_id)

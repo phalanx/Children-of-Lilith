@@ -1,7 +1,7 @@
 Scriptname CoL_MCM_Hotkeys_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
-CoL_PlayerSuccubusQuestScript psq
+CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 
 Event OnInit()
@@ -9,7 +9,7 @@ Event OnInit()
 EndEvent
 
 Event OnPageInit()
-    psq = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
 EndEvent
 
@@ -36,7 +36,7 @@ State CoLKey
             configHandler.temptationHotkey = keyCode
         endif
         SetKeyMapOptionValueST(keyCode, false, "CoLKey___" + state_id)
-        psq.UnregisterForHotkeys()
-        psq.RegisterForHotkeys()
+        CoL.UnregisterForHotkeys()
+        CoL.RegisterForHotkeys()
     endEvent
 EndState

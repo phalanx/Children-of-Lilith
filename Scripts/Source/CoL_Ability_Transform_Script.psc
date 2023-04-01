@@ -5,6 +5,7 @@ import PapyrusUtil
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 Faction Property playerWerewolfFaction Auto
+Perk Property healingForm Auto
 
 ; Transform Buff Settings
 Spell Property transformBuffSpell Auto
@@ -87,7 +88,7 @@ EndFunction
 
 function AddAdditionalPowers()
     CoL.Log("Adding additional powers")
-    if CoL.healingForm
+    if CoL.playerRef.HasPerk(healingForm)
         CoL.playerRef.ModActorValue("HealRate", (configHandler.healRateBoostAmount / 2))
     endif
     float healthBuff = (CoL.transformHealth * configHandler.transformHealthPerRank)
@@ -132,7 +133,7 @@ endfunction
 
 function RemoveAdditionalPowers()
     CoL.Log("Removing additional powers")
-    if CoL.healingForm
+    if CoL.playerRef.HasPerk(healingForm)
         CoL.playerRef.ModActorValue("HealRate", 0.0 - (configHandler.healRateBoostAmount / 2))
     endif
     CoL.playerRef.RemoveSpell(transformBuffSpell)

@@ -1,7 +1,7 @@
 Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
-CoL_PlayerSuccubusQuestScript psq
+CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 
 bool loadEquipment = false
@@ -13,23 +13,23 @@ EndEvent
 
 Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    psq = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
 EndEvent
 
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_PRESET")
-    if psq.isPlayerSuccubus.GetValueInt() == 0
+    if CoL.isPlayerSuccubus.GetValueInt() == 0
         AddTextOptionST("Text_initFirst", "$COL_TRANSFORMPAGE_INITFIRST", None)
     else
         AddTextOptionST("Text_saveMortalPreset", "$COL_TRANSFORMPAGE_SAVEMORTALFORM", None)
-        if psq.mortalPresetSaved
+        if CoL.mortalPresetSaved
             AddTextOptionST("Text_LoadMortalPreset", "$COL_TRANSFORMPAGE_LOADMORTALFORM", None)
         else
             AddTextOptionST("Text_LoadMortalPreset", "$COL_TRANSFORMPAGE_LOADMORTALFORM", None, OPTION_FLAG_DISABLED)
         endif
         AddTextOptionST("Text_SaveSuccuPreset", "$COL_TRANSFORMPAGE_SAVESUCCUBUSFORM", None)
-        if psq.succuPresetSaved
+        if CoL.succuPresetSaved
             AddTextOptionST("Text_LoadSuccuPreset", "$COL_TRANSFORMPAGE_LOADSUCCUBUSFORM", None)
         else
             AddTextOptionST("Text_LoadSuccuPreset", "$COL_TRANSFORMPAGE_LOADSUCCUBUSFORM", None, OPTION_FLAG_DISABLED)
@@ -44,7 +44,7 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_BUFFS")
-    if psq.isTransformed
+    if CoL.isTransformed
         AddTextOptionST("Text_NoTransformBuffChange", "$COL_TRANSFORMPAGE_CANTCHANGEBUFFS_MSQ", None)
     else
         AddToggleOptionST("Toggle_BuffsEnable", "$COL_TRANSFORMPAGE_BUFFSENABLED", configHandler.transformBuffsEnabled)
@@ -73,11 +73,11 @@ Event OnConfigClose()
 EndEvent
 
 Function LoadEquipmentList()
-    equippedItems = getEquippedItems(psq.playerRef)
+    equippedItems = getEquippedItems(CoL.playerRef)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_ADDNOSTRIP")
     int i = 0
     while i < equippedItems.Length
-        if !psq.ddLibs || !equippedItems[i].hasKeyword(psq.ddLibs) ; Make sure it's not a devious device
+        if !CoL.ddLibs || !equippedItems[i].hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device
             if configHandler.NoStripList.Find(equippedItems[i]) == -1
                 string itemName = equippedItems[i].GetName()
                 if itemName != "" && itemName != " "
@@ -103,7 +103,7 @@ Form[] function getEquippedItems(Actor actorRef)
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30))
 		if itemRef
-            if psq.IsStrippable(itemRef)
+            if CoL.IsStrippable(itemRef)
                 equippedItems[i] = itemRef
             endif
 		endif
@@ -121,11 +121,11 @@ EndFunction
 
 State Text_saveMortalPreset
     Event OnSelectST(string state_id)
-        psq.mortalRace = psq.playerRef.GetRace()
-        psq.mortalHairColor = psq.playerRef.GetActorbase().GetHairColor()
+        CoL.mortalRace = CoL.playerRef.GetRace()
+        CoL.mortalHairColor = CoL.playerRef.GetActorbase().GetHairColor()
         Debug.MessageBox("$COL_TRANSFORMPAGE_FORMSAVEDMSG")
-        psq.SavePreset(psq.mortalPresetName)
-        psq.mortalPresetSaved = true
+        CoL.SavePreset(CoL.mortalPresetName)
+        CoL.mortalPresetSaved = true
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_SAVEMORTALFORM_HELP")
@@ -135,7 +135,7 @@ State Text_LoadMortalPreset
     Event OnSelectST(string state_id)
         Debug.MessageBox("$COL_TRANSFORMPAGE_FORMLOADEDMSG")
         Utility.Wait(0.1)
-        psq.transformPlayer(psq.mortalPresetName, psq.mortalRace, psq.mortalHairColor)
+        CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_LOADMORTALFORM_HELP")
@@ -143,11 +143,11 @@ State Text_LoadMortalPreset
 EndState
 State Text_SaveSuccuPreset
     Event OnSelectST(string state_id)
-        psq.succuRace = psq.playerRef.GetRace()
-        psq.succuHairColor = psq.playerRef.GetActorbase().GetHairColor()
+        CoL.succuRace = CoL.playerRef.GetRace()
+        CoL.succuHairColor = CoL.playerRef.GetActorbase().GetHairColor()
         Debug.MessageBox("$COL_TRANSFORMPAGE_FORMSAVEDMSG")
-        psq.SavePreset(psq.succuPresetName)
-        psq.succuPresetSaved = True
+        CoL.SavePreset(CoL.succuPresetName)
+        CoL.succuPresetSaved = True
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_SAVESUCCUBUSFORM_HELP")
@@ -157,7 +157,7 @@ State Text_LoadSuccuPreset
     Event OnSelectST(string state_id)
         Debug.MessageBox("$COL_TRANSFORMPAGE_FORMLOADEDMSG")
         Utility.Wait(0.1)
-        psq.transformPlayer(psq.succuPresetName, psq.succuRace, psq.succuHairColor)
+        CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
         ForcePageReset()
     EndEvent
     Event OnHighlightST(string state_id)
@@ -166,7 +166,7 @@ State Text_LoadSuccuPreset
 EndState
 State Text_ActivateEquipmentChest
     Event OnSelectST(string state_id)
-        psq.succuEquipmentChest.Activate(psq.playerRef)
+        CoL.succuEquipmentChest.Activate(CoL.playerRef)
         Debug.MessageBox("$COL_TRANSFORMPAGE_EQUIPMENTSAVE_MSG")
         Utility.Wait(0.1)
     EndEvent
@@ -383,11 +383,11 @@ State Text_AddStrippable
         configHandler.NoStripList = PapyrusUtil.PushForm(configHandler.NoStripList, itemRef)
 
         if configHandler.DebugLogging
-            psq.Log("Adding " + itemRef.getName())
+            CoL.Log("Adding " + itemRef.getName())
             int i = 0
-            psq.Log("Don't strip list contains:")
+            CoL.Log("Don't strip list contains:")
             while i < configHandler.NoStripList.Length
-                psq.Log(configHandler.NoStripList[i].getName())
+                CoL.Log(configHandler.NoStripList[i].getName())
                 i += 1
             endwhile
         endif
@@ -402,11 +402,11 @@ State Text_RemoveStrippable
         configHandler.NoStripList = PapyrusUtil.RemoveForm(configHandler.NoStripList, itemRef)
 
         if configHandler.DebugLogging
-            psq.Log("Removing " + itemRef.GetName())
+            CoL.Log("Removing " + itemRef.GetName())
             int i = 0
-            psq.Log("Worn Item List contains:")
+            CoL.Log("Worn Item List contains:")
             while i < equippedItems.Length
-                psq.Log(equippedItems[i].getName())
+                CoL.Log(equippedItems[i].getName())
                 i += 1
             endwhile
         endif

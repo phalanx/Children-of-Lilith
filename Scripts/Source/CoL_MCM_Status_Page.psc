@@ -4,7 +4,7 @@ GlobalVariable Property isPlayerSuccubus Auto
 Quest Property playerSuccubusQuest Auto
 Quest Property npcSuccubusQuest Auto
 
-CoL_PlayerSuccubusQuestScript psq
+CoL_PlayerSuccubusQuestScript CoL
 CoL_Mechanic_LevelHandler_Script levelHandler
 CoL_ConfigHandler_Script configHandler
 CoL_NpcSuccubusQuest_Script npcQuest
@@ -17,7 +17,7 @@ Event OnPageInit()
     SetModName("$COL_MODNAME")
     levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    psq = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
     npcQuest = npcSuccubusQuest as CoL_NpcSuccubusQuest_Script
 EndEvent
 
@@ -28,8 +28,8 @@ Event OnPageDraw()
         AddTextOptionST("Text_CurrentLevel", "$COL_STATUSPAGE_CURRENTLEVEL", levelHandler.playerSuccubusLevel.GetValue() as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_CurrentXP", "$COL_STATUSPAGE_CURRENTXP", levelHandler.playerSuccubusXP as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_NextLevelXP", "$COL_STATUSPAGE_NEXTLEVELXP", levelHandler.playerSuccubusXP as int, OPTION_FLAG_DISABLED)
-        AddTextOptionST("Text_EnergyCurrent", "$COL_STATUSPAGE_ENERGYCURRENT", psq.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
-        AddTextOptionST("Text_MaxEnergy", "$COL_STATUSPAGE_MAXENERGY", psq.playerEnergyMax, OPTION_FLAG_DISABLED)
+        AddTextOptionST("Text_EnergyCurrent", "$COL_STATUSPAGE_ENERGYCURRENT", CoL.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
+        AddTextOptionST("Text_MaxEnergy", "$COL_STATUSPAGE_MAXENERGY", CoL.playerEnergyMax, OPTION_FLAG_DISABLED)
         AddMenuOptionST("Menu_FollowedPath", "$COL_STATUSPAGE_FOLLOWEDPATH", configHandler.followedPathOptions[configHandler.selectedPath])
     endif
     SetCursorPosition(1)
@@ -71,7 +71,7 @@ State Menu_FollowedPath
 
     Event OnMenuAcceptST(string state_id, int index)
         configHandler.selectedPath = index
-        psq.UpdatePath()
+        CoL.UpdatePath()
         SetMenuOptionValueST(configHandler.followedPathOptions[index])
     EndEvent
 
@@ -83,7 +83,7 @@ EndState
 State Text_BecomeSuccubus
     Event OnSelectST(string state_id)
         SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "Text_BecomeSuccubus")
-        psq.GoToState("Initialize")
+        CoL.GoToState("Initialize")
         SetTextOptionValueST("$COL_MCM_EXIT")
         Utility.Wait(0.5)
     EndEvent
@@ -96,7 +96,7 @@ EndState
 State Text_BecomeMortal
     Event OnSelectST(string state_id)
         SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "Text_BecomeMortal")
-        psq.GoToState("Uninitialize")
+        CoL.GoToState("Uninitialize")
         SetTextOptionValueST("$COL_MCM_EXIT", false, "Text_BecomeMortal")
         Utility.Wait(0.5)
     EndEvent
@@ -108,8 +108,8 @@ EndState
 
 State Text_EnergyRefill
     Event OnSelectST(string state_id)
-        psq.playerEnergyCurrent = psq.playerEnergyMax
-        SetTextOptionValueST(psq.playerEnergyCurrent as int, false, "Text_EnergyCurrent")
+        CoL.playerEnergyCurrent = CoL.playerEnergyMax
+        SetTextOptionValueST(CoL.playerEnergyCurrent as int, false, "Text_EnergyCurrent")
     EndEvent
 
     Event OnHighlightST(string state_id)
