@@ -19,7 +19,16 @@ Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
     npcQuest = npcSuccubusQuest as CoL_NpcSuccubusQuest_Script
+    SetPersistentMCMPreset("persistence/CoL_Settings")
 EndEvent
+
+int Function SaveData()
+    return configHandler.SaveConfig()
+EndFunction
+
+Function LoadData(int jObj)
+    configHandler.LoadConfig(jObj)
+EndFunction
 
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
