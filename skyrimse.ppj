@@ -72,6 +72,8 @@
             <Match In="fomod">*</Match>
             <Match In="Scripts\Source">*.psc</Match>
             <Match In="Scripts">*.pex</Match>
+            <Match In="Interface">*</Match>
+            <Match In="NetScriptFramework">*</Match>
         </ZipFile>
     </ZipFiles>
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
