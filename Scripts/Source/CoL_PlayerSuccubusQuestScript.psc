@@ -487,9 +487,9 @@ EndFunction
 
 Function UpdateCSFPower()
     if configHandler.grantCSFPower
-        playerRef.RemoveSpell(showperkMenu)
-    else
         playerRef.AddSpell(showperkMenu)
+    else
+        playerRef.RemoveSpell(showperkMenu)
     endif
 EndFunction
 
