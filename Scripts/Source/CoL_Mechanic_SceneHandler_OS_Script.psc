@@ -120,11 +120,6 @@ State Running
         endif
 
         CoL.Log("Entered orgasm handler")
-
-        if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
-            Ostim.ClearStrippedGear(victim)
-        endif
-
         triggerDrainStart(victim)
         if currentVictims.Find(victim) == -1
             currentVictims = PushActor(currentVictims, victim)
@@ -151,7 +146,6 @@ State Running
             endif
                 i += 1
         endwhile
-
         GoToState("Waiting")
     EndEvent
 
@@ -204,6 +198,9 @@ Function triggerDrainEnd(Actor victim)
     CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
+    if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
+        Utility.Wait(5)
+    endif
     if oDefeat && CoL.drainHandler.drainingToDeath
         CoL.Log("oDefeat Detected")
         Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
