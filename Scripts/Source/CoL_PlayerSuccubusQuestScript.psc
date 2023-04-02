@@ -109,14 +109,14 @@ bool isVampire = false
 ColorForm Property mortalHairColor Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
 
-; Transform Buffs
-float Property transformHealth Auto Hidden
-float Property transformStamina Auto Hidden
-float Property transformMagicka Auto Hidden
-float Property transformCarryWeight Auto Hidden
-float Property transformMeleeDamage Auto Hidden
-float Property transformArmor Auto Hidden
-float Property transformMagicResist Auto Hidden
+; Transform Buff Perks
+int Property transformHealth = 0 Auto Hidden
+int Property transformStamina = 0 Auto Hidden
+int Property transformMagicka = 0 Auto Hidden
+int Property transformCarryWeight = 0 Auto Hidden
+int Property transformMeleeDamage = 0 Auto Hidden
+int Property transformArmor = 0 Auto Hidden
+int Property transformMagicResist = 0 Auto Hidden
 
 Event OnInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script

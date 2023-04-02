@@ -55,6 +55,14 @@ Event OnPageDraw()
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_CSF")
     AddToggleOptionST("Toggle_grantCsfPower","$COL_ADVANCEMENTPAGE_GRANTCSFPOWER", configHandler.grantCSFPower )
+    AddHeaderOption("$COL_ADVANCEMENTPAGE_HEADER_TRANSFORM")
+    AddTextOptionST("Text_perkThickSkin", "$COL_ADVANCEMENTPAGE_THICKSKIN", CoL.transformArmor)
+    AddTextOptionST("Text_perkSecretPocket", "$COL_ADVANCEMENTPAGE_SECRETPOCKET", CoL.transformCarryWeight)
+    AddTextOptionST("Text_perkMasochism", "$COL_ADVANCEMENTPAGE_MASOCHISM", CoL.transformHealth)
+    AddTextOptionST("Text_perkEssence", "$COL_ADVANCEMENTPAGE_ESSENCE", CoL.transformMagicka)
+    AddTextOptionST("Text_perkDominance", "$COL_ADVANCEMENTPAGE_DOMINANCE", CoL.transformMagicResist)
+    AddTextOptionST("Text_perkSadism", "$COL_ADVANCEMENTPAGE_SADISM", CoL.transformMeleeDamage)
+    AddTextOptionST("Text_perkEndurance", "$COL_ADVANCEMENTPAGE_ENDURANCE", CoL.transformStamina)
 EndEvent
     
 State Text_perksAvailable
@@ -66,7 +74,6 @@ State Text_perksAvailable
         SetInfoText("$COL_ADVANCEMENTPAGE_AVAILABLEPOINTS_HELP")
     EndEvent
 EndState
-
 State Text_perkReset
     Event OnSelectST(string state_id)
         if CoL.playerRef.HasPerk(gentleDrainer)
@@ -94,7 +101,6 @@ State Text_perkReset
         SetInfoText("$COL_ADVANCEMENTPAGE_RESETPERKS_HELP")
     EndEvent
 EndState
-
 State Toggle_perkGentleDrainer
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
@@ -110,7 +116,6 @@ State Toggle_perkGentleDrainer
         SetInfoText("$COL_ADVANCEMENTPAGE_GENTLEDRAINER_HELP")
     EndEvent
 EndState
-
 State Text_perkEfficientFeeder
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
@@ -126,7 +131,6 @@ State Text_perkEfficientFeeder
         SetInfoText("$COL_ADVANCEMENTPAGE_EFFICIENTFEEDER_HELP")
     EndEvent
 EndState
-
 State Text_perkEnergyStorage
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
@@ -143,7 +147,6 @@ State Text_perkEnergyStorage
         SetInfoText("$COL_ADVANCEMENTPAGE_ENERGYSTORAGE")
     EndEvent
 EndState
-
 State Toggle_perkEnergyWeaver
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
@@ -204,7 +207,6 @@ State Toggle_perkSlakeThirst
         SetInfoText("$COL_ADVANCEMENTPAGE_SLAKETHIRST_HELP")
     EndEvent
 EndState
-
 State Toggle_grantCsfPower
     Event OnSelectST(string state_id)
         configHandler.grantCSFPower = !configHandler.grantCSFPower
@@ -213,5 +215,111 @@ State Toggle_grantCsfPower
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVANCEMENTPAGE_GRANTCSFPOWER_HELP")
+    EndEvent
+EndState
+
+State Text_perkThickSkin
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformArmor += 1
+            SetTextOptionValueST(CoL.transformArmor)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_THICKSKIN_HELP")
+    EndEvent
+EndState
+State Text_perkSecretPocket
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformCarryWeight += 1
+            SetTextOptionValueST(CoL.transformCarryWeight)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_SECRETPOCKET_HELP")
+    EndEvent
+EndState
+State Text_perkMasochism
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformHealth += 1
+            SetTextOptionValueST(CoL.transformHealth)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_MASOCHISM_HELP")
+    EndEvent
+EndState
+State Text_perkEssence
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformMagicka += 1
+            SetTextOptionValueST(CoL.transformMagicka)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_ESSENCE_HELP")
+    EndEvent
+EndState
+State Text_perkDominance
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformMagicResist += 1
+            SetTextOptionValueST(CoL.transformMagicResist)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_DOMINANCE_HELP")
+    EndEvent
+EndState
+State Text_perkSadism
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformMeleeDamage += 1
+            SetTextOptionValueST(CoL.transformMeleeDamage)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_SADISM_HELP")
+    EndEvent
+EndState
+State Text_perkEndurance
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformStamina += 1
+            SetTextOptionValueST(CoL.transformStamina)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_ENDURANCE_HELP")
     EndEvent
 EndState

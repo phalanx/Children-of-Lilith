@@ -328,7 +328,7 @@ Function LoadConfig(int jObj)
         transformBaseMagicResist = JMap.getFlt(jObj, "transformBaseMagicResist")
     ; Save Transform Buffs Per Rank
         transformHealthPerRank = JMap.getFlt(jObj, "transformHealthPerRank")
-        transformStaminaPerRank = JMap.getFlt(jObj, "transformBaseStamina")
+        transformStaminaPerRank = JMap.getFlt(jObj, "transformStaminaPerRank")
         transformMagickaPerRank = JMap.getFlt(jObj, "transformMagickaPerRank")
         transformCarryWeightPerRank = JMap.getFlt(jObj, "transformCarryWeightPerRank")
         transformMeleeDamagePerRank = JMap.getFlt(jObj, "transformMeleeDamagePerRank")

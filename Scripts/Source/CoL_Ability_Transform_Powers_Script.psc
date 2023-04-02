@@ -26,6 +26,7 @@ function Transform()
         CoL.playerRef.ModActorValue("HealRate", (configHandler.healRateBoostAmount / 2))
     endif
     float healthBuff = (CoL.transformHealth * configHandler.transformHealthPerRank)
+    CoL.Log(CoL.transformStamina + " " + configHandler.transformStaminaPerRank)
     float staminaBuff = (CoL.transformStamina * configHandler.transformStaminaPerRank)
     float magickaBuff = (CoL.transformMagicka * configHandler.transformMagickaPerRank)
     float carryWeightBuff = (CoL.transformCarryWeight * configHandler.transformCarryWeightPerRank)
