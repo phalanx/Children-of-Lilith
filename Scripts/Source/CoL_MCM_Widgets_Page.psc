@@ -28,7 +28,7 @@ EndEvent
 
 Event OnConfigClose()
     if meterBarChanged
-        widgetHandler.GoToState("MoveEnergyMeter")
+        widgetHandler.UpdateMeter()
         meterBarChanged = false
     endif
 EndEvent
@@ -132,7 +132,6 @@ State Toggle_energyMeterAutoHide
     Event OnSelectST(string state_id)
         configHandler.autoFade = !configHandler.autoFade
         SetToggleOptionValueST(configHandler.autoFade)
-        widgetHandler.ShowMeter()
         meterBarChanged = true
     EndEvent
 

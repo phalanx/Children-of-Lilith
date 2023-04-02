@@ -6,6 +6,49 @@ iWant_Widgets Property iWidgets Auto
 
 int energyMeter
 
+Function Initialize()
+    CoL.Log("Initializing Widgets")
+    energyMeter = iWidgets.loadMeter(configHandler.energyMeterXPos, configHandler.energyMeterYPos, True)
+    if energyMeter == -1
+        CoL.Log("Failed to load energy meter")
+        return
+    endif
+    iWidgets.setMeterFillDirection(energyMeter, "both")
+    Maintenance()
+EndFunction
+
+Function Maintenance()
+    UpdateMeter()
+    RegisterForModEvent("iWantWidgetsReset", "OniWantWidgetsReset")
+    RegisterForModEvent("CoL_configUpdated", "Initialize")
+EndFunction
+
+Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)
+    Initialize()
+EndEvent
+
+Function UpdateMeter()
+    MoveEnergyMeter()
+    UpdateFill()
+    UpdateColor()
+    ShowMeter()
+EndFunction
+
+Function MoveEnergyMeter()
+    iWidgets.setPos(energyMeter, configHandler.energyMeterXPos, configHandler.energyMeterYPos)
+    iWidgets.setTransparency(energyMeter, configHandler.energyMeterAlpha)
+    iWidgets.setZoom(energyMeter, configHandler.energyMeterXScale, configHandler.energyMeterYScale)
+EndFunction
+
+Function UpdateFill()
+    iWidgets.setMeterPercent(energyMeter, ((CoL.playerEnergyCurrent / CoL.playerEnergyMax) * 100) as int)
+EndFunction
+
+Function UpdateColor()
+    int[] color = GetColor()
+    iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
+EndFunction
+
 int[] Function GetColor()
     int[] disabledColor = new int[6]
         disabledColor[0] = 255
@@ -37,74 +80,6 @@ int[] Function GetColor()
     endif
 endFunction
 
-Function UpdateColor()
-    int[] color = GetColor()
-    iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
-EndFunction
-
-State Initialize
-    Event OnBeginState()
-        CoL.Log("Initializing Widgets")
-        energyMeter = iWidgets.loadMeter(configHandler.energyMeterXPos, configHandler.energyMeterYPos, True)
-        iWidgets.setZoom(energyMeter, configHandler.energyMeterXScale, configHandler.energyMeterYScale)
-        iWidgets.setMeterFillDirection(energyMeter, "both")
-        int[] color = GetColor()
-        iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
-        if energyMeter == -1
-            Debug.Trace("[CoL] Failed to load energy meter")
-            GoToState("")
-        else
-            GoToState("MoveEnergyMeter")
-        endif
-    EndEvent
-EndState
-
-State Uninitialize
-    Event OnBeginState()
-        CoL.Log("Uninitializing Widgets")
-        iWidgets.Destroy(energyMeter)
-        UnregisterForModEvent("iWantWidgetsReset")
-        GoToState("")
-    EndEvent
-EndState
-
-State Running
-    Event OnBeginState()
-        RegisterForModEvent("iWantWidgetsReset", "OniWantWidgetsReset")
-    EndEvent
-
-    Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)
-        GoToState("Initialize") 
-    EndEvent
-EndState
-
-State UpdateMeter
-    Event OnBeginState()
-        UpdateColor()
-        iWidgets.setMeterPercent(energyMeter, ((CoL.playerEnergyCurrent / CoL.playerEnergyMax) * 100) as int)
-        ShowMeter()
-        GoToState("Running")
-    EndEvent
-EndState
-
-State MoveEnergyMeter
-    Event OnBeginState()
-        iWidgets.setPos(energyMeter, configHandler.energyMeterXPos, configHandler.energyMeterYPos)
-        iWidgets.setTransparency(energyMeter, configHandler.energyMeterAlpha)
-        iWidgets.setZoom(energyMeter, configHandler.energyMeterXScale, configHandler.energyMeterYScale)
-        GoToState("UpdateMeter")
-    EndEvent
-EndState
-
-Function OnUpdate()
-    UnRegisterForUpdate()
-    if configHandler.autoFade
-        iWidgets.setVisible(energyMeter, 0)
-    else
-        ShowMeter()
-    endif
-EndFunction
-
 Function ShowMeter()
     iWidgets.setVisible(energyMeter, 1)
     if configHandler.autofade
@@ -112,10 +87,18 @@ Function ShowMeter()
     endif
 EndFunction
 
-; Empty Functions for Empty State
-Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)
+Event OnUpdate()
+    UnRegisterForUpdate()
+    if configHandler.autoFade
+        iWidgets.setVisible(energyMeter, 0)
+    else
+        ShowMeter()
+    endif
 EndEvent
 
-Function UpdateConfig()
-    GoToState("MoveEnergyMeter")
+Function Uninitialize()
+    CoL.Log("Uninitializing Widgets")
+    iWidgets.Destroy(energyMeter)
+    UnregisterForModEvent("iWantWidgetsReset")
+    UnregisterForModEvent("CoL_configUpdated")
 EndFunction

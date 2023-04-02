@@ -75,13 +75,13 @@ Function CheckDraining(bool verbose)
         endif
         GoToState("")
     endif
-    CoL.widgetHandler.GoToState("UpdateMeter")
+    CoL.widgetHandler.UpdateColor()
     CoL.Log("Finished Checking Drain State")
 EndFunction
 
 State Draining
     Event OnBeginState()
-        CoL.widgetHandler.UpdateColor()
+        ; CoL.widgetHandler.UpdateColor()
     EndEvent
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
@@ -113,7 +113,7 @@ EndState
 
 State DrainingToDeath
     Event OnBeginState()
-        CoL.widgetHandler.UpdateColor()
+        ; CoL.widgetHandler.UpdateColor()
     EndEvent
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)

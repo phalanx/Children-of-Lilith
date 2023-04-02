@@ -66,7 +66,7 @@ float Property playerEnergyCurrent Hidden
         endif
         playerEnergyCurrent_var = newVal
         Log("Player Energy is now " + playerEnergyCurrent)
-        widgetHandler.GoToState("UpdateMeter")
+        widgetHandler.UpdateFill()
         if configHandler.tattooFade
             UpdateTattoo()
         endif
@@ -127,7 +127,7 @@ State Initialize
         Log("Initializing")
         mortalPresetName = "CoL_Mortal_Form_" + playerRef.GetDisplayName()
         succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
-        widgetHandler.GoToState("Initialize")
+        widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
         isPlayerSuccubus.SetValue(1.0)
         UpdateConfig()
@@ -172,7 +172,7 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        widgetHandler.GoToState("Uninitialize")
+        widgetHandler.Uninitialize()
         levelHandler.GoToState("Uninitialize")
         drainHandler.GoToState("Uninitialize")
         uninitializeQuest.GoToState("Run")
@@ -217,7 +217,7 @@ Function Maintenance()
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
-    widgetHandler.GoToState("Running")
+    widgetHandler.UpdateMeter()
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
     RegisterForEvents()
