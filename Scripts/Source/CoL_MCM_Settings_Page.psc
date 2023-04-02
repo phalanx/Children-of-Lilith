@@ -59,6 +59,13 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_xpPower", "$COL_SETTINGSPAGE_XPPOWER", configHandler.xpPower, "{2}")
         AddSliderOptionST("Slider_levelsForPerk", "$COL_SETTINGSPAGE_LEVELSFORPERK", configHandler.levelsForPerk)
         AddSliderOptionST("Slider_perksRecieved", "$COL_SETTINGSPAGE_PERKSRECIEVED", configHandler.perkPointsRecieved)
+        AddSliderOptionST("Slider_transformHealthPerRank", "$COL_SETTINGSPAGE_TRANSFORMHEALTHPERRANK", configHandler.transformHealthPerRank)
+        AddSliderOptionST("Slider_transformStaminaPerRank", "$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK", configHandler.transformStaminaPerRank)
+        AddSliderOptionST("Slider_transformMagickaPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK", configHandler.transformMagickaPerRank)
+        AddSliderOptionST("Slider_transformCarryWeightPerRank", "$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK", configHandler.transformCarryWeightPerRank)
+        AddSliderOptionST("Slider_transformMeleeDamagePerRank", "$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK", configHandler.transformMeleeDamagePerRank, "{1}")
+        AddSliderOptionST("Slider_transformArmorPerRank", "$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK", configHandler.transformArmorPerRank)
+        AddSliderOptionST("Slider_transformMagicResistPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK", configHandler.transformMagicResistPerRank)
     ; Hunger Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_HUNGER")
         AddToggleOptionST("Toggle_hunger", "$COL_SETTINGSPAGE_HUNGER", configHandler.hungerEnabled)
@@ -292,7 +299,6 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_XPPERDRAIN_HELP")
         EndEvent
     EndState
-
     State Slider_xpDrainMult
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.xpDrainMult)
@@ -310,7 +316,6 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_XPDRAINMULT_HELP")
         EndEvent
     EndState
-
     State Slider_xpDeathMult
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.drainToDeathXPMult)
@@ -328,7 +333,6 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_XPDEATHMULT_HELP")
         EndEvent
     EndState
-
     State Slider_xpConstant
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.xpConstant)
@@ -345,7 +349,6 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_XPCONSTANT_HELP")
         EndEvent
     EndState
-
     State Slider_xpPower
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.xpPower)
@@ -364,7 +367,6 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_XPPOWER_HELP")
         EndEvent
     EndState
-
     State Slider_levelsForPerk
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.levelsForPerk)
@@ -382,7 +384,6 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_LEVELSFORPERK_HELP")
         EndEvent
     EndState
-
     State Slider_perksRecieved
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.perkPointsRecieved)
@@ -401,6 +402,125 @@ EndEvent
         EndEvent
     EndState
 
+    State Slider_transformHealthPerRank
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.transformHealthPerRank)
+            SetSliderDialogDefaultValue(10)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 100)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.transformHealthPerRank = value as int
+            SetSliderOptionValueST(configHandler.transformHealthPerRank)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMHEALTHPERRANK_HELP")
+        EndEvent
+    EndState
+    State Slider_transformStaminaPerRank
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.transformStaminaPerRank)
+            SetSliderDialogDefaultValue(10)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 100)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.transformStaminaPerRank = value as int
+            SetSliderOptionValueST(configHandler.transformStaminaPerRank)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK_HELP")
+        EndEvent
+    EndState
+    State Slider_transformMagickaPerRank
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.transformMagickaPerRank)
+            SetSliderDialogDefaultValue(10)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 100)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.transformMagickaPerRank = value as int
+            SetSliderOptionValueST(configHandler.transformMagickaPerRank)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK_HELP")
+        EndEvent
+    EndState
+    State Slider_transformCarryWeightPerRank
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.transformCarryWeightPerRank)
+            SetSliderDialogDefaultValue(10)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 100)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.transformCarryWeightPerRank = value as int
+            SetSliderOptionValueST(configHandler.transformCarryWeightPerRank)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK_HELP")
+        EndEvent
+    EndState
+    State Slider_transformMeleeDamagePerRank
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.transformMeleeDamagePerRank)
+            SetSliderDialogDefaultValue(0.1)
+            SetSliderDialogInterval(0.1)
+            SetSliderDialogRange(0.1, 100)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.transformMeleeDamagePerRank = value as int
+            SetSliderOptionValueST(configHandler.transformMeleeDamagePerRank)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK_HELP")
+        EndEvent
+    EndState
+    State Slider_transformArmorPerRank
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.transformArmorPerRank)
+            SetSliderDialogDefaultValue(10)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 100)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.transformArmorPerRank = value as int
+            SetSliderOptionValueST(configHandler.transformArmorPerRank)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK_HELP")
+        EndEvent
+    EndState
+    State Slider_transformMagicResistPerRank
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.transformMagicResistPerRank)
+            SetSliderDialogDefaultValue(1)
+            SetSliderDialogInterval(1)
+            SetSliderDialogRange(1, 100)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.transformMagicResistPerRank = value as int
+            SetSliderOptionValueST(configHandler.transformMagicResistPerRank)
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK_HELP")
+        EndEvent
+    EndState
 ; Hunger States
     State Toggle_hunger
         Event OnSelectST(string state_id)
