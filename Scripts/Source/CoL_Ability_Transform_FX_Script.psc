@@ -19,10 +19,19 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             CoL.playerRef.AddSpell(CoL.becomeEthereal, false)
         endif
         if configHandler.transformAnimation && CoL.succuRace == CoL.mortalRace
-            Game.ForceThirdPerson()
+            bool weaponDrawn
+            if CoL.playerRef.IsWeaponDrawn()
+                weaponDrawn = true
+                CoL.playerRef.SheatheWeapon()
+                Utility.Wait(2)
+            endif
             akTarget.PlayIdle(SuccubusTransformationIdle)
             Utility.Wait(5)
             Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
+            if weaponDrawn
+                CoL.playerRef.DrawWeapon()
+                Utility.Wait(2)
+            endif
         endif
         if CoL.playerRef.HasPerk(safeTransformation)
             CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
