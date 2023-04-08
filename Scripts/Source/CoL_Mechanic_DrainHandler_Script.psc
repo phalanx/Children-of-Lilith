@@ -172,7 +172,7 @@ Function doVampireDrain(Actor drainee)
     endif
 EndFunction
 
-Float Function applyDrainSpell(Actor drainee, float drainAmount)
+Function applyDrainSpell(Actor drainee, float drainAmount)
     float drainDuration = configHandler.drainDurationInGameTime / 24
     if CoL.playerRef.HasPerk(gentleDrainer)
         drainDuration = drainDuration / 2
@@ -182,7 +182,6 @@ Float Function applyDrainSpell(Actor drainee, float drainAmount)
     StorageUtil.SetFloatValue(drainee, "CoL_drainRemovalDay", removalday)
     drainee.AddToFaction(CoL.drainVictimFaction)
     drainee.AddSpell(CoL.drainHealthSpell, false)
-    return drainAmount
 EndFunction
 
 float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
