@@ -66,7 +66,7 @@ float Property playerEnergyCurrent Hidden
         endif
         playerEnergyCurrent_var = newVal
         Log("Player Energy is now " + playerEnergyCurrent)
-        widgetHandler.UpdateFill()
+        widgetHandler.UpdateMeter()
         if configHandler.tattooFade
             UpdateTattoo()
         endif

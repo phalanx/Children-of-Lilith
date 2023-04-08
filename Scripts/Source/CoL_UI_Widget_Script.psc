@@ -93,6 +93,11 @@ EndFunction
 Event OnUpdate()
     UnRegisterForUpdate()
     if configHandler.autoFade
+        int i = 100
+        while i > 0
+            iWidgets.setTransparency(energyMeter, i)
+            i -= 1
+        endwhile
         iWidgets.setVisible(energyMeter, 0)
     else
         ShowMeter()

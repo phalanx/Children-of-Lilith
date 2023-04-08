@@ -193,5 +193,3 @@ State Text_NPCSuccubus
         SetInfoText("$COL_STATUSPAGE_NPCHELP")
     EndEvent
 EndState
-
-

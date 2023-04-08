@@ -42,7 +42,6 @@ Event OnPlayerLoadGame()
     if gameLoadEvent
         ModEvent.Send(gameLoadEvent)
     endif
-
 EndEvent
 
 Event OnSpellCast(Form akSpell)
