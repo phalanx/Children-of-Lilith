@@ -20,7 +20,7 @@ EndFunction
 Function Maintenance()
     UpdateMeter()
     RegisterForModEvent("iWantWidgetsReset", "OniWantWidgetsReset")
-    RegisterForModEvent("CoL_configUpdated", "Initialize")
+    RegisterForModEvent("CoL_configUpdated", "UpdateMeter")
 EndFunction
 
 Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)
@@ -28,6 +28,9 @@ Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form se
 EndEvent
 
 Function UpdateMeter()
+    if CoL.isPlayerSuccubus.GetValueInt() != 1
+        Uninitialize()
+    endif
     MoveEnergyMeter()
     UpdateFill()
     UpdateColor()
