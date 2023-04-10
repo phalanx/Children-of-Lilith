@@ -352,7 +352,7 @@ EndEvent
     State Slider_xpPower
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.xpPower)
-            SetSliderDialogDefaultValue(1.5)
+            SetSliderDialogDefaultValue(2.0)
             SetSliderDialogInterval(0.01)
             SetSliderDialogRange(0.01, 5.0)
         EndEvent
