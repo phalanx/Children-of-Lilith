@@ -142,8 +142,7 @@ State DrainingToDeath
         
         float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
         
-        drainAmount = drainAmount * configHandler.drainToDeathMult
-        CoL.playerEnergyCurrent += (drainAmount * energyConversionMult)
+        CoL.playerEnergyCurrent += (drainAmount * energyConversionMult * configHandler.drainToDeathMult)
         CoL.levelHandler.gainXP(drainAmount, true)
         doVampireDrain(drainee)
     EndEvent

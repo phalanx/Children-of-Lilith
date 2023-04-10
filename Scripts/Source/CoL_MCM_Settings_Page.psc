@@ -588,7 +588,7 @@ EndEvent
         EndEvent
 
         Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_DEADLYHUNGER")
+            SetInfoText("$COL_SETTINGSPAGE_DEADLYHUNGER_HELP")
         EndEvent
     EndState
 
