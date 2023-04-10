@@ -24,7 +24,7 @@ int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage cha
 
 ; Levelling Settings
 float Property xpConstant = 0.3 Auto Hidden                     ; Effects amount of XP required. Lower = More xp Required
-float Property xpPower = 1.5 Auto Hidden                        ; Effects rate xp per level grows. Higher = Larger Gaps
+float Property xpPower = 2.0 Auto Hidden                        ; Effects rate xp per level grows. Higher = Larger Gaps
 int Property levelsForPerk = 1 Auto Hidden                      ; Levels required before a perk is granted
 int Property perkPointsRecieved = 1 Auto Hidden                 ; Number of perks recieved when perks are given
 float Property xpPerDrain = 0.0 Auto Hidden                     ; Extra xp given for each drain
