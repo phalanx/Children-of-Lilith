@@ -96,6 +96,7 @@ Spell Property transformSpell Auto
 
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
+bool pauseCost = false
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 Race Property succuRace Auto Hidden
@@ -153,6 +154,8 @@ EndState
 State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
+        Log("Pausing transform cost")
+        pauseCost = true
     EndEvent
 
     Event OnKeyDown(int keyCode)
@@ -167,6 +170,11 @@ State SceneRunning
             endif
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
         endif
+    EndEvent
+    Event onEndState()
+        Log("Unpausing transform cost")
+        pauseCost = false
+        RegisterForSingleUpdate(1)
     EndEvent
 EndState
 
@@ -315,6 +323,10 @@ EndFunction
 
 Event OnUpdate()
     if isTransformed && configHandler.transformCost > 0
+        if pauseCost
+            RegisterForSingleUpdate(5)
+            return
+        endif
         if playerEnergyCurrent > configHandler.transformCost
             playerEnergyCurrent -= configHandler.transformCost
             RegisterForSingleUpdate(1)
