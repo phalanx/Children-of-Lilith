@@ -70,7 +70,7 @@ State Running
     Event OnBeginState()
         RegisterForModEvent("CoL_FG_Climax", "climax")
         if succubus == CoL.playerRef && CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(configHandler.temptationHotkey)
+            RegisterForKey(configHandler.newTemptationHotkey)
         endif
     EndEvent
 
@@ -95,7 +95,7 @@ State Running
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.temptationHotkey
+        if keyCode == configHandler.newTemptationHotkey
             if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
                 return
             endif
@@ -109,7 +109,7 @@ State Running
     EndEvent
 
     Event OnEndState()
-        UnregisterForKey(configHandler.temptationHotkey)
+        UnregisterForKey(configHandler.newTemptationHotkey)
     EndEvent
 EndState
 

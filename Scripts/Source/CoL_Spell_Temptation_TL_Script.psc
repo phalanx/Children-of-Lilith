@@ -4,7 +4,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if CoL.playerEnergyCurrent < configHandler.temptationCost
+    if CoL.playerEnergyCurrent < configHandler.newTemptationCost
         return
     endif
     Bool ToysInstalled = Quest.GetQuest("toysframework")

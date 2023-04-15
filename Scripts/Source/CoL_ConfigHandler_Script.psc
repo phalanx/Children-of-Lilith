@@ -62,15 +62,16 @@ int Property suppressionCost = 10 Auto Hidden           ; Energy cost of suppres
 int Property suppressionBaseIncrease = 1 Auto Hidden    ; Base Arousal decrease of suppression
 float Property suppressionLevelMult = 1.0 Auto Hidden   ; Mult applied to succubus level before being added to base decrease
 
-int Property temptationCost = 10 Auto Hidden            ; Energy cost of temptation spell
-int Property temptationBaseIncrease = 1 Auto Hidden     ; Base Arousal increase of temptation
-float Property temptationLevelMult = 1.0 Auto Hidden    ; Mult applied to succubus level before being added to the base increase
+int Property newTemptationCost = 10 Auto Hidden            ; Energy cost of temptation spell
+int Property newTemptationBaseIncrease = 1 Auto Hidden     ; Base Arousal increase of temptation
+float Property newTemptationLevelMult = 1.0 Auto Hidden    ; Mult applied to succubus level before being added to the base increase
 
 ; Hotkey Settings
 int Property toggleDrainHotkey = 29 Auto Hidden            ; Default Toggle Drain key to left shift
 int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
 int Property transformHotkey = -1 Auto Hidden              ; Transform hotkey, no default
 int Property temptationHotkey = -1 Auto Hidden             ; temptation hotkey, no default
+int Property newTemptationHotkey = -1 Auto Hidden             ; temptation hotkey, no default
 int Property csfMenuHotkey = -1 Auto Hidden                ; Custom skill framework hotkey, no default
 
 ; Widget Settings
@@ -137,7 +138,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 1
+    return 2
 EndFunction
 
 int Function SaveConfig()
@@ -194,14 +195,15 @@ int Function SaveConfig()
         JMap.setInt(jObj, "suppressionCost", suppressionCost)
         JMap.setInt(jObj, "suppressionBaseIncrease", suppressionBaseIncrease)
         JMap.setFlt(jObj, "suppressionLevelMult", suppressionLevelMult)
-        JMap.setInt(jObj, "temptationCost", temptationCost)
-        JMap.setInt(jObj, "temptationBaseIncrease", temptationBaseIncrease)
-        JMap.setFlt(jObj, "temptationLevelMult", temptationLevelMult)
+        JMap.setInt(jObj, "newTemptationCost", newTemptationCost)
+        JMap.setInt(jObj, "newTemptationBaseIncrease", newTemptationBaseIncrease)
+        JMap.setFlt(jObj, "newTemptationLevelMult", newTemptationLevelMult)
     ; Save Hotkey Settings
         JMap.setInt(jObj, "toggleDrainHotkey", toggleDrainHotkey)
         JMap.setInt(jObj, "toggleDrainToDeathHotkey", toggleDrainToDeathHotkey)
         JMap.setInt(jObj, "transformHotkey", transformHotkey)
-        JMap.setInt(jObj, "temptationHotkey", temptationHotkey)
+        ; JMap.setInt(jObj, "temptationHotkey", temptationHotkey)
+        JMap.setInt(jObj, "temptationHotkey", newTemptationHotkey)
         JMap.setInt(jObj, "csfMenuHotkey", csfMenuHotkey)
     ; Save Widget Settings
         JMap.setInt(jObj, "energyMeterAlpha", energyMeterAlpha)
@@ -236,11 +238,12 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "transformMeleeDamagePerRank", transformMeleeDamagePerRank)
         JMap.setFlt(jObj, "transformArmorPerRank", transformArmorPerRank)
         JMap.setFlt(jObj, "transformMagicResistPerRank", transformMagicResistPerRank)
-    
     return jObj
 EndFunction
 
 Function LoadConfig(int jObj)
+    JValue.retain(jObj)
+    int configVersion = JMap.getInt(jObj, "version")
     ; Load Base Settings
         baseMaxEnergy = JMap.getFlt(jObj, "baseMaxEnergy")
         selectedPath = JMap.getInt(jObj, "selectedPath")
@@ -292,14 +295,16 @@ Function LoadConfig(int jObj)
         suppressionCost = JMap.getInt(jObj, "suppressionCost")
         suppressionBaseIncrease = JMap.getInt(jObj, "suppressionBaseIncrease")
         suppressionLevelMult = JMap.getFlt(jObj, "suppressionLevelMult")
-        temptationCost = JMap.getInt(jObj, "temptationCost")
-        temptationBaseIncrease = JMap.getInt(jObj, "temptationBaseIncrease")
-        temptationLevelMult = JMap.getFlt(jObj, "temptationLevelMult")
+        if configVersion >= 2
+            newTemptationCost = JMap.getInt(jObj, "newTemptationCost")
+            newTemptationBaseIncrease = JMap.getInt(jObj, "newTemptationBaseIncrease")
+            newTemptationLevelMult = JMap.getFlt(jObj, "newTemptationLevelMult")
+        endif
     ; Load Hotkey Settings
         toggleDrainHotkey = JMap.getInt(jObj, "toggleDrainHotkey")
         toggleDrainToDeathHotkey = JMap.getInt(jObj, "toggleDrainToDeathHotkey")
         transformHotkey = JMap.getInt(jObj, "transformHotkey")
-        temptationHotkey = JMap.getInt(jObj, "temptationHotkey")
+        newTemptationHotkey = JMap.getInt(jObj, "temptationHotkey")
         csfMenuHotkey = JMap.getInt(jObj, "csfMenuHotkey")
     ; Load Widget Setting
         energyMeterAlpha = JMap.getInt(jObj, "energyMeterAlpha")
@@ -334,5 +339,6 @@ Function LoadConfig(int jObj)
         transformMeleeDamagePerRank = JMap.getFlt(jObj, "transformMeleeDamagePerRank")
         transformArmorPerRank = JMap.getFlt(jObj, "transformArmorPerRank")
         transformMagicResistPerRank = JMap.getFlt(jObj, "transformMagicResistPerRank")
+    JValue.release(jObj)
     SendConfigUpdateEvent()
 EndFunction

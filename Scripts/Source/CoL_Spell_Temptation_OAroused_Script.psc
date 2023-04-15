@@ -5,11 +5,11 @@ CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_OAroused_Script Property OAroused Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if CoL.playerEnergyCurrent < configHandler.temptationCost
+    if CoL.playerEnergyCurrent < configHandler.newTemptationCost
         return
     endif
     if OAroused.IsInterfaceActive()
-        int ArousalIncrease = (configHandler.temptationBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.temptationLevelMult) as int)
+        int ArousalIncrease = (configHandler.newTemptationBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.newTemptationLevelMult) as int)
         CoL.Log("Increasing target OAroused Arousal by " + ArousalIncrease)
         OAroused.ModifyArousal(akTarget, ArousalIncrease)
     endif

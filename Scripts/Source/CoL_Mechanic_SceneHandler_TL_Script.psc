@@ -92,7 +92,7 @@ Event startScene(string EventName, string strArg, float numArg, Form sender)
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
         if CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(configHandler.temptationHotkey)
+            RegisterForKey(configHandler.newTemptationHotkey)
         endif
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
@@ -147,7 +147,7 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
     endif
 
     CoL.Log(succubusName +" involved animation ended")
-    UnregisterForKey(configHandler.temptationHotkey)
+    UnregisterForKey(configHandler.newTemptationHotkey)
 
     triggerDrainEnd()
     int sceneEndEvent
@@ -163,7 +163,7 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
 EndEvent
 
 Event OnKeyDown(int keyCode)
-    if keyCode == configHandler.temptationHotkey
+    if keyCode == configHandler.newTemptationHotkey
         if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
             return
         endif

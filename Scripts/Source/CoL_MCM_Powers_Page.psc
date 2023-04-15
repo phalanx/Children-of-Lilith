@@ -1,14 +1,14 @@
 Scriptname CoL_MCM_Powers_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
-CoL_ConfigHandler_Script configHandler
+CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnInit()
     RegisterModule("$COL_POWERSPAGE_NAME", 30)
 EndEvent
 
 Event OnPageInit()
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
+    ; configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -22,9 +22,9 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_energyCastingMult", "$COL_POWERSPAGE_ENERGYCASTINGMULT", configHandler.energyCastingMult, "{0}")
     AddMenuOptionST("Menu_energyCastingConcStyle", "$COL_POWERSPAGE_COSTCALCSTYLE", configHandler.energyCastingConcStyleOptions[configHandler.energyCastingConcStyle])
     SetCursorPosition(1)
-    AddSliderOptionST("Slider_temptationCost", "$COL_POWERSPAGE_TEMPTATIONCOST", configHandler.temptationCost)
-    AddSliderOptionST("Slider_temptationBaseIncrease", "$COL_POWERSPAGE_TEMPTATIONBASE", configHandler.temptationBaseIncrease)
-    AddSliderOptionST("Slider_temptationLevelMult", "$COL_POWERSPAGE_TEMPTATIONLEVELMULT", configHandler.temptationLevelMult)
+    AddSliderOptionST("Slider_temptationCost", "$COL_POWERSPAGE_TEMPTATIONCOST", configHandler.newTemptationCost)
+    AddSliderOptionST("Slider_temptationBaseIncrease", "$COL_POWERSPAGE_TEMPTATIONBASE", configHandler.newTemptationBaseIncrease)
+    AddSliderOptionST("Slider_temptationLevelMult", "$COL_POWERSPAGE_TEMPTATIONLEVELMULT", configHandler.newTemptationLevelMult)
     AddEmptyOption()
     AddSliderOptionST("Slider_excitementCost", "$COL_POWERSPAGE_EXCITEMENTCOST", configHandler.excitementCost)
     AddSliderOptionST("Slider_excitementBaseIncrease", "$COL_POWERSPAGE_EXCITEMENTBASE", configHandler.excitementBaseIncrease)
@@ -113,14 +113,14 @@ EndState
 
 State Slider_temptationCost
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.temptationCost)
+        SetSliderDialogStartValue(configHandler.newTemptationCost)
         SetSliderDialogDefaultValue(10.0)
         SetSliderDialogInterval(1.0)
         SetSliderDialogRange(0, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.temptationCost = value as int
-        SetSliderOptionValueST(configHandler.temptationCost, "{0}")
+        configHandler.newTemptationCost = value as int
+        SetSliderOptionValueST(configHandler.newTemptationCost, "{0}")
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_POWERSPAGE_TEMPTATIONCOST_HELP")
@@ -128,14 +128,14 @@ State Slider_temptationCost
 EndState
 State Slider_temptationBaseIncrease
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.temptationBaseIncrease)
+        SetSliderDialogStartValue(configHandler.newTemptationBaseIncrease)
         SetSliderDialogDefaultValue(1.0)
         SetSliderDialogInterval(1.0)
         SetSliderDialogRange(0, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.temptationBaseIncrease = value as int
-        SetSliderOptionValueST(configHandler.temptationBaseIncrease, "{0}")
+        configHandler.newTemptationBaseIncrease = value as int
+        SetSliderOptionValueST(configHandler.newTemptationBaseIncrease, "{0}")
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_POWERSPAGE_TEMPTATIONBASE_HELP")
@@ -143,14 +143,14 @@ State Slider_temptationBaseIncrease
 EndState
 State Slider_temptationLevelMult
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.temptationLevelMult)
+        SetSliderDialogStartValue(configHandler.newTemptationLevelMult)
         SetSliderDialogDefaultValue(1.0)
         SetSliderDialogInterval(1.0)
         SetSliderDialogRange(0, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.temptationLevelMult = value as int
-        SetSliderOptionValueST(configHandler.temptationLevelMult, "{0}")
+        configHandler.newTemptationLevelMult = value as int
+        SetSliderOptionValueST(configHandler.newTemptationLevelMult, "{0}")
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_POWERSPAGE_TEMPTATIONLEVELMULT_HELP")

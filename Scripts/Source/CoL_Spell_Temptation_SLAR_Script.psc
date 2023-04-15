@@ -5,11 +5,11 @@ CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_SLAR_Script Property SLAR Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if CoL.playerEnergyCurrent < configHandler.temptationCost
+    if CoL.playerEnergyCurrent < configHandler.newTemptationCost
         return
     endif
     if SLAR.IsInterfaceActive()
-        int slarIncrease = (configHandler.temptationBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.temptationLevelMult) as int)
+        int slarIncrease = (configHandler.newTemptationBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.newTemptationLevelMult) as int)
         CoL.Log("Increasing target SLAR Exposure by " + slarIncrease) ; This gets multiplied by a configurable SLAR value
         SLAR.UpdateActorExposure(akTarget, slarIncrease)
     endif
