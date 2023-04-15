@@ -221,6 +221,14 @@ Function Maintenance()
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
     RegisterForEvents()
+    Utility.Wait(0.5)
+    if mortalPresetSaved && succuPresetSaved
+        if isTransformed
+            transformPlayer(succuPresetName, succuRace, succuHairColor)
+        else
+            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+        endif
+    endif
 EndFunction
 
 Function RegisterForHotkeys()
@@ -235,6 +243,7 @@ Function RegisterForEvents()
     RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
+    RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     Log("Registered for Hotkeys and Events")
 EndFunction
