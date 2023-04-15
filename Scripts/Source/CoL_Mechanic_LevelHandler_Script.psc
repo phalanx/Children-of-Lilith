@@ -81,8 +81,8 @@ Function LevelUp()
     endif
     
     GrantLevelledSpells()
-
     calculateXpForNextLevel()
+
     CoL.Log("XP For Next Level: " + xpForNextLevel)
     if playerSuccubusXP >= xpForNextLevel
         LevelUp()

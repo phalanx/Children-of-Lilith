@@ -80,9 +80,6 @@ Function CheckDraining(bool verbose)
 EndFunction
 
 State Draining
-    Event OnBeginState()
-        ; CoL.widgetHandler.UpdateColor()
-    EndEvent
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
@@ -112,9 +109,6 @@ State Draining
 EndState
 
 State DrainingToDeath
-    Event OnBeginState()
-        ; CoL.widgetHandler.UpdateColor()
-    EndEvent
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
         Actor drainee = draineeForm as Actor
@@ -158,11 +152,8 @@ State DrainingToDeath
             return
         endif
         drainee.Kill(drainerForm as Actor)
-
     EndEvent
 
-    Event OnEndState()
-    EndEvent
 EndState
 
 Function doVampireDrain(Actor drainee)
@@ -184,6 +175,7 @@ Function applyDrainSpell(Actor drainee, float drainAmount)
 EndFunction
 
 float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
+    {Returns amount of health to drain from victim}
     float victimHealth = drainVictim.GetBaseActorValue("Health")
     float succubusArousal = 0.0
 
@@ -192,7 +184,6 @@ float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         CoL.Log("Succubus Arousal: " + succubusArousal)
     endif
 
-    float healthConversionMult = configHandler.healthDrainMult + (0.1 * CoL.efficientFeeder)
     float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
     if drainAmount > victimHealth
         drainAmount = victimHealth - 1
