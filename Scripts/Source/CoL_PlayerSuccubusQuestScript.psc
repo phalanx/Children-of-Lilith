@@ -22,9 +22,7 @@ CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
-; Advancement Settings
-int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
-int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
+
 
 ; Keyword Definitions
 Keyword Property ddLibs Auto Hidden
@@ -109,6 +107,10 @@ Race Property mortalCureRace Auto Hidden
 bool isVampire = false
 ColorForm Property mortalHairColor Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
+
+; Advancement Settings
+int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
+int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
 
 ; Transform Buff Perks
 int Property transformHealth = 0 Auto Hidden
@@ -451,12 +453,6 @@ endfunction
 
 Function ApplyRankedPerks()
     int i = 0
-    while i < efficientFeeder
-        configHandler.energyConversionRate += 0.1
-        i += 1
-    endwhile
-
-    i = 0
     playerEnergyMax = configHandler.baseMaxEnergy
     while i < energyStorage
         playerEnergyMax += 10

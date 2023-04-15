@@ -80,21 +80,44 @@ State Text_perkReset
             CoL.playerRef.RemovePerk(gentleDrainer)
             perkPointsAvailable.Mod(1)
         endif
-        if CoL.efficientFeeder > 0
-            int i = 0
-            while i < CoL.efficientFeeder
-                perkPointsAvailable.Mod(1)
-                CoL.efficientFeeder -= 1
-            endwhile
+        if CoL.playerRef.HasPerk(energyWeaver)
+            CoL.playerRef.RemovePerk(energyWeaver)
+            perkPointsAvailable.Mod(1)
         endif
-        if CoL.energyStorage > 0
-            int i = 0
-            while i < CoL.energyStorage
-                perkPointsAvailable.Mod(1)
-                CoL.energyStorage -= 1
-                CoL.playerEnergyMax -= 10
-            endwhile
+        if CoL.playerRef.HasPerk(healingForm)
+            CoL.playerRef.RemovePerk(healingForm)
+            perkPointsAvailable.Mod(1)
         endif
+        if CoL.playerRef.hasPerk(safeTransformation)
+            CoL.playerRef.RemovePerk(safeTransformation)
+            perkPointsAvailable.Mod(1)
+        endif
+        if CoL.playerRef.hasPerk(slakeThirst)
+            CoL.playerRef.RemovePerk(slakeThirst)
+            perkPointsAvailable.Mod(1)
+        endif
+
+        int restoredPoints = CoL.efficientFeeder
+        CoL.efficientFeeder = 0
+        restoredPoints += CoL.energyStorage
+        CoL.energyStorage = 0
+        restoredPoints += Col.transformHealth
+        CoL.transformHealth = 0
+        restoredPoints += CoL.transformStamina
+        CoL.transformStamina = 0
+        restoredPoints += CoL.transformMagicka
+        CoL.transformMagicka = 0
+        restoredPoints += CoL.transformCarryWeight
+        CoL.transformCarryWeight = 0
+        restoredPoints += CoL.transformMeleeDamage
+        CoL.transformMeleeDamage = 0
+        restoredPoints += CoL.transformArmor
+        CoL.transformArmor = 0
+        restoredPoints += CoL.transformMagicResist
+        CoL.transformMagicResist = 0
+
+        perkPointsAvailable.Mod(restoredPoints)
+        CoL.ApplyRankedPerks()
         ForcePageReset()
     EndEvent
     Event OnHighlightST(string state_id)
