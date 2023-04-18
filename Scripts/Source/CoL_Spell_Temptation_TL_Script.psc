@@ -7,9 +7,6 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     if CoL.playerEnergyCurrent < configHandler.newTemptationCost
         return
     endif
-    Bool ToysInstalled = Quest.GetQuest("toysframework")
-    if ToysInstalled
-        CoL.Log("Increasing target Toys-Rousing by Caressing") 
-        ToysGlobal.Caress()
-    endif
+    CoL.Log("Increasing target Toys-Rousing by Caressing") 
+    CoL.Toys.Caress()
 EndEvent

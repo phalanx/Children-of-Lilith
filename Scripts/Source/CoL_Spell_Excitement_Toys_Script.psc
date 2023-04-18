@@ -11,6 +11,6 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     if ToysInstalled
         int rousingIncrease = (configHandler.excitementBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.excitementLevelMult) as int)
         CoL.Log("Increasing target Toys Rousing by " + rousingIncrease) 
-        ToysGlobal.ArousalAdjust(rousingIncrease)
+        CoL.Toys.ArousalAdjust(rousingIncrease)
     endif
 EndEvent

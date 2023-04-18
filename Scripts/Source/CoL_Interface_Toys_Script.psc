@@ -25,9 +25,23 @@ State Installed
     bool Function isBusy()
         return ToysGlobal.isBusy()
     EndFunction
+
+    Function ArousalAdjust(int adjArousal, bool ForceNotify = false )
+        ToysGlobal.ArousalAdjust(adjArousal, ForceNotify)
+    EndFunction
+
+    Function Caress()
+        ToysGlobal.Caress()
+    EndFunction
 EndState
 
 int Function GetRousing()
+EndFunction
+
+Function ArousalAdjust(int adjArousal, bool ForceNotify = false )
+EndFunction
+
+Function Caress()
 EndFunction
 
 bool Function isBusy()

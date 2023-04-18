@@ -40,7 +40,8 @@ State HungerEnabled
             if configHandler.hungerArousalEnabled
                 CoL.SLAR.UpdateActorExposure(CoL.playerRef, (configHandler.hungerArousalAmount as int))
                 CoL.OAroused.ModifyArousal(CoL.playerRef, (configHandler.hungerArousalAmount as int))
-                ToysGlobal.ArousalAdjust(configHandler.hungerArousalAmount as int)
+                CoL.Toys.ArousalAdjust(configHandler.hungerArousalAmount as int)
+                CoL.OSL.ModifyArousal(CoL.playerRef, configHandler.hungerArousalAmount as int, "Succubus Hunger")
             endif
             CoL.playerEnergyCurrent = 0
             CoL.Log("Starvation Stack: " + starvationStack)

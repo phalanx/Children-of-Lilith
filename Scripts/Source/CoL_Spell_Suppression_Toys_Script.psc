@@ -11,6 +11,6 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     if ToysInstalled
         int rousingDecrease = (configHandler.suppressionBaseIncrease + (CoL.levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.suppressionLevelMult) as int)
         CoL.Log("Decreasing target Toys Rousing by " + rousingDecrease) 
-        ToysGlobal.ArousalAdjust(0 - rousingDecrease)
+        CoL.Toys.ArousalAdjust(0 - rousingDecrease)
     endif
 EndEvent
