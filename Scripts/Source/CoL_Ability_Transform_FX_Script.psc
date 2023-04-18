@@ -1,6 +1,8 @@
 Scriptname CoL_Ability_Transform_FX_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
+Perk Property safeTransformation Auto
 
 Idle Property SuccubusTransformationIdle Auto
 Sound Property SuccubusTransformSound Auto
@@ -8,24 +10,34 @@ Sound Property SuccubusTransformSound Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Game.ForceThirdPerson()
     SuccubusTransformSound.Play(akTarget)
-    if !CoL.isTransformed
+    bool isTransformed = CoL.isTransformed
+    if !isTransformed
         float cost
-        if CoL.safeTransformation
-            cost = CoL.becomeEtherealCost
-            CoL.becomeEtherealCost = 0
+        if CoL.playerRef.HasPerk(safeTransformation)
+            cost = configHandler.becomeEtherealCost
+            configHandler.becomeEtherealCost = 0
             CoL.playerRef.AddSpell(CoL.becomeEthereal, false)
         endif
-        if CoL.transformAnimation && CoL.succuRace == CoL.mortalRace
-            Game.ForceThirdPerson()
+        if configHandler.transformAnimation && CoL.succuRace == CoL.mortalRace
+            bool weaponDrawn
+            if CoL.playerRef.IsWeaponDrawn()
+                weaponDrawn = true
+                CoL.playerRef.SheatheWeapon()
+                Utility.Wait(2)
+            endif
             akTarget.PlayIdle(SuccubusTransformationIdle)
             Utility.Wait(5)
             Debug.SendAnimationEvent(akTarget, "IdleForceDefaultState")
+            if weaponDrawn
+                CoL.playerRef.DrawWeapon()
+                Utility.Wait(2)
+            endif
         endif
-        if CoL.safeTransformation
+        if CoL.playerRef.HasPerk(safeTransformation)
             CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
-            CoL.becomeEtherealCost = cost
+            configHandler.becomeEtherealCost = cost
         endif
-        if CoL.transformCost > 0
+        if configHandler.transformCost > 0
             CoL.transformDrain()
         endif
     endif

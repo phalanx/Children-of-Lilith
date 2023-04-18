@@ -2,6 +2,10 @@ Scriptname CoL_Mechanic_LevelHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property playerSuccubusLevel Auto
+GlobalVariable Property perkPointsAvailable Auto
+GlobalVariable Property levelUpRatio Auto
+GlobalVariable Property levelUpMessage Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 float playerSuccubusXP_var = 0.0
 float Property playerSuccubusXP Hidden
@@ -10,40 +14,15 @@ float Property playerSuccubusXP Hidden
     EndFunction
     Function Set(float newVal)
         playerSuccubusXP_var = newVal
-        CoL.Log("Xp Gained: " + newVal)
         CoL.Log("Current Xp: " + playerSuccubusXP_var)
-        if playerSuccubusXP_var > xpForNextLevel
+        if playerSuccubusXP_var >= xpForNextLevel
             LevelUp()
         EndIf
+        levelUpRatio.SetValue((playerSuccubusXP_var - xpForPreviousLevel)/(xpForNextLevel - xpForPreviousLevel))
     EndFunction
 EndProperty
-int Property playerMaxLevel = 100 Auto
-float Property xpPerDrain = 1.0 Auto
-float Property drainToDeathXPMult = 2.0 Auto
-float Property xpForNextLevel = 1.0 Auto Hidden
-
-float xpConstant_var = 0.75
-float Property xpConstant Hidden
-    float Function Get()
-        return xpConstant_var
-    EndFunction
-    Function Set(float new_val)
-        xpConstant_var = new_val
-        calculateXpForNextLevel()
-    EndFunction
-endProperty
-float xpPower_var = 1.5
-float Property xpPower Hidden
-    float Function Get()
-        return xpPower_var
-    EndFunction
-    Function Set(float new_val)
-        xpPower_var = new_val
-        calculateXpForNextLevel()
-    EndFunction
-endProperty
-int Property levelsForPerk = 1 Auto
-int Property perkPointsOnLevelUp = 1 Auto
+int Property xpForNextLevel = 1 Auto Hidden
+int Property xpForPreviousLevel Auto Hidden
 
 State Initialize
     Event OnBeginState()
@@ -51,27 +30,31 @@ State Initialize
         if playerSuccubusLevel.GetValueInt() < 1
             playerSuccubusLevel.SetValueInt(1)
         endif
+        calculateXpForNextLevel()
         GrantLevelledSpells(false)
         GoToState("Running")
     EndEvent
 EndState
 
 State Running
-    Function gainXP(bool applyDeathMult)
+    Function gainXP(float healthDrained, bool applyDeathMult)
         float xpMod = 1.0
         if applyDeathMult
-            xpMod = drainToDeathXPMult
+            xpMod = configHandler.drainToDeathXPMult
         endif
-        playerSuccubusXP += (xpPerDrain * xpMod)
+        float xpGained = (healthDrained * configHandler.xpDrainMult * xpMod) + configHandler.xpPerDrain
+        CoL.Log("Xp Gained: " + xpGained)
+        playerSuccubusXP += xpGained
     EndFunction
 
     Function addPerkPoint()
         CoL.Log("Adding Perk")
-        CoL.availablePerkPoints += perkPointsOnLevelUp 
+        perkPointsAvailable.Mod(1)
     EndFunction
 
     Function calculateXpForNextLevel()
-        xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/xpConstant), xpPower)
+        xpForPreviousLevel = xpForNextLevel
+        xpForNextLevel = Math.pow(((playerSuccubusLevel.GetValueInt()+1)/configHandler.xpConstant), configHandler.xpPower) as int
     EndFunction
 EndState
 
@@ -86,26 +69,27 @@ State Uninitialize
     EndEvent
 EndState
 
-Function gainXP(bool applyDeathMult)
+Function gainXP(float healthDrained, bool applyDeathMult)
 EndFunction
 
 Function LevelUp()
     
     playerSuccubusLevel.Mod(1)
 
-    if (playerSuccubusLevel.GetValueInt() % levelsForPerk) == 0
+    if (playerSuccubusLevel.GetValueInt() % configHandler.levelsForPerk) == 0
         AddPerkPoint()
     endif
     
     GrantLevelledSpells()
-
     calculateXpForNextLevel()
+
     CoL.Log("XP For Next Level: " + xpForNextLevel)
-    if playerSuccubusXP > xpForNextLevel
+    if playerSuccubusXP >= xpForNextLevel
         LevelUp()
     else
         Debug.Notification("Succubus Level Increased")
         Debug.Notification("New Level: " + playerSuccubusLevel.GetValueInt())
+        levelUpMessage.SetValueInt(playerSuccubusLevel.GetValueInt())
     endif
 EndFunction
 

@@ -1,43 +1,25 @@
 Scriptname CoL_Global_Ostim_Script Hidden
 
-bool Function IsPlayerInvolved(Quest OStim) Global
-    return (Ostim as OSexIntegrationMain).IsPlayerInvolved()
+bool Function IsPlayerInvolved(Quest OStim_Quest) Global
+    return (OStim_Quest as OSexIntegrationMain).IsPlayerInvolved()
 EndFunction
 
-bool Function IsActorActive(Quest OStim, Actor actorRef) Global
-    return (Ostim as OSexIntegrationMain).IsActorActive(actorRef)
+bool Function IsActorActive(Quest OStim_Quest, Actor actorRef) Global
+    return (OStim_Quest as OSexIntegrationMain).IsActorActive(actorRef)
 EndFunction
 
-Actor[] Function GetActors(Quest OStim) Global
-    return (OStim as OSexIntegrationMain).GetActors()
+Actor[] Function GetActors(Quest OStim_Quest) Global
+    return (OStim_Quest as OSexIntegrationMain).GetActors()
 EndFunction
 
-Actor Function GetMostRecentOrgasmedActor(Quest OStim) Global
-    return (OStim as OSexIntegrationMain).GetMostRecentOrgasmedActor()
+Actor Function GetMostRecentOrgasmedActor(Quest OStim_Quest) Global
+    return (OStim_Quest as OSexIntegrationMain).GetMostRecentOrgasmedActor()
 EndFunction
 
-bool Function FullyAnimateRedress(Quest OStim) Global
-    return (OStim as OSexIntegrationMain).FullyAnimateRedress
+bool Function FullyAnimateRedress(Quest OStim_Quest) Global
+    return (OStim_Quest as OSexIntegrationMain).FullyAnimateRedress
 EndFunction
 
-bool Function IsSceneAggressiveThemed(Quest OStim) Global
-    return (OStim as OSexIntegrationMain).IsSceneAggressiveThemed()
-EndFunction
-
-Function ClearStrippedGear(Quest OStim, Actor victim) Global
-    OUndressScript oUndress = (OStim as OSexIntegrationMain).GetUndressScript()
-    Actor[] actors = CoL_Global_OStim_Script.GetActors(OStim)
-    if victim == actors[0]
-        ;Dom
-        oUndress.DomEquipmentDrops = new ObjectReference[1]
-        oUndress.DomEquipmentForms = new Form[1]
-    elseif victim == actors[1]
-        ;Sub
-        oUndress.SubEquipmentDrops = new ObjectReference[1]
-        oUndress.SubEquipmentForms = new Form[1]
-    elseif victim == actors[2]
-        ;Third
-        oUndress.ThirdEquipmentDrops = new ObjectReference[1]
-        oUndress.ThirdEquipmentForms = new Form[1]
-    endif
+bool Function IsSceneAggressiveThemed(Quest OStim_Quest) Global
+    return (OStim_Quest as OSexIntegrationMain).IsSceneAggressiveThemed()
 EndFunction

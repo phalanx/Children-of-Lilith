@@ -3,6 +3,7 @@ Scriptname CoL_Mechanic_SceneHandler_TL_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 string currentSceneName
 
 Actor[] victims
@@ -45,7 +46,7 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
     while i < victims.length
         if victims[i] != None
             string actorName = victims[i].GetLeveledActorBase().GetName()
-            float arousal = ToysGlobal.GetRousing()
+            float arousal = 0.0
             int drainHandle 
             if succubus == CoL.playerRef
                 drainHandle = ModEvent.Create("CoL_startDrain")
@@ -91,7 +92,7 @@ Event startScene(string EventName, string strArg, float numArg, Form sender)
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
         if CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(CoL.temptationHotkey)
+            RegisterForKey(configHandler.newTemptationHotkey)
         endif
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
@@ -146,7 +147,7 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
     endif
 
     CoL.Log(succubusName +" involved animation ended")
-    UnregisterForKey(CoL.temptationHotkey)
+    UnregisterForKey(configHandler.newTemptationHotkey)
 
     triggerDrainEnd()
     int sceneEndEvent
@@ -162,7 +163,7 @@ Event endScene(string eventName, string strArg, float numArg, Form sender)
 EndEvent
 
 Event OnKeyDown(int keyCode)
-    if keyCode == CoL.temptationHotkey
+    if keyCode == configHandler.newTemptationHotkey
         if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
             return
         endif

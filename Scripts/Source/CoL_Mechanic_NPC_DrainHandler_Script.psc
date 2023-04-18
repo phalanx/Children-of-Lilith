@@ -2,6 +2,8 @@ Scriptname CoL_Mechanic_NPC_DrainHandler_Script extends Quest
 
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script configHandler
+
 VisualEffect Property drainToDeathVFX Auto
 
 State Initialize
@@ -22,7 +24,7 @@ EndState
 State Draining
     float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        float drainAmount = ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult))
+        float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult))
 
         if drainAmount > victimHealth
             return victimHealth - 1
@@ -57,7 +59,7 @@ EndState
 State DrainingToDeath
     float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         float victimHealth = drainVictim.GetActorValue("Health")
-        return ((victimHealth * CoL.healthDrainMult) + (arousal * CoL.drainArousalMult)) * CoL.drainToDeathMult
+        return ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult)) * configHandler.drainToDeathMult
     EndFunction
 
     Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
@@ -114,7 +116,7 @@ EndFunction
 
 Float Function applyDrainSpell(Actor drainee, float arousal)
     float drainAmount = CalculateDrainAmount(drainee, arousal)
-    float removalday = CoL.GameDaysPassed.GetValue() + (coL.drainDurationInGameTime / 24)
+    float removalday = CoL.GameDaysPassed.GetValue() + (configHandler.drainDurationInGameTime / 24)
     StorageUtil.SetFloatValue(drainee, "CoL_drainAmount", drainAmount)
     StorageUtil.SetFloatValue(drainee, "CoL_drainRemovalDay", removalday)
     drainee.AddToFaction(CoL.drainVictimFaction)

@@ -5,6 +5,7 @@ import PapyrusUtil
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 bool SexLabInstalled
 bool SLSOInstalled
@@ -67,10 +68,7 @@ EndFunction
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
     CoL.Log("Trigger drain start for " + actorName)
-    float arousal = 0.0
-    if SLARInstalled
-        arousal = (SLAR.GetActorArousal(victim) as float)
-    endif
+    float arousal = CoL.GetActorArousal(victim)
 
     int drainHandle
     if succubus == CoL.playerRef
@@ -109,7 +107,7 @@ Event SceneStartHandler(Form actorRef, int threadId)
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
 
-        RegisterForKey(CoL.temptationHotkey)
+        RegisterForKey(configHandler.newTemptationHotkey)
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
@@ -132,12 +130,13 @@ Event SceneStartHandler(Form actorRef, int threadId)
 EndEvent
 
 Event OnKeyDown(int keyCode)
-    if keyCode == CoL.temptationHotkey
+    if keyCode == configHandler.newTemptationHotkey
         if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
             return
         endif
         int i = 0
         while i < currentParticipants.Length
+            CoL.Log("Casting tempatation")
             CoL.temptationSpell.Cast(CoL.playerRef, currentParticipants[i])
             i += 1
         endwhile
@@ -165,7 +164,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
     int sceneEndEvent
     if succubus == CoL.playerRef
         sceneEndEvent = ModEvent.Create("CoL_endScene")
-        UnRegisterForKey(CoL.temptationHotkey)
+        UnRegisterForKey(configHandler.newTemptationHotkey)
     else
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
     endif

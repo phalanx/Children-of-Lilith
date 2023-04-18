@@ -1,10 +1,11 @@
 Scriptname CoL_Ability_HealRateBoost_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if Col.playerEnergyCurrent >= Col.healRateBoostCost
-        akTarget.ModActorValue("HealRate", CoL.healRateBoostMult)
+    if Col.playerEnergyCurrent >= configHandler.healRateBoostCost
+        akTarget.ModActorValue("HealRate", configHandler.healRateBoostAmount)
         RegisterForSingleUpdate(1.0)
     else
         Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
@@ -13,16 +14,16 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnUpdate()
-    if Col.playerEnergyCurrent < Col.healRateBoostCost
+    if Col.playerEnergyCurrent < configHandler.healRateBoostCost
         CoL.Log("Out of Energy")
         Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
         CoL.playerRef.RemoveSpell(CoL.HealRateBoost)
         return
     endif
-    CoL.playerEnergyCurrent -= CoL.healRateBoostCost
+    CoL.playerEnergyCurrent -= configHandler.healRateBoostCost
     RegisterForSingleUpdate(1.0)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    akTarget.ModActorValue("HealRate", 0.0 - CoL.healRateBoostMult)
+    akTarget.ModActorValue("HealRate", 0.0 - configHandler.healRateBoostAmount)
 EndEvent

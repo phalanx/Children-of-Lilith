@@ -2,6 +2,10 @@ Scriptname CoL_NpcSuccubusQuest_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Mechanic_NPC_DrainHandler_Script Property npcDrainHandler Auto
+CoL_ConfigHandler_Script Property configHandler Auto
+
+Actor[] Property succubusList Auto Hidden           ; List of actors that have been turned into a succubus
+Spell Property sceneHandler Auto
 
 Event OnInit()
 EndEvent
@@ -42,13 +46,18 @@ EndFunction
 Function StartSceneNPC()
     int random = Utility.RandomInt()
     CoL.Log("NPC Scene Start Detected")
-    if random < CoL.npcDrainToDeathChance
+    if random < configHandler.npcDrainToDeathChance
         npcDrainHandler.GoToState("DrainingToDeath")
         CoL.Log("NPC will Drain to Death")
     else
         npcDrainHandler.GoToState("Draining")
         CoL.Log("NPC will Drain")
     endif
+EndFunction
+
+Function RemoveNPC(int index)
+    succubusList[index].RemoveSpell(sceneHandler)
+    succubusList = PapyrusUtil.RemoveActor(succubusList, succubusList[index])
 EndFunction
 
 Function EndSceneNPC()

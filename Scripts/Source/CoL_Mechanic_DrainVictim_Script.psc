@@ -1,12 +1,12 @@
 Scriptname CoL_Mechanic_DrainVictim_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
-
-float healthDrained
+Spell Property drainEffect Auto
+GlobalVariable Property timeScale Auto
 string drainTargetName
 
 Event OnEffectStart(Actor drainTarget, Actor akCaster)
-    
+    CoL.Log(drainTarget.GetActorBase().GetName() + " has been drained")
     drainTargetName = drainTarget.GetLeveledActorBase().GetName()
     
     float removalDay
@@ -24,44 +24,27 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
         endif
     endif
 
+
     CoL.Log(drainTargetName + " has been drained")
-    CoL.Log("Starting Health Value: " + drainTarget.GetActorValue("Health"))
-
-    healthDrained = StorageUtil.GetFloatValue(drainTarget, "CoL_drainAmount")
-    drainTarget.ModActorValue("Health", 0.0 - healthDrained)
-
-    CoL.Log("Drain Amount: " + healthDrained)
-    CoL.Log("New Health Value: " + drainTarget.GetActorValue("Health"))
-    CoL.Log("Drain will last until " + removalDay)
-    CoL.Log("Current Game Day: " + CoL.GameDaysPassed.GetValue())
 
     if removalDay <= CoL.GameDaysPassed.GetValue()
+        CoL.Log("Drain duration has elapsed. Removing Drain Victim Effect")
         FinishDrain(drainTarget)
         return
-    else
-        float drainTime = (removalDay - CoL.GameDaysPassed.GetValue()) * 24
-        RegisterForSingleUpdateGameTime(drainTime)
-        RegisterForModEvent("CoL_Uninitialize", "FinishDrain")
     endif
-EndEvent
 
-Event OnUpdateGameTime()
-    FinishDrain(GetTargetActor())
+    float healthDrained = StorageUtil.GetFloatValue(drainTarget, "CoL_drainAmount")
+    float drainDuration = ((removalDay - CoL.GameDaysPassed.GetValue()) * 24 * 60 * 60) / timeScale.GetValue()
+    CoL.Log("Drain Amount: " + healthDrained)
+    CoL.Log("Drain Duration in Real time: " + drainDuration)
+    drainEffect.SetNthEffectMagnitude(0, healthDrained)
+    drainEffect.SetNthEffectDuration(0, Math.floor(drainDuration))
+    drainEffect.Cast(drainTarget)
 EndEvent
 
 Function FinishDrain(Actor drainTarget)
     StorageUtil.UnsetFloatValue(drainTarget, "CoL_drainRemovalDay")
     StorageUtil.UnsetFloatValue(drainTarget, "CoL_drainAmount")
-    drainTarget.RemoveSpell(CoL.DrainHealthSpell)
     drainTarget.RemoveFromFaction(CoL.drainVictimFaction)
+    drainTarget.RemoveSpell(CoL.DrainHealthSpell)
 EndFunction
-
-Event OnEffectFinish(Actor drainTarget, Actor akCaster)
-    CoL.Log(drainTargetName + " has finished being drained")
-    CoL.Log("Starting Health Value = " + drainTarget.GetActorValue("Health"))
-    
-    drainTarget.ModActorValue("Health", healthDrained)
-
-    CoL.Log("New Health Value = " + drainTarget.GetActorValue("Health"))
-    CoL.Log("Drain Effect Removed")
-EndEvent

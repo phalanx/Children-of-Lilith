@@ -49,10 +49,6 @@ State Installed
     bool Function IsSceneAggressiveThemed()
         return CoL_Global_OStim_Script.IsSceneAggressiveThemed(OStim)
     EndFunction
-
-    Function ClearStrippedGear(Actor victim)
-        CoL_Global_OStim_Script.ClearStrippedGear(OStim, victim)
-    EndFunction
 EndState
 
 bool Function IsInterfaceActive()
@@ -73,9 +69,6 @@ bool Function FullyAnimateRedress()
 EndFunction
 
 bool Function IsSceneAggressiveThemed()
-EndFunction
-
-Function ClearStrippedGear(Actor victim)
 EndFunction
 
 bool Function IsActorActive(Actor actorRef)

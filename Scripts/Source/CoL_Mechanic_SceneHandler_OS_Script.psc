@@ -1,6 +1,7 @@
 Scriptname CoL_Mechanic_SceneHandler_OS_Script extends activemagiceffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_OAroused_Script Property OAroused Auto
 Quest Property oDefeat Auto Hidden
@@ -76,7 +77,7 @@ State Waiting
         currentPartnerArousal = new float[3]
         int i = 0
         while i < currentPartners.Length
-            currentPartnerArousal[i] = OAroused.GetArousal(currentPartners[i])
+            currentPartnerArousal[i] = CoL.GetActorArousal(currentPartners[i])
             i += 1
         endwhile
 
@@ -106,7 +107,7 @@ State Running
         RegisterForModEvent("ostim_orgasm", "orgasmHandler")
         RegisterForModEvent("ostim_totalend", "stopScene")
         if succubus == CoL.playerRef && CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(CoL.temptationHotkey)
+            RegisterForKey(configHandler.newTemptationHotkey)
         endif
     EndEvent
 
@@ -119,11 +120,6 @@ State Running
         endif
 
         CoL.Log("Entered orgasm handler")
-
-        if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
-            Ostim.ClearStrippedGear(victim)
-        endif
-
         triggerDrainStart(victim)
         if currentVictims.Find(victim) == -1
             currentVictims = PushActor(currentVictims, victim)
@@ -150,12 +146,11 @@ State Running
             endif
                 i += 1
         endwhile
-
         GoToState("Waiting")
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == CoL.temptationHotkey
+        if keyCode == configHandler.newTemptationHotkey
             if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
                 return
             endif
@@ -170,7 +165,7 @@ State Running
     Event OnEndState()
         UnregisterForModEvent("ostim_orgasm")
         UnregisterForModEvent("ostim_end")
-        UnregisterForKey(CoL.temptationHotkey)
+        UnregisterForKey(configHandler.newTemptationHotkey)
         currentVictims = new Actor[1]
     EndEvent
 
@@ -203,6 +198,9 @@ Function triggerDrainEnd(Actor victim)
     CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
+    if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
+        Utility.Wait(5)
+    endif
     if oDefeat && CoL.drainHandler.drainingToDeath
         CoL.Log("oDefeat Detected")
         Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
@@ -218,9 +216,7 @@ Function triggerDrainEnd(Actor victim)
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Drain end event sent")
-        endif
+        CoL.Log("Drain end event sent")
     endif
 EndFunction
 

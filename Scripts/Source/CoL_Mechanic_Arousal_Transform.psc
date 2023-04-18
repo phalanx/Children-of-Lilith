@@ -1,6 +1,7 @@
 Scriptname CoL_Mechanic_Arousal_Transform extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 bool slarActive
 bool oarousedActive
@@ -22,36 +23,15 @@ State Polling
     EndEvent
 
     Event OnUpdate()
-        float averageArousal = 0
-        int i = 0
-        if oarousedActive
-            averageArousal += CoL.OAroused.GetArousal(CoL.playerRef)
-            i += 1
-        endif
-        if slarActive
-            averageArousal += CoL.SLAR.GetActorArousal(CoL.playerRef)
-            i += 1
-        endif
-        if toysActive
-            averageArousal += ToysGlobal.GetRousing()
-            i += 1
-        endif
-
-        CoL.Log("Total arousal: " + averageArousal)
-        
-        if i > 0
-            averageArousal = averageArousal / i
-        else
-            averageArousal = 0
-        endif
+        float averageArousal = CoL.GetActorArousal(CoL.playerRef)
 
         CoL.Log("Average arousal: " + averageArousal)
-        CoL.Log("Upper Threshold: " + CoL.transformArousalUpperThreshold)
-        CoL.Log("Lower Threshold: " + CoL.transformArousalLowerThreshold)
+        CoL.Log("Upper Threshold: " + configHandler.transformArousalUpperThreshold)
+        CoL.Log("Lower Threshold: " + configHandler.transformArousalLowerThreshold)
 
-        if ((CoL.transformArousalUpperThreshold != 0 && averageArousal >= CoL.transformArousalUpperThreshold) || ( CoL.transformArousalLowerThreshold != 0 && averageArousal < CoL.transformArousalLowerThreshold ))
+        if ((configHandler.transformArousalUpperThreshold != 0 && averageArousal >= configHandler.transformArousalUpperThreshold) || ( configHandler.transformArousalLowerThreshold != 0 && averageArousal < configHandler.transformArousalLowerThreshold ))
             forceTransform()
-        elseif ((CoL.transformArousalUpperThreshold == 0 || averageArousal <= CoL.transformArousalUpperThreshold) && (CoL.transformArousalLowerThreshold == 0 || averageArousal > CoL.transformArousalLowerThreshold))
+        elseif ((configHandler.transformArousalUpperThreshold == 0 || averageArousal <= configHandler.transformArousalUpperThreshold) && (configHandler.transformArousalLowerThreshold == 0 || averageArousal > configHandler.transformArousalLowerThreshold))
             forceUntransform()
         endif
 
@@ -112,4 +92,12 @@ Function forceUntransform()
     endif
     CoL.lockTransform = false
     CoL.transformSpell.Cast(Col.playerRef)
+EndFunction
+
+Function UpdateConfig()
+    if configHandler.transformArousalUpperThreshold == 0 && configHandler.transformArousalUpperThreshold == 0
+        GoToState("Uninitialize")
+    elseif GetState() != "Polling"
+        GoToState("Initialize")
+    endif
 EndFunction

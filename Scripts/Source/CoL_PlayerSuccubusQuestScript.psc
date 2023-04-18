@@ -3,6 +3,9 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 import PapyrusUtil
 import CharGen
 
+Quest Property playerSuccubusQuest Auto
+CoL_ConfigHandler_Script configHandler
+
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
@@ -19,6 +22,8 @@ CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
+
+
 ; Keyword Definitions
 Keyword Property ddLibs Auto Hidden
 Keyword Property toysToy Auto Hidden
@@ -31,8 +36,8 @@ GlobalVariable Property TimeScale Auto
 Faction Property drainVictimFaction Auto
 
 Actor Property playerRef Auto                       ; The player reference
-Actor[] Property succubusList Auto Hidden           ; List of actors that have been turned into a succubus
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
+Spell Property showperkMenu Auto                    ; Spell that when cast will open the CSF perk menu
 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
@@ -41,91 +46,9 @@ Spell[] Property levelTenSpells Auto                ; Spells granted to player a
 Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
 
-bool Property DebugLogging = true Auto Hidden       ; Enable trace logging throughout the scripts
-bool Property EnergyScaleTestEnabled = false Auto Hidden       ; Enable Energy Scale test when Drain to Death button pushed
-
-; Path Variables
-int followedPath_var = 0
-; 0 - Sanguine
-; 1 - Molag
-; 2 - Vaermina
-int Property followedPath Hidden
-    int Function Get()
-        return followedPath_var
-    endFunction
-    Function Set(int newPath)
-        if followedPath_var == 0
-            RemoveSpells(sanguineTraits)
-        elseif followedPath_var == 1
-            RemoveSpells(molagTraits)
-        elseif followedPath_var == 2
-            RemoveSpells(VaerminaTraits)
-        endif
-        followedPath_var = newPath        
-        if followedPath_var == 0
-            GrantSpells(sanguineTraits, false)
-            Debug.Notification("Path of Sanguine added")
-        elseif followedPath_var == 1
-            GrantSpells(molagTraits, false)
-            Debug.Notification("Path of Molag Bal added")
-        elseif followedPath_var == 2
-            GrantSpells(VaerminaTraits, false)
-            Debug.Notification("Path of Vaermina added")
-        endif
-    EndFunction
-EndProperty
 Spell[] Property sanguineTraits Auto                ; Spells to provide passives for Path of Sanguine
 Spell[] Property molagTraits Auto                   ; Spells to provide passives for Path of Molag Bal
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
-
-; Hotkeys
-int toggleDrainHotKey_var = 29
-int Property toggleDrainHotkey Hidden     ; Default Toggle Drain key to left shift
-    int Function Get()
-        return toggleDrainHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(toggleDrainHotKey_var)
-        toggleDrainHotKey_var = newKey
-        RegisterForKey(toggleDrainHotKey_var)
-    EndFunction
-EndProperty
-
-int toggleDrainToDeathHotKey_var = 157
-int Property toggleDrainToDeathHotkey Hidden    ; Default Toggle Drain to Death key to right alt
-    int Function Get()
-        return toggleDrainToDeathHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(toggleDrainToDeathHotKey_var)
-        toggleDrainToDeathHotKey_var = newKey
-        RegisterForKey(toggleDrainToDeathHotKey_var)
-    EndFunction
-EndProperty
-
-int transformHotKey_var = -1
-int Property transformHotkey Hidden    ; Default Toggle Drain to Death key to right alt
-    int Function Get()
-        return transformHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(transformHotKey_var)
-        transformHotKey_var = newKey
-        RegisterForKey(transformHotKey_var)
-    EndFunction
-EndProperty
-
-int temptationHotKey_var = -1
-int Property temptationHotkey Hidden    ; Default Toggle Drain to Death key to right alt
-    int Function Get()
-        return temptationHotkey_var 
-    EndFunction
-    Function Set(int newKey)
-        UnregisterForKey(temptationHotKey_var)
-        temptationHotKey_var = newKey
-        RegisterForKey(temptationHotKey_var)
-    EndFunction
-EndProperty
 
 ; Energy Properties
 float playerEnergyCurrent_var = 50.0
@@ -135,78 +58,30 @@ float Property playerEnergyCurrent Hidden
     EndFunction
     Function Set(float newVal)
         if newVal > playerEnergyMax
-            newVal = playerEnergyMax
+            newVal = playerEnergyMax as float
         elseif newVal < 0
             newVal = 0
         endif
         playerEnergyCurrent_var = newVal
-        if DebugLogging
-            Debug.Trace("[CoL] Player Energy is now " + playerEnergyCurrent)
-        endif
-        widgetHandler.GoToState("UpdateMeter")
-        if tattooFade
+        Log("Player Energy is now " + playerEnergyCurrent)
+        widgetHandler.UpdateMeter()
+        if configHandler.tattooFade
             UpdateTattoo()
         endif
         float energyPercentage = ((newVal / playerEnergyMax) * 100) 
-        if  energyPercentage <= forcedDrainToDeathMinimum && forcedDrainToDeathMinimum != -1
+        if  energyPercentage <= configHandler.forcedDrainToDeathMinimum && configHandler.forcedDrainToDeathMinimum != -1
             drainHandler.draining = false
             drainHandler.drainingToDeath = true
-        elseif energyPercentage <= forcedDrainMinimum && forcedDrainMinimum != -1
+        elseif energyPercentage <= configHandler.forcedDrainMinimum && configHandler.forcedDrainMinimum != -1
             drainHandler.draining = true
             drainHandler.drainingToDeath = false
-        elseif forcedDrainMinimum != -1 && forcedDrainToDeathMinimum != -1
+        elseif configHandler.forcedDrainMinimum != -1 && configHandler.forcedDrainToDeathMinimum != -1
             drainHandler.draining = false
             drainHandler.drainingToDeath = false
         endif
     EndFunction
 EndProperty
 float Property playerEnergyMax = 100.0 Auto Hidden
-bool hungerEnabled_var
-bool Property hungerEnabled Hidden
-    bool Function Get()
-        return hungerEnabled_var
-    EndFunction
-    Function Set(bool newValue)
-        hungerEnabled_var = newValue
-        if hungerEnabled_var
-            hungerHandler.GoToState("HungerEnabled")
-        else
-            hungerHandler.GoToState("HungerDisabled")
-        endif
-    EndFunction
-EndProperty
-bool Property hungerIsPercent = false Auto Hidden
-float Property dailyHungerAmount = 10.0 Auto Hidden
-bool Property hungerDamageEnabled = false Auto Hidden
-float Property hungerDamageAmount = 5.0 Auto Hidden
-bool Property hungerArousalEnabled = false Auto Hidden
-float Property hungerArousalAmount = 5.0 Auto Hidden
-int Property hungerThreshold = 10 Auto Hidden
-bool Property tattooFade = false Auto Hidden
-int Property tattooSlot = 6 Auto Hidden
-
-; Drain Properties
-float Property drainDurationInGameTime = 24.0 Auto Hidden       ; How long, in game hours, does the drain debuff last
-float Property healthDrainMult = 0.2 Auto Hidden                ; Percentage of health to drain from victim (Health Drained = Victim Max Health * Mult)
-float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier applied to arousal before being added to drain amount
-float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
-float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
-bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
-bool Property drainNotificationsEnabled = true Auto Hidden      ; Should notifications play when drain style is changed
-bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
-bool Property deadlyDrainWhenTransformed = false Auto Hidden    ; Always deadly drain while transformed
-float Property forcedDrainMinimum = -1.0 Auto Hidden             ; Minimum energy to always drain
-float Property forcedDrainToDeathMinimum = -1.0 Auto Hidden      ; Minimum energy to always drain to death
-
-; NPC Drain Properties
-int Property npcDrainToDeathChance = 0 Auto Hidden
-
-; Power Properties
-float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Stamina Boost Effect
-float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Stamina Boost Effect
-float Property healRateBoostMult = 10.0 Auto Hidden     ; Modify healRate by this amount
-float Property energyCastingMult = 1.0 Auto  Hidden     ; Modify the energy cost of spells
-int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
 
 ; Togglable Spells
 Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
@@ -214,92 +89,40 @@ Spell Property healRateBoost Auto                   ; Spell that contains the he
 Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
 Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
 
-; Spell Properties
-int Property excitementCost = 10 Auto Hidden
-int Property excitementBaseIncrease = 1 Auto Hidden
-float Property excitementLevelMult = 1.0 Auto Hidden
-
-int Property suppressionCost = 10 Auto Hidden
-int Property suppressionBaseIncrease = 1 Auto Hidden
-float Property suppressionLevelMult = 1.0 Auto Hidden
-
-int Property temptationCost = 10 Auto Hidden
-int Property temptationBaseIncrease = 1 Auto Hidden
-float Property temptationLevelMult = 1.0 Auto Hidden
-
-; Perk Stuff
-int Property availablePerkPoints = 0 Auto Hidden
-bool Property gentleDrainer = false Auto Hidden      ; Perk that reduces base drain duration by half
-int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
-int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
-bool Property energyWeaver = false Auto Hidden       ; Perk that reduces cost of Energy Casting. Reduce further when transformed
-bool Property healingForm = false Auto Hidden        ; Perk that adds Heal Rate Boost to transformed form
-bool Property safeTransformation = false Auto Hidden ; Perk that turns you ethereal while transforming
-bool Property slakeThirst = false Auto Hidden        ; Perk that applies succubus arousal to drain amount
-
 ; Transform Stuff
 Spell Property transformSpell Auto
-bool Property transformAnimation = true Auto Hidden
+
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
-bool Property transformSwapsEquipment = true Auto Hidden
-bool Property transformSavesNiOverrides = false Auto Hidden
-bool Property succuPresetSaved = false Auto Hidden
+bool pauseCost = false
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
+bool Property succuPresetSaved = false Auto Hidden
 Race Property succuRace Auto Hidden
 Race Property succuCureRace Auto Hidden
 ColorForm Property succuHairColor Auto Hidden
-bool Property transformCrime = false Auto Hidden
-bool Property mortalPresetSaved = false Auto Hidden
 string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
+bool Property mortalPresetSaved = false Auto Hidden
 Race Property mortalRace Auto Hidden
 Race Property mortalCureRace Auto Hidden
 bool isVampire = false
 ColorForm Property mortalHairColor Auto Hidden
-Form[] Property NoStripList Auto Hidden
 ObjectReference Property succuEquipmentChest Auto
-float Property transformCost = 1.0 Auto Hidden
-float transformArousalUpperThreshold_var
-float Property transformArousalUpperThreshold Hidden
-    float Function Get()
-        return transformArousalUpperThreshold_var
-    EndFunction
-    Function Set(float newValue)
-        if newValue != 0 && arousalTransformHandler.GetState() != "Polling"
-            arousalTransformHandler.GoToState("Initialize")
-        elseif transformArousalLowerThreshold == 0 && arousalTransformHandler.GetState() == "Polling"
-            arousalTransformHandler.GoToState("Uninitialize")
-        endif
-        transformArousalUpperThreshold_var = newValue
-    EndFunction
-EndProperty
 
-float transformArousalLowerThreshold_var
-float Property transformArousalLowerThreshold Hidden
-    float Function Get()
-        return transformArousalLowerThreshold_var
-    EndFunction
-    Function Set(float newValue)
-        if newValue != 0 && arousalTransformHandler.GetState() != "Polling"
-            arousalTransformHandler.GoToState("Initialize")
-        elseif transformArousalUpperThreshold == 0 && arousalTransformHandler.GetState() == "Polling"
-            arousalTransformHandler.GoToState("Uninitialize")
-        endif
-    transformArousalLowerThreshold_var = newValue
-    EndFunction
-EndProperty
+; Advancement Settings
+int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
+int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
 
-; Transform Buffs
-bool Property transformBuffsEnabled Auto Hidden
-float Property extraArmor Auto Hidden
-float Property extraMagicResist Auto Hidden
-float Property extraHealth Auto Hidden
-float Property extraMagicka Auto Hidden
-float Property extraStamina Auto Hidden
-float Property extraMeleeDamage Auto Hidden
-float Property extraCarryWeight Auto Hidden
+; Transform Buff Perks
+int Property transformHealth = 0 Auto Hidden
+int Property transformStamina = 0 Auto Hidden
+int Property transformMagicka = 0 Auto Hidden
+int Property transformCarryWeight = 0 Auto Hidden
+int Property transformMeleeDamage = 0 Auto Hidden
+int Property transformArmor = 0 Auto Hidden
+int Property transformMagicResist = 0 Auto Hidden
 
 Event OnInit()
+    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
 EndEvent
 
 State Initialize
@@ -307,10 +130,10 @@ State Initialize
         Log("Initializing")
         mortalPresetName = "CoL_Mortal_Form_" + playerRef.GetDisplayName()
         succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
-        widgetHandler.GoToState("Initialize")
-        levelHandler.GoToState("Initialize")
-        followedPath = followedPath_var
         isPlayerSuccubus.SetValue(1.0)
+        widgetHandler.Initialize()
+        levelHandler.GoToState("Initialize")
+        UpdateConfig()
         Maintenance()
         GotoState("Running")
     EndEvent
@@ -318,13 +141,14 @@ EndState
 
 State Running
     Event OnKeyDown(int keyCode)
-        if EnergyScaleTestEnabled
-            if keyCode == toggleDrainToDeathHotKey
+        if keyCode == configHandler.toggleDrainToDeathHotKey
+            if configHandler.EnergyScaleTestEnabled
                 ScaleEnergyTest()
             endif
-        endif
-        if keyCode == transformHotkey
+        elseif keyCode == configHandler.transformHotkey
             transformSpell.Cast(playerRef, playerRef)
+        elseif keyCode == configHandler.csfMenuHotkey
+            showperkMenu.Cast(playerRef)
         endif
     EndEvent
 EndState
@@ -332,26 +156,33 @@ EndState
 State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
+        Log("Pausing transform cost")
+        pauseCost = true
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == toggleDrainHotkey
-            if lockDrainType
+        if keyCode == configHandler.toggleDrainHotkey
+            if configHandler.lockDrainType
                 return
             endif
             drainHandler.draining = !drainHandler.draining
-        elseif keyCode == toggleDrainToDeathHotkey
-            if lockDrainType
+        elseif keyCode == configHandler.toggleDrainToDeathHotkey
+            if configHandler.lockDrainType
                 return
             endif
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
         endif
     EndEvent
+    Event onEndState()
+        Log("Unpausing transform cost")
+        pauseCost = false
+        RegisterForSingleUpdate(1)
+    EndEvent
 EndState
 
 State Uninitialize
     Event OnBeginState()
-        widgetHandler.GoToState("Uninitialize")
+        widgetHandler.Uninitialize()
         levelHandler.GoToState("Uninitialize")
         drainHandler.GoToState("Uninitialize")
         uninitializeQuest.GoToState("Run")
@@ -396,26 +227,47 @@ Function Maintenance()
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
-    widgetHandler.GoToState("Running")
+    widgetHandler.UpdateMeter()
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
-    DebugLogging = true
     RegisterForEvents()
+    Utility.Wait(0.5)
+    if mortalPresetSaved && succuPresetSaved
+        if isTransformed
+            transformPlayer(succuPresetName, succuRace, succuHairColor)
+        else
+            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+        endif
+    endif
+EndFunction
+
+Function RegisterForHotkeys()
+    RegisterForKey(configHandler.toggleDrainHotKey)
+    RegisterForKey(configHandler.toggleDrainToDeathHotKey)
+    RegisterForKey(configHandler.transformHotkey)
+    RegisterForKey(configHandler.csfMenuHotkey)
 EndFunction
 
 Function RegisterForEvents()
     ; Register for Events
-    RegisterForKey(toggleDrainHotKey)
-    RegisterForKey(toggleDrainToDeathHotKey)
-    RegisterForKey(transformHotkey)
+    RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
+    RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
+    RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     Log("Registered for Hotkeys and Events")
+EndFunction
+
+Function UnregisterForHotkeys()
+    UnregisterForKey(configHandler.toggleDrainHotKey)
+    UnregisterForKey(configHandler.toggleDrainToDeathHotKey)
+    UnregisterForKey(configHandler.transformHotkey)
+    UnregisterForKey(configHandler.csfMenuHotkey)
 EndFunction
 
 Function UnregisterForEvents()
     ; Register for Hotkeys
-    UnregisterForKey(toggleDrainHotKey_var)
+    UnregisterForHotkeys()
     UnregisterForModEvent("CoL_startScene")
     UnregisterForModEvent("CoL_endScene")
     Log("Unregistered for Hotkeys and Events")
@@ -442,7 +294,7 @@ endFunction
 
 Function UpdateTattoo()
     Float newAlpha = playerEnergyCurrent/playerEnergyMax
-    int correctedSlot = tattooSlot - 1
+    int correctedSlot = configHandler.tattooSlot - 1
     string bodySlot = "Body [Ovl" + correctedSlot + "]"
     NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
 EndFunction
@@ -462,7 +314,7 @@ Function ScaleEnergyTest()
 EndFunction
 
 Function Log(string msg)
-    if DebugLogging
+    if configHandler.DebugLogging
         Debug.Trace("[CoL] " + msg)
     endif
 EndFunction
@@ -472,9 +324,13 @@ Function transformDrain()
 EndFunction
 
 Event OnUpdate()
-    if isTransformed && transformCost > 0
-        if playerEnergyCurrent > transformCost
-            playerEnergyCurrent -= transformCost
+    if isTransformed && configHandler.transformCost > 0
+        if pauseCost
+            RegisterForSingleUpdate(5)
+            return
+        endif
+        if playerEnergyCurrent > configHandler.transformCost
+            playerEnergyCurrent -= configHandler.transformCost
             RegisterForSingleUpdate(1)
         elseif !lockTransform
             playerEnergyCurrent = 0
@@ -512,7 +368,7 @@ EndFunction
 Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
     Log("Transforming Player")
     int jmorphs
-    if transformSavesNiOverrides
+    if configHandler.transformSavesNiOverrides
         jmorphs = __saveBodyMorphs()
     endif
     Race currentRace = playerRef.GetRace()
@@ -525,7 +381,7 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
     __Transform(presetName, presetRace, presetHairColor, currentRace)
     Utility.Wait(0.1)
 
-    if transformSavesNiOverrides
+    if configHandler.transformSavesNiOverrides
         __restoreBodyMorphs(jmorphs)
     endif
 
@@ -564,7 +420,9 @@ int function __saveBodyMorphs()
         string[] listmorphKeys = NiOverride.GetMorphKeys(playerRef, listmorphNames[lmn])
         int lmk = 0
         while (lmk < listmorphKeys.Length)
-            JMap.setFlt(jkeys, listmorphKeys[lmk], NiOverride.GetBodyMorph(playerRef, listmorphNames[lmn], listmorphKeys[lmk]))
+            if listmorphKeys[lmk] != "XPMSE.esp" && listmorphKeys[lmk] != "RaceMenuMorphsCBBE.esp"
+                JMap.setFlt(jkeys, listmorphKeys[lmk], NiOverride.GetBodyMorph(playerRef, listmorphNames[lmn], listmorphKeys[lmk]))
+            endif
             lmk += 1
         endWhile
         lmn += 1
@@ -595,14 +453,69 @@ endfunction
 
 Function ApplyRankedPerks()
     int i = 0
-    while i < efficientFeeder
-        energyConversionRate += 0.1
-        i += 1
-    endwhile
-
-    i = 0
+    playerEnergyMax = configHandler.baseMaxEnergy
     while i < energyStorage
-        playerEnergyMax += 10        
+        playerEnergyMax += 10
         i += 1
     endwhile
+EndFunction
+
+Function UpdatePath()
+    RemoveSpells(sanguineTraits)
+    RemoveSpells(molagTraits)
+    RemoveSpells(VaerminaTraits)
+    if configHandler.selectedPath == 0
+        GrantSpells(sanguineTraits, false)
+        Debug.Notification("Path of Sanguine added")
+    elseif configHandler.selectedPath == 1
+        GrantSpells(molagTraits, false)
+        Debug.Notification("Path of Molag Bal added")
+    elseif configHandler.selectedPath == 2
+        GrantSpells(VaerminaTraits, false)
+        Debug.Notification("Path of Vaermina added")
+    endif
+EndFunction
+
+float Function GetActorArousal(Actor target)
+    int arousalMods = 0
+    float targetArousal = 0.0
+    if OAroused.IsInterfaceActive()
+        targetArousal += OAroused.GetArousal(target)
+        arousalMods += 1
+    endif
+    if SLAR.IsInterfaceActive()
+        targetArousal += SLAR.GetActorArousal(target)
+        arousalMods += 1
+    endif
+    if OSL.IsInterfaceActive()
+        targetArousal += OSL.GetArousal(target)
+        arousalMods += 1
+    endif
+    if Toys.IsInterfaceActive() && target == playerRef
+        targetArousal += Toys.GetRousing()
+    endif
+    if arousalMods > 0
+        targetArousal = targetArousal / arousalMods
+    else
+        targetArousal = 0.0
+    endif
+    return targetArousal
+EndFunction
+
+Function UpdateCSFPower()
+    if configHandler.grantCSFPower
+        playerRef.AddSpell(showperkMenu)
+    else
+        playerRef.RemoveSpell(showperkMenu)
+    endif
+EndFunction
+
+Function UpdateConfig()
+    Log("PSQ Recieved Config Update")
+    UnregisterForHotkeys()
+    RegisterForHotkeys()
+    playerEnergyCurrent = playerEnergyCurrent
+    ApplyRankedPerks()
+    UpdatePath()
+    UpdateCSFPower()
 EndFunction
