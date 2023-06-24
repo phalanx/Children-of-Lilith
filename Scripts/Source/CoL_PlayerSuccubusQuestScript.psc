@@ -19,10 +19,9 @@ CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_OSL_Script Property OSL Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
+CoL_Interface_SLCumOverlay_Script Property iSLCumOverlay Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
-
-
 
 ; Keyword Definitions
 Keyword Property ddLibs Auto Hidden
@@ -387,6 +386,9 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
 
     iSlaveTats.ReapplySlaveTats(playerRef, true)
     UpdateTattoo()
+    if iSLCumOverlay.IsInterfaceActive()
+        iSLCumOverlay.reapplySCOEffects(playerRef)
+    endif
     Log("Finished Transforming Player")
 EndFunction
 
