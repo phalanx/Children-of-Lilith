@@ -63,7 +63,7 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_transformStaminaPerRank", "$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK", configHandler.transformStaminaPerRank)
         AddSliderOptionST("Slider_transformMagickaPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK", configHandler.transformMagickaPerRank)
         AddSliderOptionST("Slider_transformCarryWeightPerRank", "$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK", configHandler.transformCarryWeightPerRank)
-        AddSliderOptionST("Slider_transformMeleeDamagePerRank", "$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK", configHandler.transformMeleeDamagePerRank, "{1}")
+        AddSliderOptionST("Slider_transformMeleeDamagePerRank", "$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK", configHandler.transformMeleeDamagePerRank, "{2}")
         AddSliderOptionST("Slider_transformArmorPerRank", "$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK", configHandler.transformArmorPerRank)
         AddSliderOptionST("Slider_transformMagicResistPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK", configHandler.transformMagicResistPerRank)
     ; Hunger Settings
