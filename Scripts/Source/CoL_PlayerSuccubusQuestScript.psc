@@ -230,10 +230,12 @@ Function Maintenance()
     RegisterForEvents()
     Utility.Wait(0.5)
     if mortalPresetSaved && succuPresetSaved
-        if isTransformed
-            transformPlayer(succuPresetName, succuRace, succuHairColor)
-        else
-            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+        if !isBeastRace()
+            if isTransformed
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
+            else
+                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+            endif
         endif
     endif
 EndFunction
@@ -336,7 +338,19 @@ Event OnUpdate()
     endif
 EndEvent
 
+bool Function isBeastRace()
+    Race currentRace = playerRef.GetRace()
+    if MiscUtil.GetRaceEditorID(currentRace) == "WerewolfBeastRace" || MiscUtil.GetRaceEditorID(currentRace) == "DLC1VampireBeastRace"
+        return True
+    else
+        return False
+    endif
+EndFunction
+
 bool Function isBusy()
+    if isBeastRace()
+        return True
+    endif
 	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
 		return True
 	elseIf playerRef.IsInCombat()
