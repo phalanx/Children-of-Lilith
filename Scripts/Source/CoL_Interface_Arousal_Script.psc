@@ -53,12 +53,12 @@ State Installed
     EndFunction
 
     Function ModifyArousal(Actor target, float amount)
-        SLAR.UpdateActorExposure(CoL.playerRef, (amount as int))
-        OAroused.ModifyArousal(CoL.playerRef, (amount as int))
+        SLAR.UpdateActorExposure(target, (amount as int))
+        OAroused.ModifyArousal(target, (amount as int))
         if target == CoL.playerRef
             Toys.ArousalAdjust(amount as int)
         endif
-        OSL.ModifyArousal(CoL.playerRef, (amount as int), "Succubus Hunger")
+        OSL.ModifyArousal(target, (amount as int), "CoL")
     EndFunction
 EndState
 
