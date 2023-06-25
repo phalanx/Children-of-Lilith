@@ -1,5 +1,7 @@
 Scriptname CoL_ConfigHandler_Script extends Quest
 
+GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
+
 float Property baseMaxEnergy = 100.0 Auto Hidden                ; Base line maximum energy, before perks are applied
 string[] Property followedPathOptions Auto Hidden               ; Holds available path options
 int Property selectedPath = 0 Auto Hidden                       ; Which path is the player following
@@ -131,9 +133,11 @@ Function Maintenance()
 EndFunction
 
 Function SendConfigUpdateEvent()
-    int handle = ModEvent.Create("CoL_configUpdated")
-    if handle
-        ModEvent.Send(handle)
+    if isPlayerSuccubus.GetValueInt() != 0
+        int handle = ModEvent.Create("CoL_configUpdated")
+        if handle
+            ModEvent.Send(handle)
+        endif
     endif
 EndFunction
 

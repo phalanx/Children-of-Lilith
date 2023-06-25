@@ -9,7 +9,7 @@ float lastCheckTime = 0.0
 int starvationStack = 0
 
 Event OnInit()
-    RegisterForModEvent("CoL_GameLoad", "Maintenance")
+    Maintenance()
 EndEvent
 
 Function Maintenance()

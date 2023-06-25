@@ -130,6 +130,7 @@ State Initialize
         widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
         UpdateConfig()
+        configHandler.SendConfigUpdateEvent()
         Maintenance()
         GotoState("Running")
     EndEvent
@@ -249,7 +250,6 @@ Function RegisterForEvents()
     RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
-    RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     Log("Registered for Hotkeys and Events")
 EndFunction
@@ -485,10 +485,12 @@ EndFunction
 
 Function UpdateConfig()
     Log("PSQ Recieved Config Update")
-    UnregisterForHotkeys()
-    RegisterForHotkeys()
-    playerEnergyCurrent = playerEnergyCurrent
-    ApplyRankedPerks()
-    UpdatePath()
-    UpdateCSFPower()
+    if isPlayerSuccubus.GetValueInt() != 0
+        UnregisterForHotkeys()
+        RegisterForHotkeys()
+        playerEnergyCurrent = playerEnergyCurrent
+        ApplyRankedPerks()
+        UpdatePath()
+        UpdateCSFPower()
+    endif
 EndFunction
