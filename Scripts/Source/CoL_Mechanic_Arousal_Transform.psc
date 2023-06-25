@@ -5,17 +5,13 @@ CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnInit()
+    RegisterForModEvent("CoL_configUpdated","UpdateConfig")
 EndEvent
-
-State Initialize
-    Event OnBeginState()
-        Maintenance()
-    EndEvent
-EndState
 
 State Polling
     Event OnBeginState()
-        RegisterForSingleUpdate(30)
+        RegisterForSingleUpdate(10)
+        CoL.Log("Arousal Transform Polling Started")
     EndEvent
 
     Event OnUpdate()
@@ -31,11 +27,12 @@ State Polling
             forceUntransform()
         endif
 
-        RegisterForSingleUpdate(30)
+        RegisterForSingleUpdate(10)
     EndEvent
 
     Event OnEndState()
         UnregisterForUpdate()
+        CoL.Log("Arousal Transform Polling Stopped")
     EndEvent
 EndState
 
@@ -55,9 +52,12 @@ EndState
 
 Function Maintenance()
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
+    RegisterForModEvent("CoL_configUpdated","UpdateConfig")
 
     if iArousal.IsInterfaceActive()
-        GoToState("Polling")
+        if configHandler.transformArousalUpperThreshold != 0 || configHandler.transformArousalLowerThreshold != 0
+            GoToState("Polling")
+        endif
     endif
 
 EndFunction
@@ -87,9 +87,9 @@ Function forceUntransform()
 EndFunction
 
 Function UpdateConfig()
-    if configHandler.transformArousalUpperThreshold == 0 && configHandler.transformArousalUpperThreshold == 0
+    if configHandler.transformArousalUpperThreshold == 0 && configHandler.transformArousalLowerThreshold == 0
         GoToState("Uninitialize")
-    elseif GetState() != "Polling"
-        GoToState("Initialize")
+    else
+        Maintenance()
     endif
 EndFunction
