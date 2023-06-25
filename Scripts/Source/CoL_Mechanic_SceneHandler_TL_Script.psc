@@ -3,10 +3,12 @@ Scriptname CoL_Mechanic_SceneHandler_TL_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 string currentSceneName
 
 Actor[] victims
+float[] victimsArousal
 Actor succubus
 String succubusName
 
@@ -46,7 +48,7 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
     while i < victims.length
         if victims[i] != None
             string actorName = victims[i].GetLeveledActorBase().GetName()
-            float arousal = 0.0
+            float arousal = victimsArousal[i]
             int drainHandle 
             if succubus == CoL.playerRef
                 drainHandle = ModEvent.Create("CoL_startDrain")
@@ -120,22 +122,27 @@ Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerC
     Actor victim
     if ActInPos1 && ActInPos1 != succubus
         victims = PushActor(victims, ActInPos1 as Actor)
+        victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos1 as Actor))
         CoL.Log("    Victim 1: " + (ActInPos1 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos2 && ActInPos2 != succubus
         victims = PushActor(victims, ActInPos2 as Actor)
+        victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos2 as Actor))
         CoL.Log("    Victim 2: " +  (ActInPos2 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos3 && ActInPos3 != succubus
         victims = PushActor(victims, ActInPos3 as Actor)
+        victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos3 as Actor))
         CoL.Log("    Victim 3: " +  (ActInPos3 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos4 && ActInPos4 != succubus
         victims = PushActor(victims, ActInPos4 as Actor)
+        victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos4 as Actor))
         CoL.Log("    Victim 4: " +  (ActInPos4 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos5 && ActInPos5 != succubus
         victims = PushActor(victims, ActInPos5 as Actor)
+        victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos5 as Actor))
         CoL.Log("    Victim 5: " +  (ActInPos5 as Actor).GetLeveledActorBase().GetName())
     endif
 

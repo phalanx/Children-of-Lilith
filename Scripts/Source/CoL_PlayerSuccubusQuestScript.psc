@@ -12,11 +12,8 @@ CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_Mechanic_Arousal_Transform Property arousalTransformHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
-CoL_Interface_SLAR_Script Property SLAR Auto
-CoL_Interface_OAroused_Script Property OAroused Auto
 CoL_Interface_Toys_Script Property Toys Auto
 CoL_Interface_OStim_Script Property oStim Auto
-CoL_Interface_OSL_Script Property OSL Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Interface_SLCumOverlay_Script Property iSLCumOverlay Auto
@@ -476,32 +473,6 @@ Function UpdatePath()
         GrantSpells(VaerminaTraits, false)
         Debug.Notification("Path of Vaermina added")
     endif
-EndFunction
-
-float Function GetActorArousal(Actor target)
-    int arousalMods = 0
-    float targetArousal = 0.0
-    if OAroused.IsInterfaceActive()
-        targetArousal += OAroused.GetArousal(target)
-        arousalMods += 1
-    endif
-    if SLAR.IsInterfaceActive()
-        targetArousal += SLAR.GetActorArousal(target)
-        arousalMods += 1
-    endif
-    if OSL.IsInterfaceActive()
-        targetArousal += OSL.GetArousal(target)
-        arousalMods += 1
-    endif
-    if Toys.IsInterfaceActive() && target == playerRef
-        targetArousal += Toys.GetRousing()
-    endif
-    if arousalMods > 0
-        targetArousal = targetArousal / arousalMods
-    else
-        targetArousal = 0.0
-    endif
-    return targetArousal
 EndFunction
 
 Function UpdateCSFPower()

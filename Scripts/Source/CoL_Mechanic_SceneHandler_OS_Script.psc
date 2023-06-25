@@ -3,7 +3,7 @@ Scriptname CoL_Mechanic_SceneHandler_OS_Script extends activemagiceffect
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_OStim_Script Property oStim Auto
-CoL_Interface_OAroused_Script Property OAroused Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 Quest Property oDefeat Auto Hidden
 
 bool oStimInstalled = False
@@ -49,7 +49,6 @@ Function CheckForAddons()
     if oDefeat != None
         oDefeatInstalled = True
     endif
-    oArousedInstalled = OAroused.IsInterfaceActive()
 
     if oArousedInstalled
        CoL.Log("OAroused Detected")
@@ -77,7 +76,7 @@ State Waiting
         currentPartnerArousal = new float[3]
         int i = 0
         while i < currentPartners.Length
-            currentPartnerArousal[i] = CoL.GetActorArousal(currentPartners[i])
+            currentPartnerArousal[i] = iArousal.GetActorArousal(currentPartners[i])
             i += 1
         endwhile
 

@@ -91,9 +91,9 @@ EndState
 
 State Text_BecomeSuccubus
     Event OnSelectST(string state_id)
+        SetTextOptionValueST("$COL_MCM_EXIT")
         SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "Text_BecomeSuccubus")
         CoL.GoToState("Initialize")
-        SetTextOptionValueST("$COL_MCM_EXIT")
         Utility.Wait(0.5)
     EndEvent
 

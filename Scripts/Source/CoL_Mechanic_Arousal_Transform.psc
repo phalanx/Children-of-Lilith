@@ -1,12 +1,8 @@
 Scriptname CoL_Mechanic_Arousal_Transform extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
-
-bool slarActive
-bool oarousedActive
-bool toysActive
-bool oslActive
 
 Event OnInit()
 EndEvent
@@ -23,7 +19,7 @@ State Polling
     EndEvent
 
     Event OnUpdate()
-        float averageArousal = CoL.GetActorArousal(CoL.playerRef)
+        float averageArousal = iArousal.GetActorArousal(CoL.playerRef)
 
         CoL.Log("Average arousal: " + averageArousal)
         CoL.Log("Upper Threshold: " + configHandler.transformArousalUpperThreshold)
@@ -60,11 +56,7 @@ EndState
 Function Maintenance()
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
 
-    toysActive = CoL.Toys.IsInterfaceActive()
-    slarActive = CoL.SLAR.IsInterfaceActive()
-    oarousedActive = CoL.OAroused.IsInterfaceActive()
-    oslActive = CoL.OSL.IsInterfaceActive()
-    if toysActive || slarActive || oarousedActive || oslActive
+    if iArousal.IsInterfaceActive()
         GoToState("Polling")
     endif
 

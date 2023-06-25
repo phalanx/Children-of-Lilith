@@ -1,6 +1,7 @@
 Scriptname CoL_Mechanic_DrainHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
@@ -180,7 +181,7 @@ float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
     float succubusArousal = 0.0
 
     if CoL.playerRef.HasPerk(slakeThirst)
-        succubusArousal = CoL.GetActorArousal(CoL.playerRef)
+        succubusArousal = iArousal.GetActorArousal(CoL.playerRef)
         CoL.Log("Succubus Arousal: " + succubusArousal)
     endif
 
