@@ -187,10 +187,11 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
 EndEvent
 
 Event SLSOOrgasmHandler(Form ActorRef, Int threadID)
-    Actor akActor = ActorRef as Actor
-    string actorName = akActor.GetLeveledActorBase().GetName()
     CoL.Log("Entered orgasm handler")
-    if akActor != succubus
+    Actor akActor = ActorRef as Actor
+    Actor[] positions = SexLab.Positions(threadID)
+    string actorName = akActor.GetLeveledActorBase().GetName()
+    if akActor != succubus && positions.Find(succubus) >= 0
         triggerDrainStart(akActor)
         CoL.Log("Trigger drain start for " + actorName)
     endif
