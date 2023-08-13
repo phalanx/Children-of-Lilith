@@ -41,28 +41,28 @@ function Transform()
         armorBuff   += configHandler.transformBaseArmor
         magicResistBuff += configHandler.transformBaseMagicResist
     endif
-        CoL.Log("Health Buff: " + healthBuff)
-        transformBuffSpell.SetNthEffectMagnitude(0, healthBuff)
+    CoL.Log("Health Buff: " + healthBuff)
+    transformBuffSpell.SetNthEffectMagnitude(0, healthBuff)
 
-        CoL.Log("Stamina Buff: " + staminaBuff)
-        transformBuffSpell.SetNthEffectMagnitude(1, staminaBuff)
+    CoL.Log("Stamina Buff: " + staminaBuff)
+    transformBuffSpell.SetNthEffectMagnitude(1, staminaBuff)
 
-        CoL.Log("Magicka Buff: " + magickaBuff)
-        transformBuffSpell.SetNthEffectMagnitude(2, magickaBuff)
+    CoL.Log("Magicka Buff: " + magickaBuff)
+    transformBuffSpell.SetNthEffectMagnitude(2, magickaBuff)
 
-        CoL.Log("Carry Weight Buff: " + carryWeightBuff)
-        transformBuffSpell.SetNthEffectMagnitude(3, carryWeightBuff)
+    CoL.Log("Carry Weight Buff: " + carryWeightBuff)
+    transformBuffSpell.SetNthEffectMagnitude(3, carryWeightBuff)
 
-        CoL.Log("Melee Damage Buff: " + meleeDamageBuff)
-        transformBuffSpell.SetNthEffectMagnitude(4, meleeDamageBuff)
-        
-        CoL.Log("Armor Buff: " + armorBuff)
-        transformBuffSpell.SetNthEffectMagnitude(5, armorBuff)
+    CoL.Log("Melee Damage Buff: " + meleeDamageBuff)
+    transformBuffSpell.SetNthEffectMagnitude(4, meleeDamageBuff)
+    
+    CoL.Log("Armor Buff: " + armorBuff)
+    transformBuffSpell.SetNthEffectMagnitude(5, armorBuff)
 
-        CoL.Log("Magic Resist Buff: " + magicResistBuff)
-        transformBuffSpell.SetNthEffectMagnitude(6, magicResistBuff)
+    CoL.Log("Magic Resist Buff: " + magicResistBuff)
+    transformBuffSpell.SetNthEffectMagnitude(6, magicResistBuff)
 
-        CoL.playerRef.AddSpell(transformBuffSpell, false)
+    CoL.playerRef.AddSpell(transformBuffSpell, false)
 endfunction
 
 function UnTransform()
