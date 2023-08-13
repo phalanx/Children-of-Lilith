@@ -1,6 +1,5 @@
 Scriptname CoL_Mechanic_NPC_DrainHandler_Script extends Quest
 
-
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script configHandler
 
@@ -11,6 +10,12 @@ State Initialize
         Maintenance()
     EndEvent
 EndState
+
+Function Maintenance()
+    RegisterForModEvent("CoL_startDrain_NPC", "StartDrain")
+    RegisterForModEvent("CoL_endDrain_NPC", "EndDrain")
+    CoL.Log("Registered for CoL NPC Drain Events")
+EndFunction
 
 State Uninitialize
     Event OnBeginState()
@@ -108,12 +113,6 @@ State DrainingToDeath
     EndEvent
 EndState
 
-Function Maintenance()
-    RegisterForModEvent("CoL_startDrain_NPC", "StartDrain")
-    RegisterForModEvent("CoL_endDrain_NPC", "EndDrain")
-    CoL.Log("Registered for CoL NPC Drain Events")
-EndFunction
-
 Float Function applyDrainSpell(Actor drainee, float arousal)
     float drainAmount = CalculateDrainAmount(drainee, arousal)
     float removalday = CoL.GameDaysPassed.GetValue() + (configHandler.drainDurationInGameTime / 24)
@@ -126,6 +125,7 @@ EndFunction
 
 float Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 EndFunction
+
 Event StartDrain( Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
 EndEvent
 Event EndDrain(Form drainerForm, Form draineeForm)

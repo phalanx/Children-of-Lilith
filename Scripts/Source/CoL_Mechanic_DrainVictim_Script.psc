@@ -10,7 +10,7 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
     drainTargetName = drainTarget.GetLeveledActorBase().GetName()
     
     float removalDay
-    if !drainTarget.IsInFaction(CoL.drainVictimFaction)
+    if !drainTarget.IsInFaction(CoL.drainVictimFaction) && StorageUtil.GetIntValue(drainTarget, "CoL_activeParticipant") != 1
         CoL.Log(drainTarget + " is not in drain victim faction. Removing Drain Victim Effect")
         FinishDrain(drainTarget)
         return
@@ -23,7 +23,6 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
             return
         endif
     endif
-
 
     CoL.Log(drainTargetName + " has been drained")
 

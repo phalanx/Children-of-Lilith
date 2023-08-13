@@ -20,6 +20,7 @@ float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier app
 float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
+float Property minHealthPercent = 0.11 Auto Hidden              ; Minimum percentage of health allowed to be drained
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
@@ -142,7 +143,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 2
+    return 3
 EndFunction
 
 int Function SaveConfig()
@@ -166,6 +167,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "energyConversionRate", energyConversionRate)
         JMap.setInt(jObj, "drainFeedsVampire", drainFeedsVampire as int)
         JMap.setInt(jObj, "npcDrainToDeathChance", npcDrainToDeathChance)
+        JMap.setFlt(jObj, "minHealthPercent", minHealthPercent)
     ; Save Levelling Settings
         JMap.setFlt(jObj, "xpConstant", xpConstant)
         JMap.setFlt(jObj, "xpPower", xpPower)
@@ -206,7 +208,6 @@ int Function SaveConfig()
         JMap.setInt(jObj, "toggleDrainHotkey", toggleDrainHotkey)
         JMap.setInt(jObj, "toggleDrainToDeathHotkey", toggleDrainToDeathHotkey)
         JMap.setInt(jObj, "transformHotkey", transformHotkey)
-        ; JMap.setInt(jObj, "temptationHotkey", temptationHotkey)
         JMap.setInt(jObj, "temptationHotkey", newTemptationHotkey)
         JMap.setInt(jObj, "csfMenuHotkey", csfMenuHotkey)
     ; Save Widget Settings
@@ -266,6 +267,9 @@ Function LoadConfig(int jObj)
         energyConversionRate = JMap.getFlt(jObj, "energyConversionRate")
         drainFeedsVampire = JMap.getInt(jObj, "drainFeedsVampire") as bool
         npcDrainToDeathChance = JMap.getInt(jObj, "npcDrainToDeathChance")
+        if configVersion >= 3
+            minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
+        endif
     ; Load Levelling Settings
         xpConstant = JMap.getFlt(jObj, "xpConstant")
         xpPower = JMap.getFlt(jObj, "xpPower")
