@@ -53,9 +53,11 @@ bool Property grantCSFPower = false Auto Hidden         ; Should the CSF Power M
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Succubus Become Ethereal
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Succubus HealRate Boost
 float Property healRateBoostAmount = 10.0 Auto Hidden   ; Modify healRate by this amount
+
 float Property energyCastingMult = 1.0 Auto Hidden      ; Modify the energy cost of spells
 string[] Property energyCastingConcStyleOptions Auto Hidden ; Holds string values for the concentration calculation style. Initialized in Maintenance()
 int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
+bool Property energyCastingFXEnabled = True Auto Hidden ; Enables or disables the screen flash effect of energy casting
 
 int Property excitementCost = 10 Auto Hidden            ; Energy cost of excitement spell
 int Property excitementBaseIncrease = 1 Auto Hidden     ; Base arousal increase of excitement
@@ -143,7 +145,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 3
+    return 4
 EndFunction
 
 int Function SaveConfig()
@@ -195,6 +197,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "healRateBoostAmount", healRateBoostAmount)
         JMap.setFlt(jObj, "energyCastingMult", energyCastingMult)
         JMap.setInt(jObj, "energyCastingConcStyle", energyCastingConcStyle)
+        JMap.setInt(jObj, "energyCastingFX", energyCastingFXEnabled as int)
         JMap.setInt(jObj, "excitementCost", excitementCost)
         JMap.setInt(jObj, "excitementBaseIncrease", excitementBaseIncrease)
         JMap.setFlt(jObj, "excitementLevelMult", excitementLevelMult)
@@ -297,6 +300,9 @@ Function LoadConfig(int jObj)
         healRateBoostAmount = JMap.getFlt(jObj, "healRateBoostAmount")
         energyCastingMult = JMap.getFlt(jObj, "energyCastingMult")
         energyCastingConcStyle = JMap.getInt(jObj, "energyCastingConcStyle")
+        if configVersion >= 4
+            energyCastingFXEnabled = JMap.getInt(jObj, "energyCastingFX")
+        endif
         excitementCost = JMap.getInt(jObj, "excitementCost")
         excitementBaseIncrease = JMap.getInt(jObj, "excitementBaseIncrease")
         excitementLevelMult = JMap.getFlt(jObj, "excitementLevelMult")

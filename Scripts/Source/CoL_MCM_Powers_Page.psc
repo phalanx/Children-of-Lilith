@@ -19,6 +19,7 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_healRateBoostCost", "$COL_POWERSPAGE_HEALRATEBOOSTCOST", configHandler.healRateBoostCost)
     AddSliderOptionST("Slider_healRateBoostAmount", "$COL_POWERSPAGE_HEALRATEBOOSTAMOUNT", configHandler.healRateBoostAmount)
     AddEmptyOption()
+    AddToggleOptionST("Toggle_energyCastingFX", "$COL_POWERSPAGE_ENERGYCASTINGFXENABLED", configHandler.energyCastingFXEnabled)
     AddSliderOptionST("Slider_energyCastingMult", "$COL_POWERSPAGE_ENERGYCASTINGMULT", configHandler.energyCastingMult, "{0}")
     AddMenuOptionST("Menu_energyCastingConcStyle", "$COL_POWERSPAGE_COSTCALCSTYLE", configHandler.energyCastingConcStyleOptions[configHandler.energyCastingConcStyle])
     SetCursorPosition(1)
@@ -81,6 +82,15 @@ State Slider_healRateBoostAmount
     EndEvent
 EndState
 
+State Toggle_energyCastingFX
+    Event OnSelectST(string state_id)
+        configHandler.energyCastingFXEnabled = !configHandler.energyCastingFXEnabled
+        SetToggleOptionValueST(configHandler.energyCastingFXEnabled)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_POWERSPAGE_ENERGYCASTINGFXENABLED_HELP")
+    EndEvent
+EndState
 State Slider_energyCastingMult
     Event OnSliderOpenST(string state_id)
         SetSliderDialogStartValue(configHandler.energyCastingMult)
