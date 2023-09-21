@@ -49,7 +49,7 @@ State Running
 
     Function addPerkPoint()
         CoL.Log("Adding Perk")
-        perkPointsAvailable.Mod(1)
+        perkPointsAvailable.Mod(configHandler.perkPointsRecieved)
     EndFunction
 
     Function calculateXpForNextLevel()
