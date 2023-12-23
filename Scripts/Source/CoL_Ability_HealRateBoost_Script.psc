@@ -5,7 +5,6 @@ CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     if Col.playerEnergyCurrent >= configHandler.healRateBoostCost
-        akTarget.ModActorValue("HealRate", configHandler.healRateBoostAmount)
         RegisterForSingleUpdate(1.0)
     else
         Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
@@ -22,8 +21,4 @@ Event OnUpdate()
     endif
     CoL.playerEnergyCurrent -= configHandler.healRateBoostCost
     RegisterForSingleUpdate(1.0)
-EndEvent
-
-Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    akTarget.ModActorValue("HealRate", 0.0 - configHandler.healRateBoostAmount)
 EndEvent
