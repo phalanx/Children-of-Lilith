@@ -71,7 +71,7 @@ State Slider_healRateBoostAmount
         SetSliderDialogStartValue(configHandler.healRateBoostAmount)
         SetSliderDialogDefaultValue(10.0)
         SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(1.0, 500.0)
+        SetSliderDialogRange(1.0, 200.0)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.healRateBoostAmount = value

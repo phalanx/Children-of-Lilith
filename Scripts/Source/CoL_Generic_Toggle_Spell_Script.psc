@@ -1,11 +1,11 @@
 Scriptname CoL_Generic_Toggle_Spell_Script extends activemagiceffect  
 
 Spell Property SpellToToggle Auto
-String Property displayName Auto
+string Property displayName Auto
 CoL_ConfigHandler_Script Property configHandler Auto
-; This value is to choose which value to pull from the configHandler for magnitude
-; -1 = Unset
-; 0 = healRateBoostAmount
+; Property to determine which config property to use for magnitude
+; -1 = unset
+; 0  = healRateBoostAmount
 Int Property magnitudeConfigValue = -1 Auto
   
 Event OnEffectStart(Actor akTarget, Actor akCaster)
