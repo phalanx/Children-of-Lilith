@@ -1,5 +1,7 @@
 Scriptname CoL_ConfigHandler_Script extends Quest
 
+GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
+
 float Property baseMaxEnergy = 100.0 Auto Hidden                ; Base line maximum energy, before perks are applied
 string[] Property followedPathOptions Auto Hidden               ; Holds available path options
 int Property selectedPath = 0 Auto Hidden                       ; Which path is the player following
@@ -18,6 +20,7 @@ float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier app
 float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
+float Property minHealthPercent = 0.11 Auto Hidden              ; Minimum percentage of health allowed to be drained
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
@@ -50,9 +53,11 @@ bool Property grantCSFPower = false Auto Hidden         ; Should the CSF Power M
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Succubus Become Ethereal
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Succubus HealRate Boost
 float Property healRateBoostAmount = 10.0 Auto Hidden   ; Modify healRate by this amount
+
 float Property energyCastingMult = 1.0 Auto Hidden      ; Modify the energy cost of spells
 string[] Property energyCastingConcStyleOptions Auto Hidden ; Holds string values for the concentration calculation style. Initialized in Maintenance()
 int Property energyCastingConcStyle = 1 Auto Hidden     ; 0: Calculate only Left hand, ; 1: Both hands ; 2: Right Hand ; Anything else: Don't calculate
+bool Property energyCastingFXEnabled = True Auto Hidden ; Enables or disables the screen flash effect of energy casting
 
 int Property excitementCost = 10 Auto Hidden            ; Energy cost of excitement spell
 int Property excitementBaseIncrease = 1 Auto Hidden     ; Base arousal increase of excitement
@@ -131,14 +136,16 @@ Function Maintenance()
 EndFunction
 
 Function SendConfigUpdateEvent()
-    int handle = ModEvent.Create("CoL_configUpdated")
-    if handle
-        ModEvent.Send(handle)
+    if isPlayerSuccubus.GetValueInt() != 0
+        int handle = ModEvent.Create("CoL_configUpdated")
+        if handle
+            ModEvent.Send(handle)
+        endif
     endif
 EndFunction
 
 int Function GetConfigVersion()
-    return 2
+    return 4
 EndFunction
 
 int Function SaveConfig()
@@ -162,6 +169,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "energyConversionRate", energyConversionRate)
         JMap.setInt(jObj, "drainFeedsVampire", drainFeedsVampire as int)
         JMap.setInt(jObj, "npcDrainToDeathChance", npcDrainToDeathChance)
+        JMap.setFlt(jObj, "minHealthPercent", minHealthPercent)
     ; Save Levelling Settings
         JMap.setFlt(jObj, "xpConstant", xpConstant)
         JMap.setFlt(jObj, "xpPower", xpPower)
@@ -189,6 +197,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "healRateBoostAmount", healRateBoostAmount)
         JMap.setFlt(jObj, "energyCastingMult", energyCastingMult)
         JMap.setInt(jObj, "energyCastingConcStyle", energyCastingConcStyle)
+        JMap.setInt(jObj, "energyCastingFX", energyCastingFXEnabled as int)
         JMap.setInt(jObj, "excitementCost", excitementCost)
         JMap.setInt(jObj, "excitementBaseIncrease", excitementBaseIncrease)
         JMap.setFlt(jObj, "excitementLevelMult", excitementLevelMult)
@@ -202,7 +211,6 @@ int Function SaveConfig()
         JMap.setInt(jObj, "toggleDrainHotkey", toggleDrainHotkey)
         JMap.setInt(jObj, "toggleDrainToDeathHotkey", toggleDrainToDeathHotkey)
         JMap.setInt(jObj, "transformHotkey", transformHotkey)
-        ; JMap.setInt(jObj, "temptationHotkey", temptationHotkey)
         JMap.setInt(jObj, "temptationHotkey", newTemptationHotkey)
         JMap.setInt(jObj, "csfMenuHotkey", csfMenuHotkey)
     ; Save Widget Settings
@@ -262,6 +270,9 @@ Function LoadConfig(int jObj)
         energyConversionRate = JMap.getFlt(jObj, "energyConversionRate")
         drainFeedsVampire = JMap.getInt(jObj, "drainFeedsVampire") as bool
         npcDrainToDeathChance = JMap.getInt(jObj, "npcDrainToDeathChance")
+        if configVersion >= 3
+            minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
+        endif
     ; Load Levelling Settings
         xpConstant = JMap.getFlt(jObj, "xpConstant")
         xpPower = JMap.getFlt(jObj, "xpPower")
@@ -289,6 +300,9 @@ Function LoadConfig(int jObj)
         healRateBoostAmount = JMap.getFlt(jObj, "healRateBoostAmount")
         energyCastingMult = JMap.getFlt(jObj, "energyCastingMult")
         energyCastingConcStyle = JMap.getInt(jObj, "energyCastingConcStyle")
+        if configVersion >= 4
+            energyCastingFXEnabled = JMap.getInt(jObj, "energyCastingFX")
+        endif
         excitementCost = JMap.getInt(jObj, "excitementCost")
         excitementBaseIncrease = JMap.getInt(jObj, "excitementBaseIncrease")
         excitementLevelMult = JMap.getFlt(jObj, "excitementLevelMult")

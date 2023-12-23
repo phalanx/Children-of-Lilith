@@ -12,17 +12,13 @@ CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_Mechanic_Arousal_Transform Property arousalTransformHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
-CoL_Interface_SLAR_Script Property SLAR Auto
-CoL_Interface_OAroused_Script Property OAroused Auto
 CoL_Interface_Toys_Script Property Toys Auto
 CoL_Interface_OStim_Script Property oStim Auto
-CoL_Interface_OSL_Script Property OSL Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
+CoL_Interface_SLCumOverlay_Script Property iSLCumOverlay Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
-
-
 
 ; Keyword Definitions
 Keyword Property ddLibs Auto Hidden
@@ -134,6 +130,7 @@ State Initialize
         widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
         UpdateConfig()
+        configHandler.SendConfigUpdateEvent()
         Maintenance()
         GotoState("Running")
     EndEvent
@@ -233,10 +230,12 @@ Function Maintenance()
     RegisterForEvents()
     Utility.Wait(0.5)
     if mortalPresetSaved && succuPresetSaved
-        if isTransformed
-            transformPlayer(succuPresetName, succuRace, succuHairColor)
-        else
-            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+        if !isBeastRace()
+            if isTransformed
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
+            else
+                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+            endif
         endif
     endif
 EndFunction
@@ -253,7 +252,6 @@ Function RegisterForEvents()
     RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
-    RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     Log("Registered for Hotkeys and Events")
 EndFunction
@@ -340,7 +338,19 @@ Event OnUpdate()
     endif
 EndEvent
 
+bool Function isBeastRace()
+    Race currentRace = playerRef.GetRace()
+    if MiscUtil.GetRaceEditorID(currentRace) == "WerewolfBeastRace" || MiscUtil.GetRaceEditorID(currentRace) == "DLC1VampireBeastRace"
+        return True
+    else
+        return False
+    endif
+EndFunction
+
 bool Function isBusy()
+    if isBeastRace()
+        return True
+    endif
 	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
 		return True
 	elseIf playerRef.IsInCombat()
@@ -387,6 +397,9 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
 
     iSlaveTats.ReapplySlaveTats(playerRef, true)
     UpdateTattoo()
+    if iSLCumOverlay.IsInterfaceActive()
+        iSLCumOverlay.reapplySCOEffects(playerRef)
+    endif
     Log("Finished Transforming Player")
 EndFunction
 
@@ -476,32 +489,6 @@ Function UpdatePath()
     endif
 EndFunction
 
-float Function GetActorArousal(Actor target)
-    int arousalMods = 0
-    float targetArousal = 0.0
-    if OAroused.IsInterfaceActive()
-        targetArousal += OAroused.GetArousal(target)
-        arousalMods += 1
-    endif
-    if SLAR.IsInterfaceActive()
-        targetArousal += SLAR.GetActorArousal(target)
-        arousalMods += 1
-    endif
-    if OSL.IsInterfaceActive()
-        targetArousal += OSL.GetArousal(target)
-        arousalMods += 1
-    endif
-    if Toys.IsInterfaceActive() && target == playerRef
-        targetArousal += Toys.GetRousing()
-    endif
-    if arousalMods > 0
-        targetArousal = targetArousal / arousalMods
-    else
-        targetArousal = 0.0
-    endif
-    return targetArousal
-EndFunction
-
 Function UpdateCSFPower()
     if configHandler.grantCSFPower
         playerRef.AddSpell(showperkMenu)
@@ -512,10 +499,12 @@ EndFunction
 
 Function UpdateConfig()
     Log("PSQ Recieved Config Update")
-    UnregisterForHotkeys()
-    RegisterForHotkeys()
-    playerEnergyCurrent = playerEnergyCurrent
-    ApplyRankedPerks()
-    UpdatePath()
-    UpdateCSFPower()
+    if isPlayerSuccubus.GetValueInt() != 0
+        UnregisterForHotkeys()
+        RegisterForHotkeys()
+        playerEnergyCurrent = playerEnergyCurrent
+        ApplyRankedPerks()
+        UpdatePath()
+        UpdateCSFPower()
+    endif
 EndFunction

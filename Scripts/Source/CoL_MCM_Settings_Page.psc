@@ -41,6 +41,7 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_healthDrainMulti", "$COL_SETTINGSPAGE_HEALTHDRAINMULT", configHandler.healthDrainMult, "{1}")
         AddSliderOptionST("Slider_drainArousalMulti", "$COL_SETTINGSPAGE_DRAINAROUSALMULT", configHandler.drainArousalMult, "{1}")
         AddSliderOptionST("Slider_energyConversionRate", "$COL_SETTINGSPAGE_ENERGYCONVERSIONRATE", configHandler.energyConversionRate, "{1}")
+        AddSliderOptionST("Slider_minHealthPercent", "$COL_SETTINGSPAGE_MINHEALTHPERCENT", configHandler.minHealthPercent, "{2}")
         AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
@@ -63,7 +64,7 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_transformStaminaPerRank", "$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK", configHandler.transformStaminaPerRank)
         AddSliderOptionST("Slider_transformMagickaPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK", configHandler.transformMagickaPerRank)
         AddSliderOptionST("Slider_transformCarryWeightPerRank", "$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK", configHandler.transformCarryWeightPerRank)
-        AddSliderOptionST("Slider_transformMeleeDamagePerRank", "$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK", configHandler.transformMeleeDamagePerRank, "{1}")
+        AddSliderOptionST("Slider_transformMeleeDamagePerRank", "$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK", configHandler.transformMeleeDamagePerRank, "{2}")
         AddSliderOptionST("Slider_transformArmorPerRank", "$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK", configHandler.transformArmorPerRank)
         AddSliderOptionST("Slider_transformMagicResistPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK", configHandler.transformMagicResistPerRank)
     ; Hunger Settings
@@ -252,6 +253,22 @@ EndEvent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_ENERGYCONVERSIONRATE_HELP")
+        EndEvent
+    EndState
+    
+    State Slider_minHealthPercent
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialogStartValue(configHandler.minHealthPercent)
+            SetSliderDialogDefaultValue(0.11)
+            SetSliderDialogInterval(0.01)
+            SetSliderDialogRange(0.0, 1.0)
+        EndEvent
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.minHealthPercent = value
+            SetSliderOptionValueST(configHandler.minHealthPercent, "{2}")
+        EndEvent
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_MINHEALTHPERCENT_HELP")
         EndEvent
     EndState
 

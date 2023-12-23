@@ -1,6 +1,7 @@
 Scriptname CoL_Mechanic_HungerHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 Spell Property starvationSpell Auto
 
@@ -8,7 +9,7 @@ float lastCheckTime = 0.0
 int starvationStack = 0
 
 Event OnInit()
-    RegisterForModEvent("CoL_GameLoad", "Maintenance")
+    Maintenance()
 EndEvent
 
 Function Maintenance()
@@ -38,10 +39,7 @@ State HungerEnabled
                 starvationStack += 1
             endif
             if configHandler.hungerArousalEnabled
-                CoL.SLAR.UpdateActorExposure(CoL.playerRef, (configHandler.hungerArousalAmount as int))
-                CoL.OAroused.ModifyArousal(CoL.playerRef, (configHandler.hungerArousalAmount as int))
-                CoL.Toys.ArousalAdjust(configHandler.hungerArousalAmount as int)
-                CoL.OSL.ModifyArousal(CoL.playerRef, configHandler.hungerArousalAmount as int, "Succubus Hunger")
+                iArousal.ModifyArousal(CoL.playerRef, configHandler.hungerArousalAmount)
             endif
             CoL.playerEnergyCurrent = 0
             CoL.Log("Starvation Stack: " + starvationStack)

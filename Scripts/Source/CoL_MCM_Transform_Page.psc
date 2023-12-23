@@ -354,6 +354,7 @@ State Slider_ArousalUpperThreshold
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformArousalUpperThreshold = value
+        configHandler.SendConfigUpdateEvent()
         SetSliderOptionValueST(configHandler.transformArousalUpperThreshold)
     EndEvent
     Event OnHighlightST(string state_id)
@@ -369,6 +370,7 @@ State Slider_ArousalLowerThreshold
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformArousalLowerThreshold = value
+        configHandler.SendConfigUpdateEvent()
         SetSliderOptionValueST(configHandler.transformArousalLowerThreshold)
     EndEvent
     Event OnHighlightST(string state_id)

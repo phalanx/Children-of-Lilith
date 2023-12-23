@@ -1,11 +1,14 @@
 Scriptname CoL_Mechanic_SceneHandler_FG_Script extends activemagiceffect  
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 Keyword Property IsHavingSex Auto Hidden
 
 Actor victim1
+float victim1_arousal
 Actor victim2
+float victim2_arousal
 Actor succubus
 String succubusName
 
@@ -46,9 +49,11 @@ State Waiting
 
         if participant1 as Actor != succubus
             victim1 = participant1 as Actor
+            victim1_arousal = iArousal.GetActorArousal(victim1)
         endif
         if participant2 as Actor != succubus
             victim2 = participant2 as Actor
+            victim2_arousal = iArousal.GetActorArousal(victim2)
         endif
 
         int sceneStartEvent
@@ -86,10 +91,10 @@ State Running
         UnRegisterForModEvent("CoL_FG_Climax")
 
         if victim1 
-            triggerDrainStart(victim1)    
+            triggerDrainStart(victim1, victim1_arousal)    
         endif
         if victim2
-            triggerDrainStart(victim2)
+            triggerDrainStart(victim2, victim2_arousal)
         endif
         GoToState("Ending")
     EndEvent
@@ -150,7 +155,7 @@ State Ending
     EndEvent
 EndState
 
-Function triggerDrainStart(Actor victim)
+Function triggerDrainStart(Actor victim, float arousal)
     if !victim1 && !victim2
         return
     endif
@@ -167,7 +172,7 @@ Function triggerDrainStart(Actor victim)
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.PushString(drainHandle, actorName)
-        ModEvent.PushFloat(drainHandle, 0.0)
+        ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
         CoL.Log("Drain start event sent")
     endif

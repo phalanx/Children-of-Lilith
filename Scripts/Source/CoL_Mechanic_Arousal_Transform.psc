@@ -1,29 +1,21 @@
 Scriptname CoL_Mechanic_Arousal_Transform extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
-bool slarActive
-bool oarousedActive
-bool toysActive
-bool oslActive
-
 Event OnInit()
+    RegisterForModEvent("CoL_configUpdated","UpdateConfig")
 EndEvent
-
-State Initialize
-    Event OnBeginState()
-        Maintenance()
-    EndEvent
-EndState
 
 State Polling
     Event OnBeginState()
-        RegisterForSingleUpdate(30)
+        RegisterForSingleUpdate(10)
+        CoL.Log("Arousal Transform Polling Started")
     EndEvent
 
     Event OnUpdate()
-        float averageArousal = CoL.GetActorArousal(CoL.playerRef)
+        float averageArousal = iArousal.GetActorArousal(CoL.playerRef)
 
         CoL.Log("Average arousal: " + averageArousal)
         CoL.Log("Upper Threshold: " + configHandler.transformArousalUpperThreshold)
@@ -35,11 +27,12 @@ State Polling
             forceUntransform()
         endif
 
-        RegisterForSingleUpdate(30)
+        RegisterForSingleUpdate(10)
     EndEvent
 
     Event OnEndState()
         UnregisterForUpdate()
+        CoL.Log("Arousal Transform Polling Stopped")
     EndEvent
 EndState
 
@@ -59,13 +52,12 @@ EndState
 
 Function Maintenance()
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
+    RegisterForModEvent("CoL_configUpdated","UpdateConfig")
 
-    toysActive = CoL.Toys.IsInterfaceActive()
-    slarActive = CoL.SLAR.IsInterfaceActive()
-    oarousedActive = CoL.OAroused.IsInterfaceActive()
-    oslActive = CoL.OSL.IsInterfaceActive()
-    if toysActive || slarActive || oarousedActive || oslActive
-        GoToState("Polling")
+    if iArousal.IsInterfaceActive()
+        if configHandler.transformArousalUpperThreshold != 0 || configHandler.transformArousalLowerThreshold != 0
+            GoToState("Polling")
+        endif
     endif
 
 EndFunction
@@ -95,9 +87,9 @@ Function forceUntransform()
 EndFunction
 
 Function UpdateConfig()
-    if configHandler.transformArousalUpperThreshold == 0 && configHandler.transformArousalUpperThreshold == 0
+    if configHandler.transformArousalUpperThreshold == 0 && configHandler.transformArousalLowerThreshold == 0
         GoToState("Uninitialize")
-    elseif GetState() != "Polling"
-        GoToState("Initialize")
+    else
+        Maintenance()
     endif
 EndFunction

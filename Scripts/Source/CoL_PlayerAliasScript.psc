@@ -48,15 +48,21 @@ Event OnSpellCast(Form akSpell)
     Spell spellCast = akSpell as Spell
     if spellCast && CoL.playerRef.HasPerk(CoL.energyCastingPerk) && spellCast != CoL.energyCastingToggleSpell
         if VancianMagicPerk && CoL.playerRef.HasPerk(VancianMagicPerk)
-            EnergyCastingIMod.Apply()
+            if configHandler.energyCastingFXEnabled
+                EnergyCastingIMod.Apply()
+            endif
             Utility.Wait(0.1)
             if LastVancianCharges != CurrentVancianCharges.GetValue()
                 ExpendEnergyVancian()
                 Utility.Wait(0.1)
             endif
-            EnergyCastingIMod.Remove()
+            if configHandler.energyCastingFXEnabled
+                EnergyCastingIMod.Remove()
+            endif
         else
-            EnergyCastingIMod.Apply()
+            if configHandler.energyCastingFXEnabled
+                EnergyCastingIMod.Apply()
+            endif
             ExpendEnergy(spellCast)
             RegisterForSingleUpdate(0.2)
         endif
@@ -97,7 +103,9 @@ Event OnUpdate()
             return
         endif
     endif
-    EnergyCastingIMod.Remove()
+    if configHandler.energyCastingFXEnabled
+        EnergyCastingIMod.Remove()
+    endif
 EndEvent
 
 Function ExpendEnergy(Spell spellCast, float costModifier = 1.0)

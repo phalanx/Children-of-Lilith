@@ -3,8 +3,8 @@ Scriptname CoL_Mechanic_SceneHandler_SL_Script extends activemagiceffect
 import PapyrusUtil
 
 CoL_Interface_SexLab_Script Property SexLab Auto
-CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 bool SexLabInstalled
@@ -56,10 +56,7 @@ EndFunction
 
 Function CheckForAddons()
     SLSOInstalled = Quest.GetQuest("SLSO")
-    SLARInstalled = SLAR.IsInterfaceActive()
-    if SLSOInstalled
-        CoL.Log("SLSO Detected")
-    endif
+
     if SLARInstalled
         CoL.Log("SLAR Detected")
     endif
@@ -68,7 +65,7 @@ EndFunction
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
     CoL.Log("Trigger drain start for " + actorName)
-    float arousal = CoL.GetActorArousal(victim)
+    float arousal = iArousal.GetActorArousal(victim)
 
     int drainHandle
     if succubus == CoL.playerRef
@@ -190,10 +187,11 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
 EndEvent
 
 Event SLSOOrgasmHandler(Form ActorRef, Int threadID)
-    Actor akActor = ActorRef as Actor
-    string actorName = akActor.GetLeveledActorBase().GetName()
     CoL.Log("Entered orgasm handler")
-    if akActor != succubus
+    Actor akActor = ActorRef as Actor
+    Actor[] positions = SexLab.Positions(threadID)
+    string actorName = akActor.GetLeveledActorBase().GetName()
+    if akActor != succubus && positions.Find(succubus) >= 0
         triggerDrainStart(akActor)
         CoL.Log("Trigger drain start for " + actorName)
     endif
