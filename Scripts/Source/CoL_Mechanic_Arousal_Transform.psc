@@ -36,19 +36,14 @@ State Polling
     EndEvent
 EndState
 
-State Uninitialize
-    Event OnBeginState()
-        UnregisterForModEvent("CoL_GameLoad")
-        if CoL.isTransformed
-            CoL.lockTransform = false
-        endif
-    EndEvent
-
-    Function Maintenance()
-        UnregisterForModEvent("CoL_GameLoad")
-        UnregisterForUpdate()
-    EndFunction
-EndState
+Function Uninitialize()
+    GoToState("")
+    UnregisterForModEvent("CoL_GameLoad")
+    if CoL.isTransformed
+        CoL.lockTransform = false
+    endif
+    UnregisterForUpdate()
+EndFunction
 
 Function Maintenance()
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
@@ -88,7 +83,7 @@ EndFunction
 
 Function UpdateConfig()
     if configHandler.transformArousalUpperThreshold == 0 && configHandler.transformArousalLowerThreshold == 0
-        GoToState("Uninitialize")
+        Uninitialize()
     else
         Maintenance()
     endif
