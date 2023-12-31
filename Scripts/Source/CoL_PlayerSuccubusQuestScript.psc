@@ -316,7 +316,6 @@ Function transformDrain()
 EndFunction
 
 Event OnUpdate()
-    Debug.StartStackProfiling()
     if isTransformed && configHandler.transformCost > 0
         if pauseCost
             Log("Transform cost paused")
