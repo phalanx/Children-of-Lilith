@@ -38,7 +38,7 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_forcedDrainMinimum", "$COL_SETTINGSPAGE_FORCEDDRAINMINIMUM", configHandler.forcedDrainMinimum, "{0}")
         AddSliderOptionST("Slider_forcedDrainToDeathMinimum", "$COL_SETTINGSPAGE_FORCEDDRAINTODEATHMINIMUM", configHandler.forcedDrainToDeathMinimum, "{0}")
         AddSliderOptionST("Slider_drainDuration", "$COL_SETTINGSPAGE_DRAINDURATION", configHandler.drainDurationInGameTime)
-        AddSliderOptionST("Slider_healthDrainMulti", "$COL_SETTINGSPAGE_HEALTHDRAINMULT", configHandler.healthDrainMult, "{1}")
+        AddSliderOptionST("Slider_healthDrainMulti", "$COL_SETTINGSPAGE_HEALTHDRAINMULT", configHandler.healthDrainMult, "{2}")
         AddSliderOptionST("Slider_drainArousalMulti", "$COL_SETTINGSPAGE_DRAINAROUSALMULT", configHandler.drainArousalMult, "{1}")
         AddSliderOptionST("Slider_energyConversionRate", "$COL_SETTINGSPAGE_ENERGYCONVERSIONRATE", configHandler.energyConversionRate, "{1}")
         AddSliderOptionST("Slider_minHealthPercent", "$COL_SETTINGSPAGE_MINHEALTHPERCENT", configHandler.minHealthPercent, "{2}")
@@ -188,13 +188,13 @@ EndEvent
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.healthDrainMult)
             SetSliderDialogDefaultValue(0.2)
-            SetSliderDialogInterval(0.1)
-            SetSliderDialogRange(0.0, 1.0)
+            SetSliderDialogInterval(0.01)
+            SetSliderDialogRange(0.0, 0.99)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.healthDrainMult = value
-            SetSliderOptionValueST(configHandler.healthDrainMult,"{1}")
+            SetSliderOptionValueST(configHandler.healthDrainMult,"{2}")
         EndEvent
 
         Event OnHighlightST(string state_id)
