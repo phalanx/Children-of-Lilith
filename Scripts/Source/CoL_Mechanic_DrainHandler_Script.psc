@@ -47,6 +47,7 @@ Function Maintenance()
     UnRegisterForModEvent("CoL_endDrain_NPC")
     RegisterForModEvent("CoL_startDrain", "StartDrain")
     RegisterForModEvent("CoL_endDrain", "EndDrain")
+    RegisterForModEvent("CoL_Energy_Updated", "energyUpdated")
     CoL.Log("Registered for CoL Drain Events")
 EndFunction
 
@@ -216,6 +217,20 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 
     CoL.Log("Final Drain Amount: " + drainAmount)
     return returnValues
+EndFunction
+
+Function energyUpdated(float newEnergy, float maxEnergy)
+    float energyPercentage = ((newEnergy / maxEnergy) * 100) 
+        if  configHandler.forcedDrainToDeathMinimum != -1 && energyPercentage <= configHandler.forcedDrainToDeathMinimum 
+            draining = false
+            drainingToDeath = true
+        elseif configHandler.forcedDrainMinimum != -1 && energyPercentage <= configHandler.forcedDrainMinimum
+            draining = true
+            drainingToDeath = false
+        elseif configHandler.forcedDrainToDeathMinimum != -1 && configHandler.forcedDrainMinimum != -1
+            draining = false
+            drainingToDeath = false
+        endif
 EndFunction
 
 Event StartDrain( Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)

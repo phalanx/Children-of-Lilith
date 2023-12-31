@@ -21,6 +21,7 @@ Function Maintenance()
     UpdateMeter()
     RegisterForModEvent("iWantWidgetsReset", "OniWantWidgetsReset")
     RegisterForModEvent("CoL_configUpdated", "UpdateMeter")
+    RegisterForModEvent("CoL_Energy_Updated", "UpdateFill")
 EndFunction
 
 Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form sender)
@@ -32,7 +33,7 @@ Function UpdateMeter()
         Uninitialize()
     endif
     MoveEnergyMeter()
-    UpdateFill()
+    UpdateFill(CoL.playerEnergyCurrent, CoL.playerEnergyMax)
     UpdateColor()
     ShowMeter()
 EndFunction
@@ -43,8 +44,8 @@ Function MoveEnergyMeter()
     iWidgets.setZoom(energyMeter, configHandler.energyMeterXScale, configHandler.energyMeterYScale)
 EndFunction
 
-Function UpdateFill()
-    iWidgets.setMeterPercent(energyMeter, ((CoL.playerEnergyCurrent / CoL.playerEnergyMax) * 100) as int)
+Function UpdateFill(float newEnergy, float maxEnergy)
+    iWidgets.setMeterPercent(energyMeter, ((newEnergy / maxEnergy) * 100) as int)
 EndFunction
 
 Function UpdateColor()

@@ -1,12 +1,13 @@
 Scriptname CoL_MCM_Settings_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
+Spell Property hungerSpell Auto
 
 CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 CoL_Mechanic_DrainHandler_Script drainHandler
 CoL_Mechanic_LevelHandler_Script levelHandler
-CoL_Mechanic_HungerHandler_Script hungerHandler
+; CoL_Mechanic_HungerHandler_Script hungerHandler
 
 Event OnInit()
     RegisterModule("$COL_SETTINGSPAGE_NAME", 20)
@@ -17,7 +18,6 @@ Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     drainHandler = playerSuccubusQuest as CoL_Mechanic_DrainHandler_Script
     levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
-    hungerHandler = playerSuccubusQuest as CoL_Mechanic_HungerHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -543,7 +543,11 @@ EndEvent
         Event OnSelectST(string state_id)
             configHandler.hungerEnabled = !configHandler.hungerEnabled
             SetToggleOptionValueST(configHandler.hungerEnabled)
-            hungerHandler.UpdateConfig()
+            if configHandler.hungerEnabled
+                CoL.playerRef.AddSPell(hungerSpell, false)
+            else
+                CoL.playerRef.RemoveSpell(hungerSpell)
+            endif
         EndEvent
 
         Event OnHighlightST(string state_id)

@@ -4,6 +4,8 @@ GlobalVariable Property isPlayerSuccubus Auto
 Quest Property playerSuccubusQuest Auto
 Quest Property npcSuccubusQuest Auto
 
+bool profilingEnabled = false
+
 CoL_PlayerSuccubusQuestScript CoL
 CoL_Mechanic_LevelHandler_Script levelHandler
 CoL_ConfigHandler_Script configHandler
@@ -52,6 +54,7 @@ Event OnPageDraw()
         AddTextOptionST("Text_BecomeSuccubus", "$COL_STATUSPAGE_BECOMESUCCUBUS", None)
     endif
     AddToggleOptionST("Toggle_DebugLogging", "$COL_STATUSPAGE_DEBUGLOGGING", configHandler.DebugLogging)
+    AddToggleOptionST("Toggle_Profiling", "Toggle Profiling", profilingEnabled)
 
     if npcSuccubusQuest.GetState() != "" && npcSuccubusQuest.GetState() != "Uninitialize"
         AddTextOptionST("Text_DisableNPCSuccubus", "$COL_STATUSPAGE_DISABLENPCSUCCUBUS", None)
@@ -145,6 +148,22 @@ State Toggle_DebugLogging
 
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_STATUSPAGE_DEBUGLOGGING_HELP")
+    EndEvent
+EndState
+
+State Toggle_Profiling
+    Event OnSelectST(string state_id)
+        profilingEnabled = !profilingEnabled
+        SetToggleOptionValueST(profilingEnabled)
+        if profilingEnabled
+            Debug.StartScriptProfiling("CoL_PlayerSuccubusQuestScript")
+        else
+            Debug.StopScriptProfiling("CoL_PlayerSuccubusQuestScript")
+        endif
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("Toggle Profiling of CoL_PSQ")
     EndEvent
 EndState
 

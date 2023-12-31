@@ -7,7 +7,7 @@ Quest Property playerSuccubusQuest Auto
 CoL_ConfigHandler_Script configHandler
 
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
-CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
+; CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_Mechanic_Arousal_Transform Property arousalTransformHandler Auto
@@ -60,20 +60,14 @@ float Property playerEnergyCurrent Hidden
         endif
         playerEnergyCurrent_var = newVal
         Log("Player Energy is now " + playerEnergyCurrent)
-        widgetHandler.UpdateMeter()
+        int energyUpdateEvent = ModEvent.Create("CoL_Energy_Updated")
+        if (energyUpdateEvent)
+            ModEvent.PushFloat(energyUpdateEvent, playerEnergyCurrent_var)
+            ModEvent.PushFloat(energyUpdateEvent, playerEnergyMax)
+            ModEvent.Send(energyUpdateEvent)
+        endif
         if configHandler.tattooFade
             UpdateTattoo()
-        endif
-        float energyPercentage = ((newVal / playerEnergyMax) * 100) 
-        if  energyPercentage <= configHandler.forcedDrainToDeathMinimum && configHandler.forcedDrainToDeathMinimum != -1
-            drainHandler.draining = false
-            drainHandler.drainingToDeath = true
-        elseif energyPercentage <= configHandler.forcedDrainMinimum && configHandler.forcedDrainMinimum != -1
-            drainHandler.draining = true
-            drainHandler.drainingToDeath = false
-        elseif configHandler.forcedDrainMinimum != -1 && configHandler.forcedDrainToDeathMinimum != -1
-            drainHandler.draining = false
-            drainHandler.drainingToDeath = false
         endif
     EndFunction
 EndProperty
@@ -224,7 +218,7 @@ Function Maintenance()
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
-    widgetHandler.UpdateMeter()
+    widgetHandler.Maintenance()
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
     RegisterForEvents()
@@ -322,8 +316,10 @@ Function transformDrain()
 EndFunction
 
 Event OnUpdate()
+    Debug.StartStackProfiling()
     if isTransformed && configHandler.transformCost > 0
         if pauseCost
+            Log("Transform cost paused")
             RegisterForSingleUpdate(5)
             return
         endif
