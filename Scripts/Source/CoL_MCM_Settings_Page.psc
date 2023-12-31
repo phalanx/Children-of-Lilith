@@ -7,6 +7,7 @@ CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 CoL_Mechanic_DrainHandler_Script drainHandler
 CoL_Mechanic_LevelHandler_Script levelHandler
+CoL_Mechanic_EnergyHandler_Script energyHandler
 
 Event OnInit()
     RegisterModule("$COL_SETTINGSPAGE_NAME", 20)
@@ -17,6 +18,7 @@ Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     drainHandler = playerSuccubusQuest as CoL_Mechanic_DrainHandler_Script
     levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
+    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -141,7 +143,7 @@ EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainMinimum = value
             SetSliderOptionValueST(configHandler.forcedDrainMinimum,"{0}")
-            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+            energyHandler.playerEnergyCurrent = energyHandler.playerEnergyCurrent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_FORCEDDRAINMINIMUM_HELP")
@@ -158,7 +160,7 @@ EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainToDeathMinimum = value
             SetSliderOptionValueST(configHandler.forcedDrainToDeathMinimum,"{0}")
-            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+            energyHandler.playerEnergyCurrent = energyHandler.playerEnergyCurrent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_FORCEDDRAINTODEATHMINIMUM_HELP")

@@ -3,6 +3,7 @@ Scriptname CoL_Ability_Transform_Cost_Script extends activemagiceffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 bool pauseCost
 
@@ -36,11 +37,11 @@ Event OnUpdate()
         if pauseCost
             return
         endif
-        if CoL.playerEnergyCurrent > configHandler.transformCost
-            CoL.playerEnergyCurrent -= configHandler.transformCost
+        if energyHandler.playerEnergyCurrent > configHandler.transformCost
+            energyHandler.playerEnergyCurrent -= configHandler.transformCost
             RegisterForSingleUpdate(1)
         elseif !CoL.lockTransform
-            CoL.playerEnergyCurrent = 0
+            energyHandler.playerEnergyCurrent = 0
             Debug.Notification("Out of Energy")
             CoL.transformSpell.Cast(CoL.playerRef, CoL.playerRef)
         endif

@@ -4,6 +4,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
@@ -107,7 +108,7 @@ State Draining
         levelHandler.gainXP(drainAmounts[0], false)
         float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
 
-        CoL.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult)
+        energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult)
         doVampireDrain(drainee)
     EndEvent
 
@@ -147,7 +148,7 @@ State DrainingToDeath
         
         float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
         
-        CoL.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
+        energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
         levelHandler.gainXP(drainAmounts[0], true)
         doVampireDrain(drainee)
     EndEvent

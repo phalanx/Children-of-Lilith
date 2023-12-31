@@ -10,6 +10,7 @@ Perk Property transformMagicResistPerk Auto
 Perk Property effecientFeeder Auto
 Perk Property energyStorage Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     CoL.Log("Infinite perk script triggered")
@@ -65,7 +66,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         CoL.Log("Energy Storage Perk detected")
         CoL.energyStorage += 1
         CoL.Log("Energy Storage Ranks: " + CoL.energyStorage)
-        CoL.playerEnergyMax += 10
+        energyHandler.playerEnergyMax += 10
         CoL.playerRef.RemovePerk(energyStorage)
     endif
 EndEvent

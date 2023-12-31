@@ -4,6 +4,7 @@ Spell Property SpellToToggle Auto
 string Property displayName = " " Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 ; Property to determine which config property to use for magnitude
 ; -1 = unset
 ; 0  = healRateBoostAmount
@@ -20,7 +21,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             Debug.Notification(displayName + " Enabled")
         endif
         if configIndex == 0
-            if Col.playerEnergyCurrent >= configHandler.healRateBoostCost
+            if energyHandler.playerEnergyCurrent >= configHandler.healRateBoostCost
                 SpellToToggle.SetNthEffectMagnitude(1, configHandler.healRateBoostAmount)
             else
                 Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
@@ -29,16 +30,3 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         akTarget.AddSpell(SpellToToggle, false)
     endif
 EndEvent
-
-; Event OnUpdate()
-;     if configIndex == 0
-;         if Col.playerEnergyCurrent < configHandler.healRateBoostCost
-;             CoL.Log("Out of Energy")
-;             Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
-;             CoL.playerRef.RemoveSpell(SpellToToggle)
-;             return
-;         endif
-;         CoL.playerEnergyCurrent -= configHandler.healRateBoostCost
-;         RegisterForSingleUpdate(1.0)
-;     endif
-; EndEvent

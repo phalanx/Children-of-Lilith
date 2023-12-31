@@ -2,6 +2,7 @@ Scriptname CoL_Mechanic_NPC_DrainHandler_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script configHandler
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 VisualEffect Property drainToDeathVFX Auto
 
@@ -53,7 +54,7 @@ State Draining
         endif
         
         float drainAmount = applyDrainSpell(drainee, arousal) * 0.1
-        CoL.playerEnergyCurrent += drainAmount
+        energyHandler.playerEnergyCurrent += drainAmount
     EndEvent
 
     Event EndDrain(Form drainerForm, Form draineeForm)
@@ -93,7 +94,7 @@ State DrainingToDeath
         endif
 
         drainAmount = drainAmount * 0.1
-        CoL.playerEnergyCurrent += drainAmount 
+        energyHandler.playerEnergyCurrent += drainAmount 
     EndEvent
 
     Event EndDrain(Form drainerForm, Form draineeForm)

@@ -4,6 +4,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 iWant_Widgets Property iWidgets Auto
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 int energyMeter
 
@@ -34,7 +35,7 @@ Function UpdateMeter()
         Uninitialize()
     endif
     MoveEnergyMeter()
-    UpdateFill(CoL.playerEnergyCurrent, CoL.playerEnergyMax)
+    UpdateFill(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
     UpdateColor()
     ShowMeter()
 EndFunction

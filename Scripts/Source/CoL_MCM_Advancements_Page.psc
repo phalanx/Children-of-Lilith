@@ -9,6 +9,7 @@ Perk Property slakeThirst Auto
 GlobalVariable Property perkPointsAvailable Auto
 CoL_ConfigHandler_Script configHandler
 CoL_PlayerSuccubusQuestScript CoL
+CoL_Mechanic_EnergyHandler_Script energyHandler
 
 Event OnInit()
     RegisterModule("$COL_ADVANCEMENTPAGE_NAME", 60)
@@ -17,6 +18,7 @@ EndEvent
 Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -158,7 +160,7 @@ State Text_perkEnergyStorage
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
             CoL.energyStorage += 1
-            CoL.playerEnergyMax += 10
+            energyHandler.playerEnergyMax += 10
             SetTextOptionValueST(CoL.energyStorage)
             perkPointsAvailable.Mod(-1)
             ForcePageReset()
@@ -167,7 +169,7 @@ State Text_perkEnergyStorage
         endif
     EndEvent
     Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVANCEMENTPAGE_ENERGYSTORAGE")
+        SetInfoText("$COL_ADVANCEMENTPAGE_ENERGYSTORAGE_HELP")
     EndEvent
 EndState
 State Toggle_perkEnergyWeaver

@@ -9,6 +9,7 @@ CoL_ConfigHandler_Script configHandler
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 CoL_Interface_Toys_Script Property Toys Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
@@ -44,31 +45,7 @@ Spell[] Property molagTraits Auto                   ; Spells to provide passives
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
 
 ; Energy Properties
-float playerEnergyCurrent_var = 50.0
-float Property playerEnergyCurrent Hidden
-    float Function Get()
-        return playerEnergyCurrent_var
-    EndFunction
-    Function Set(float newVal)
-        if newVal > playerEnergyMax
-            newVal = playerEnergyMax as float
-        elseif newVal < 0
-            newVal = 0
-        endif
-        playerEnergyCurrent_var = newVal
-        Log("Player Energy is now " + playerEnergyCurrent)
-        int energyUpdateEvent = ModEvent.Create("CoL_Energy_Updated")
-        if (energyUpdateEvent)
-            ModEvent.PushFloat(energyUpdateEvent, playerEnergyCurrent_var)
-            ModEvent.PushFloat(energyUpdateEvent, playerEnergyMax)
-            ModEvent.Send(energyUpdateEvent)
-        endif
-        if configHandler.tattooFade
-            UpdateTattoo()
-        endif
-    EndFunction
-EndProperty
-float Property playerEnergyMax = 100.0 Auto Hidden
+
 
 ; Togglable Spells
 Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
@@ -277,25 +254,18 @@ bool Function IsStrippable(Form itemRef)
     return false
 endFunction
 
-Function UpdateTattoo()
-    Float newAlpha = playerEnergyCurrent/playerEnergyMax
-    int correctedSlot = configHandler.tattooSlot - 1
-    string bodySlot = "Body [Ovl" + correctedSlot + "]"
-    NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
-EndFunction
-
 Function ScaleEnergyTest()
-    float currentEnergy = playerEnergyCurrent
-    playerEnergyCurrent = 0
-    while playerEnergyCurrent < playerEnergyMax
-        playerEnergyCurrent += 10
+    float currentEnergy = energyHandler.playerEnergyCurrent
+    energyHandler.playerEnergyCurrent = 0
+    while energyHandler.playerEnergyCurrent < energyHandler.playerEnergyMax
+        energyHandler.playerEnergyCurrent += 10
         Utility.Wait(0.1)
     endwhile
-    while playerEnergyCurrent > 0
-        playerEnergyCurrent -= 10
+    while energyHandler.playerEnergyCurrent > 0
+        energyHandler.playerEnergyCurrent -= 10
         Utility.Wait(0.1)
     endwhile
-    playerEnergyCurrent = currentEnergy
+    energyHandler.playerEnergyCurrent = currentEnergy
 EndFunction
 
 Function Log(string msg)
@@ -432,11 +402,18 @@ endfunction
 
 Function ApplyRankedPerks()
     int i = 0
-    playerEnergyMax = configHandler.baseMaxEnergy
+    energyHandler.playerEnergyMax = configHandler.baseMaxEnergy
     while i < energyStorage
-        playerEnergyMax += 10
+        energyHandler.playerEnergyMax += 10
         i += 1
     endwhile
+EndFunction
+
+Function UpdateTattoo()
+    Float newAlpha = energyHandler.playerEnergyCurrent/energyHandler.playerEnergyMax
+    int correctedSlot = configHandler.tattooSlot - 1
+    string bodySlot = "Body [Ovl" + correctedSlot + "]"
+    NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
 EndFunction
 
 Function UpdatePath()
@@ -468,7 +445,7 @@ Function UpdateConfig()
     if isPlayerSuccubus.GetValueInt() != 0
         UnregisterForHotkeys()
         RegisterForHotkeys()
-        playerEnergyCurrent = playerEnergyCurrent
+        energyHandler.playerEnergyCurrent = energyHandler.playerEnergyCurrent
         ApplyRankedPerks()
         UpdatePath()
         UpdateCSFPower()
