@@ -4,6 +4,9 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
+CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+
 Quest Property oDefeat Auto Hidden
 
 bool oStimInstalled = False
@@ -105,7 +108,7 @@ State Running
     Event OnBeginState()
         RegisterForModEvent("ostim_orgasm", "orgasmHandler")
         RegisterForModEvent("ostim_totalend", "stopScene")
-        if succubus == CoL.playerRef && CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
+        if succubus == CoL.playerRef && levelHandler.playerSuccubusLevel.GetValueInt() >= 2
             RegisterForKey(configHandler.newTemptationHotkey)
         endif
     EndEvent
@@ -150,7 +153,7 @@ State Running
 
     Event OnKeyDown(int keyCode)
         if keyCode == configHandler.newTemptationHotkey
-            if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+            if levelHandler.playerSuccubusLevel.GetValueInt() < 2
                 return
             endif
             int i = 0
@@ -197,10 +200,10 @@ Function triggerDrainEnd(Actor victim)
     CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
-    if oStim.FullyAnimateRedress() && CoL.drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
+    if oStim.FullyAnimateRedress() && drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
         Utility.Wait(5)
     endif
-    if oDefeat && CoL.drainHandler.drainingToDeath
+    if oDefeat && drainHandler.drainingToDeath
         CoL.Log("oDefeat Detected")
         Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
     endif

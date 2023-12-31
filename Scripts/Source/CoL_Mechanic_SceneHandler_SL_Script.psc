@@ -6,6 +6,7 @@ CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 
 bool SexLabInstalled
 bool SLSOInstalled
@@ -128,7 +129,7 @@ EndEvent
 
 Event OnKeyDown(int keyCode)
     if keyCode == configHandler.newTemptationHotkey
-        if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+        if levelHandler.playerSuccubusLevel.GetValueInt() < 2
             return
         endif
         int i = 0

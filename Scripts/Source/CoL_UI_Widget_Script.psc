@@ -3,6 +3,7 @@ Scriptname CoL_UI_Widget_Script extends Quest
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 iWant_Widgets Property iWidgets Auto
+CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 
 int energyMeter
 
@@ -75,9 +76,9 @@ int[] Function GetColor()
         deathColor[3] = 255
         deathColor[4] = 51
         deathColor[5] = 51
-    if CoL.drainHandler.GetState() == "Draining"
+    if drainHandler.GetState() == "Draining"
         return drainColor
-    elseif CoL.drainHandler.GetState() == "DrainingToDeath"
+    elseif drainHandler.GetState() == "DrainingToDeath"
         return deathColor
     else
         return disabledColor

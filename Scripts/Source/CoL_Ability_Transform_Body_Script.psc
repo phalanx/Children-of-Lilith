@@ -4,6 +4,8 @@ import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+
 Faction Property playerWerewolfFaction Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     bool isTransformed = CoL.isTransformed
@@ -30,7 +32,7 @@ Function Transform()
     endif
 
     if configHandler.deadlyDrainWhenTransformed
-        CoL.drainHandler.drainingToDeath = true
+        drainHandler.drainingToDeath = true
     endif
     Utility.Wait(2) ; Wait for other scripts to hopefully be finished
 EndFunction
@@ -47,8 +49,8 @@ Function UnTransform()
     endif
 
     if configHandler.deadlyDrainWhenTransformed
-        CoL.drainHandler.drainingToDeath = false
-        CoL.drainHandler.draining = true
+        drainHandler.drainingToDeath = false
+        drainHandler.draining = true
     endif
     Utility.Wait(2) ; Wait for other scripts to hopefully be finished
 EndFunction

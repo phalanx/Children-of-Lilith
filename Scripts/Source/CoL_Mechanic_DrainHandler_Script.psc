@@ -3,6 +3,10 @@ Scriptname CoL_Mechanic_DrainHandler_Script extends Quest
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
+CoL_UI_Widget_Script  Property widgetHandler Auto
+
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
@@ -77,7 +81,7 @@ Function CheckDraining(bool verbose)
         endif
         GoToState("")
     endif
-    CoL.widgetHandler.UpdateColor()
+    widgetHandler.UpdateColor()
     CoL.Log("Finished Checking Drain State")
 EndFunction
 
@@ -100,7 +104,7 @@ State Draining
         float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
         applyDrainSpell(drainee, drainAmounts)
         
-        CoL.levelHandler.gainXP(drainAmounts[0], false)
+        levelHandler.gainXP(drainAmounts[0], false)
         float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
 
         CoL.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult)
@@ -144,7 +148,7 @@ State DrainingToDeath
         float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
         
         CoL.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
-        CoL.levelHandler.gainXP(drainAmounts[0], true)
+        levelHandler.gainXP(drainAmounts[0], true)
         doVampireDrain(drainee)
     EndEvent
 
@@ -165,7 +169,7 @@ EndState
 
 Function doVampireDrain(Actor drainee)
     if CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
-        CoL.vampireHandler.Feed(drainee)
+        vampireHandler.Feed(drainee)
     endif
 EndFunction
 

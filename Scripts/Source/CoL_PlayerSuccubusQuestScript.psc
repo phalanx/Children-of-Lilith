@@ -8,8 +8,6 @@ CoL_ConfigHandler_Script configHandler
 
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
-CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
-CoL_Mechanic_Arousal_Transform Property arousalTransformHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 CoL_Interface_Toys_Script Property Toys Auto
 CoL_Interface_OStim_Script Property oStim Auto

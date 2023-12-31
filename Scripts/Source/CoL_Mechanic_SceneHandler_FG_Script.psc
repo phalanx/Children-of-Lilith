@@ -3,6 +3,7 @@ Scriptname CoL_Mechanic_SceneHandler_FG_Script extends activemagiceffect
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 Keyword Property IsHavingSex Auto Hidden
 
 Actor victim1
@@ -74,7 +75,7 @@ EndState
 State Running
     Event OnBeginState()
         RegisterForModEvent("CoL_FG_Climax", "climax")
-        if succubus == CoL.playerRef && CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
+        if succubus == CoL.playerRef && levelHandler.playerSuccubusLevel.GetValueInt() >= 2
             RegisterForKey(configHandler.newTemptationHotkey)
         endif
     EndEvent
@@ -101,7 +102,7 @@ State Running
 
     Event OnKeyDown(int keyCode)
         if keyCode == configHandler.newTemptationHotkey
-            if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+            if levelHandler.playerSuccubusLevel.GetValueInt() < 2
                 return
             endif
             if victim1 != None
