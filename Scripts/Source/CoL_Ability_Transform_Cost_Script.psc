@@ -26,11 +26,6 @@ Function EndScene()
     RegisterForSingleUpdate(1)
 EndFunction
 
-Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    UnregisterForUpdate()
-    UnregisterForAllModEvents()
-EndEvent
-
 Event OnUpdate()
     if CoL.isTransformed && configHandler.transformCost > 0
         if pauseCost
