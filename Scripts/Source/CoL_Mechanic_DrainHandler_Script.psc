@@ -48,8 +48,6 @@ EndState
 
 Function Maintenance()
     vampireKeyword = Keyword.GetKeyword("vampire")
-    UnRegisterForModEvent("CoL_startDrain_NPC")
-    UnRegisterForModEvent("CoL_endDrain_NPC")
     RegisterForModEvent("CoL_startDrain", "StartDrain")
     RegisterForModEvent("CoL_endDrain", "EndDrain")
     RegisterForModEvent("CoL_Energy_Updated", "energyUpdated")
@@ -160,7 +158,7 @@ State DrainingToDeath
         CoL.Log("Killing")
         if drainee.isEssential()
             CoL.Log("Can't kill essential. Dealing damage instead")
-            drainee.DamageActorValue("Health", 10000)
+            drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
             return
         endif
         drainee.Kill(drainerForm as Actor)
