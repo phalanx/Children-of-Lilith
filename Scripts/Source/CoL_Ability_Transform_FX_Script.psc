@@ -37,8 +37,5 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
             configHandler.becomeEtherealCost = cost
         endif
-        if configHandler.transformCost > 0
-            CoL.transformDrain()
-        endif
     endif
 EndEvent

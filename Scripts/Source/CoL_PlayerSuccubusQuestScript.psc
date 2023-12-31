@@ -84,7 +84,6 @@ Spell Property transformSpell Auto
 
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
-bool pauseCost = false
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 Race Property succuRace Auto Hidden
@@ -147,8 +146,6 @@ EndState
 State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
-        Log("Pausing transform cost")
-        pauseCost = true
     EndEvent
 
     Event OnKeyDown(int keyCode)
@@ -164,10 +161,9 @@ State SceneRunning
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
         endif
     EndEvent
+
     Event onEndState()
-        Log("Unpausing transform cost")
-        pauseCost = false
-        RegisterForSingleUpdate(1)
+        Log("Exited SceneRunning State")
     EndEvent
 EndState
 
@@ -310,28 +306,6 @@ Function Log(string msg)
         Debug.Trace("[CoL] " + msg)
     endif
 EndFunction
-
-Function transformDrain()
-    RegisterForSingleUpdate(1)
-EndFunction
-
-Event OnUpdate()
-    if isTransformed && configHandler.transformCost > 0
-        if pauseCost
-            Log("Transform cost paused")
-            RegisterForSingleUpdate(5)
-            return
-        endif
-        if playerEnergyCurrent > configHandler.transformCost
-            playerEnergyCurrent -= configHandler.transformCost
-            RegisterForSingleUpdate(1)
-        elseif !lockTransform
-            playerEnergyCurrent = 0
-            Debug.Notification("Out of Energy")
-            transformSpell.Cast(playerRef, playerRef)
-        endif
-    endif
-EndEvent
 
 bool Function isBeastRace()
     Race currentRace = playerRef.GetRace()

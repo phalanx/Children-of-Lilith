@@ -1,7 +1,7 @@
 Scriptname CoL_Generic_Toggle_Spell_Script extends activemagiceffect  
 
 Spell Property SpellToToggle Auto
-string Property displayName Auto
+string Property displayName = " " Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 ; Property to determine which config property to use for magnitude
@@ -11,10 +11,14 @@ Int Property configIndex = -1 Auto
   
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     if akTarget.HasSpell(SpellToToggle)
-        Debug.Notification(displayName + " Disabled")
+        if displayName != " "
+            Debug.Notification(displayName + " Disabled")
+        endif
         akTarget.RemoveSpell(SpellToToggle)
     Else
-        Debug.Notification(displayName + " Enabled")
+        if displayName != " "
+            Debug.Notification(displayName + " Enabled")
+        endif
         if configIndex == 0
             if Col.playerEnergyCurrent >= configHandler.healRateBoostCost
                 SpellToToggle.SetNthEffectMagnitude(1, configHandler.healRateBoostAmount)

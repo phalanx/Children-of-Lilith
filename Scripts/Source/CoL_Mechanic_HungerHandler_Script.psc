@@ -35,8 +35,9 @@ Event OnUpdate()
             starvationSpell.SetNthEffectMagnitude(0, configHandler.hungerDamageAmount * starvationStack)
             CoL.playerRef.AddSpell(starvationSpell, false)
             starvationStack += 1
-        endif CoL.playerRef.HasSpell(starvationSpell)
-            CoL.playerRef.REmoveSpell(starvationSpell)
+        elseif CoL.playerRef.HasSpell(starvationSpell)
+            CoL.playerRef.RemoveSpell(starvationSpell)
+        endif
         if configHandler.hungerArousalEnabled
             iArousal.ModifyArousal(CoL.playerRef, configHandler.hungerArousalAmount)
         endif
