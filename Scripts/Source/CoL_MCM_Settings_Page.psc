@@ -7,7 +7,6 @@ CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 CoL_Mechanic_DrainHandler_Script drainHandler
 CoL_Mechanic_LevelHandler_Script levelHandler
-; CoL_Mechanic_HungerHandler_Script hungerHandler
 
 Event OnInit()
     RegisterModule("$COL_SETTINGSPAGE_NAME", 20)
