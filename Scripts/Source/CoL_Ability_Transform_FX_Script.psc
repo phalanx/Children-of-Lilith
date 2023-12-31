@@ -3,6 +3,7 @@ Scriptname CoL_Ability_Transform_FX_Script extends activemagiceffect
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 Perk Property safeTransformation Auto
+Spell Property transformCostSPell Auto
 
 Idle Property SuccubusTransformationIdle Auto
 Sound Property SuccubusTransformSound Auto
@@ -11,7 +12,13 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Game.ForceThirdPerson()
     SuccubusTransformSound.Play(akTarget)
     bool isTransformed = CoL.isTransformed
-    if !isTransformed
+    if isTransformed 
+        if CoL.lockTransform
+            return
+        else
+            CoL.playerRef.removeSpell(transformCostSpell)
+        endif
+    else
         float cost
         if CoL.playerRef.HasPerk(safeTransformation)
             cost = configHandler.becomeEtherealCost
@@ -37,5 +44,6 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
             configHandler.becomeEtherealCost = cost
         endif
+        CoL.playerRef.AddSpell(transformCostSpell, false) ; Doing this in FX will prevent energy being reduced during the transform animation
     endif
 EndEvent

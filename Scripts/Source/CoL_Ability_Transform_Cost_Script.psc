@@ -9,7 +9,7 @@ bool pauseCost
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     if configHandler.transformCost > 0
         Maintenance()
-        RegisterForSingleUpdate(5) ;Initial delay to account for animation
+        RegisterForSingleUpdate(1) ;Initial delay to account for animation
     endif
 EndEvent
 
