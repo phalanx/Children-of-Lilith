@@ -1,5 +1,9 @@
 Scriptname CoL_ConfigHandler_Script extends Quest
 
+; Internal Properties. Not for outsider use
+CoL_PlayerSuccubusQuestScript Property _CoL Auto
+Spell Property _arousalTransformSpell Auto
+
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
 float Property baseMaxEnergy = 100.0 Auto Hidden                ; Base line maximum energy, before perks are applied
@@ -354,5 +358,7 @@ Function LoadConfig(int jObj)
         transformArmorPerRank = JMap.getFlt(jObj, "transformArmorPerRank")
         transformMagicResistPerRank = JMap.getFlt(jObj, "transformMagicResistPerRank")
     JValue.release(jObj)
-    SendConfigUpdateEvent()
+    if isPlayerSuccubus.GetValueInt() == 1
+        SendConfigUpdateEvent()
+    endif
 EndFunction

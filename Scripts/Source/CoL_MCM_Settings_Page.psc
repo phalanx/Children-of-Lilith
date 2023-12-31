@@ -1,7 +1,6 @@
 Scriptname CoL_MCM_Settings_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
-Spell Property hungerSpell Auto
 
 CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
@@ -544,11 +543,7 @@ EndEvent
         Event OnSelectST(string state_id)
             configHandler.hungerEnabled = !configHandler.hungerEnabled
             SetToggleOptionValueST(configHandler.hungerEnabled)
-            if configHandler.hungerEnabled
-                CoL.playerRef.AddSPell(hungerSpell, false)
-            else
-                CoL.playerRef.RemoveSpell(hungerSpell)
-            endif
+            configHandler.SendConfigUpdateEvent()
         EndEvent
 
         Event OnHighlightST(string state_id)

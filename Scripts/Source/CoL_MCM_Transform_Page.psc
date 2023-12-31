@@ -1,7 +1,6 @@
 Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
-Spell Property arousalTransformSpell Auto
 
 CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
@@ -347,17 +346,6 @@ State Slider_BuffsExtraCarryWeight
         SetInfoText("$COL_TRANSFORMPAGE_EXTRACARRYRATE_HELP")
     EndEvent
 EndState
-Function ArousalThresholdChanged()
-    if configHandler.transformArousalLowerThreshold == 0 && configHandler.transformArousalUpperThreshold ==0
-        if CoL.playerRef.HasSpell(arousalTransformSpell)
-            CoL.playerRef.RemoveSpell(arousalTransformSpell)
-        endif
-    else
-        if !CoL.playerRef.HasSpell(arousalTransformSpell)
-            CoL.playerRef.AddSpell(arousalTransformSpell)
-        endif
-    endif
-EndFunction
 State Slider_ArousalUpperThreshold
     Event OnSliderOpenST(string state_id)
         SetSliderDialogStartValue(configHandler.transformArousalUpperThreshold)
@@ -367,8 +355,8 @@ State Slider_ArousalUpperThreshold
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformArousalUpperThreshold = value
-        ArousalThresholdChanged()
         SetSliderOptionValueST(configHandler.transformArousalUpperThreshold)
+        configHandler.SendConfigUpdateEvent()
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD_HELP")
@@ -383,8 +371,8 @@ State Slider_ArousalLowerThreshold
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformArousalLowerThreshold = value
-        ArousalThresholdChanged()
         SetSliderOptionValueST(configHandler.transformArousalLowerThreshold)
+        configHandler.SendConfigUpdateEvent()
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD_HELP")

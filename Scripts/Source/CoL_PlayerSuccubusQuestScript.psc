@@ -38,14 +38,13 @@ Spell[] Property levelTwoSpells Auto                ; Spells granted to player a
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
 Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
+Spell Property arousalTransformSpell Auto           ; Spell that contains the arousal transform handler
+Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
 
 Spell[] Property sanguineTraits Auto                ; Spells to provide passives for Path of Sanguine
 Spell[] Property molagTraits Auto                   ; Spells to provide passives for Path of Molag Bal
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
-
-; Energy Properties
-
 
 ; Togglable Spells
 Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
@@ -440,8 +439,28 @@ Function UpdateCSFPower()
     endif
 EndFunction
 
+Function UpdateArousalThresholds()
+    if configHandler.transformArousalLowerThreshold == 0 && configHandler.transformArousalUpperThreshold ==0
+        if playerRef.HasSpell(arousalTransformSpell)
+            playerRef.RemoveSpell(arousalTransformSpell)
+        endif
+    else
+        if !playerRef.HasSpell(arousalTransformSpell)
+            playerRef.AddSpell(arousalTransformSpell)
+        endif
+    endif
+EndFunction
+
+Function UpdateHunger()
+    if configHandler.hungerEnabled
+        playerRef.AddSpell(hungerSpell, false)
+    else
+        playerRef.RemoveSpell(hungerSpell)
+    endif
+EndFunction
+
 Function UpdateConfig()
-    Log("PSQ Recieved Config Update")
+    Log("CoL Recieved Config Update")
     if isPlayerSuccubus.GetValueInt() != 0
         UnregisterForHotkeys()
         RegisterForHotkeys()
@@ -449,5 +468,7 @@ Function UpdateConfig()
         ApplyRankedPerks()
         UpdatePath()
         UpdateCSFPower()
+        UpdateArousalThresholds()
+        UpdateHunger()
     endif
 EndFunction
