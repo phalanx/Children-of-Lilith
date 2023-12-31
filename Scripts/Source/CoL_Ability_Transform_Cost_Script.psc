@@ -8,11 +8,16 @@ bool pauseCost
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     if configHandler.transformCost > 0
-        RegisterForModEvent("CoL_startScene", "StartScene")
-        RegisterForModEvent("CoL_endScene", "EndScene")
+        Maintenance()
         RegisterForSingleUpdate(5) ;Initial delay to account for animation
     endif
 EndEvent
+
+Function Maintenance()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
+    RegisterForModEvent("CoL_startScene", "StartScene")
+    RegisterForModEvent("CoL_endScene", "EndScene")
+EndFunction
 
 Function StartScene()
     CoL.Log("Pausing transform cost")
