@@ -111,7 +111,7 @@ State Running
     EndEvent
 
     Event orgasmHandler(string eventName, string strArg, float numArg, Form sender)
-        Actor victim = oStim.GetMostRecentOrgasmedActor()
+        Actor victim = sender as Actor
 
         if victim == None || victim == succubus || currentPartners.Find(victim) == -1
             CoL.Log("Detected orgasm not related to " + succubusName + " scene")
