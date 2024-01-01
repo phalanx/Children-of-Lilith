@@ -6,7 +6,7 @@ CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 CoL_Mechanic_DrainHandler_Script drainHandler
 CoL_Mechanic_LevelHandler_Script levelHandler
-CoL_Mechanic_HungerHandler_Script hungerHandler
+CoL_Mechanic_EnergyHandler_Script energyHandler
 
 Event OnInit()
     RegisterModule("$COL_SETTINGSPAGE_NAME", 20)
@@ -17,7 +17,7 @@ Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     drainHandler = playerSuccubusQuest as CoL_Mechanic_DrainHandler_Script
     levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
-    hungerHandler = playerSuccubusQuest as CoL_Mechanic_HungerHandler_Script
+    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -38,14 +38,18 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_forcedDrainMinimum", "$COL_SETTINGSPAGE_FORCEDDRAINMINIMUM", configHandler.forcedDrainMinimum, "{0}")
         AddSliderOptionST("Slider_forcedDrainToDeathMinimum", "$COL_SETTINGSPAGE_FORCEDDRAINTODEATHMINIMUM", configHandler.forcedDrainToDeathMinimum, "{0}")
         AddSliderOptionST("Slider_drainDuration", "$COL_SETTINGSPAGE_DRAINDURATION", configHandler.drainDurationInGameTime)
-        AddSliderOptionST("Slider_healthDrainMulti", "$COL_SETTINGSPAGE_HEALTHDRAINMULT", configHandler.healthDrainMult, "{1}")
+        AddSliderOptionST("Slider_healthDrainMulti", "$COL_SETTINGSPAGE_HEALTHDRAINMULT", configHandler.healthDrainMult, "{2}")
         AddSliderOptionST("Slider_drainArousalMulti", "$COL_SETTINGSPAGE_DRAINAROUSALMULT", configHandler.drainArousalMult, "{1}")
         AddSliderOptionST("Slider_energyConversionRate", "$COL_SETTINGSPAGE_ENERGYCONVERSIONRATE", configHandler.energyConversionRate, "{1}")
         AddSliderOptionST("Slider_minHealthPercent", "$COL_SETTINGSPAGE_MINHEALTHPERCENT", configHandler.minHealthPercent, "{2}")
         AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
-        AddSliderOptionST("Slider_npcDeathChance", "$COL_SETTINGSPAGE_NPCDEATHCHANCE", configHandler.npcDrainToDeathChance, "{1}")
+        int i = 0
+        while i <=4
+            AddSliderOptionST("Slider_npcRelationshipDeathChance___" + i, "$COL_SETTINGSPAGE_NPCRELATIONSHIODEATHCHANCE_" + i, configHandler.npcRelationshipDeathChance[i], "{1}")
+            i += 1
+        endwhile
     ; Tattoo Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_TATTOO")
         AddToggleOptionST("Toggle_tattooFade", "$COL_SETTINGSPAGE_TATTOOFADE", configHandler.tattooFade)
@@ -142,7 +146,7 @@ EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainMinimum = value
             SetSliderOptionValueST(configHandler.forcedDrainMinimum,"{0}")
-            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+            energyHandler.playerEnergyCurrent = energyHandler.playerEnergyCurrent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_FORCEDDRAINMINIMUM_HELP")
@@ -159,7 +163,7 @@ EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainToDeathMinimum = value
             SetSliderOptionValueST(configHandler.forcedDrainToDeathMinimum,"{0}")
-            CoL.playerEnergyCurrent = CoL.playerEnergyCurrent
+            energyHandler.playerEnergyCurrent = energyHandler.playerEnergyCurrent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_FORCEDDRAINTODEATHMINIMUM_HELP")
@@ -188,13 +192,13 @@ EndEvent
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.healthDrainMult)
             SetSliderDialogDefaultValue(0.2)
-            SetSliderDialogInterval(0.1)
-            SetSliderDialogRange(0.0, 1.0)
+            SetSliderDialogInterval(0.01)
+            SetSliderDialogRange(0.0, 0.99)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.healthDrainMult = value
-            SetSliderOptionValueST(configHandler.healthDrainMult,"{1}")
+            SetSliderOptionValueST(configHandler.healthDrainMult,"{2}")
         EndEvent
 
         Event OnHighlightST(string state_id)
@@ -282,22 +286,21 @@ EndEvent
         EndEvent
     EndState
 
-    State Slider_npcDeathChance
+    State Slider_npcRelationshipDeathChance
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.npcDrainToDeathChance)
+            SetSliderDialogStartValue(configHandler.npcRelationshipDeathChance[state_id as int])
             SetSliderDialogDefaultValue(0)
             SetSliderDialogInterval(1)
             SetSliderDialogRange(0, 100)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
-            configHandler.npcDrainToDeathChance = value as int
-            SetSliderOptionValueST(configHandler.npcDrainToDeathChance,"{1}")
+            configHandler.npcRelationshipDeathChance[state_id as int] = value as int
+            SetSliderOptionValueST(configHandler.npcRelationshipDeathChance[state_id as int],"{1}")
         EndEvent
         Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_NPCDEATHCHANCE_HELP")
+            SetInfoText("$COL_SETTINGSPAGE_NPCRELATIONSHIPDEATHCHANCE_HELP")
         EndEvent
     EndState
-
 ; Levelling States
     State Slider_xpPerDrain
         Event OnSliderOpenST(string state_id)
@@ -543,7 +546,7 @@ EndEvent
         Event OnSelectST(string state_id)
             configHandler.hungerEnabled = !configHandler.hungerEnabled
             SetToggleOptionValueST(configHandler.hungerEnabled)
-            hungerHandler.UpdateConfig()
+            configHandler.SendConfigUpdateEvent()
         EndEvent
 
         Event OnHighlightST(string state_id)

@@ -27,12 +27,8 @@
         <Import>@ModsFolder\SexLabArousedSSELoose\Scripts\Source</Import>
         <Import>@ModsFolder\FNIS Sexy Move SE\source\scripts</Import>
         <Import>@ModsFolder\ConsoleUtilSSE\Scripts\Source</Import>
-        <Import>@ModsFolder\XP32 Maximum Skeleton Special Extended\scripts\source</Import>
-        <Import>@ModsFolder\OStim NG - OSA Overhaul and API Next Gen\Scripts\Source</Import>
-        <Import>@ModsFolder\OSA - For OStim\Scripts\Source</Import>
-        <Import>@ModsFolder\OAroused\scripts\source</Import>
+        <Import>@ModsFolder\OStim Standalone - Advanced Adult Animation Framework\Scripts\Source</Import>
         <Import>@ModsFolder\JContainers SE\scripts\source</Import>
-        <Import>@ModsFolder\ODefeat\scripts\Source</Import>
         <Import>@ModsFolder\powerofthree's Papyrus Extender\Source\scripts</Import>
         <Import>@ModsFolder\Toys and Love\Source\Scripts</Import>
         <Import>@ModsFolder\WildLife for Toys SE V\Source\Scripts</Import>
@@ -44,12 +40,14 @@
         <Import>@ModsFolder\NL_MCM - A Modular MCM Framework - SDK\scripts\Source</Import>
         <Import>@ModsFolder\Custom Skills Framework\Source\Scripts</Import>
         <Import>@ModsFolder\Sexlab - Cum Overlays\Scripts\Source</Import>
-        <!-- <Import>@ModsFolder\MCM Helper SDK\Source\Scripts</Import> -->
     </Imports>
     <Folders>
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->
         <Folder>./Scripts/Source</Folder>
     </Folders>
+    <PreBuildEvent Description="Create Translation Files" UseInBuild="true">
+        <Command>translation.sh create</Command>
+    </PreBuildEvent>
     <!-- The following section is for .bsa archives. You can enable it by setting Package="true" in the PapyrusProject -->
     <Packages Output=".">
         <Package Name="@ModName" RootDir=".">
@@ -80,5 +78,6 @@
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
     <PostBuildEvent Description="Post-Build Remove BSA Files" UseInBuild="true">
         <Command>del /s /q /f *.bsa</Command>
+        <Command>translation.sh remove</Command>
     </PostBuildEvent>
 </PapyrusProject>

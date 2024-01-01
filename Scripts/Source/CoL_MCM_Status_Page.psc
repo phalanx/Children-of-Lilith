@@ -4,10 +4,13 @@ GlobalVariable Property isPlayerSuccubus Auto
 Quest Property playerSuccubusQuest Auto
 Quest Property npcSuccubusQuest Auto
 
+bool profilingEnabled = false
+
 CoL_PlayerSuccubusQuestScript CoL
 CoL_Mechanic_LevelHandler_Script levelHandler
 CoL_ConfigHandler_Script configHandler
 CoL_NpcSuccubusQuest_Script npcQuest
+CoL_Mechanic_EnergyHandler_Script energyHandler
 
 Event OnInit()
     RegisterModule("$COL_STATUSPAGE_NAME", 10)
@@ -18,6 +21,7 @@ Event OnPageInit()
     levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
     npcQuest = npcSuccubusQuest as CoL_NpcSuccubusQuest_Script
     SetPersistentMCMPreset("persistence/CoL_Settings")
 EndEvent
@@ -37,8 +41,8 @@ Event OnPageDraw()
         AddTextOptionST("Text_CurrentLevel", "$COL_STATUSPAGE_CURRENTLEVEL", levelHandler.playerSuccubusLevel.GetValue() as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_CurrentXP", "$COL_STATUSPAGE_CURRENTXP", levelHandler.playerSuccubusXP as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_NextLevelXP", "$COL_STATUSPAGE_NEXTLEVELXP", levelHandler.xpForNextLevel, OPTION_FLAG_DISABLED)
-        AddTextOptionST("Text_EnergyCurrent", "$COL_STATUSPAGE_ENERGYCURRENT", CoL.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
-        AddTextOptionST("Text_MaxEnergy", "$COL_STATUSPAGE_MAXENERGY", CoL.playerEnergyMax, OPTION_FLAG_DISABLED)
+        AddTextOptionST("Text_EnergyCurrent", "$COL_STATUSPAGE_ENERGYCURRENT", energyHandler.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
+        AddTextOptionST("Text_MaxEnergy", "$COL_STATUSPAGE_MAXENERGY", energyHandler.playerEnergyMax, OPTION_FLAG_DISABLED)
         AddMenuOptionST("Menu_FollowedPath", "$COL_STATUSPAGE_FOLLOWEDPATH", configHandler.followedPathOptions[configHandler.selectedPath])
     endif
     SetCursorPosition(1)
@@ -117,8 +121,8 @@ EndState
 
 State Text_EnergyRefill
     Event OnSelectST(string state_id)
-        CoL.playerEnergyCurrent = CoL.playerEnergyMax
-        SetTextOptionValueST(CoL.playerEnergyCurrent as int, false, "Text_EnergyCurrent")
+        energyHandler.playerEnergyCurrent = energyHandler.playerEnergyMax
+        SetTextOptionValueST(energyHandler.playerEnergyCurrent as int, false, "Text_EnergyCurrent")
     EndEvent
 
     Event OnHighlightST(string state_id)

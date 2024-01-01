@@ -3,6 +3,7 @@ Scriptname CoL_MCM_Widgets_Page extends nl_mcm_module
 Quest Property playerSuccubusQuest Auto
 CoL_ConfigHandler_Script configHandler
 CoL_UI_Widget_Script widgetHandler
+CoL_PlayerSuccubusQuestScript CoL
 
 bool meterBarChanged = false
 
@@ -13,6 +14,7 @@ EndEvent
 Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     widgetHandler = playerSuccubusQuest as CoL_UI_Widget_Script
+    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
 EndEvent
 
 Event OnPageDraw()

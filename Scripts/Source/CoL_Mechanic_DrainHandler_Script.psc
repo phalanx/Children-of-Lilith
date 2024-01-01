@@ -3,6 +3,11 @@ Scriptname CoL_Mechanic_DrainHandler_Script extends Quest
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
+CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
+CoL_UI_Widget_Script  Property widgetHandler Auto
+
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
@@ -43,10 +48,9 @@ EndState
 
 Function Maintenance()
     vampireKeyword = Keyword.GetKeyword("vampire")
-    UnRegisterForModEvent("CoL_startDrain_NPC")
-    UnRegisterForModEvent("CoL_endDrain_NPC")
     RegisterForModEvent("CoL_startDrain", "StartDrain")
     RegisterForModEvent("CoL_endDrain", "EndDrain")
+    RegisterForModEvent("CoL_Energy_Updated", "energyUpdated")
     CoL.Log("Registered for CoL Drain Events")
 EndFunction
 
@@ -76,7 +80,7 @@ Function CheckDraining(bool verbose)
         endif
         GoToState("")
     endif
-    CoL.widgetHandler.UpdateColor()
+    widgetHandler.UpdateColor()
     CoL.Log("Finished Checking Drain State")
 EndFunction
 
@@ -99,10 +103,10 @@ State Draining
         float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
         applyDrainSpell(drainee, drainAmounts)
         
-        CoL.levelHandler.gainXP(drainAmounts[0], false)
+        levelHandler.gainXP(drainAmounts[0], false)
         float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
 
-        CoL.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult)
+        energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult)
         doVampireDrain(drainee)
     EndEvent
 
@@ -142,8 +146,8 @@ State DrainingToDeath
         
         float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
         
-        CoL.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
-        CoL.levelHandler.gainXP(drainAmounts[0], true)
+        energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
+        levelHandler.gainXP(drainAmounts[0], true)
         doVampireDrain(drainee)
     EndEvent
 
@@ -154,7 +158,7 @@ State DrainingToDeath
         CoL.Log("Killing")
         if drainee.isEssential()
             CoL.Log("Can't kill essential. Dealing damage instead")
-            drainee.DamageActorValue("Health", 10000)
+            drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
             return
         endif
         drainee.Kill(drainerForm as Actor)
@@ -164,7 +168,7 @@ EndState
 
 Function doVampireDrain(Actor drainee)
     if CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
-        CoL.vampireHandler.Feed(drainee)
+        vampireHandler.Feed(drainee)
     endif
 EndFunction
 
@@ -216,6 +220,20 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 
     CoL.Log("Final Drain Amount: " + drainAmount)
     return returnValues
+EndFunction
+
+Function energyUpdated(float newEnergy, float maxEnergy)
+    float energyPercentage = ((newEnergy / maxEnergy) * 100) 
+        if  configHandler.forcedDrainToDeathMinimum != -1 && energyPercentage <= configHandler.forcedDrainToDeathMinimum 
+            draining = false
+            drainingToDeath = true
+        elseif configHandler.forcedDrainMinimum != -1 && energyPercentage <= configHandler.forcedDrainMinimum
+            draining = true
+            drainingToDeath = false
+        elseif configHandler.forcedDrainToDeathMinimum != -1 && configHandler.forcedDrainMinimum != -1
+            draining = false
+            drainingToDeath = false
+        endif
 EndFunction
 
 Event StartDrain( Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)

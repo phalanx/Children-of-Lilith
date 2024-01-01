@@ -7,11 +7,9 @@ Quest Property playerSuccubusQuest Auto
 CoL_ConfigHandler_Script configHandler
 
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
-CoL_Mechanic_HungerHandler_Script Property hungerHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
-CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
-CoL_Mechanic_Arousal_Transform Property arousalTransformHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 CoL_Interface_Toys_Script Property Toys Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
@@ -34,50 +32,20 @@ Faction Property drainVictimFaction Auto
 Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
 Spell Property showperkMenu Auto                    ; Spell that when cast will open the CSF perk menu
+Spell Property simpleTransform Auto                 ; Spell that will provide the vfx and sfx for scene start transform
 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
 Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
+Spell Property arousalTransformSpell Auto           ; Spell that contains the arousal transform handler
+Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
 
 Spell[] Property sanguineTraits Auto                ; Spells to provide passives for Path of Sanguine
 Spell[] Property molagTraits Auto                   ; Spells to provide passives for Path of Molag Bal
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
-
-; Energy Properties
-float playerEnergyCurrent_var = 50.0
-float Property playerEnergyCurrent Hidden
-    float Function Get()
-        return playerEnergyCurrent_var
-    EndFunction
-    Function Set(float newVal)
-        if newVal > playerEnergyMax
-            newVal = playerEnergyMax as float
-        elseif newVal < 0
-            newVal = 0
-        endif
-        playerEnergyCurrent_var = newVal
-        Log("Player Energy is now " + playerEnergyCurrent)
-        widgetHandler.UpdateMeter()
-        if configHandler.tattooFade
-            UpdateTattoo()
-        endif
-        float energyPercentage = ((newVal / playerEnergyMax) * 100) 
-        if  energyPercentage <= configHandler.forcedDrainToDeathMinimum && configHandler.forcedDrainToDeathMinimum != -1
-            drainHandler.draining = false
-            drainHandler.drainingToDeath = true
-        elseif energyPercentage <= configHandler.forcedDrainMinimum && configHandler.forcedDrainMinimum != -1
-            drainHandler.draining = true
-            drainHandler.drainingToDeath = false
-        elseif configHandler.forcedDrainMinimum != -1 && configHandler.forcedDrainToDeathMinimum != -1
-            drainHandler.draining = false
-            drainHandler.drainingToDeath = false
-        endif
-    EndFunction
-EndProperty
-float Property playerEnergyMax = 100.0 Auto Hidden
 
 ; Togglable Spells
 Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
@@ -90,7 +58,6 @@ Spell Property transformSpell Auto
 
 bool Property isTransformed Auto Hidden
 bool Property lockTransform Auto Hidden
-bool pauseCost = false
 string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
 bool Property succuPresetSaved = false Auto Hidden
 Race Property succuRace Auto Hidden
@@ -153,8 +120,14 @@ EndState
 State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
-        Log("Pausing transform cost")
-        pauseCost = true
+        if configHandler.transformDuringScene
+            Log("Scene Start Transforming")
+            if !isTransformed
+                simpleTransform.Cast(playerRef)
+                Utility.Wait(2)
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
+            endif
+        endif
     EndEvent
 
     Event OnKeyDown(int keyCode)
@@ -170,10 +143,17 @@ State SceneRunning
             drainHandler.drainingToDeath = !drainHandler.drainingToDeath
         endif
     EndEvent
+
     Event onEndState()
-        Log("Unpausing transform cost")
-        pauseCost = false
-        RegisterForSingleUpdate(1)
+        Log("Exited SceneRunning State")
+        if configHandler.transformDuringScene
+            if !isTransformed
+                Log("Scene End Untransforming")
+                simpleTransform.Cast(playerRef)
+                Utility.Wait(2)
+                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+            endif
+        endif
     EndEvent
 EndState
 
@@ -224,7 +204,7 @@ Function Maintenance()
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
-    widgetHandler.UpdateMeter()
+    widgetHandler.Maintenance()
     drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
     RegisterForEvents()
@@ -290,25 +270,18 @@ bool Function IsStrippable(Form itemRef)
     return false
 endFunction
 
-Function UpdateTattoo()
-    Float newAlpha = playerEnergyCurrent/playerEnergyMax
-    int correctedSlot = configHandler.tattooSlot - 1
-    string bodySlot = "Body [Ovl" + correctedSlot + "]"
-    NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
-EndFunction
-
 Function ScaleEnergyTest()
-    float currentEnergy = playerEnergyCurrent
-    playerEnergyCurrent = 0
-    while playerEnergyCurrent < playerEnergyMax
-        playerEnergyCurrent += 10
+    float currentEnergy = energyHandler.playerEnergyCurrent
+    energyHandler.playerEnergyCurrent = 0
+    while energyHandler.playerEnergyCurrent < energyHandler.playerEnergyMax
+        energyHandler.playerEnergyCurrent += 10
         Utility.Wait(0.1)
     endwhile
-    while playerEnergyCurrent > 0
-        playerEnergyCurrent -= 10
+    while energyHandler.playerEnergyCurrent > 0
+        energyHandler.playerEnergyCurrent -= 10
         Utility.Wait(0.1)
     endwhile
-    playerEnergyCurrent = currentEnergy
+    energyHandler.playerEnergyCurrent = currentEnergy
 EndFunction
 
 Function Log(string msg)
@@ -316,27 +289,6 @@ Function Log(string msg)
         Debug.Trace("[CoL] " + msg)
     endif
 EndFunction
-
-Function transformDrain()
-    RegisterForSingleUpdate(1)
-EndFunction
-
-Event OnUpdate()
-    if isTransformed && configHandler.transformCost > 0
-        if pauseCost
-            RegisterForSingleUpdate(5)
-            return
-        endif
-        if playerEnergyCurrent > configHandler.transformCost
-            playerEnergyCurrent -= configHandler.transformCost
-            RegisterForSingleUpdate(1)
-        elseif !lockTransform
-            playerEnergyCurrent = 0
-            Debug.Notification("Out of Energy")
-            transformSpell.Cast(playerRef, playerRef)
-        endif
-    endif
-EndEvent
 
 bool Function isBeastRace()
     Race currentRace = playerRef.GetRace()
@@ -466,11 +418,18 @@ endfunction
 
 Function ApplyRankedPerks()
     int i = 0
-    playerEnergyMax = configHandler.baseMaxEnergy
+    energyHandler.playerEnergyMax = configHandler.baseMaxEnergy
     while i < energyStorage
-        playerEnergyMax += 10
+        energyHandler.playerEnergyMax += 10
         i += 1
     endwhile
+EndFunction
+
+Function UpdateTattoo()
+    Float newAlpha = energyHandler.playerEnergyCurrent/energyHandler.playerEnergyMax
+    int correctedSlot = configHandler.tattooSlot - 1
+    string bodySlot = "Body [Ovl" + correctedSlot + "]"
+    NiOverride.AddNodeOverrideFloat(playerRef, true, bodySlot, 8, -1, newAlpha, true)
 EndFunction
 
 Function UpdatePath()
@@ -497,14 +456,36 @@ Function UpdateCSFPower()
     endif
 EndFunction
 
+Function UpdateArousalThresholds()
+    if configHandler.transformArousalLowerThreshold == 0 && configHandler.transformArousalUpperThreshold ==0
+        if playerRef.HasSpell(arousalTransformSpell)
+            playerRef.RemoveSpell(arousalTransformSpell)
+        endif
+    else
+        if !playerRef.HasSpell(arousalTransformSpell)
+            playerRef.AddSpell(arousalTransformSpell)
+        endif
+    endif
+EndFunction
+
+Function UpdateHunger()
+    if configHandler.hungerEnabled
+        playerRef.AddSpell(hungerSpell, false)
+    else
+        playerRef.RemoveSpell(hungerSpell)
+    endif
+EndFunction
+
 Function UpdateConfig()
-    Log("PSQ Recieved Config Update")
+    Log("CoL Recieved Config Update")
     if isPlayerSuccubus.GetValueInt() != 0
         UnregisterForHotkeys()
         RegisterForHotkeys()
-        playerEnergyCurrent = playerEnergyCurrent
+        energyHandler.playerEnergyCurrent = energyHandler.playerEnergyCurrent
         ApplyRankedPerks()
         UpdatePath()
         UpdateCSFPower()
+        UpdateArousalThresholds()
+        UpdateHunger()
     endif
 EndFunction

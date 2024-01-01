@@ -1,5 +1,9 @@
 Scriptname CoL_ConfigHandler_Script extends Quest
 
+; Internal Properties. Not for outsider use
+CoL_PlayerSuccubusQuestScript Property _CoL Auto
+Spell Property _arousalTransformSpell Auto
+
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 
 float Property baseMaxEnergy = 100.0 Auto Hidden                ; Base line maximum energy, before perks are applied
@@ -24,6 +28,7 @@ float Property minHealthPercent = 0.11 Auto Hidden              ; Minimum percen
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
+int[] Property npcRelationshipDeathChance Auto                  ; Percentage chances for npc succubi with a relationship rank equal to the index to drain victim to death
 
 ; Levelling Settings
 float Property xpConstant = 0.3 Auto Hidden                     ; Effects amount of XP required. Lower = More xp Required
@@ -91,9 +96,11 @@ int Property autoFadeTime = 5 Auto Hidden
 ; Transform Settings
 Form[] Property NoStripList Auto Hidden
 bool Property transformAnimation = true Auto Hidden
+bool Property transformDuringScene = true Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property transformSavesNiOverrides = false Auto Hidden
 float Property transformCost = 1.0 Auto Hidden
+bool Property transformMortalCost = false Auto
 bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
@@ -145,7 +152,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 4
+    return 5
 EndFunction
 
 int Function SaveConfig()
@@ -169,6 +176,11 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "energyConversionRate", energyConversionRate)
         JMap.setInt(jObj, "drainFeedsVampire", drainFeedsVampire as int)
         JMap.setInt(jObj, "npcDrainToDeathChance", npcDrainToDeathChance)
+        JMap.setInt(jObj,"npcRelationshipDeathChance0",npcRelationshipDeathChance[0])
+        JMap.setInt(jObj,"npcRelationshipDeathChance1",npcRelationshipDeathChance[1])
+        JMap.setInt(jObj,"npcRelationshipDeathChance2",npcRelationshipDeathChance[2])
+        JMap.setInt(jObj,"npcRelationshipDeathChance3",npcRelationshipDeathChance[3])
+        JMap.setInt(jObj,"npcRelationshipDeathChance4",npcRelationshipDeathChance[4])
         JMap.setFlt(jObj, "minHealthPercent", minHealthPercent)
     ; Save Levelling Settings
         JMap.setFlt(jObj, "xpConstant", xpConstant)
@@ -223,6 +235,7 @@ int Function SaveConfig()
         JMap.setInt(jObj, "autoFadeTime", autoFadeTime)
     ; Save Transform Settings
         JMap.setInt(jObj, "transformAnimation", transformAnimation as int)
+        JMap.setInt(jObj, "transformDuringScene", transformDuringScene as int)
         JMap.setInt(jObj, "transformSwapsEquipment", transformSwapsEquipment as int)
         JMap.setInt(jObj, "transformSavesNiOverrides", transformSavesNiOverrides as int)
         JMap.setFlt(jObj, "transformCost", transformCost)
@@ -270,6 +283,13 @@ Function LoadConfig(int jObj)
         energyConversionRate = JMap.getFlt(jObj, "energyConversionRate")
         drainFeedsVampire = JMap.getInt(jObj, "drainFeedsVampire") as bool
         npcDrainToDeathChance = JMap.getInt(jObj, "npcDrainToDeathChance")
+        if configVersion >= 5
+            npcRelationshipDeathChance[0] = JMap.getInt(jObj,"npcRelationshipDeathChance0")
+            npcRelationshipDeathChance[1] = JMap.getInt(jObj,"npcRelationshipDeathChance1")
+            npcRelationshipDeathChance[2] = JMap.getInt(jObj,"npcRelationshipDeathChance2")
+            npcRelationshipDeathChance[3] = JMap.getInt(jObj,"npcRelationshipDeathChance3")
+            npcRelationshipDeathChance[4] = JMap.getInt(jObj,"npcRelationshipDeathChance4")
+        endif
         if configVersion >= 3
             minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
         endif
@@ -336,6 +356,9 @@ Function LoadConfig(int jObj)
         transformCrime = JMap.getInt(jObj, "transformCrime") as bool
         transformArousalUpperThreshold = JMap.getFlt(jObj, "transformArousalUpperThreshold")
         transformArousalLowerThreshold = JMap.getFlt(jObj, "transformArousalLowerThreshold")
+        if configVersion >= 5
+            transformDuringScene = JMap.getInt(jObj, "transformDuringScene") as bool
+        endif
     ; Load Transform Baseline Buffs
         transformBuffsEnabled = JMap.getInt(jObj, "transformBuffsEnabled") as bool
         transformBaseHealth = JMap.getFlt(jObj, "transformBaseHealth")
@@ -354,5 +377,7 @@ Function LoadConfig(int jObj)
         transformArmorPerRank = JMap.getFlt(jObj, "transformArmorPerRank")
         transformMagicResistPerRank = JMap.getFlt(jObj, "transformMagicResistPerRank")
     JValue.release(jObj)
-    SendConfigUpdateEvent()
+    if isPlayerSuccubus.GetValueInt() == 1
+        SendConfigUpdateEvent()
+    endif
 EndFunction

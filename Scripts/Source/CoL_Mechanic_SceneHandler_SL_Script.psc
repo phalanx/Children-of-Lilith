@@ -6,6 +6,7 @@ CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 
 bool SexLabInstalled
 bool SLSOInstalled
@@ -45,11 +46,11 @@ EndFunction
 Function RegisterForEvents()
     ; Register for sexlab's tracking so we know when a scene involving the succubus starts
     if succubus == CoL.playerRef
-        RegisterForModEvent("PlayerTrack_Start", "SceneStartHandler")
+        RegisterForModEvent("PlayerTrack_Start", "SL_StartScene")
         CoL.Log("Registered for SexLab Player Start Scene Event")
     elseif succubus != None
         SexLab.TrackActor(succubus,"CoL_" + succubus + "Track")
-        RegisterForModEvent("CoL_" + succubus + "Track_Start", "SceneStartHandler")
+        RegisterForModEvent("CoL_" + succubus + "Track_Start", "SL_StartScene")
         CoL.Log("Registered for SexLab " + succubusName + " Start Scene Event")
     endif
 EndFunction
@@ -99,7 +100,7 @@ Function triggerDrainEnd(Actor victim)
     endif
 EndFunction
 
-Event SceneStartHandler(Form actorRef, int threadId)
+Event SL_StartScene(Form actorRef, int threadId)
     int sceneStartEvent
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
@@ -109,7 +110,7 @@ Event SceneStartHandler(Form actorRef, int threadId)
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
     ModEvent.Send(sceneStartEvent)
-    CoL.Log(succubusName +" involved animation started")
+    CoL.Log(succubusName +" involved SL animation started")
 
     currentParticipants = SexLab.Positions(threadId)
 
@@ -128,7 +129,7 @@ EndEvent
 
 Event OnKeyDown(int keyCode)
     if keyCode == configHandler.newTemptationHotkey
-        if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+        if levelHandler.playerSuccubusLevel.GetValueInt() < 2
             return
         endif
         int i = 0

@@ -3,6 +3,7 @@ Scriptname CoL_Mechanic_SceneHandler_FG_Script extends activemagiceffect
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 Keyword Property IsHavingSex Auto Hidden
 
 Actor victim1
@@ -34,16 +35,16 @@ State Waiting
     Event OnBeginState()
         victim1 = None
         victim2 = None
-        RegisterForModEvent("CoL_FG_startScene", "startScene")
+        RegisterForModEvent("CoL_FG_startScene", "FG_startScene")
         CoL.Log("Registered for Flower Girl " + succubusName +" Start Event")
     EndEvent
 
-    Event startScene(Form participant1, Form participant2)
+    Event FG_startScene(Form participant1, Form participant2)
         if !succubus.HasKeyword(IsHavingSex) 
             return
         endif
 
-        CoL.Log(succubusName + " involved animation started")
+        CoL.Log(succubusName + " involved FG animation started")
 
         UnRegisterForModEvent("CoL_FG_startScene")
 
@@ -74,7 +75,7 @@ EndState
 State Running
     Event OnBeginState()
         RegisterForModEvent("CoL_FG_Climax", "climax")
-        if succubus == CoL.playerRef && CoL.levelHandler.playerSuccubusLevel.GetValueInt() >= 2
+        if succubus == CoL.playerRef && levelHandler.playerSuccubusLevel.GetValueInt() >= 2
             RegisterForKey(configHandler.newTemptationHotkey)
         endif
     EndEvent
@@ -101,7 +102,7 @@ State Running
 
     Event OnKeyDown(int keyCode)
         if keyCode == configHandler.newTemptationHotkey
-            if CoL.levelHandler.playerSuccubusLevel.GetValueInt() < 2
+            if levelHandler.playerSuccubusLevel.GetValueInt() < 2
                 return
             endif
             if victim1 != None
@@ -130,7 +131,7 @@ State Ending
             endif
         endif
 
-        CoL.Log(succubusName + " involved animation ended")
+        CoL.Log(succubusName + " involved FG animation ended")
 
         UnregisterForModEvent("CoL_FG_stopScene")
 
@@ -195,7 +196,7 @@ Function triggerDrainEnd(Actor victim)
     endif
 EndFunction
 
-Event startScene(Form participant1, Form participant2)
+Event FG_startScene(Form participant1, Form participant2)
 EndEvent
 
 Event climax(Form participant1, Form participant2)

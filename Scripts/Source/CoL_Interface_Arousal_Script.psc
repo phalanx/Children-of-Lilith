@@ -2,7 +2,6 @@ Scriptname CoL_Interface_Arousal_Script extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_OSL_Script Property OSL Auto
-CoL_Interface_OAroused_Script Property OAroused Auto
 CoL_Interface_SLAR_Script Property SLAR Auto
 CoL_Interface_Toys_Script Property Toys Auto
 
@@ -13,7 +12,7 @@ EndEvent
 
 Function OnGameLoad()
     Utility.Wait(5)
-    if OSL.IsInterfaceActive() || OAroused.IsInterfaceActive() || SLAR.IsInterfaceActive() || Toys.IsInterfaceActive()
+    if OSL.IsInterfaceActive() || SLAR.IsInterfaceActive() || Toys.IsInterfaceActive()
         GoToState("Installed")
     else
         GoToState("")
@@ -28,10 +27,6 @@ State Installed
     float Function GetActorArousal(Actor target)
         int arousalMods = 0
         float targetArousal = 0.0
-        if OAroused.IsInterfaceActive()
-            targetArousal += OAroused.GetArousal(target)
-            arousalMods += 1
-        endif
         if SLAR.IsInterfaceActive()
             targetArousal += SLAR.GetActorArousal(target)
             arousalMods += 1
@@ -54,7 +49,6 @@ State Installed
 
     Function ModifyArousal(Actor target, float amount)
         SLAR.UpdateActorExposure(target, (amount as int))
-        OAroused.ModifyArousal(target, (amount as int))
         if target == CoL.playerRef
             Toys.ArousalAdjust(amount as int)
         endif

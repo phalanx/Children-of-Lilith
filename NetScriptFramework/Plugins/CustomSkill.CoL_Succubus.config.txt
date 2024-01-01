@@ -177,7 +177,7 @@ Node10.X = 0
 Node10.Y = 0
 Node10.GridX = 5
 Node10.GridY = 3
-Node10.Links = "11"
+Node10.Links = "11 14"
 
 # Healing Form
 Node11.Enable = true
@@ -199,7 +199,7 @@ Node12.GridX = 5
 Node12.GridY = 5
 Node12.Links = "13"
 
-# Safe Transformation
+# Slake Thirst
 Node13.Enable = true
 Node13.PerkFile = "ChildrenOfLilith.esp"
 Node13.PerkId = 0x2C0836
@@ -208,3 +208,12 @@ Node13.Y = 0
 Node13.GridX = 6
 Node13.GridY = 5
 # Node11.Links = "11"
+
+# Attractive Dremora
+Node14.Enable = true
+Node14.PerkFile = "ChildrenOfLilith.esp"
+Node14.PerkId = 0x323831
+Node14.X = 0
+Node14.Y = 0
+Node14.GridX = 7
+Node14.GridY = 5

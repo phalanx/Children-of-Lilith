@@ -1,6 +1,7 @@
 Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 
 Quest Property playerSuccubusQuest Auto
+
 CoL_PlayerSuccubusQuestScript CoL
 CoL_ConfigHandler_Script configHandler
 
@@ -37,10 +38,12 @@ Event OnPageDraw()
     endif
     AddHeaderOption("")
     AddToggleOptionST("Toggle_TransformAnimation", "$COL_TRANSFORMPAGE_ANIMATION", configHandler.transformAnimation)
+    AddToggleOptionST("Toggle_TransformDuringScene", "$COL_TRANSFORMPAGE_DURING_SCENE", configHandler.transformDuringScene)
     AddToggleOptionST("Toggle_TransformCrime", "$COL_TRANSFORMPAGE_TRANSFORMCRIME", configHandler.transformCrime)
     AddToggleOptionST("Toggle_TransformEquipment", "$COL_TRANSFORMPAGE_EQUIPMENTSWAP", configHandler.transformSwapsEquipment)
     AddToggleOptionST("Toggle_TransformNiOverrides", "$COL_TRANSFORMPAGE_SAVENIOVERRIDES", configHandler.transformSavesNiOverrides)
     AddSliderOptionST("Slider_TransformCost", "$COL_TRANSFORMPAGE_ENERGYCOST", configHandler.transformCost)
+    AddToggleOptionST("Toggle_TransformMortalCost", "$COL_TRANSFORMPAGE_MORTALCOST", configHandler.transformMortalCost)
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_BUFFS")
@@ -201,6 +204,15 @@ State Toggle_TransformNiOverrides
         SetInfoText("$COL_TRANSFORMPAGE_SAVENIOVERRIDES_HELP")
     EndEvent
 EndState
+State Toggle_TransformDuringScene
+    Event OnSelectST(string state_id)
+        configHandler.transformDuringScene = !configHandler.transformDuringScene
+        SetToggleOptionValueST(configHandler.transformDuringScene)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_DURING_SCENE_HELP")
+    EndEvent
+EndState
 State Toggle_TransformAnimation
     Event OnSelectST(string state_id)
         configHandler.transformAnimation = !configHandler.transformAnimation
@@ -223,6 +235,16 @@ State Slider_TransformCost
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_ENERGYCOST_HELP")
+    EndEvent
+EndState
+
+State Toggle_TransformMortalCost
+    Event OnSelectST(string state_id)
+        configHandler.transformMortalCost = !configHandler.transformMortalCost
+        SetToggleOptionValueST(configHandler.transformMortalCost)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_MORTALCOST_HELP")
     EndEvent
 EndState
 State Text_LoadEquipment
@@ -354,8 +376,8 @@ State Slider_ArousalUpperThreshold
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformArousalUpperThreshold = value
-        configHandler.SendConfigUpdateEvent()
         SetSliderOptionValueST(configHandler.transformArousalUpperThreshold)
+        configHandler.SendConfigUpdateEvent()
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD_HELP")
@@ -370,8 +392,8 @@ State Slider_ArousalLowerThreshold
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformArousalLowerThreshold = value
-        configHandler.SendConfigUpdateEvent()
         SetSliderOptionValueST(configHandler.transformArousalLowerThreshold)
+        configHandler.SendConfigUpdateEvent()
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD_HELP")

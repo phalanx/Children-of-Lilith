@@ -5,10 +5,12 @@ Perk Property gentleDrainer Auto
 Perk Property energyWeaver Auto
 Perk Property healingForm Auto
 Perk Property safeTransformation Auto
+Perk Property attractiveDremora Auto
 Perk Property slakeThirst Auto
 GlobalVariable Property perkPointsAvailable Auto
 CoL_ConfigHandler_Script configHandler
 CoL_PlayerSuccubusQuestScript CoL
+CoL_Mechanic_EnergyHandler_Script energyHandler
 
 Event OnInit()
     RegisterModule("$COL_ADVANCEMENTPAGE_NAME", 60)
@@ -17,6 +19,7 @@ EndEvent
 Event OnPageInit()
     configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
     CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
+    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -46,6 +49,11 @@ Event OnPageDraw()
         AddToggleOptionST("Toggle_perkSafeTransformation", "$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION", CoL.playerRef.HasPerk(safeTransformation))
     else
         AddToggleOptionST("Toggle_perkSafeTransformation", "$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION", CoL.playerRef.HasPerk(safeTransformation), OPTION_FLAG_DISABLED)
+    endif
+    if !CoL.playerRef.HasPerk(attractiveDremora)
+        AddToggleOptionST("Toggle_perkAttractiveDremora", "$COL_ADVANCEMENTPAGE_ATTRACTIVEDREMORA", CoL.playerRef.HasPerk(attractiveDremora))
+    else
+        AddToggleOptionST("Toggle_perkAttractiveDremora", "$COL_ADVANCEMENTPAGE_ATTRACTIVEDREMORA", CoL.playerRef.HasPerk(attractiveDremora), OPTION_FLAG_DISABLED)
     endif
     if !CoL.playerRef.HasPerk(slakeThirst)
         AddToggleOptionST("Toggle_perkSlakeThirst", "$COL_ADVANCEMENTPAGE_SLAKETHIRST", CoL.playerRef.HasPerk(slakeThirst))
@@ -158,7 +166,7 @@ State Text_perkEnergyStorage
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
             CoL.energyStorage += 1
-            CoL.playerEnergyMax += 10
+            energyHandler.playerEnergyMax += 10
             SetTextOptionValueST(CoL.energyStorage)
             perkPointsAvailable.Mod(-1)
             ForcePageReset()
@@ -167,7 +175,7 @@ State Text_perkEnergyStorage
         endif
     EndEvent
     Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVANCEMENTPAGE_ENERGYSTORAGE")
+        SetInfoText("$COL_ADVANCEMENTPAGE_ENERGYSTORAGE_HELP")
     EndEvent
 EndState
 State Toggle_perkEnergyWeaver
@@ -213,6 +221,21 @@ State Toggle_perkSafeTransformation
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVANCEMENTPAGE_SAFETRANSFORMATION_HELP")
+    EndEvent
+EndState
+State Toggle_perkAttractiveDremora
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            CoL.playerRef.AddPerk(attractiveDremora)
+            SetToggleOptionValueST(true)
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox("$COL_ADVANCEMENTPAGE_OUTOFPOINTS")
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVANCEMENTPAGE_ATTRACTIVEDREMORA_HELP")
     EndEvent
 EndState
 State Toggle_perkSlakeThirst

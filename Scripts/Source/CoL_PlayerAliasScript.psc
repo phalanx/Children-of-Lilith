@@ -4,6 +4,7 @@ import MiscUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 ImageSpaceModifier Property EnergyCastingIMod Auto
 Perk Property energyWeaver Auto
 
@@ -119,12 +120,12 @@ Function ExpendEnergy(Spell spellCast, float costModifier = 1.0)
         endif
     endif
     CoL.playerRef.AddPerk(CoL.energyCastingPerk)
-    if spellCost < CoL.playerEnergyCurrent
-        CoL.playerEnergyCurrent -= spellCost 
+    if spellCost < energyHandler.playerEnergyCurrent
+        energyHandler.playerEnergyCurrent -= spellCost 
     else
         CoL.playerRef.RemovePerk(CoL.energyCastingPerk)
-        CoL.playerEnergyCurrent = 0
-        float magickaOverflow = spellCost - CoL.playerEnergyCurrent
+        energyHandler.playerEnergyCurrent = 0
+        float magickaOverflow = spellCost - energyHandler.playerEnergyCurrent
         if magickaOverflow < CoL.playerRef.GetActorValue("Magicka")
             CoL.playerRef.DamageActorValue("Magicka", magickaOverflow)
         else
@@ -147,8 +148,8 @@ Function ExpendEnergyVancian()
             spellCost -= spellCost * 0.25
         endif
     endif
-	if spellCost < CoL.playerEnergyCurrent
-		CoL.playerEnergyCurrent -= spellCost
+	if spellCost < energyHandler.playerEnergyCurrent
+		energyHandler.playerEnergyCurrent -= spellCost
 		LastVancianCharges += 1.0
 		CurrentVancianCharges.SetValue(LastVancianCharges)
 	else
