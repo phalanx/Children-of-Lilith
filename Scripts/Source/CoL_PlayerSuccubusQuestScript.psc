@@ -122,9 +122,11 @@ State SceneRunning
         Log("Entered SceneRunning State")
         if configHandler.transformDuringScene
             Log("Scene Start Transforming")
-            simpleTransform.Cast(playerRef)
-            Utility.Wait(2)
-            transformPlayer(succuPresetName, succuRace, succuHairColor)
+            if !isTransformed
+                simpleTransform.Cast(playerRef)
+                Utility.Wait(2)
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
+            endif
         endif
     EndEvent
 
@@ -145,10 +147,12 @@ State SceneRunning
     Event onEndState()
         Log("Exited SceneRunning State")
         if configHandler.transformDuringScene
-            Log("Scene End Untransforming")
-            simpleTransform.Cast(playerRef)
-            Utility.Wait(2)
-            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+            if !isTransformed
+                Log("Scene End Untransforming")
+                simpleTransform.Cast(playerRef)
+                Utility.Wait(2)
+                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+            endif
         endif
     EndEvent
 EndState
