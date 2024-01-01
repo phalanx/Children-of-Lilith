@@ -32,6 +32,7 @@ Faction Property drainVictimFaction Auto
 Actor Property playerRef Auto                       ; The player reference
 Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
 Spell Property showperkMenu Auto                    ; Spell that when cast will open the CSF perk menu
+Spell Property simpleTransform Auto                 ; Spell that will provide the vfx and sfx for scene start transform
 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
@@ -119,8 +120,10 @@ EndState
 State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
-        if configHandler.transformDuringScene && succuRace == mortalRace
+        if configHandler.transformDuringScene
             Log("Scene Start Transforming")
+            simpleTransform.Cast(playerRef)
+            Utility.Wait(2)
             transformPlayer(succuPresetName, succuRace, succuHairColor)
         endif
     EndEvent
@@ -141,8 +144,10 @@ State SceneRunning
 
     Event onEndState()
         Log("Exited SceneRunning State")
-        if configHandler.transformDuringScene && succuRace == mortalRace
+        if configHandler.transformDuringScene
             Log("Scene End Untransforming")
+            simpleTransform.Cast(playerRef)
+            Utility.Wait(2)
             transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
         endif
     EndEvent
