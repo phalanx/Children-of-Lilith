@@ -100,6 +100,7 @@ bool Property transformDuringScene = true Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property transformSavesNiOverrides = false Auto Hidden
 float Property transformCost = 1.0 Auto Hidden
+bool Property transformMortalCost = false Auto
 bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden

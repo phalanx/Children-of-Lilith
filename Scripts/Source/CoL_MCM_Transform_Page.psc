@@ -43,6 +43,7 @@ Event OnPageDraw()
     AddToggleOptionST("Toggle_TransformEquipment", "$COL_TRANSFORMPAGE_EQUIPMENTSWAP", configHandler.transformSwapsEquipment)
     AddToggleOptionST("Toggle_TransformNiOverrides", "$COL_TRANSFORMPAGE_SAVENIOVERRIDES", configHandler.transformSavesNiOverrides)
     AddSliderOptionST("Slider_TransformCost", "$COL_TRANSFORMPAGE_ENERGYCOST", configHandler.transformCost)
+    AddToggleOptionST("Toggle_TransformMortalCost", "$COL_TRANSFORMPAGE_MORTALCOST", configHandler.transformMortalCost)
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_BUFFS")
@@ -234,6 +235,16 @@ State Slider_TransformCost
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_ENERGYCOST_HELP")
+    EndEvent
+EndState
+
+State Toggle_TransformMortalCost
+    Event OnSelectST(string state_id)
+        configHandler.transformMortalCost = !configHandler.transformMortalCost
+        SetToggleOptionValueST(configHandler.transformMortalCost)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_MORTALCOST_HELP")
     EndEvent
 EndState
 State Text_LoadEquipment

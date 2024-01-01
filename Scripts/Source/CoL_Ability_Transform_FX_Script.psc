@@ -8,7 +8,7 @@ bool Property simple = false Auto
 
 Idle Property SuccubusTransformationIdle Auto
 Sound Property SuccubusTransformSound Auto
-
+; We do the transform cost spell application here so we can time it correctly with the animation
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     SuccubusTransformSound.Play(akTarget)
     if !simple
@@ -18,7 +18,11 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
             if CoL.lockTransform
                 return
             else
-                CoL.playerRef.removeSpell(transformCostSpell)
+                if configHandler.transformMortalCost
+                    CoL.playerRef.AddSpell(transformCostSpell,false)
+                else
+                    CoL.playerRef.removeSpell(transformCostSpell)
+                endif
             endif
         else
             float cost
@@ -46,7 +50,11 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
                 CoL.playerRef.RemoveSpell(CoL.becomeEthereal)
                 configHandler.becomeEtherealCost = cost
             endif
-            CoL.playerRef.AddSpell(transformCostSpell, false) ; Doing this in FX will prevent energy being reduced during the transform animation
+            if configHandler.transformMortalCost
+                CoL.playerRef.RemoveSpell(transformCostSpell) 
+            else
+                CoL.playerRef.AddSpell(transformCostSpell, false) 
+            endif
         endif
     endif
 EndEvent

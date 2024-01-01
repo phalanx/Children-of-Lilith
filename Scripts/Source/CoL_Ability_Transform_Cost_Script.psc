@@ -33,7 +33,7 @@ Function EndScene()
 EndFunction
 
 Event OnUpdate()
-    if CoL.isTransformed && configHandler.transformCost > 0
+    if configHandler.transformCost > 0
         if pauseCost
             return
         endif
