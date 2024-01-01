@@ -33,10 +33,10 @@ EndFunction
 Function RegisterForEvents()
     ; Register for Toys and Loves's scene tracking so we know when a scene starts
     if succubus == CoL.playerRef
-        RegisterForModEvent("ToysStartLove", "startScene")
+        RegisterForModEvent("ToysStartLove", "TL_startScene")
         CoL.Log("Registered for Toys&Love Player Start Scene Event")
     Else
-        RegisterForModEvent("ToysStartPlayerlessLove", "startScene")
+        RegisterForModEvent("ToysStartPlayerlessLove", "TL_startScene")
         CoL.Log("Registered for Toys&Love "+ succubusName +" Start Scene Event")
     endif
 EndFunction
@@ -90,7 +90,7 @@ Function triggerDrainEnd()
     endwhile
 EndFunction
 
-Event startScene(string EventName, string strArg, float numArg, Form sender)
+Event TL_startScene(string EventName, string strArg, float numArg, Form sender)
     int sceneStartEvent
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
@@ -102,13 +102,13 @@ Event startScene(string EventName, string strArg, float numArg, Form sender)
     endif
     if sceneStartEvent
         ModEvent.Send(sceneStartEvent)
-        CoL.Log(succubusName + " involved animation started")
+        CoL.Log(succubusName + " involved TL animation started")
     endif
 
     currentSceneName = strArg
     RegisterForModEvent("ToysClimaxNPC", "triggerDrainStart")
     RegisterForModEvent("ToysLoveSceneInfo", "sceneInfo")
-    RegisterForModEvent("ToysLoveSceneEnd", "endScene")
+    RegisterForModEvent("ToysLoveSceneEnd", "TL_endScene")
     CoL.Log("Registered for TL Scene Events")
 EndEvent
 
@@ -149,7 +149,7 @@ Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerC
 
 EndEvent
 
-Event endScene(string eventName, string strArg, float numArg, Form sender)
+Event TL_endScene(string eventName, string strArg, float numArg, Form sender)
     if strArg != currentSceneName
         return
     endif

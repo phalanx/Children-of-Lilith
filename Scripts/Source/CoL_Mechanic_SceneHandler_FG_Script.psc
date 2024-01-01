@@ -35,16 +35,16 @@ State Waiting
     Event OnBeginState()
         victim1 = None
         victim2 = None
-        RegisterForModEvent("CoL_FG_startScene", "startScene")
+        RegisterForModEvent("CoL_FG_startScene", "FG_startScene")
         CoL.Log("Registered for Flower Girl " + succubusName +" Start Event")
     EndEvent
 
-    Event startScene(Form participant1, Form participant2)
+    Event FG_startScene(Form participant1, Form participant2)
         if !succubus.HasKeyword(IsHavingSex) 
             return
         endif
 
-        CoL.Log(succubusName + " involved animation started")
+        CoL.Log(succubusName + " involved FG animation started")
 
         UnRegisterForModEvent("CoL_FG_startScene")
 
@@ -131,7 +131,7 @@ State Ending
             endif
         endif
 
-        CoL.Log(succubusName + " involved animation ended")
+        CoL.Log(succubusName + " involved FG animation ended")
 
         UnregisterForModEvent("CoL_FG_stopScene")
 
@@ -196,7 +196,7 @@ Function triggerDrainEnd(Actor victim)
     endif
 EndFunction
 
-Event startScene(Form participant1, Form participant2)
+Event FG_startScene(Form participant1, Form participant2)
 EndEvent
 
 Event climax(Form participant1, Form participant2)

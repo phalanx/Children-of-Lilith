@@ -64,10 +64,10 @@ EndFunction
 State Waiting
     Event OnBeginState()
         CoL.Log("Registered for OStim Events for " + succubusName)
-        RegisterForModEvent("ostim_start", "startScene")
+        RegisterForModEvent("ostim_start", "OS_startScene")
     EndEvent
 
-    Event startScene(string eventName, string strArg, float numArg, Form sender)
+    Event OS_startScene(string eventName, string strArg, float numArg, Form sender)
 
         CoL.Log(succubusName + " involved OStim animation started")
 
@@ -222,7 +222,7 @@ Function triggerDrainEnd(Actor victim)
     endif
 EndFunction
 
-Event startScene(string eventName, string strArg, float numArg, Form sender)
+Event OS_startScene(string eventName, string strArg, float numArg, Form sender)
 EndEvent
 
 Event orgasmHandler(string eventName, string strArg, float numArg, Form sender)
