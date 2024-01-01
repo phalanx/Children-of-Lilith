@@ -1,4 +1,4 @@
-Scriptname CoL_Spell_Temptation_Base_Script extends activemagiceffect
+Scriptname CoL_Spell_Temptation_Script extends activemagiceffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
