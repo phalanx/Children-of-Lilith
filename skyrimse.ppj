@@ -29,7 +29,7 @@
         <Import>@ModsFolder\ConsoleUtilSSE\Scripts\Source</Import>
         <Import>@ModsFolder\OStim NG - OSA Overhaul and API Next Gen\Scripts\Source</Import>
         <Import>@ModsFolder\OSA - For OStim\Scripts\Source</Import>
-        <Import>@ModsFolder\OAroused\scripts\source</Import>
+        <!-- <Import>@ModsFolder\OAroused\scripts\source</Import> -->
         <Import>@ModsFolder\JContainers SE\scripts\source</Import>
         <Import>@ModsFolder\ODefeat\scripts\Source</Import>
         <Import>@ModsFolder\powerofthree's Papyrus Extender\Source\scripts</Import>
