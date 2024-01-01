@@ -3,7 +3,7 @@ Scriptname CoL_Ability_Transform_FX_Script extends activemagiceffect
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 Perk Property safeTransformation Auto
-Spell Property transformCostSPell Auto
+Spell Property transformCostSpell Auto
 
 Idle Property SuccubusTransformationIdle Auto
 Sound Property SuccubusTransformSound Auto

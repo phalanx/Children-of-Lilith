@@ -38,6 +38,7 @@ Event OnPageDraw()
     endif
     AddHeaderOption("")
     AddToggleOptionST("Toggle_TransformAnimation", "$COL_TRANSFORMPAGE_ANIMATION", configHandler.transformAnimation)
+    AddToggleOptionST("Toggle_TransformDuringScene", "$COL_TRANSFORMPAGE_DURING_SCENE", configHandler.transformDuringScene)
     AddToggleOptionST("Toggle_TransformCrime", "$COL_TRANSFORMPAGE_TRANSFORMCRIME", configHandler.transformCrime)
     AddToggleOptionST("Toggle_TransformEquipment", "$COL_TRANSFORMPAGE_EQUIPMENTSWAP", configHandler.transformSwapsEquipment)
     AddToggleOptionST("Toggle_TransformNiOverrides", "$COL_TRANSFORMPAGE_SAVENIOVERRIDES", configHandler.transformSavesNiOverrides)
@@ -200,6 +201,15 @@ State Toggle_TransformNiOverrides
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_SAVENIOVERRIDES_HELP")
+    EndEvent
+EndState
+State Toggle_TransformDuringScene
+    Event OnSelectST(string state_id)
+        configHandler.transformDuringScene = !configHandler.transformDuringScene
+        SetToggleOptionValueST(configHandler.transformDuringScene)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_DURING_SCENE_HELP")
     EndEvent
 EndState
 State Toggle_TransformAnimation

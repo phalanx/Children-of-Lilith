@@ -119,6 +119,10 @@ EndState
 State SceneRunning
     Event onBeginState()
         Log("Entered SceneRunning State")
+        if configHandler.transformDuringScene && succuRace == mortalRace
+            Log("Scene Start Transforming")
+            transformPlayer(succuPresetName, succuRace, succuHairColor)
+        endif
     EndEvent
 
     Event OnKeyDown(int keyCode)
@@ -137,6 +141,10 @@ State SceneRunning
 
     Event onEndState()
         Log("Exited SceneRunning State")
+        if configHandler.transformDuringScene && succuRace == mortalRace
+            Log("Scene End Untransforming")
+            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+        endif
     EndEvent
 EndState
 

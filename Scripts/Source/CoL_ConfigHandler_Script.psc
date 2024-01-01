@@ -95,6 +95,7 @@ int Property autoFadeTime = 5 Auto Hidden
 ; Transform Settings
 Form[] Property NoStripList Auto Hidden
 bool Property transformAnimation = true Auto Hidden
+bool Property transformDuringScene = true Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property transformSavesNiOverrides = false Auto Hidden
 float Property transformCost = 1.0 Auto Hidden
@@ -149,7 +150,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 4
+    return 5
 EndFunction
 
 int Function SaveConfig()
@@ -227,6 +228,7 @@ int Function SaveConfig()
         JMap.setInt(jObj, "autoFadeTime", autoFadeTime)
     ; Save Transform Settings
         JMap.setInt(jObj, "transformAnimation", transformAnimation as int)
+        JMap.setInt(jObj, "transformDuringScene", transformDuringScene as int)
         JMap.setInt(jObj, "transformSwapsEquipment", transformSwapsEquipment as int)
         JMap.setInt(jObj, "transformSavesNiOverrides", transformSavesNiOverrides as int)
         JMap.setFlt(jObj, "transformCost", transformCost)
@@ -340,6 +342,9 @@ Function LoadConfig(int jObj)
         transformCrime = JMap.getInt(jObj, "transformCrime") as bool
         transformArousalUpperThreshold = JMap.getFlt(jObj, "transformArousalUpperThreshold")
         transformArousalLowerThreshold = JMap.getFlt(jObj, "transformArousalLowerThreshold")
+        if configVersion >= 5
+            transformDuringScene = JMap.getInt(jObj, "transformDuringScene") as bool
+        endif
     ; Load Transform Baseline Buffs
         transformBuffsEnabled = JMap.getInt(jObj, "transformBuffsEnabled") as bool
         transformBaseHealth = JMap.getFlt(jObj, "transformBaseHealth")

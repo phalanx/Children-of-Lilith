@@ -49,6 +49,9 @@
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->
         <Folder>./Scripts/Source</Folder>
     </Folders>
+    <PreBuildEvent Description="Create Translation Files" UseInBuild="true">
+        <Command>translation.sh create</Command>
+    </PreBuildEvent>
     <!-- The following section is for .bsa archives. You can enable it by setting Package="true" in the PapyrusProject -->
     <Packages Output=".">
         <Package Name="@ModName" RootDir=".">
@@ -79,5 +82,6 @@
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
     <PostBuildEvent Description="Post-Build Remove BSA Files" UseInBuild="true">
         <Command>del /s /q /f *.bsa</Command>
+        <Command>translation.sh remove</Command>
     </PostBuildEvent>
 </PapyrusProject>
