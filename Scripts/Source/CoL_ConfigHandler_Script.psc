@@ -28,6 +28,7 @@ float Property minHealthPercent = 0.11 Auto Hidden              ; Minimum percen
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
+int[] Property npcRelationshipDeathChance Auto                  ; Percentage chances for npc succubi with a relationship rank equal to the index to drain victim to death
 
 ; Levelling Settings
 float Property xpConstant = 0.3 Auto Hidden                     ; Effects amount of XP required. Lower = More xp Required
@@ -174,6 +175,11 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "energyConversionRate", energyConversionRate)
         JMap.setInt(jObj, "drainFeedsVampire", drainFeedsVampire as int)
         JMap.setInt(jObj, "npcDrainToDeathChance", npcDrainToDeathChance)
+        JMap.setInt(jObj,"npcRelationshipDeathChance0",npcRelationshipDeathChance[0])
+        JMap.setInt(jObj,"npcRelationshipDeathChance1",npcRelationshipDeathChance[1])
+        JMap.setInt(jObj,"npcRelationshipDeathChance2",npcRelationshipDeathChance[2])
+        JMap.setInt(jObj,"npcRelationshipDeathChance3",npcRelationshipDeathChance[3])
+        JMap.setInt(jObj,"npcRelationshipDeathChance4",npcRelationshipDeathChance[4])
         JMap.setFlt(jObj, "minHealthPercent", minHealthPercent)
     ; Save Levelling Settings
         JMap.setFlt(jObj, "xpConstant", xpConstant)
@@ -276,6 +282,13 @@ Function LoadConfig(int jObj)
         energyConversionRate = JMap.getFlt(jObj, "energyConversionRate")
         drainFeedsVampire = JMap.getInt(jObj, "drainFeedsVampire") as bool
         npcDrainToDeathChance = JMap.getInt(jObj, "npcDrainToDeathChance")
+        if configVersion >= 5
+            npcRelationshipDeathChance[0] = JMap.getInt(jObj,"npcRelationshipDeathChance0")
+            npcRelationshipDeathChance[1] = JMap.getInt(jObj,"npcRelationshipDeathChance1")
+            npcRelationshipDeathChance[2] = JMap.getInt(jObj,"npcRelationshipDeathChance2")
+            npcRelationshipDeathChance[3] = JMap.getInt(jObj,"npcRelationshipDeathChance3")
+            npcRelationshipDeathChance[4] = JMap.getInt(jObj,"npcRelationshipDeathChance4")
+        endif
         if configVersion >= 3
             minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
         endif

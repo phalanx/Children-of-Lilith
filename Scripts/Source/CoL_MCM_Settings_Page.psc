@@ -45,7 +45,11 @@ Event OnPageDraw()
         AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
-        AddSliderOptionST("Slider_npcDeathChance", "$COL_SETTINGSPAGE_NPCDEATHCHANCE", configHandler.npcDrainToDeathChance, "{1}")
+        int i = 0
+        while i <=4
+            AddSliderOptionST("Slider_npcRelationshipDeathChance___" + i, "$COL_SETTINGSPAGE_NPCRELATIONSHIODEATHCHANCE_" + i, configHandler.npcRelationshipDeathChance[i], "{1}")
+            i += 1
+        endwhile
     ; Tattoo Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_TATTOO")
         AddToggleOptionST("Toggle_tattooFade", "$COL_SETTINGSPAGE_TATTOOFADE", configHandler.tattooFade)
@@ -282,22 +286,21 @@ EndEvent
         EndEvent
     EndState
 
-    State Slider_npcDeathChance
+    State Slider_npcRelationshipDeathChance
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.npcDrainToDeathChance)
+            SetSliderDialogStartValue(configHandler.npcRelationshipDeathChance[state_id as int])
             SetSliderDialogDefaultValue(0)
             SetSliderDialogInterval(1)
             SetSliderDialogRange(0, 100)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
-            configHandler.npcDrainToDeathChance = value as int
-            SetSliderOptionValueST(configHandler.npcDrainToDeathChance,"{1}")
+            configHandler.npcRelationshipDeathChance[state_id as int] = value as int
+            SetSliderOptionValueST(configHandler.npcRelationshipDeathChance[state_id as int],"{1}")
         EndEvent
         Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_NPCDEATHCHANCE_HELP")
+            SetInfoText("$COL_SETTINGSPAGE_NPCRELATIONSHIPDEATHCHANCE_HELP")
         EndEvent
     EndState
-
 ; Levelling States
     State Slider_xpPerDrain
         Event OnSliderOpenST(string state_id)

@@ -27,70 +27,92 @@ State Uninitialize
     EndEvent
 EndState
 
-State Draining
-    Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
-        Actor drainee = draineeForm as Actor
+Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
+    int random = Utility.RandomInt()
+    int relationship = (drainerForm as Actor).GetRelationshipRank(draineeForm as Actor)
+    if relationship < 0
+        relationship = 0
+    endif
+    if relationship > 4
+        relationship = 4
+    endif
+    if random < configHandler.npcRelationshipDeathChance[relationship]
+        StorageUtil.SetIntValue(drainerForm,"CoL_NPC_drainType",1)
+        DrainToDeath(drainerForm, draineeForm, draineeName, arousal)
+    else
+        StorageUtil.SetIntValue(drainerForm,"CoL_NPC_drainType",0)
+        normalDrain(drainerForm, draineeForm, draineeName, arousal)
+    endif
+EndEvent
 
-        CoL.Log("Recieved Start Drain Event for " + draineeName)
-        CoL.Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-        CoL.Log("Recieved Victim Arousal: " + arousal)
+Event EndDrain(Form drainerForm, Form draineeForm)
+    if StorageUtil.GetIntValue(drainerForm,"CoL_NPC_drainType") == 1
+        EndDrainToDeath(drainerForm, draineeForm)
+    else
+        EndNormalDrain(drainerForm, draineeForm)
+    endif
+EndEvent
+
+Function NormalDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
+    Actor drainee = draineeForm as Actor
+
+    CoL.Log("Recieved Start Drain Event for " + draineeName)
+    CoL.Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
+    CoL.Log("Recieved Victim Arousal: " + arousal)
+
+    if drainee.IsInFaction(CoL.drainVictimFaction)
+        CoL.Log(draineeName + " has already been drained and Drain to Death Not Enabled.")
+        return
+    endif
+    StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
+    float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    applyDrainSpell(drainee, drainAmounts)
+    
+    energyHandler.playerEnergyCurrent += (drainAmounts[0] * configHandler.energyConversionRate)
+EndFunction
+
+Function EndNormalDrain(Form drainerForm, Form draineeForm)
+    CoL.Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
+    StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
+    float drainAmount = StorageUtil.GetFloatValue((draineeForm as Actor), "CoL_drainAmount")
+    (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
+EndFunction
+
+Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
+    Actor drainee = draineeForm as Actor
+
+    CoL.Log("Recieved Start Drain Event for " + draineeName)
+    CoL.Log("Drained by " + drainee.GetBaseObject().GetName())
+
+    float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    if drainee.isEssential()
+        CoL.Log("Victim is essential")
 
         if drainee.IsInFaction(CoL.drainVictimFaction)
-            CoL.Log(draineeName + " has already been drained and Drain to Death Not Enabled.")
+            CoL.Log("Victim has been drained")
             return
-        endif
-        StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
-        float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
-        applyDrainSpell(drainee, drainAmounts)
-        
-        energyHandler.playerEnergyCurrent += (drainAmounts[0] * configHandler.energyConversionRate)
-    EndEvent
-
-    Event EndDrain(Form drainerForm, Form draineeForm)
-        CoL.Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
-        StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
-        float drainAmount = StorageUtil.GetFloatValue((draineeForm as Actor), "CoL_drainAmount")
-        (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
-    EndEvent
-EndState
-
-State DrainingToDeath
-    Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
-        Actor drainee = draineeForm as Actor
-
-        CoL.Log("Recieved Start Drain Event for " + draineeName)
-        CoL.Log("Drained by " + drainee.GetBaseObject().GetName())
-
-        float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
-        if drainee.isEssential()
-            CoL.Log("Victim is essential")
-
-            if drainee.IsInFaction(CoL.drainVictimFaction)
-                CoL.Log("Victim has been drained")
-                return
-            else
-                applyDrainSpell(drainee, drainAmounts)
-            endif
         else
-            drainToDeathVFX.Play(drainee, 1, (drainerForm as Actor))
+            applyDrainSpell(drainee, drainAmounts)
         endif
+    else
+        drainToDeathVFX.Play(drainee, 1, (drainerForm as Actor))
+    endif
 
-        energyHandler.playerEnergyCurrent += (drainAmounts[0] * configHandler.energyConversionRate * configHandler.drainToDeathMult)
-    EndEvent
+    energyHandler.playerEnergyCurrent += (drainAmounts[0] * configHandler.energyConversionRate * configHandler.drainToDeathMult)
+EndFunction
 
-    Event EndDrain(Form drainerForm, Form draineeForm)
-        Actor drainee = draineeForm as Actor
+Function EndDrainToDeath(Form drainerForm, Form draineeForm)
+    Actor drainee = draineeForm as Actor
 
-        CoL.Log("Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
-        CoL.Log("Killing")
-        if drainee.isEssential()
-            CoL.Log("Can't kill essential. Dealing damage instead")
-            drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
-            return
-        endif
-        drainee.Kill(drainerForm as Actor)
-    EndEvent
-EndState
+    CoL.Log("Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
+    CoL.Log("Killing")
+    if drainee.isEssential()
+        CoL.Log("Can't kill essential. Dealing damage instead")
+        drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
+        return
+    endif
+    drainee.Kill(drainerForm as Actor)
+EndFunction
 
 Function applyDrainSpell(Actor drainee, float[] drainAmounts)
     drainee.RemoveSpell(CoL.drainHealthSpell)
@@ -132,8 +154,3 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
     CoL.Log("Final Drain Amount: " + drainAmount)
     return returnValues
 EndFunction
-
-Event StartDrain( Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
-EndEvent
-Event EndDrain(Form drainerForm, Form draineeForm)
-EndEvent
