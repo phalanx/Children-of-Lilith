@@ -29,9 +29,7 @@
         <Import>@ModsFolder\ConsoleUtilSSE\Scripts\Source</Import>
         <Import>@ModsFolder\OStim NG - OSA Overhaul and API Next Gen\Scripts\Source</Import>
         <Import>@ModsFolder\OSA - For OStim\Scripts\Source</Import>
-        <!-- <Import>@ModsFolder\OAroused\scripts\source</Import> -->
         <Import>@ModsFolder\JContainers SE\scripts\source</Import>
-        <Import>@ModsFolder\ODefeat\scripts\Source</Import>
         <Import>@ModsFolder\powerofthree's Papyrus Extender\Source\scripts</Import>
         <Import>@ModsFolder\Toys and Love\Source\Scripts</Import>
         <Import>@ModsFolder\WildLife for Toys SE V\Source\Scripts</Import>
@@ -43,7 +41,6 @@
         <Import>@ModsFolder\NL_MCM - A Modular MCM Framework - SDK\scripts\Source</Import>
         <Import>@ModsFolder\Custom Skills Framework\Source\Scripts</Import>
         <Import>@ModsFolder\Sexlab - Cum Overlays\Scripts\Source</Import>
-        <!-- <Import>@ModsFolder\MCM Helper SDK\Source\Scripts</Import> -->
     </Imports>
     <Folders>
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->

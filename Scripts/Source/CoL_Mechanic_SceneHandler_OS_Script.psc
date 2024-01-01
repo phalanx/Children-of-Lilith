@@ -7,11 +7,7 @@ CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 
-Quest Property oDefeat Auto Hidden
-
 bool oStimInstalled = False
-bool oDefeatInstalled = False
-bool oArousedInstalled = False
 Actor succubus
 String succubusName
 
@@ -43,22 +39,7 @@ Function Maintenance()
     succubusName = succubus.GetActorBase().GetName()
 
     currentVictims = new Actor[1]
-    CheckForAddons()
     GoToState("Waiting")
-EndFunction
-
-Function CheckForAddons()
-    oDefeat = Quest.GetQuest("ODefeatMainQuest")
-    if oDefeat != None
-        oDefeatInstalled = True
-    endif
-
-    if oArousedInstalled
-       CoL.Log("OAroused Detected")
-    endif
-    if oDefeatInstalled
-        CoL.Log("ODefeat Detected")
-    endif
 EndFunction
 
 State Waiting
@@ -202,10 +183,6 @@ Function triggerDrainEnd(Actor victim)
     Utility.Wait(2)
     if oStim.FullyAnimateRedress() && drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
         Utility.Wait(5)
-    endif
-    if oDefeat && drainHandler.drainingToDeath
-        CoL.Log("oDefeat Detected")
-        Debug.SendAnimationEvent(victim, "IdleForceDefaultState")
     endif
 
     int drainHandle
