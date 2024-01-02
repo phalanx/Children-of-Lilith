@@ -95,17 +95,14 @@ State Initialize
         playerRef.AddSpell(drainHandler, false)
         widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
-        ; UpdateConfig()
         Maintenance()
         configHandler.SendConfigUpdateEvent()
         GotoState("Running")
+        Debug.Notification("CoL is now ready")
     EndEvent
 EndState
 
 State Running
-    Event OnBeginState()
-        Debug.Notification("CoL is now ready")
-    EndEvent
     Event OnKeyDown(int keyCode)
         if keyCode == configHandler.toggleDrainToDeathHotKey
             if configHandler.EnergyScaleTestEnabled
@@ -209,6 +206,7 @@ Function Maintenance()
 EndFunction
 
 Function RegisterForHotkeys()
+    RegisterForKey(configHandler.toggleDrainToDeathHotkey)
     RegisterForKey(configHandler.transformHotkey)
     RegisterForKey(configHandler.csfMenuHotkey)
 EndFunction
