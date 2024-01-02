@@ -1,4 +1,4 @@
-Scriptname CoL_Mechanic_DrainHandler_Script extends Quest
+Scriptname CoL_Mechanic_DrainHandler_Script extends ActiveMagicEffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto

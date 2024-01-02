@@ -100,7 +100,7 @@ bool Property transformDuringScene = true Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property transformSavesNiOverrides = false Auto Hidden
 float Property transformCost = 1.0 Auto Hidden
-bool Property transformMortalCost = false Auto
+bool Property transformMortalCost = false Auto Hidden
 bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
@@ -143,11 +143,16 @@ Function Maintenance()
 EndFunction
 
 Function SendConfigUpdateEvent()
-    if isPlayerSuccubus.GetValueInt() != 0
+    if isPlayerSuccubus.GetValueInt() == 1
         int handle = ModEvent.Create("CoL_configUpdated")
         if handle
             ModEvent.Send(handle)
+            Debug.trace("[CoL] Sending Config Update Event")
+        else
+            debug.trace("[CoL] Not Sending Config Update Event")
         endif
+    else
+        debug.trace("[CoL] Not Sending Config Update Event")
     endif
 EndFunction
 

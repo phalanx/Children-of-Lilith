@@ -22,7 +22,6 @@ EndFunction
 Function Maintenance()
     UpdateMeter()
     RegisterForModEvent("iWantWidgetsReset", "OniWantWidgetsReset")
-    RegisterForModEvent("CoL_configUpdated", "UpdateMeter")
     RegisterForModEvent("CoL_Energy_Updated", "UpdateFill")
 EndFunction
 
@@ -31,6 +30,7 @@ Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form se
 EndEvent
 
 Function UpdateMeter()
+    CoL.Log("Updating Meter")
     if CoL.isPlayerSuccubus.GetValueInt() != 1
         Uninitialize()
     endif
@@ -111,5 +111,4 @@ Function Uninitialize()
     CoL.Log("Uninitializing Widgets")
     iWidgets.Destroy(energyMeter)
     UnregisterForModEvent("iWantWidgetsReset")
-    UnregisterForModEvent("CoL_configUpdated")
 EndFunction

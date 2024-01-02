@@ -3,8 +3,7 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 import PapyrusUtil
 import CharGen
 
-Quest Property playerSuccubusQuest Auto
-CoL_ConfigHandler_Script configHandler
+CoL_ConfigHandler_Script Property configHandler Auto 
 
 CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
@@ -85,7 +84,6 @@ int Property transformArmor = 0 Auto Hidden
 int Property transformMagicResist = 0 Auto Hidden
 
 Event OnInit()
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
 EndEvent
 
 State Initialize
@@ -96,14 +94,17 @@ State Initialize
         isPlayerSuccubus.SetValue(1.0)
         widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
-        UpdateConfig()
-        configHandler.SendConfigUpdateEvent()
+        ; UpdateConfig()
         Maintenance()
+        configHandler.SendConfigUpdateEvent()
         GotoState("Running")
     EndEvent
 EndState
 
 State Running
+    Event OnBeginState()
+        Debug.Notification("CoL is now ready")
+    EndEvent
     Event OnKeyDown(int keyCode)
         if keyCode == configHandler.toggleDrainToDeathHotKey
             if configHandler.EnergyScaleTestEnabled
@@ -218,6 +219,7 @@ Function Maintenance()
             endif
         endif
     endif
+    Log("Maintenance Done")
 EndFunction
 
 Function RegisterForHotkeys()
@@ -457,6 +459,7 @@ Function UpdateCSFPower()
 EndFunction
 
 Function UpdateArousalThresholds()
+    Log("Updating Arousal Thresholds")
     if configHandler.transformArousalLowerThreshold == 0 && configHandler.transformArousalUpperThreshold ==0
         if playerRef.HasSpell(arousalTransformSpell)
             playerRef.RemoveSpell(arousalTransformSpell)
@@ -469,6 +472,7 @@ Function UpdateArousalThresholds()
 EndFunction
 
 Function UpdateHunger()
+    Log("Updating Hunger Thresholds")
     if configHandler.hungerEnabled
         playerRef.AddSpell(hungerSpell, false)
     else
@@ -487,5 +491,6 @@ Function UpdateConfig()
         UpdateCSFPower()
         UpdateArousalThresholds()
         UpdateHunger()
+        widgetHandler.UpdateMeter()
     endif
 EndFunction
