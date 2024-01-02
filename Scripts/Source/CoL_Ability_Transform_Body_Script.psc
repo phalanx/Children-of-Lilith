@@ -4,7 +4,6 @@ import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 
 Faction Property playerWerewolfFaction Auto
 Perk Property attractiveDremora Auto
@@ -25,6 +24,7 @@ EndEvent
 Function Transform()
     CoL.Log("Transforming Body")
     CoL.isTransformed = true
+
     CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
     
     if configHandler.transformCrime && !CoL.playerRef.HasPerk(attractiveDremora)
@@ -32,9 +32,6 @@ Function Transform()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
 
-    if configHandler.deadlyDrainWhenTransformed
-        drainHandler.drainingToDeath = true
-    endif
     Utility.Wait(2) ; Wait for other scripts to hopefully be finished
 EndFunction
 
@@ -49,10 +46,6 @@ Function UnTransform()
         CoL.playerRef.RemoveFromFaction(playerWerewolfFaction)
     endif
 
-    if configHandler.deadlyDrainWhenTransformed
-        drainHandler.drainingToDeath = false
-        drainHandler.draining = true
-    endif
     Utility.Wait(2) ; Wait for other scripts to hopefully be finished
 EndFunction
 

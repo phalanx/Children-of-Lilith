@@ -12,159 +12,179 @@ VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
 
-bool draining_var = false
-bool Property draining Hidden
-    bool Function Get()
-        return draining_var
-    EndFunction
-    Function Set(bool newVal)
-        if draining_var != newVal
-            draining_var = newVal
-            CheckDraining(configHandler.drainNotificationsEnabled)
-        endif
-    EndFunction
-EndProperty
-bool drainingToDeath_var = false
-bool Property drainingToDeath Hidden
-    bool Function Get()
-        return drainingToDeath_var
-    EndFunction
-    Function Set(bool newVal)
-        if drainingToDeath_var != newVal
-            drainingToDeath_var = newVal
-            CheckDraining(configHandler.drainNotificationsEnabled)
-        endif
-    EndFunction
-EndProperty
+bool draining = false
+bool drainingToDeath = false
 
 Keyword Property vampireKeyword Auto Hidden
 
-State Initialize
-    Event OnBeginState()
-        Maintenance()
-        CheckDraining(false)
-    EndEvent
-EndState
+Function Log(String msg)
+    CoL.Log("Drain Handler - " + msg)
+EndFunction
+
+Event OnEffectStart(Actor akCaster, Actor akTarget)
+    Log("Started")
+    Maintenance()
+EndEvent
+
+Event OnEffectFinish(Actor akCaster, Actor akTarget)
+    Log("Stopped")
+EndEvent
 
 Function Maintenance()
+    Log("Maintenance Running")
     vampireKeyword = Keyword.GetKeyword("vampire")
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
     RegisterForModEvent("CoL_startDrain", "StartDrain")
     RegisterForModEvent("CoL_endDrain", "EndDrain")
     RegisterForModEvent("CoL_Energy_Updated", "energyUpdated")
-    CoL.Log("Registered for CoL Drain Events")
+    RegisterForModEvent("CoL_startScene", "StartScene")
+    RegisterForModEvent("CoL_endScene", "EndScene")
+    RegisterForModEvent("CoL_Transform", "ProcessTransform")
+    CheckDraining(false)
 EndFunction
 
-State Uninitialize
-    Event OnBeginState()
-        UnregisterForModEvent("CoL_startDrain")
-        UnregisterForModEvent("CoL_endDrain")
-        CoL.Log("Unregistered for CoL Drain Events")
-        GoToState("")
-    EndEvent
-EndState
+Function StartScene()
+    RegisterForKey(configHandler.toggleDrainHotKey)
+    RegisterForKey(configHandler.toggleDrainToDeathHotKey)
+EndFunction
+
+Function EndScene()
+    UnRegisterForKey(configHandler.toggleDrainHotKey)
+    UnRegisterForKey(configHandler.toggleDrainToDeathHotKey)
+EndFunction
+
+Event OnKeyDown(int keyCode)
+    if keyCode == configHandler.toggleDrainHotkey
+        if configHandler.lockDrainType
+            return
+        endif
+        draining = !draining
+    elseif keyCode == configHandler.toggleDrainToDeathHotkey
+        if configHandler.lockDrainType
+            return
+        endif
+        drainingToDeath = !drainingToDeath
+    endif
+    CheckDraining(true)
+EndEvent
 
 Function CheckDraining(bool verbose)
+    verbose = verbose && configHandler.drainNotificationsEnabled 
+    int drainCode = -1
     if drainingToDeath
         if verbose
             Debug.Notification("Draining To Death Enabled")
         endif
         GoToState("DrainingToDeath")
+        drainCode = 2
     elseif draining
         if verbose
             Debug.Notification("Draining Enabled")
         endif
         GoToState("Draining")
+        drainCode = 1
     else 
         if verbose
             Debug.Notification("Draining Disabled")
         endif
         GoToState("")
+        drainCode = 0
     endif
-    widgetHandler.UpdateColor()
-    CoL.Log("Finished Checking Drain State")
+    widgetHandler.UpdateColor(drainCode)
+    Log("Finished Checking Drain State")
 EndFunction
 
-State Draining
+Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
+    if drainingToDeath
+        DrainToDeath(drainerForm, draineeForm, draineeName, arousal)
+    elseif draining
+        NormalDrain(drainerForm, draineeForm, draineeName, arousal)
+    endif
+EndEvent
 
-    Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
-        Actor drainee = draineeForm as Actor
+Event EndDrain(Form drainerForm, Form draineeForm)
+    if drainingToDeath
+        EndDrainToDeath(drainerForm, draineeForm)
+    elseif draining
+        EndNormalDrain(drainerForm, draineeForm)
+    endif
+EndEvent
 
-        CoL.Log("Recieved Start Drain Event for " + draineeName)
-        CoL.Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-        CoL.Log("Recieved Victim Arousal: " + arousal)
+Function NormalDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
+    Actor drainee = draineeForm as Actor
 
-        if drainee.IsInFaction(CoL.drainVictimFaction) 
-            CoL.Log(draineeName + " has been drained and Drain to Death not enabled")
-            Debug.Notification("Draining " + draineeName + " again would kill them")
-            return
-        endif
+    Log("Recieved Start Drain Event for " + draineeName)
+    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
+    Log("Recieved Victim Arousal: " + arousal)
 
-        StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
-        float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
-        applyDrainSpell(drainee, drainAmounts)
-        
-        levelHandler.gainXP(drainAmounts[0], false)
-        float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
+    if drainee.IsInFaction(CoL.drainVictimFaction) 
+        Log(draineeName + " has been drained and Drain to Death not enabled")
+        Debug.Notification("Draining " + draineeName + " again would kill them")
+        return
+    endif
 
-        energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult)
-        doVampireDrain(drainee)
-    EndEvent
+    StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
+    float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    applyDrainSpell(drainee, drainAmounts)
+    
+    levelHandler.gainXP(drainAmounts[0], false)
+    float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
 
-    Event EndDrain(Form drainerForm, Form draineeForm)
-        CoL.Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
-        StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
-        float drainAmount = StorageUtil.GetFloatValue((draineeForm as Actor), "CoL_drainAmount")
-        (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
-    EndEvent
-EndState
+    energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult)
+    doVampireDrain(drainee)
+EndFunction
 
-State DrainingToDeath
+Function EndNormalDrain(Form drainerForm, Form draineeForm)
+    Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
+    StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
+    float drainAmount = StorageUtil.GetFloatValue((draineeForm as Actor), "CoL_drainAmount")
+    (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
+EndFunction
 
-    Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
-        Actor drainee = draineeForm as Actor
+Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
+    Actor drainee = draineeForm as Actor
 
-        CoL.Log("Recieved Start Drain Event for " + draineeName)
-        CoL.Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
+    Log("Recieved Start Drain Event for " + draineeName)
+    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
+    Log("Recieved Victim Arousal: " + arousal)
 
-        float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
-        if drainee.isEssential()
-            CoL.Log("Victim is essential")
-            string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the weave of fate"
+    float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    if drainee.isEssential()
+        Log("Victim is essential")
+        string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the weave of fate"
 
-            if drainee.IsInFaction(CoL.drainVictimFaction)
-                CoL.Log("Victim has been drained")
-                notifyMsg = notifyMsg + " and cannot be drained again"
-                Debug.Notification(notifyMsg)
-                return
-            else
-                applyDrainSpell(drainee, drainAmounts)
-            endif
+        if drainee.IsInFaction(CoL.drainVictimFaction)
+            Log("Victim has been drained")
+            notifyMsg = notifyMsg + " and cannot be drained again"
             Debug.Notification(notifyMsg)
-        else
-            drainToDeathVFX.Play(drainee, 1, (drainerForm as Actor))
-        endif
-        
-        float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
-        
-        energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
-        levelHandler.gainXP(drainAmounts[0], true)
-        doVampireDrain(drainee)
-    EndEvent
-
-    Event EndDrain(Form drainerForm, Form draineeForm)
-        Actor drainee = draineeForm as Actor
-
-        CoL.Log("Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
-        CoL.Log("Killing")
-        if drainee.isEssential()
-            CoL.Log("Can't kill essential. Dealing damage instead")
-            drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
             return
+        else
+            applyDrainSpell(drainee, drainAmounts)
         endif
-        drainee.Kill(drainerForm as Actor)
-    EndEvent
+        Debug.Notification(notifyMsg)
+    else
+        drainToDeathVFX.Play(drainee, 1, (drainerForm as Actor))
+    endif
+    
+    float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
+    
+    energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
+    levelHandler.gainXP(drainAmounts[0], true)
+    doVampireDrain(drainee)
+EndFunction
 
-EndState
+Function EndDrainToDeath(Form drainerForm, Form draineeForm)
+    Actor drainee = draineeForm as Actor
+
+    Log("Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
+    Log("Killing")
+    if drainee.isEssential()
+        Log("Can't kill essential. Dealing damage instead")
+        drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
+        return
+    endif
+    drainee.Kill(drainerForm as Actor)
+EndFunction
 
 Function doVampireDrain(Actor drainee)
     if CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
@@ -197,7 +217,7 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 
     if CoL.playerRef.HasPerk(slakeThirst)
         succubusArousal = iArousal.GetActorArousal(CoL.playerRef)
-        CoL.Log("Succubus Arousal: " + succubusArousal)
+        Log("Succubus Arousal: " + succubusArousal)
     endif
 
     float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
@@ -209,7 +229,7 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 
     float existingDrain = StorageUtil.GetFloatValue(drainVictim, "CoL_drainAmount")
     if existingDrain > 0
-        CoL.Log("Existing drain value: " + existingDrain)
+        Log("Existing drain value: " + existingDrain)
         drainAmount += existingDrain
     endif
     if drainAmount >= (victimHealth - (victimHealth * configHandler.minHealthPercent))
@@ -218,7 +238,7 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
     endif
     returnValues[1] = drainAmount
 
-    CoL.Log("Final Drain Amount: " + drainAmount)
+    Log("Final Drain Amount: " + drainAmount)
     return returnValues
 EndFunction
 
@@ -236,7 +256,15 @@ Function energyUpdated(float newEnergy, float maxEnergy)
         endif
 EndFunction
 
-Event StartDrain( Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
-EndEvent
-Event EndDrain(Form drainerForm, Form draineeForm)
-EndEvent
+Function ProcessTransform()
+    if configHandler.deadlyDrainWhenTransformed
+        if CoL.isTransformed
+            draining = false
+            drainingToDeath = true
+            CheckDraining(true)
+        else
+            draining = true
+            drainingToDeath = false
+        endif
+    endif
+EndFunction

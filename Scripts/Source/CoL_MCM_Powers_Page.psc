@@ -1,14 +1,9 @@
 Scriptname CoL_MCM_Powers_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnInit()
     RegisterModule("$COL_POWERSPAGE_NAME", 30)
-EndEvent
-
-Event OnPageInit()
-    ; configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
 EndEvent
 
 Event OnPageDraw()

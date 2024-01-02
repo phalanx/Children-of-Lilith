@@ -1,20 +1,13 @@
 Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
-
-CoL_PlayerSuccubusQuestScript CoL
-CoL_ConfigHandler_Script configHandler
+CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 bool loadEquipment = false
 Form[] equippedItems
 
 Event OnInit()
     RegisterModule("$COL_TRANSFORMPAGE_NAME", 70)
-EndEvent
-
-Event OnPageInit()
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
 EndEvent
 
 Event OnPageDraw()

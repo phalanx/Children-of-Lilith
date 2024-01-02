@@ -4,7 +4,6 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 
 bool oStimInstalled = False
@@ -181,7 +180,7 @@ Function triggerDrainEnd(Actor victim)
     CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
-    if oStim.FullyAnimateRedress() && drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
+    if oStim.FullyAnimateRedress() && !oStim.IsSceneAggressiveThemed()
         Utility.Wait(5)
     endif
 

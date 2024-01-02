@@ -5,7 +5,7 @@ import CharGen
 
 CoL_ConfigHandler_Script Property configHandler Auto 
 
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+Spell Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
@@ -92,6 +92,7 @@ State Initialize
         mortalPresetName = "CoL_Mortal_Form_" + playerRef.GetDisplayName()
         succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
         isPlayerSuccubus.SetValue(1.0)
+        playerRef.AddSpell(drainHandler, false)
         widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
         ; UpdateConfig()
@@ -131,20 +132,6 @@ State SceneRunning
         endif
     EndEvent
 
-    Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.toggleDrainHotkey
-            if configHandler.lockDrainType
-                return
-            endif
-            drainHandler.draining = !drainHandler.draining
-        elseif keyCode == configHandler.toggleDrainToDeathHotkey
-            if configHandler.lockDrainType
-                return
-            endif
-            drainHandler.drainingToDeath = !drainHandler.drainingToDeath
-        endif
-    EndEvent
-
     Event onEndState()
         Log("Exited SceneRunning State")
         if configHandler.transformDuringScene
@@ -162,7 +149,7 @@ State Uninitialize
     Event OnBeginState()
         widgetHandler.Uninitialize()
         levelHandler.GoToState("Uninitialize")
-        drainHandler.GoToState("Uninitialize")
+        playerRef.RemoveSpell(drainHandler)
         uninitializeQuest.GoToState("Run")
         UnregisterForEvents()
 
@@ -206,7 +193,6 @@ Function Maintenance()
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
     widgetHandler.Maintenance()
-    drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
     RegisterForEvents()
     Utility.Wait(0.5)
@@ -223,8 +209,6 @@ Function Maintenance()
 EndFunction
 
 Function RegisterForHotkeys()
-    RegisterForKey(configHandler.toggleDrainHotKey)
-    RegisterForKey(configHandler.toggleDrainToDeathHotKey)
     RegisterForKey(configHandler.transformHotkey)
     RegisterForKey(configHandler.csfMenuHotkey)
 EndFunction
@@ -239,8 +223,6 @@ Function RegisterForEvents()
 EndFunction
 
 Function UnregisterForHotkeys()
-    UnregisterForKey(configHandler.toggleDrainHotKey)
-    UnregisterForKey(configHandler.toggleDrainToDeathHotKey)
     UnregisterForKey(configHandler.transformHotkey)
     UnregisterForKey(configHandler.csfMenuHotkey)
 EndFunction

@@ -3,7 +3,6 @@ Scriptname CoL_UI_Widget_Script extends Quest
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 iWant_Widgets Property iWidgets Auto
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 int energyMeter
@@ -36,7 +35,6 @@ Function UpdateMeter()
     endif
     MoveEnergyMeter()
     UpdateFill(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
-    UpdateColor()
     ShowMeter()
 EndFunction
 
@@ -50,12 +48,16 @@ Function UpdateFill(float newEnergy, float maxEnergy)
     iWidgets.setMeterPercent(energyMeter, ((newEnergy / maxEnergy) * 100) as int)
 EndFunction
 
-Function UpdateColor()
-    int[] color = GetColor()
+; drainCodes
+; 0 - Not Draining
+; 1 - Draining
+; 2 - Draining To Death
+Function UpdateColor(int drainCode)
+    int[] color = GetColor(drainCode)
     iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
 EndFunction
 
-int[] Function GetColor()
+int[] Function GetColor(int drainCode)
     int[] disabledColor = new int[6]
         disabledColor[0] = 255
         disabledColor[1] = 255
@@ -77,12 +79,14 @@ int[] Function GetColor()
         deathColor[3] = 255
         deathColor[4] = 51
         deathColor[5] = 51
-    if drainHandler.GetState() == "Draining"
+    if drainCode == 1
         return drainColor
-    elseif drainHandler.GetState() == "DrainingToDeath"
+    elseif drainCode == 2
         return deathColor
-    else
+    elseif drainCode == 0
         return disabledColor
+    else
+        CoL.Log("Widget - Incorrect drain colour code")
     endif
 endFunction
 

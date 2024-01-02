@@ -1,23 +1,12 @@
 Scriptname CoL_MCM_Settings_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
-
-CoL_PlayerSuccubusQuestScript CoL
-CoL_ConfigHandler_Script configHandler
-CoL_Mechanic_DrainHandler_Script drainHandler
-CoL_Mechanic_LevelHandler_Script levelHandler
-CoL_Mechanic_EnergyHandler_Script energyHandler
+CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
+CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 Event OnInit()
     RegisterModule("$COL_SETTINGSPAGE_NAME", 20)
-EndEvent
-
-Event OnPageInit()
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    drainHandler = playerSuccubusQuest as CoL_Mechanic_DrainHandler_Script
-    levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
-    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -25,13 +14,6 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_maxEnergyBase", "$COL_SETTINGSPAGE_MAXENERGYBASE", configHandler.baseMaxEnergy, "{0}")
     ; Player Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_PLAYERDRAINSETTINGS")
-        if configHandler.lockDrainType
-            AddToggleOptionST("Toggle_Drain", "$COL_SETTINGSPAGE_DRAINTOGGLE", drainHandler.draining, OPTION_FLAG_DISABLED)
-            AddToggleOptionST("Toggle_DrainToDeath", "$COL_SETTINGSPAGE_DRAINTODEATHTOGGLE", drainHandler.drainingToDeath, OPTION_FLAG_DISABLED)
-        else
-            AddToggleOptionST("Toggle_Drain", "$COL_SETTINGSPAGE_DRAINTOGGLE", drainHandler.draining)
-            AddToggleOptionST("Toggle_DrainToDeath", "$COL_SETTINGSPAGE_DRAINTODEATHTOGGLE", drainHandler.drainingToDeath)
-        endif
         AddToggleOptionST("Toggle_lockDrain", "$COL_SETTINGSPAGE_LOCKDRAINTYPETOGGLE", configHandler.lockDrainType)
         AddToggleOptionST("Toggle_deadlyWhenTransformed", "$COL_SETTINGSPAGE_DEADLYDRAINWHILETRANSFORMED", configHandler.deadlyDrainWhenTransformed)
         AddToggleOptionST("Toggle_drainVerbosity", "$COL_SETTINGSPAGE_DRAINVERBOSITY", configHandler.drainNotificationsEnabled)
@@ -84,26 +66,6 @@ Event OnPageDraw()
 EndEvent
 
 ; Drain States
-    State Toggle_Drain
-        Event OnSelectST(string state_id)
-            drainHandler.draining = !drainHandler.draining
-            SetToggleOptionValueST(drainHandler.draining)
-        EndEvent
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_DRAINTOGGLE_HELP")
-        EndEvent
-    EndState
-
-    State Toggle_DrainToDeath
-        Event OnSelectST(string state_id)
-            drainHandler.drainingToDeath = !drainHandler.drainingToDeath
-            SetToggleOptionValueST(drainHandler.drainingToDeath)
-        EndEvent
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_DRAINTODEATHTOGGLE_HELP")
-        EndEvent
-    EndState
-
     State Toggle_lockDrain
         Event OnSelectST(string state_id)
             configHandler.lockDrainType = !configHandler.lockDrainType

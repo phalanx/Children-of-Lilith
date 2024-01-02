@@ -1,6 +1,5 @@
 Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
 Perk Property gentleDrainer Auto
 Perk Property energyWeaver Auto
 Perk Property healingForm Auto
@@ -8,18 +7,12 @@ Perk Property safeTransformation Auto
 Perk Property attractiveDremora Auto
 Perk Property slakeThirst Auto
 GlobalVariable Property perkPointsAvailable Auto
-CoL_ConfigHandler_Script configHandler
-CoL_PlayerSuccubusQuestScript CoL
-CoL_Mechanic_EnergyHandler_Script energyHandler
+CoL_ConfigHandler_Script Property  configHandler Auto
+CoL_PlayerSuccubusQuestScript Property  CoL Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 Event OnInit()
     RegisterModule("$COL_ADVANCEMENTPAGE_NAME", 60)
-EndEvent
-
-Event OnPageInit()
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
-    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
 EndEvent
 
 Event OnPageDraw()
