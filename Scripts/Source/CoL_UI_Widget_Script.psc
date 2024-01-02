@@ -6,6 +6,7 @@ iWant_Widgets Property iWidgets Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 int energyMeter
+int[] lastColor
 
 Function Initialize()
     CoL.Log("Initializing Widgets")
@@ -14,6 +15,7 @@ Function Initialize()
         CoL.Log("Failed to load energy meter")
         return
     endif
+    lastColor = GetColor(0)
     iWidgets.setMeterFillDirection(energyMeter, "both")
     Maintenance()
 EndFunction
@@ -34,6 +36,7 @@ Function UpdateMeter()
         Uninitialize()
     endif
     MoveEnergyMeter()
+    UpdateColor()
     UpdateFill(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
     ShowMeter()
 EndFunction
@@ -52,12 +55,13 @@ EndFunction
 ; 0 - Not Draining
 ; 1 - Draining
 ; 2 - Draining To Death
-Function UpdateColor(int drainCode)
+Function UpdateColor(int drainCode=-1)
     int[] color = GetColor(drainCode)
     iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
+    lastColor = color
 EndFunction
 
-int[] Function GetColor(int drainCode)
+int[] Function GetColor(int drainCode=-1)
     int[] disabledColor = new int[6]
         disabledColor[0] = 255
         disabledColor[1] = 255
@@ -79,14 +83,17 @@ int[] Function GetColor(int drainCode)
         deathColor[3] = 255
         deathColor[4] = 51
         deathColor[5] = 51
-    if drainCode == 1
+    if drainCode == 0
+         return disabledColor
+    elseif drainCode == 1
         return drainColor
     elseif drainCode == 2
         return deathColor
-    elseif drainCode == 0
-        return disabledColor
+    elseif lastColor.Length > 0
+        return lastColor
     else
-        CoL.Log("Widget - Incorrect drain colour code")
+        CoL.Log("Couldn't get widget color")
+        return disabledColor
     endif
 endFunction
 

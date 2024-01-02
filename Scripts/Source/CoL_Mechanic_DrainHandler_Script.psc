@@ -175,15 +175,16 @@ EndFunction
 
 Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Actor drainee = draineeForm as Actor
+    string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 
-    Log("Recieved End Drain Event for " + (drainee.GetBaseObject() as Actorbase).GetName())
-    Log("Killing")
+    Log("Recieved End Drain Event for " + draineeName)
+    Log("Killing" + draineeName)
     if drainee.isEssential()
         Log("Can't kill essential. Dealing damage instead")
         drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
         return
     endif
-    drainee.Kill(drainerForm as Actor)
+    drainee.Kill(drainee)
 EndFunction
 
 Function doVampireDrain(Actor drainee)
