@@ -112,13 +112,13 @@ EndState
 
 State Running
     Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.toggleDrainToDeathHotKey
+        if keyCode == configHandler.hotkeys[1]
             if configHandler.EnergyScaleTestEnabled
                 ScaleEnergyTest()
             endif
-        elseif keyCode == configHandler.transformHotkey
+        elseif keyCode == configHandler.hotkeys[2]
             transformSpell.Cast(playerRef, playerRef)
-        elseif keyCode == configHandler.csfMenuHotkey
+        elseif keyCode == configHandler.hotkeys[4]
             showperkMenu.Cast(playerRef)
         endif
     EndEvent
@@ -214,13 +214,12 @@ Function Maintenance()
 EndFunction
 
 Function RegisterForHotkeys()
-    RegisterForKey(configHandler.toggleDrainToDeathHotkey)
-    RegisterForKey(configHandler.transformHotkey)
-    RegisterForKey(configHandler.csfMenuHotkey)
+    RegisterForKey(configHandler.hotkeys[1])
+    RegisterForKey(configHandler.hotkeys[2])
+    RegisterForKey(configHandler.hotkeys[4])
 EndFunction
 
 Function RegisterForEvents()
-    ; Register for Events
     RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
@@ -229,8 +228,9 @@ Function RegisterForEvents()
 EndFunction
 
 Function UnregisterForHotkeys()
-    UnregisterForKey(configHandler.transformHotkey)
-    UnregisterForKey(configHandler.csfMenuHotkey)
+    UnRegisterForKey(configHandler.hotkeys[1])
+    UnRegisterForKey(configHandler.hotkeys[2])
+    UnRegisterForKey(configHandler.hotkeys[4])
 EndFunction
 
 Function UnregisterForEvents()

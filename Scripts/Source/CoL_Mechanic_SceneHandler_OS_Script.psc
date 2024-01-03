@@ -89,7 +89,7 @@ State Running
         RegisterForModEvent("ostim_orgasm", "orgasmHandler")
         RegisterForModEvent("ostim_totalend", "stopScene")
         if succubus == CoL.playerRef && levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(configHandler.newTemptationHotkey)
+            RegisterForKey(configHandler.hotkeys[3])
         endif
     EndEvent
 
@@ -132,8 +132,9 @@ State Running
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.newTemptationHotkey
+        if keyCode == configHandler.hotkeys[3]
             if levelHandler.playerSuccubusLevel.GetValueInt() < 2
+                Debug.Notification("Must be Succubus level 2 to use Temptation")
                 return
             endif
             int i = 0
@@ -147,7 +148,7 @@ State Running
     Event OnEndState()
         UnregisterForModEvent("ostim_orgasm")
         UnregisterForModEvent("ostim_end")
-        UnregisterForKey(configHandler.newTemptationHotkey)
+        UnregisterForKey(configHandler.hotkeys[3])
         currentVictims = new Actor[1]
     EndEvent
 

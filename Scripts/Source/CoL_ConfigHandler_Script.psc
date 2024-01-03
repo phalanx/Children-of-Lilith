@@ -77,12 +77,17 @@ int Property newTemptationBaseIncrease = 1 Auto Hidden     ; Base Arousal increa
 float Property newTemptationLevelMult = 1.0 Auto Hidden    ; Mult applied to succubus level before being added to the base increase
 
 ; Hotkey Settings
-int Property toggleDrainHotkey = 29 Auto Hidden            ; Default Toggle Drain key to left shift
-int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
-int Property transformHotkey = -1 Auto Hidden              ; Transform hotkey, no default
-int Property temptationHotkey = -1 Auto Hidden             ; temptation hotkey, no default
-int Property newTemptationHotkey = -1 Auto Hidden             ; temptation hotkey, no default
-int Property csfMenuHotkey = -1 Auto Hidden                ; Custom skill framework hotkey, no default
+; 0 - Drain Key - Default left alt
+; 1 - Drain to Death Key - Default right alt
+; 2 - Transform Key
+; 3 - Temptation Key
+; 4 - CSF Menu Key
+int[] Property hotkeys Auto Hidden
+; int Property toggleDrainHotkey = 29 Auto Hidden            ; Default Toggle Drain key to left shift
+; int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
+; int Property transformHotkey = -1 Auto Hidden              ; Transform hotkey, no default
+; int Property newTemptationHotkey = -1 Auto Hidden             ; temptation hotkey, no default
+; int Property csfMenuHotkey = -1 Auto Hidden                ; Custom skill framework hotkey, no default
 
 ; Widget Settings
 int Property energyMeterAlpha = 100 Auto Hidden
@@ -127,13 +132,19 @@ float[] Property transformRankEffects Auto Hidden
 
 Event OnInit()
     transformRankEffects = new float[7]
-    transformRankEffects[0] = 10.0
-    transformRankEffects[1] = 10.0
-    transformRankEffects[2] = 10.0
-    transformRankEffects[3] = 10.0
-    transformRankEffects[4] = 0.1
-    transformRankEffects[5] = 10.0
-    transformRankEffects[6] = 1.0
+        transformRankEffects[0] = 10.0
+        transformRankEffects[1] = 10.0
+        transformRankEffects[2] = 10.0
+        transformRankEffects[3] = 10.0
+        transformRankEffects[4] = 0.1
+        transformRankEffects[5] = 10.0
+        transformRankEffects[6] = 1.0
+    hotkeys = new int[5]
+        hotkeys[0] = 29
+        hotkeys[1] = 157
+        hotkeys[2] = -1
+        hotkeys[3] = -1
+        hotkeys[4] = -1
     Maintenance()
 EndEvent
 
@@ -166,7 +177,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 5
+    return 6
 EndFunction
 
 int Function SaveConfig()
@@ -234,11 +245,11 @@ int Function SaveConfig()
         JMap.setInt(jObj, "newTemptationBaseIncrease", newTemptationBaseIncrease)
         JMap.setFlt(jObj, "newTemptationLevelMult", newTemptationLevelMult)
     ; Save Hotkey Settings
-        JMap.setInt(jObj, "toggleDrainHotkey", toggleDrainHotkey)
-        JMap.setInt(jObj, "toggleDrainToDeathHotkey", toggleDrainToDeathHotkey)
-        JMap.setInt(jObj, "transformHotkey", transformHotkey)
-        JMap.setInt(jObj, "temptationHotkey", newTemptationHotkey)
-        JMap.setInt(jObj, "csfMenuHotkey", csfMenuHotkey)
+        int i = 0
+        while i < hotkeys.Length
+            JMap.setInt(jObj, "hotkeys_"+i, hotkeys[i])
+            i +=1
+        endwhile
     ; Save Widget Settings
         JMap.setInt(jObj, "energyMeterAlpha", energyMeterAlpha)
         JMap.setInt(jObj, "energyMeterXPos", energyMeterXPos)
@@ -266,7 +277,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "transformBaseArmor", transformBaseArmor)
         JMap.setFlt(jObj, "transformBaseMagicResist", transformBaseMagicResist)
     ; Save Transform Buffs Per Rank
-        int i = 0
+        i = 0
         while i < transformRankEffects.Length
             JMap.setFlt(jObj, "transformRankEffect_"+i,transformRankEffects[i])
             i += 1
@@ -347,11 +358,19 @@ Function LoadConfig(int jObj)
             newTemptationLevelMult = JMap.getFlt(jObj, "newTemptationLevelMult")
         endif
     ; Load Hotkey Settings
-        toggleDrainHotkey = JMap.getInt(jObj, "toggleDrainHotkey")
-        toggleDrainToDeathHotkey = JMap.getInt(jObj, "toggleDrainToDeathHotkey")
-        transformHotkey = JMap.getInt(jObj, "transformHotkey")
-        newTemptationHotkey = JMap.getInt(jObj, "temptationHotkey")
-        csfMenuHotkey = JMap.getInt(jObj, "csfMenuHotkey")
+        if configVersion >= 6
+            int i = 0
+            while i < hotkeys.Length
+                hotkeys[i] = JMap.getInt(jObj,"hotkeys_"+i)
+                i += 1
+            endwhile
+        else
+            hotkeys[0] = JMap.getInt(jObj, "toggleDrainHotkey")
+            hotkeys[1] = JMap.getInt(jObj, "toggleDrainToDeathHotkey")
+            hotkeys[2] = JMap.getInt(jObj, "transformHotkey")
+            hotkeys[3] = JMap.getInt(jObj, "temptationHotkey")
+            hotkeys[4] = JMap.getInt(jObj, "csfMenuHotkey")
+        endif
     ; Load Widget Setting
         energyMeterAlpha = JMap.getInt(jObj, "energyMeterAlpha")
         energyMeterXPos = JMap.getInt(jObj, "energyMeterXPos")
@@ -381,12 +400,22 @@ Function LoadConfig(int jObj)
         transformBaseArmor = JMap.getFlt(jObj, "transformBaseArmor")
         transformBaseMagicResist = JMap.getFlt(jObj, "transformBaseMagicResist")
     ; Save Transform Buffs Per Rank
-        int i = 0
-        while i < transformRankEffects.Length
-            transformRankEffects[i] = JMap.getFlt(jObj, "transformRankEffect_"+i)
-            i += 1
-        endwhile
-    JValue.release(jObj)
+        if configVersion >= 6
+            int i = 0
+            while i < transformRankEffects.Length
+                transformRankEffects[i] = JMap.getFlt(jObj, "transformRankEffect_"+i)
+                i += 1
+            endwhile
+        else
+            transformRankEffects[0] = JMap.getFlt(jObj, "transformHealthPerRank")
+            transformRankEffects[1] = JMap.getFlt(jObj, "transformStaminaPerRank")
+            transformRankEffects[2] = JMap.getFlt(jObj, "transformMagickaPerRank")
+            transformRankEffects[3] = JMap.getFlt(jObj, "transformCarryWeightPerRank")
+            transformRankEffects[4] = JMap.getFlt(jObj, "transformMeleeDamagePerRank")
+            transformRankEffects[5] = JMap.getFlt(jObj, "transformArmorPerRank")
+            transformRankEffects[6] = JMap.getFlt(jObj, "transformMagicResistPerRank")
+        endif
+        JValue.release(jObj)
     if isPlayerSuccubus.GetValueInt() == 1
         SendConfigUpdateEvent()
     endif

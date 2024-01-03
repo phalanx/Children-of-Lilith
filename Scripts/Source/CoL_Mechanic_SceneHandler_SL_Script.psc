@@ -105,7 +105,7 @@ Event SL_StartScene(Form actorRef, int threadId)
     if succubus == CoL.playerRef
         sceneStartEvent = ModEvent.Create("CoL_startScene")
 
-        RegisterForKey(configHandler.newTemptationHotkey)
+        RegisterForKey(configHandler.hotkeys[3])
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
@@ -128,8 +128,9 @@ Event SL_StartScene(Form actorRef, int threadId)
 EndEvent
 
 Event OnKeyDown(int keyCode)
-    if keyCode == configHandler.newTemptationHotkey
+    if keyCode == configHandler.hotkeys[3]
         if levelHandler.playerSuccubusLevel.GetValueInt() < 2
+            Debug.Notification("Must be Succubus level 2 to use Temptation")
             return
         endif
         int i = 0
@@ -162,7 +163,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
     int sceneEndEvent
     if succubus == CoL.playerRef
         sceneEndEvent = ModEvent.Create("CoL_endScene")
-        UnRegisterForKey(configHandler.newTemptationHotkey)
+        UnRegisterForKey(configHandler.hotkeys[3])
     else
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
     endif

@@ -44,22 +44,22 @@ Function Maintenance()
 EndFunction
 
 Function StartScene()
-    RegisterForKey(configHandler.toggleDrainHotKey)
-    RegisterForKey(configHandler.toggleDrainToDeathHotKey)
+    RegisterForKey(configHandler.hotkeys[0])
+    RegisterForKey(configHandler.hotkeys[1])
 EndFunction
 
 Function EndScene()
-    UnRegisterForKey(configHandler.toggleDrainHotKey)
-    UnRegisterForKey(configHandler.toggleDrainToDeathHotKey)
+    UnRegisterForKey(configHandler.hotkeys[0])
+    UnRegisterForKey(configHandler.hotkeys[1])
 EndFunction
 
 Event OnKeyDown(int keyCode)
-    if keyCode == configHandler.toggleDrainHotkey
+    if keyCode == configHandler.hotkeys[0]
         if configHandler.lockDrainType
             return
         endif
         draining = !draining
-    elseif keyCode == configHandler.toggleDrainToDeathHotkey
+    elseif keyCode == configHandler.hotkeys[1]
         if configHandler.lockDrainType
             return
         endif
