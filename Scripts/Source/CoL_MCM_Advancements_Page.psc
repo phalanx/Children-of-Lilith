@@ -99,6 +99,23 @@ State Toggle_singlePerk
         SetInfoText("$COL_ADVPAGE_PERK_"+state_id+"_HELP")
     EndEvent
 EndState
+State Text_rankedPerk
+    Event OnSelectST(string state_id)
+        int index = state_id as int
+        if perkPointsAvailable.GetValue() > 0
+            CoL.transformBuffs[index] = CoL.transformBuffs[index] + 1
+            SetTextOptionValueST(CoL.transformBuffs[index])
+            perkPointsAvailable.Mod(-1)
+            ForcePageReset()
+        else
+            Debug.MessageBox(outOfPointsMessage)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVPAGE_RANKEDPERK_"+state_id+"_HELP")
+    EndEvent
+EndState
+
 State Text_perkEfficientFeeder
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
@@ -142,19 +159,3 @@ State Toggle_grantCsfPower
     EndEvent
 EndState
 
-State Text_rankedPerk
-    Event OnSelectST(string state_id)
-        int index = state_id as int
-        if perkPointsAvailable.GetValue() > 0
-            CoL.transformBuffs[index] = CoL.transformBuffs[index] + 1
-            SetTextOptionValueST(CoL.transformBuffs[index])
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_RANKEDPERK_"+state_id+"_HELP")
-    EndEvent
-EndState
