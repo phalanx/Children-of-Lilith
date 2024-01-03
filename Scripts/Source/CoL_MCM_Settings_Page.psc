@@ -405,7 +405,7 @@ EndEvent
         EndEvent
 
         Event OnHighlightST(string state_id)
-            SetInfoText("COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+state_id+"_HELP")
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+state_id+"_HELP")
         EndEvent
     EndState
 ; Hunger States
