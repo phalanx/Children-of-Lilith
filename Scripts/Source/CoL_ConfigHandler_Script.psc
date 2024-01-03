@@ -24,7 +24,7 @@ float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier app
 float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
-float Property minHealthPercent = 0.11 Auto Hidden              ; Minimum percentage of health allowed to be drained
+float Property minHealthPercent = 0.1 Auto Hidden              ; Minimum percentage of health allowed to be drained
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
