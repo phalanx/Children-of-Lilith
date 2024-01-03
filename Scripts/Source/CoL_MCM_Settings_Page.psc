@@ -28,7 +28,7 @@ Event OnPageDraw()
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
         int i = 0
-        while i <=4
+        while i <= 4
             AddSliderOptionST("Slider_npcRelationshipDeathChance___" + i, "$COL_SETTINGSPAGE_NPCRELATIONSHIODEATHCHANCE_" + i, configHandler.npcRelationshipDeathChance[i], "{1}")
             i += 1
         endwhile
@@ -46,13 +46,11 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_xpPower", "$COL_SETTINGSPAGE_XPPOWER", configHandler.xpPower, "{2}")
         AddSliderOptionST("Slider_levelsForPerk", "$COL_SETTINGSPAGE_LEVELSFORPERK", configHandler.levelsForPerk)
         AddSliderOptionST("Slider_perksRecieved", "$COL_SETTINGSPAGE_PERKSRECIEVED", configHandler.perkPointsRecieved)
-        AddSliderOptionST("Slider_transformHealthPerRank", "$COL_SETTINGSPAGE_TRANSFORMHEALTHPERRANK", configHandler.transformHealthPerRank)
-        AddSliderOptionST("Slider_transformStaminaPerRank", "$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK", configHandler.transformStaminaPerRank)
-        AddSliderOptionST("Slider_transformMagickaPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK", configHandler.transformMagickaPerRank)
-        AddSliderOptionST("Slider_transformCarryWeightPerRank", "$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK", configHandler.transformCarryWeightPerRank)
-        AddSliderOptionST("Slider_transformMeleeDamagePerRank", "$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK", configHandler.transformMeleeDamagePerRank, "{2}")
-        AddSliderOptionST("Slider_transformArmorPerRank", "$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK", configHandler.transformArmorPerRank)
-        AddSliderOptionST("Slider_transformMagicResistPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK", configHandler.transformMagicResistPerRank)
+        i = 0
+        while i < configHandler.transformRankEffects.Length
+            AddSliderOptionST("Slider_transformRankEffects___"+i, "$COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+i, configHandler.transformRankEffects[i], "{1}")
+            i += 1
+        endwhile
     ; Hunger Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_HUNGER")
         AddToggleOptionST("Toggle_hunger", "$COL_SETTINGSPAGE_HUNGER", configHandler.hungerEnabled)
@@ -263,7 +261,7 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_NPCRELATIONSHIPDEATHCHANCE_HELP")
         EndEvent
     EndState
-; Levelling States
+; Leveling States
     State Slider_xpPerDrain
         Event OnSliderOpenST(string state_id)
             SetSliderDialogStartValue(configHandler.xpPerDrain)
@@ -383,124 +381,31 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_PERKSRECIEVED_HELP")
         EndEvent
     EndState
-
-    State Slider_transformHealthPerRank
+    State Slider_transformRankEffects
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformHealthPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
+            SetSliderDialogStartValue(configHandler.transformRankEffects[state_id as int])
+            if state_id == "4" ; Melee damage bonus
+                SetSliderDialogDefaultValue(0.1)
+                SetSliderDialogInterval(0.1)
+                SetSliderDialogRange(0.1, 10)
+            elseif state_id == "6" ; Magic resist bonus
+                SetSliderDialogDefaultValue(1)
+                SetSliderDialogInterval(1)
+                SetSliderDialogRange(1, 100)
+            else
+                SetSliderDialogDefaultValue(10)
+                SetSliderDialogInterval(1)
+                SetSliderDialogRange(1, 100)
+            endif
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformHealthPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformHealthPerRank)
+            configHandler.transformRankEffects[state_id as int] = value
+            SetSliderOptionValueST(configHandler.transformRankEffects[state_id as int])
         EndEvent
 
         Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMHEALTHPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformStaminaPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformStaminaPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformStaminaPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformStaminaPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformMagickaPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformMagickaPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformMagickaPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformMagickaPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformCarryWeightPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformCarryWeightPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformCarryWeightPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformCarryWeightPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformMeleeDamagePerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformMeleeDamagePerRank)
-            SetSliderDialogDefaultValue(0.1)
-            SetSliderDialogInterval(0.1)
-            SetSliderDialogRange(0.1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformMeleeDamagePerRank = value as int
-            SetSliderOptionValueST(configHandler.transformMeleeDamagePerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformArmorPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformArmorPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformArmorPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformArmorPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformMagicResistPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformMagicResistPerRank)
-            SetSliderDialogDefaultValue(1)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformMagicResistPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformMagicResistPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK_HELP")
+            SetInfoText("COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+state_id+"_HELP")
         EndEvent
     EndState
 ; Hunger States

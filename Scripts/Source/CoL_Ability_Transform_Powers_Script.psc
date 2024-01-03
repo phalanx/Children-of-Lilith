@@ -25,43 +25,28 @@ function Transform()
     if CoL.playerRef.HasPerk(healingForm)
         CoL.playerRef.ModActorValue("HealRate", (configHandler.healRateBoostAmount / 2))
     endif
-    float healthBuff = (CoL.transformHealth * configHandler.transformHealthPerRank)
-    float staminaBuff = (CoL.transformStamina * configHandler.transformStaminaPerRank)
-    float magickaBuff = (CoL.transformMagicka * configHandler.transformMagickaPerRank)
-    float carryWeightBuff = (CoL.transformCarryWeight * configHandler.transformCarryWeightPerRank)
-    float meleeDamageBuff = (CoL.transformMeleeDamage * configHandler.transformMeleeDamagePerRank)
-    float armorBuff = (CoL.transformArmor * configHandler.transformArmorPerRank)
-    float magicResistBuff = (CoL.transformMagicResist * configHandler.transformMagicResistPerRank)
+    float[] buffs = new float[7]
+    int i = 0
+    while i < buffs.Length
+        buffs[i] = (CoL.transformBuffs[i] * configHandler.transformRankEffects[i])
+        i += 1
+    endwhile
     if configHandler.transformBuffsEnabled
-        healthBuff  += configHandler.transformBaseHealth
-        staminaBuff += configHandler.transformBaseStamina
-        magickaBuff += configHandler.transformBaseMagicka
-        carryWeightBuff += configHandler.transformBaseCarryWeight
-        meleeDamageBuff += configHandler.transformBaseMeleeDamage
-        armorBuff   += configHandler.transformBaseArmor
-        magicResistBuff += configHandler.transformBaseMagicResist
+        buffs[0] = buffs[0] + configHandler.transformBaseHealth
+        buffs[1] = buffs[1] + configHandler.transformBaseStamina
+        buffs[2] = buffs[2] + configHandler.transformBaseMagicka
+        buffs[3] = buffs[3] + configHandler.transformBaseCarryWeight
+        buffs[4] = buffs[4] + configHandler.transformBaseMeleeDamage
+        buffs[5] = buffs[5] + configHandler.transformBaseArmor
+        buffs[6] = buffs[6] + configHandler.transformBaseMagicResist
     endif
-    CoL.Log("Health Buff: " + healthBuff)
-    transformBuffSpell.SetNthEffectMagnitude(0, healthBuff)
-
-    CoL.Log("Stamina Buff: " + staminaBuff)
-    transformBuffSpell.SetNthEffectMagnitude(1, staminaBuff)
-
-    CoL.Log("Magicka Buff: " + magickaBuff)
-    transformBuffSpell.SetNthEffectMagnitude(2, magickaBuff)
-
-    CoL.Log("Carry Weight Buff: " + carryWeightBuff)
-    transformBuffSpell.SetNthEffectMagnitude(3, carryWeightBuff)
-
-    CoL.Log("Melee Damage Buff: " + meleeDamageBuff)
-    transformBuffSpell.SetNthEffectMagnitude(4, meleeDamageBuff)
-    
-    CoL.Log("Armor Buff: " + armorBuff)
-    transformBuffSpell.SetNthEffectMagnitude(5, armorBuff)
-
-    CoL.Log("Magic Resist Buff: " + magicResistBuff)
-    transformBuffSpell.SetNthEffectMagnitude(6, magicResistBuff)
-
+    i = 0
+    while i < transformBuffSpell.GetNumEffects()
+        CoL.Log("Buff Effect " + i + ": " + buffs[i])
+        transformBuffSpell.SetNthEffectMagnitude(i, buffs[i])
+        i += 1
+    endwhile
+    CoL.Log("Adding Buff Spell")
     CoL.playerRef.AddSpell(transformBuffSpell, false)
 endfunction
 

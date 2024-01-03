@@ -29,9 +29,9 @@ Event OnPageDraw()
     int i = 0
     while i < singleRankPerks.Length
         if !CoL.playerRef.HasPerk(singleRankPerks[i])
-            AddToggleOptionST("Toggle_Perk___" + i, "$COL_ADVPAGE_PERK_" + i, false)
+            AddToggleOptionST("Toggle_singlePerk___" + i, "$COL_ADVPAGE_PERK_" + i, false)
         else
-            AddToggleOptionST("Toggle_Perk___" + i, "$COL_ADVPAGE_PERK_" + i, true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_singlePerk___" + i, "$COL_ADVPAGE_PERK_" + i, true, OPTION_FLAG_DISABLED)
         endif
         i+=1
     endwhile
@@ -39,13 +39,11 @@ Event OnPageDraw()
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
     AddToggleOptionST("Toggle_grantCsfPower","$COL_ADVPAGE_GRANTCSFPOWER", configHandler.grantCSFPower )
     AddHeaderOption("$COL_ADVPAGE_HEADER_TRANSFORM")
-    AddTextOptionST("Text_perkThickSkin", "$COL_ADVPAGE_THICKSKIN", CoL.transformArmor)
-    AddTextOptionST("Text_perkSecretPocket", "$COL_ADVPAGE_SECRETPOCKET", CoL.transformCarryWeight)
-    AddTextOptionST("Text_perkMasochism", "$COL_ADVPAGE_MASOCHISM", CoL.transformHealth)
-    AddTextOptionST("Text_perkEssence", "$COL_ADVPAGE_ESSENCE", CoL.transformMagicka)
-    AddTextOptionST("Text_perkDominance", "$COL_ADVPAGE_DOMINANCE", CoL.transformMagicResist)
-    AddTextOptionST("Text_perkSadism", "$COL_ADVPAGE_SADISM", CoL.transformMeleeDamage)
-    AddTextOptionST("Text_perkEndurance", "$COL_ADVPAGE_ENDURANCE", CoL.transformStamina)
+    i = 0
+    while i < CoL.transformBuffs.Length
+        AddTextOptionST("Text_RankedPerk___" + i, "$COL_ADVPAGE_RANKEDPERK_" + i, CoL.transformBuffs[i])
+        i += 1
+    endwhile
 EndEvent
     
 State Text_perksAvailable
@@ -72,21 +70,12 @@ State Text_perkReset
         CoL.efficientFeeder = 0
         restoredPoints += CoL.energyStorage
         CoL.energyStorage = 0
-        restoredPoints += Col.transformHealth
-        CoL.transformHealth = 0
-        restoredPoints += CoL.transformStamina
-        CoL.transformStamina = 0
-        restoredPoints += CoL.transformMagicka
-        CoL.transformMagicka = 0
-        restoredPoints += CoL.transformCarryWeight
-        CoL.transformCarryWeight = 0
-        restoredPoints += CoL.transformMeleeDamage
-        CoL.transformMeleeDamage = 0
-        restoredPoints += CoL.transformArmor
-        CoL.transformArmor = 0
-        restoredPoints += CoL.transformMagicResist
-        CoL.transformMagicResist = 0
-
+        i = 0
+        while i < CoL.transformBuffs.Length
+            restoredPoints += CoL.transformBuffs[i]
+            CoL.transformBuffs[i] = 0
+            i += 1
+        endwhile
         perkPointsAvailable.Mod(restoredPoints)
         CoL.ApplyRankedPerks()
         ForcePageReset()
@@ -95,7 +84,7 @@ State Text_perkReset
         SetInfoText("$COL_ADVPAGE_RESETPERKS_HELP")
     EndEvent
 EndState
-State Toggle_Perk
+State Toggle_singlePerk
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
             CoL.playerRef.AddPerk(singleRankPerks[state_id as int])
@@ -153,11 +142,12 @@ State Toggle_grantCsfPower
     EndEvent
 EndState
 
-State Text_perkThickSkin
+State Text_rankedPerk
     Event OnSelectST(string state_id)
+        int index = state_id as int
         if perkPointsAvailable.GetValue() > 0
-            CoL.transformArmor += 1
-            SetTextOptionValueST(CoL.transformArmor)
+            CoL.transformBuffs[index] = CoL.transformBuffs[index] + 1
+            SetTextOptionValueST(CoL.transformBuffs[index])
             perkPointsAvailable.Mod(-1)
             ForcePageReset()
         else
@@ -165,96 +155,6 @@ State Text_perkThickSkin
         endif
     EndEvent
     Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_THICKSKIN_HELP")
-    EndEvent
-EndState
-State Text_perkSecretPocket
-    Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            CoL.transformCarryWeight += 1
-            SetTextOptionValueST(CoL.transformCarryWeight)
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_SECRETPOCKET_HELP")
-    EndEvent
-EndState
-State Text_perkMasochism
-    Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            CoL.transformHealth += 1
-            SetTextOptionValueST(CoL.transformHealth)
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_MASOCHISM_HELP")
-    EndEvent
-EndState
-State Text_perkEssence
-    Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            CoL.transformMagicka += 1
-            SetTextOptionValueST(CoL.transformMagicka)
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_ESSENCE_HELP")
-    EndEvent
-EndState
-State Text_perkDominance
-    Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            CoL.transformMagicResist += 1
-            SetTextOptionValueST(CoL.transformMagicResist)
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_DOMINANCE_HELP")
-    EndEvent
-EndState
-State Text_perkSadism
-    Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            CoL.transformMeleeDamage += 1
-            SetTextOptionValueST(CoL.transformMeleeDamage)
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_SADISM_HELP")
-    EndEvent
-EndState
-State Text_perkEndurance
-    Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            CoL.transformStamina += 1
-            SetTextOptionValueST(CoL.transformStamina)
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_ADVPAGE_ENDURANCE_HELP")
+        SetInfoText("$COL_ADVPAGE_RANKEDPERK_"+state_id+"_HELP")
     EndEvent
 EndState

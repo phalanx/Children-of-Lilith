@@ -115,16 +115,25 @@ float Property transformBaseMeleeDamage = 0.0 Auto Hidden
 float Property transformBaseArmor = 0.0 Auto Hidden
 float Property transformBaseMagicResist = 0.0 Auto Hidden
 
-; Transform Buffs Per Rank
-float Property transformHealthPerRank = 10.0 Auto Hidden
-float Property transformStaminaPerRank = 10.0 Auto Hidden
-float Property transformMagickaPerRank = 10.0 Auto Hidden
-float Property transformCarryWeightPerRank = 10.0 Auto Hidden
-float Property transformMeleeDamagePerRank = 0.1 Auto Hidden
-float Property transformArmorPerRank = 10.0 Auto Hidden
-float Property transformMagicResistPerRank = 1.0 Auto Hidden
+; Transform Rank Effects
+; 0 - health
+; 1 - stamina
+; 2 - magicka
+; 3 - carry weight
+; 4 - melee damage
+; 5 - armor
+; 6 - magic resist
+float[] Property transformRankEffects Auto Hidden
 
 Event OnInit()
+    transformRankEffects = new float[7]
+    transformRankEffects[0] = 10.0
+    transformRankEffects[1] = 10.0
+    transformRankEffects[2] = 10.0
+    transformRankEffects[3] = 10.0
+    transformRankEffects[4] = 0.1
+    transformRankEffects[5] = 10.0
+    transformRankEffects[6] = 1.0
     Maintenance()
 EndEvent
 
@@ -257,13 +266,11 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "transformBaseArmor", transformBaseArmor)
         JMap.setFlt(jObj, "transformBaseMagicResist", transformBaseMagicResist)
     ; Save Transform Buffs Per Rank
-        JMap.setFlt(jObj, "transformHealthPerRank", transformHealthPerRank)
-        JMap.setFlt(jObj, "transformStaminaPerRank", transformStaminaPerRank)
-        JMap.setFlt(jObj, "transformMagickaPerRank", transformMagickaPerRank)
-        JMap.setFlt(jObj, "transformCarryWeightPerRank", transformCarryWeightPerRank)
-        JMap.setFlt(jObj, "transformMeleeDamagePerRank", transformMeleeDamagePerRank)
-        JMap.setFlt(jObj, "transformArmorPerRank", transformArmorPerRank)
-        JMap.setFlt(jObj, "transformMagicResistPerRank", transformMagicResistPerRank)
+        int i = 0
+        while i < transformRankEffects.Length
+            JMap.setFlt(jObj, "transformRankEffect_"+i,transformRankEffects[i])
+            i += 1
+        endwhile
     return jObj
 EndFunction
 
@@ -374,13 +381,11 @@ Function LoadConfig(int jObj)
         transformBaseArmor = JMap.getFlt(jObj, "transformBaseArmor")
         transformBaseMagicResist = JMap.getFlt(jObj, "transformBaseMagicResist")
     ; Save Transform Buffs Per Rank
-        transformHealthPerRank = JMap.getFlt(jObj, "transformHealthPerRank")
-        transformStaminaPerRank = JMap.getFlt(jObj, "transformStaminaPerRank")
-        transformMagickaPerRank = JMap.getFlt(jObj, "transformMagickaPerRank")
-        transformCarryWeightPerRank = JMap.getFlt(jObj, "transformCarryWeightPerRank")
-        transformMeleeDamagePerRank = JMap.getFlt(jObj, "transformMeleeDamagePerRank")
-        transformArmorPerRank = JMap.getFlt(jObj, "transformArmorPerRank")
-        transformMagicResistPerRank = JMap.getFlt(jObj, "transformMagicResistPerRank")
+        int i = 0
+        while i < transformRankEffects.Length
+            transformRankEffects[i] = JMap.getFlt(jObj, "transformRankEffect_"+i)
+            i += 1
+        endwhile
     JValue.release(jObj)
     if isPlayerSuccubus.GetValueInt() == 1
         SendConfigUpdateEvent()

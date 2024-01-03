@@ -74,16 +74,25 @@ ObjectReference Property succuEquipmentChest Auto
 int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
 int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
 
-; Transform Buff Perks
-int Property transformHealth = 0 Auto Hidden
-int Property transformStamina = 0 Auto Hidden
-int Property transformMagicka = 0 Auto Hidden
-int Property transformCarryWeight = 0 Auto Hidden
-int Property transformMeleeDamage = 0 Auto Hidden
-int Property transformArmor = 0 Auto Hidden
-int Property transformMagicResist = 0 Auto Hidden
+; Transform Buff Ranks
+; 0 - health
+; 1 - stamina
+; 2 - magicka
+; 3 - carry weight
+; 4 - melee damage
+; 5 - armor
+; 6 - magic resist
+int[] Property transformBuffs Auto Hidden
 
 Event OnInit()
+    transformBuffs = new int[7]
+    transformBuffs[0] = 0
+    transformBuffs[1] = 0
+    transformBuffs[2] = 0
+    transformBuffs[3] = 0
+    transformBuffs[4] = 0
+    transformBuffs[5] = 0
+    transformBuffs[6] = 0
 EndEvent
 
 State Initialize
@@ -98,7 +107,6 @@ State Initialize
         Maintenance()
         configHandler.SendConfigUpdateEvent()
         GotoState("Running")
-        Debug.Notification("CoL is now ready")
     EndEvent
 EndState
 
