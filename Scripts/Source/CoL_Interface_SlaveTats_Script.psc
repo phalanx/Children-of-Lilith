@@ -14,10 +14,16 @@ Function OnGameLoad()
 EndFunction
 
 State Installed
+    bool Function IsInterfaceActive()
+        return true
+    EndFunction
     Function ReapplySlaveTats(Actor target, bool silent) 
         CoL_Global_SlaveTats_Script.ReapplySlaveTats(target, silent)
     endFunction
 EndState
 
+bool Function IsInterfaceActive()
+    return false
+EndFunction
 Function ReapplySlaveTats(Actor target, bool silent)
 endFunction
