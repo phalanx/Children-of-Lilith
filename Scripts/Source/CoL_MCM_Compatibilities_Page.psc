@@ -7,9 +7,6 @@ Event OnInit()
     RegisterModule("$COL_COMPATIBILITIESPAGE_NAME", 80)
 EndEvent
 
-Event OnPageInit()
-EndEvent
-
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddHeaderOption("OStim")
