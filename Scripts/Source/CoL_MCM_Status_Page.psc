@@ -71,9 +71,7 @@ EndFunction
 
 State Menu_FollowedPath
     Event OnMenuOpenST(string state_id)
-        SetMenuDialogOptions(configHandler.followedPathOptions)
-        SetMenuDialogStartIndex(configHandler.selectedPath)
-        SetMenuDialogDefaultIndex(0)
+        SetMenuDialog(configHandler.followedPathOptions, configHandler.selectedPath, 0)
     EndEvent
 
     Event OnMenuAcceptST(string state_id, int index)
