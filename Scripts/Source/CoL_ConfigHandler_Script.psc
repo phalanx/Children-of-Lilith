@@ -110,15 +110,16 @@ bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
 
-; Transform Baseline Buffs
 bool Property transformBuffsEnabled = false Auto Hidden
-float Property transformBaseHealth = 0.0 Auto Hidden
-float Property transformBaseStamina = 0.0 Auto Hidden
-float Property transformBaseMagicka = 0.0 Auto Hidden
-float Property transformBaseCarryWeight = 0.0 Auto Hidden
-float Property transformBaseMeleeDamage = 0.0 Auto Hidden
-float Property transformBaseArmor = 0.0 Auto Hidden
-float Property transformBaseMagicResist = 0.0 Auto Hidden
+; Transform Baseline Buffs
+; 0 - health
+; 1 - stamina
+; 2 - magicka
+; 3 - carry weight
+; 4 - melee damage
+; 5 - armor
+; 6 - magic resist
+float[] Property transformBaseBuffs Auto Hidden
 
 ; Transform Rank Effects
 ; 0 - health
@@ -139,6 +140,14 @@ Event OnInit()
         transformRankEffects[4] = 0.1
         transformRankEffects[5] = 10.0
         transformRankEffects[6] = 1.0
+    transformBaseBuffs = new float[7]
+        transformRankEffects[0] = 0.0
+        transformRankEffects[1] = 0.0
+        transformRankEffects[2] = 0.0
+        transformRankEffects[3] = 0.0
+        transformRankEffects[4] = 0.0
+        transformRankEffects[5] = 0.0
+        transformRankEffects[6] = 0.0
     hotkeys = new int[5]
         hotkeys[0] = 29
         hotkeys[1] = 157
@@ -269,13 +278,11 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "transformArousalLowerThreshold", transformArousalLowerThreshold)
     ; Save Transform Baseline Buffs
         JMap.setInt(jObj, "transformBuffsEnabled", transformBuffsEnabled as int)
-        JMap.setFlt(jObj, "transformBaseHealth", transformBaseHealth)
-        JMap.setFlt(jObj, "transformBaseStamina", transformBaseStamina)
-        JMap.setFlt(jObj, "transformBaseMagicka", transformBaseMagicka)
-        JMap.setFlt(jObj, "transformBaseCarryWeight", transformBaseCarryWeight)
-        JMap.setFlt(jObj, "transformBaseMeleeDamage", transformBaseMeleeDamage)
-        JMap.setFlt(jObj, "transformBaseArmor", transformBaseArmor)
-        JMap.setFlt(jObj, "transformBaseMagicResist", transformBaseMagicResist)
+        i = 0
+        while i < transformBaseBuffs.Length
+            JMap.setFlt(jObj, "transformBaseBuffs_"+i, transformBaseBuffs[i])
+            i += 1
+        endwhile
     ; Save Transform Buffs Per Rank
         i = 0
         while i < transformRankEffects.Length
@@ -392,14 +399,22 @@ Function LoadConfig(int jObj)
         endif
     ; Load Transform Baseline Buffs
         transformBuffsEnabled = JMap.getInt(jObj, "transformBuffsEnabled") as bool
-        transformBaseHealth = JMap.getFlt(jObj, "transformBaseHealth")
-        transformBaseStamina = JMap.getFlt(jObj, "transformBaseStamina")
-        transformBaseMagicka = JMap.getFlt(jObj, "transformBaseMagicka")
-        transformBaseCarryWeight = JMap.getFlt(jObj, "transformBaseCarryWeight")
-        transformBaseMeleeDamage = JMap.getFlt(jObj, "transformBaseMeleeDamage")
-        transformBaseArmor = JMap.getFlt(jObj, "transformBaseArmor")
-        transformBaseMagicResist = JMap.getFlt(jObj, "transformBaseMagicResist")
-    ; Save Transform Buffs Per Rank
+        if configVersion >= 6
+            int i = 0
+            while i < transformBaseBuffs.Length
+                transformBaseBuffs[i] = JMap.getFlt(jObj, "transformBaseBuffs_"+i)
+                i += 1
+            endwhile
+        else
+            transformBaseBuffs[0] = JMap.getFlt(jObj, "transformBaseHealth")
+            transformBaseBuffs[1] = JMap.getFlt(jObj, "transformBaseStamina")
+            transformBaseBuffs[2] = JMap.getFlt(jObj, "transformBaseMagicka")
+            transformBaseBuffs[3] = JMap.getFlt(jObj, "transformBaseCarryWeight")
+            transformBaseBuffs[4] = JMap.getFlt(jObj, "transformBaseMeleeDamage")
+            transformBaseBuffs[5] = JMap.getFlt(jObj, "transformBaseArmor")
+            transformBaseBuffs[6] = JMap.getFlt(jObj, "transformBaseMagicResist")
+        endif
+    ; Load Transform Buffs Per Rank
         if configVersion >= 6
             int i = 0
             while i < transformRankEffects.Length

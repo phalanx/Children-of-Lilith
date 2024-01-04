@@ -29,19 +29,9 @@ function Transform()
     int i = 0
     while i < buffs.Length
         buffs[i] = (CoL.transformBuffs[i] * configHandler.transformRankEffects[i])
-        i += 1
-    endwhile
-    if configHandler.transformBuffsEnabled
-        buffs[0] = buffs[0] + configHandler.transformBaseHealth
-        buffs[1] = buffs[1] + configHandler.transformBaseStamina
-        buffs[2] = buffs[2] + configHandler.transformBaseMagicka
-        buffs[3] = buffs[3] + configHandler.transformBaseCarryWeight
-        buffs[4] = buffs[4] + configHandler.transformBaseMeleeDamage
-        buffs[5] = buffs[5] + configHandler.transformBaseArmor
-        buffs[6] = buffs[6] + configHandler.transformBaseMagicResist
-    endif
-    i = 0
-    while i < transformBuffSpell.GetNumEffects()
+        if configHandler.transformBuffsEnabled
+            buffs[i] = buffs[i] + configHandler.transformBaseBuffs[i]
+        endif
         CoL.Log("Buff Effect " + i + ": " + buffs[i])
         transformBuffSpell.SetNthEffectMagnitude(i, buffs[i])
         i += 1

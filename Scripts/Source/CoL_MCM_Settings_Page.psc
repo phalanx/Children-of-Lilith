@@ -48,7 +48,11 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_perksRecieved", "$COL_SETTINGSPAGE_PERKSRECIEVED", configHandler.perkPointsRecieved)
         i = 0
         while i < configHandler.transformRankEffects.Length
-            AddSliderOptionST("Slider_transformRankEffects___"+i, "$COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+i, configHandler.transformRankEffects[i], "{1}")
+            string formatString = "{0}"
+            if i == 4
+                formatString = "{1}"
+            endif
+            AddSliderOptionST("Slider_transformRankEffects___"+i, "$COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+i, configHandler.transformRankEffects[i], formatString)
             i += 1
         endwhile
     ; Hunger Settings
