@@ -7,6 +7,7 @@ CoL_ConfigHandler_Script Property configHandler Auto
 
 Faction Property playerWerewolfFaction Auto
 Perk Property attractiveDremora Auto
+
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     bool isTransformed = CoL.isTransformed
     Utility.Wait(1)
@@ -21,8 +22,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Transform - Body - " + msg)
+EndFunction
+
 Function Transform()
-    CoL.Log("Transforming Body")
+    Log("Transforming")
     CoL.isTransformed = true
 
     CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
@@ -36,7 +41,7 @@ Function Transform()
 EndFunction
 
 Function UnTransform()
-    CoL.Log("Untransforming Body")
+    Log("Untransforming")
     CoL.isTransformed = false
     CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
 

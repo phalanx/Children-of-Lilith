@@ -178,7 +178,7 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 
     Log("Recieved End Drain Event for " + draineeName)
-    Log("Killing" + draineeName)
+    Log("Killing " + draineeName)
     if drainee.isEssential()
         Log("Can't kill essential. Dealing damage instead")
         drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)

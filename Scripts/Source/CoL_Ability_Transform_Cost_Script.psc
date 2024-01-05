@@ -14,6 +14,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Transform - Cost - " + msg)
+EndFunction
+
 Function Maintenance()
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
     RegisterForModEvent("CoL_startScene", "StartScene")
@@ -21,13 +25,13 @@ Function Maintenance()
 EndFunction
 
 Function StartScene()
-    CoL.Log("Pausing transform cost")
+    CoL.Log("Pausing")
     pauseCost = true
     UnregisterForUpdate()
 EndFunction
 
 Function EndScene()
-    CoL.Log("Unpausing transform cost")
+    CoL.Log("Unpausing")
     pauseCost = false
     RegisterForSingleUpdate(1)
 EndFunction

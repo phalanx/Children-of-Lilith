@@ -13,8 +13,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         energyHandler.playerEnergyCurrent -= configHandler.suppressionCost
         if iArousal.IsInterfaceActive()
             int arousalDecrease = (configHandler.excitementBaseIncrease + (levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.excitementLevelMult) as int)
-            CoL.Log("Decreasing Player Arousal by " + arousalDecrease)
+            Log("Decreasing Player Arousal by " + arousalDecrease)
             iArousal.ModifyArousal(akTarget, 0 - arousalDecrease)
         endif
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Spell - Suppression - " + msg)
+EndFunction

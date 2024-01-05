@@ -13,9 +13,13 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Heal Rate Boost - " + msg)
+EndFunction
+
 Event OnUpdate()
     if energyHandler.playerEnergyCurrent < configHandler.healRateBoostCost
-        CoL.Log("Out of Energy")
+        Log("Out of Energy")
         Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
         CoL.playerRef.RemoveSpell(CoL.HealRateBoost)
         return

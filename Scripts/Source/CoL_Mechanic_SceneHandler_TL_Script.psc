@@ -21,9 +21,13 @@ Event OnPlayerLoadGame()
     Maintenance()
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Scene Handler - TL - " + msg)
+EndFunction
+
 Function Maintenance()
     if Game.IsPluginInstalled("Toys.esm")
-        CoL.Log("Toys and Love Detected")
+        Log("Toys and Love Detected")
         succubus = GetTargetActor()
         succubusName = succubus.GetActorBase().GetName()
         RegisterForEvents()
@@ -34,10 +38,10 @@ Function RegisterForEvents()
     ; Register for Toys and Loves's scene tracking so we know when a scene starts
     if succubus == CoL.playerRef
         RegisterForModEvent("ToysStartLove", "TL_startScene")
-        CoL.Log("Registered for Toys&Love Player Start Scene Event")
+        Log("Registered for Player Start Scene Event")
     Else
         RegisterForModEvent("ToysStartPlayerlessLove", "TL_startScene")
-        CoL.Log("Registered for Toys&Love "+ succubusName +" Start Scene Event")
+        Log("Registered for "+ succubusName +" Start Scene Event")
     endif
 EndFunction
 
@@ -62,7 +66,7 @@ Function triggerDrainStart(string EventName, string strArg, float numArg, Form s
                 ModEvent.PushString(drainHandle, actorName)
                 ModEvent.PushFloat(drainHandle, arousal)
                 ModEvent.Send(drainHandle)
-                CoL.Log("Drain start event sent for " + actorName)
+                Log("Drain start event sent for " + actorName)
             endif
         endif
         i += 1
@@ -83,7 +87,7 @@ Function triggerDrainEnd()
                 ModEvent.pushForm(drainHandle, succubus)
                 ModEvent.pushForm(drainHandle, victims[i])
                 ModEvent.Send(drainHandle)
-                CoL.Log("Drain end event sent for " + victims[i].GetLeveledActorBase().GetName())
+                Log("Drain end event sent for " + victims[i].GetLeveledActorBase().GetName())
             endif
         endif
         i += 1
@@ -102,14 +106,14 @@ Event TL_startScene(string EventName, string strArg, float numArg, Form sender)
     endif
     if sceneStartEvent
         ModEvent.Send(sceneStartEvent)
-        CoL.Log(succubusName + " involved TL animation started")
+        Log(succubusName + " involved animation started")
     endif
 
     currentSceneName = strArg
     RegisterForModEvent("ToysClimaxNPC", "triggerDrainStart")
     RegisterForModEvent("ToysLoveSceneInfo", "sceneInfo")
     RegisterForModEvent("ToysLoveSceneEnd", "TL_endScene")
-    CoL.Log("Registered for TL Scene Events")
+    Log("Registered for Scene Events")
 EndEvent
 
 Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerConsent, Form ActInPos1, Form ActInPos2, Form ActInPos3, Form ActInPos4, Form ActInPos5)
@@ -118,33 +122,33 @@ Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerC
     endif
 
     UnRegisterForModEvent("ToysLoveSceneInfo")
-    CoL.Log("Scene Info: ")
+    Log("Scene Info: ")
 
     Actor victim
     if ActInPos1 && ActInPos1 != succubus
         victims = PushActor(victims, ActInPos1 as Actor)
         victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos1 as Actor))
-        CoL.Log("    Victim 1: " + (ActInPos1 as Actor).GetLeveledActorBase().GetName())
+        Log("    Victim 1: " + (ActInPos1 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos2 && ActInPos2 != succubus
         victims = PushActor(victims, ActInPos2 as Actor)
         victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos2 as Actor))
-        CoL.Log("    Victim 2: " +  (ActInPos2 as Actor).GetLeveledActorBase().GetName())
+        Log("    Victim 2: " +  (ActInPos2 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos3 && ActInPos3 != succubus
         victims = PushActor(victims, ActInPos3 as Actor)
         victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos3 as Actor))
-        CoL.Log("    Victim 3: " +  (ActInPos3 as Actor).GetLeveledActorBase().GetName())
+        Log("    Victim 3: " +  (ActInPos3 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos4 && ActInPos4 != succubus
         victims = PushActor(victims, ActInPos4 as Actor)
         victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos4 as Actor))
-        CoL.Log("    Victim 4: " +  (ActInPos4 as Actor).GetLeveledActorBase().GetName())
+        Log("    Victim 4: " +  (ActInPos4 as Actor).GetLeveledActorBase().GetName())
     endif
     if ActInPos5 && ActInPos5 != succubus
         victims = PushActor(victims, ActInPos5 as Actor)
         victimsArousal = PushFloat(victimsArousal, iArousal.GetActorArousal(ActInPos5 as Actor))
-        CoL.Log("    Victim 5: " +  (ActInPos5 as Actor).GetLeveledActorBase().GetName())
+        Log("    Victim 5: " +  (ActInPos5 as Actor).GetLeveledActorBase().GetName())
     endif
 
 EndEvent
@@ -154,7 +158,7 @@ Event TL_endScene(string eventName, string strArg, float numArg, Form sender)
         return
     endif
 
-    CoL.Log(succubusName +" involved animation ended")
+    Log(succubusName +" involved animation ended")
     UnregisterForKey(configHandler.hotkeys[3])
 
     triggerDrainEnd()

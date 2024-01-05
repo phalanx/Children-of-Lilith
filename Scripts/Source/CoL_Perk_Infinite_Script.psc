@@ -15,26 +15,30 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    CoL.Log("Infinite perk script triggered")
+    Log("Triggered")
     int i = 0
     while i < transformPerks.Length
         if CoL.playerRef.HasPerk(transformPerks[i])
-            CoL.Log(transformPerks[i].GetName()+"detected")
+            Log(transformPerks[i].GetName()+" detected")
             CoL.transformBuffs[i] = CoL.transformBuffs[i] + 1
         endif
         i += 1
     endwhile
     if CoL.playerRef.HasPerk(effecientFeeder)
-        CoL.Log("Efficient Feeder Perk detected")
+        Log("Efficient Feeder Perk detected")
         CoL.efficientFeeder += 1
-        CoL.Log("Efficient Feeder Ranks: " + CoL.efficientFeeder)
+        Log("Efficient Feeder Ranks: " + CoL.efficientFeeder)
         CoL.playerRef.RemovePerk(effecientFeeder)
     endif
     if CoL.playerRef.HasPerk(energyStorage)
-        CoL.Log("Energy Storage Perk detected")
+        Log("Energy Storage Perk detected")
         CoL.energyStorage += 1
-        CoL.Log("Energy Storage Ranks: " + CoL.energyStorage)
+        Log("Energy Storage Ranks: " + CoL.energyStorage)
         energyHandler.playerEnergyMax += 10
         CoL.playerRef.RemovePerk(energyStorage)
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Infinite Perk - " + msg)
+EndFunction

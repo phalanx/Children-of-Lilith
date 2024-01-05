@@ -9,15 +9,19 @@ int energyMeter
 int[] lastColor
 
 Function Initialize()
-    CoL.Log("Initializing Widgets")
+    Log("Initializing")
     energyMeter = iWidgets.loadMeter(configHandler.energyMeterXPos, configHandler.energyMeterYPos, True)
     if energyMeter == -1
-        CoL.Log("Failed to load energy meter")
+        Log("Failed to load energy meter")
         return
     endif
     lastColor = GetColor(0)
     iWidgets.setMeterFillDirection(energyMeter, "both")
     Maintenance()
+EndFunction
+
+Function Log(string msg)
+    CoL.Log("Widget - " + msg)
 EndFunction
 
 Function Maintenance()
@@ -31,7 +35,7 @@ Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form se
 EndEvent
 
 Function UpdateMeter()
-    CoL.Log("Updating Meter")
+    Log("Updating Meter")
     if CoL.isPlayerSuccubus.GetValueInt() != 1
         Uninitialize()
     endif
@@ -92,7 +96,7 @@ int[] Function GetColor(int drainCode=-1)
     elseif lastColor.Length > 0
         return lastColor
     else
-        CoL.Log("Couldn't get widget color")
+        Log("Couldn't get widget color")
         return disabledColor
     endif
 endFunction
@@ -119,7 +123,7 @@ Event OnUpdate()
 EndEvent
 
 Function Uninitialize()
-    CoL.Log("Uninitializing Widgets")
+    Log("Uninitializing")
     iWidgets.Destroy(energyMeter)
     UnregisterForModEvent("iWantWidgetsReset")
 EndFunction

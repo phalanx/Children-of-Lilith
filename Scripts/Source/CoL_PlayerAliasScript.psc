@@ -31,11 +31,11 @@ Event OnInit()
 EndEvent
 
 Event OnPlayerLoadGame()
-    CoL.Log("Player Loaded Game")
-    CoL.Log("isPlayerSuccubus Value:" + CoL.isPlayerSuccubus.GetValueInt())
+    Log("Player Loaded Game")
+    Log("isPlayerSuccubus Value: " + CoL.isPlayerSuccubus.GetValueInt())
     HandleOrdinatorVancian()
     if CoL.isPlayerSuccubus.GetValueInt() > 0
-        CoL.Log("Maintenance Should Run")
+        Log("Maintenance Should Run")
         CoL.Maintenance()
     endif
 
@@ -44,6 +44,10 @@ Event OnPlayerLoadGame()
         ModEvent.Send(gameLoadEvent)
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Player Alias - " + msg)
+EndFunction
 
 Event OnSpellCast(Form akSpell)
     Spell spellCast = akSpell as Spell
@@ -159,13 +163,16 @@ Function ExpendEnergyVancian()
 EndFunction
 
 Event OnVampirismStateChanged(bool isVampire)
-    CoL.Log("Player vampire status chaged")
+    if CoL.isPlayerSuccubus.GetValueInt() == 0
+        return
+    endif
+    Log("Player vampire status chaged")
     string mortalRaceId = MiscUtil.GetRaceEditorID(CoL.mortalRace)
     string succubusRaceId = MiscUtil.GetRaceEditorID(CoL.succuRace)
     Race newMortalRace
     Race newSuccubusRace
-    CoL.Log("Mortal race id before: " + mortalRaceId)
-    CoL.Log("Succubus race id before: " + succubusRaceId)
+    Log("Mortal race id before: " + mortalRaceId)
+    Log("Succubus race id before: " + succubusRaceId)
     if isVampire
         CoL.mortalCureRace = CoL.mortalRace
         CoL.succuCureRace = CoL.succuRace
@@ -181,10 +188,10 @@ Event OnVampirismStateChanged(bool isVampire)
     endif
     
     if (newMortalRace == None || newSuccubusRace == None)
-        Debug.MessageBox("Could not automatically update succubus races.\nProceed with caution")
+        Debug.MessageBox("CoL could not automatically update to new vampire races.\nProceed with caution")
     else
-        CoL.Log("Mortal race id after: " + MiscUtil.GetRaceEditorID(newMortalRace))
-        CoL.Log("Succubus race id after: " + MiscUtil.GetRaceEditorID(newSuccubusRace))
+        Log("Mortal race id after: " + MiscUtil.GetRaceEditorID(newMortalRace))
+        Log("Succubus race id after: " + MiscUtil.GetRaceEditorID(newSuccubusRace))
         CoL.mortalRace = newMortalRace
         CoL.succuRace = newSuccubusRace
     endif

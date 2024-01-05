@@ -43,8 +43,12 @@ EndState
 Function Maintenance()
 EndFunction
 
+Function Log(string msg)
+    CoL.Log("NPC Succubus Quest - " + msg)
+EndFunction
+
 Function StartSceneNPC()
-    CoL.Log("NPC Scene Start Detected")
+    Log("Scene Start Detected")
 EndFunction
 
 Function RemoveNPC(int index)
@@ -57,5 +61,5 @@ Function RemoveNPC(int index)
 EndFunction
 
 Function EndSceneNPC()
-    CoL.Log("NPC Scene End Detected")
+    CoL.Log("Scene End Detected")
 EndFunction

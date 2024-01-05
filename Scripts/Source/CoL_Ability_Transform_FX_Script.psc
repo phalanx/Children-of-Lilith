@@ -58,3 +58,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         endif
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Transform - FX - " + msg)
+EndFunction

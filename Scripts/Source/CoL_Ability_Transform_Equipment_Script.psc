@@ -20,9 +20,13 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Transform - Equipment - " + msg)
+EndFunction
+
 Function Transform()
     if configHandler.transformSwapsEquipment
-        CoL.Log("Transforming Equipment")
+        Log("Transforming")
         originalEquipment = StripEquipment(CoL.playerRef)
         int i = 0
         while i < CoL.succuEquipmentChest.GetNumItems()
@@ -37,7 +41,7 @@ EndFunction
 
 Function UnTransform()
     if configHandler.transformSwapsEquipment
-        CoL.Log("Untransforming Equipment")
+        Log("Untransforming")
         succubusEquipment = StripEquipment(CoL.playerRef)
         int i = 0
         while i < CoL.succuEquipmentChest.GetNumItems()
@@ -55,18 +59,19 @@ Form[] function StripEquipment(Actor actorRef)
     Form itemRef
     Form[] stripped = new Form[32]
 	form[] NoStripList = configHandler.NoStripList
+    Log("No Strip List Contains:")
+    int x = 0
+    while x < NoStripList.Length
+        CoL.Log("    " + NoStripList[x])
+        x += 1
+    endwhile
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30)) 
 		if itemRef 
-            CoL.Log("Checking Item: " + itemRef.GetName())
+            Log("Checking Item: " + itemRef.GetName())
 			if  NoStripList.Find(itemRef) == -1    ; Make sure list exists and item is not part of no strip list
                 if configHandler.DebugLogging
-                    CoL.Log("Item not found in striplist. List contains:")
-                    int x = 0
-                    while x < NoStripList.Length
-                    	CoL.Log(NoStripList[x])
-                    	x += 1
-                    endwhile
+                    Log("Item not found in striplist")
                 endif
                 if CoL.IsStrippable(itemRef)
                     actorRef.UnequipItemEX(itemRef)

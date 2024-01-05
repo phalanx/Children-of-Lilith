@@ -8,9 +8,7 @@ CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 
-bool SexLabInstalled
 bool SLSOInstalled
-bool SLARInstalled
 Actor[] currentVictims
 Actor[] currentParticipants
 Actor succubus
@@ -25,12 +23,15 @@ Event OnPlayerLoadGame()
     Maintenance()
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Scene Handler - SL - " + msg)
+EndFunction
+
 Function Maintenance()
-    SexLabInstalled = SexLab.IsInterfaceActive()
-    if !SexLabInstalled
+    if !SexLab.IsInterfaceActive()
         return
     endif
-    CoL.Log("SexLab detected")
+    Log("SexLab detected")
 
     succubus = GetTargetActor()
     CoL.Log(succubus.GetDisplayName())
@@ -47,25 +48,21 @@ Function RegisterForEvents()
     ; Register for sexlab's tracking so we know when a scene involving the succubus starts
     if succubus == CoL.playerRef
         RegisterForModEvent("PlayerTrack_Start", "SL_StartScene")
-        CoL.Log("Registered for SexLab Player Start Scene Event")
+        Log("Registered for Player Start Scene Events")
     elseif succubus != None
         SexLab.TrackActor(succubus,"CoL_" + succubus + "Track")
         RegisterForModEvent("CoL_" + succubus + "Track_Start", "SL_StartScene")
-        CoL.Log("Registered for SexLab " + succubusName + " Start Scene Event")
+        Log("Registered for " + succubusName + " Start Scene Event")
     endif
 EndFunction
 
 Function CheckForAddons()
     SLSOInstalled = Quest.GetQuest("SLSO")
-
-    if SLARInstalled
-        CoL.Log("SLAR Detected")
-    endif
 EndFunction
 
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
-    CoL.Log("Trigger drain start for " + actorName)
+    Log("Trigger drain start for " + actorName)
     float arousal = iArousal.GetActorArousal(victim)
 
     int drainHandle
@@ -80,7 +77,7 @@ Function triggerDrainStart(Actor victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain start event sent")
+        Log("Drain start event sent")
         currentVictims = PushActor(currentVictims, victim)
     endif
 EndFunction
@@ -96,7 +93,7 @@ Function triggerDrainEnd(Actor victim)
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain end event sent for " + victim.GetLeveledActorBase().GetName())
+        Log("Drain end event sent for " + victim.GetLeveledActorBase().GetName())
     endif
 EndFunction
 
@@ -110,7 +107,7 @@ Event SL_StartScene(Form actorRef, int threadId)
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
     endif
     ModEvent.Send(sceneStartEvent)
-    CoL.Log(succubusName +" involved SL animation started")
+    Log(succubusName +" involved animation started")
 
     currentParticipants = SexLab.Positions(threadId)
 
@@ -118,13 +115,13 @@ Event SL_StartScene(Form actorRef, int threadId)
     ; Register for thread specific SL Hooks
     if SLSOInstalled
         RegisterForModEvent("SexLabOrgasmSeparate", "SLSOOrgasmHandler")
-        CoL.Log("Registered for SLSO Orgasm Event")
+        Log("Registered for SLSO Orgasm Event")
     else
-        CoL.Log("Registered for SexLab Orgasm Event")
+        Log("Registered for Orgasm Event")
         RegisterForModEvent("HookOrgasmEnd_CoLSLSceneHook", "CoL_SLOrgasmHandler")
     endif
     RegisterForModEvent("HookAnimationEnd_CoLSLSceneHook", "CoL_SLAnimationEndHandler")
-    CoL.Log("Registered for SexLab events")
+    Log("Registered for Scene Events")
 EndEvent
 
 Event OnKeyDown(int keyCode)
@@ -135,7 +132,7 @@ Event OnKeyDown(int keyCode)
         endif
         int i = 0
         while i < currentParticipants.Length
-            CoL.Log("Casting tempatation")
+            Log("Casting Tempatation")
             CoL.temptationSpell.Cast(CoL.playerRef, currentParticipants[i])
             i += 1
         endwhile
@@ -143,11 +140,11 @@ Event OnKeyDown(int keyCode)
 EndEvent
 
 Event CoL_SLOrgasmHandler(int threadId, bool hasPlayer)
-    CoL.Log("Entered orgasm handler")
+    Log("Entered orgasm handler")
     ; Unregister for thread specific SL Orgasm Hook
     ; This prevents the orgasm event being triggered for every actor in the scene
     UnregisterForModEvent("HookOrgasmEnd_CoLSLSceneHook")
-    CoL.Log("Unregistered for Orgasm Event")
+    Log("Unregistered for Orgasm Event")
     Actor[] actors = SexLab.Positions(threadId)
     int i = 0
     while i < actors.Length
@@ -168,7 +165,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
     endif
     ModEvent.Send(sceneEndEvent)
-    CoL.Log(succubusName +" involved animation ended")
+    Log(succubusName +" involved animation ended")
     UnregisterForModEvent("SexLabOrgasmSeparate")
     if PapyrusUtil.GetVersion() >= 40
         currentVictims = RemoveDupeActor(currentVictims)
@@ -180,7 +177,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
     int i = 0
     while i < actors.Length
         if actors[i] && actors[i] != succubus && currentVictims.Find(actors[i]) != -1
-            CoL.Log("Trigger drain end for " + actors[i].GetBaseObject().GetName())
+            Log("Trigger drain end for " + actors[i].GetBaseObject().GetName())
             triggerDrainEnd(actors[i])
         endif
         i += 1
@@ -189,12 +186,12 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
 EndEvent
 
 Event SLSOOrgasmHandler(Form ActorRef, Int threadID)
-    CoL.Log("Entered orgasm handler")
+    Log("Entered orgasm handler")
     Actor akActor = ActorRef as Actor
     Actor[] positions = SexLab.Positions(threadID)
     string actorName = akActor.GetLeveledActorBase().GetName()
     if akActor != succubus && positions.Find(succubus) >= 0
         triggerDrainStart(akActor)
-        CoL.Log("Trigger drain start for " + actorName)
+        Log("Trigger drain start for " + actorName)
     endif
 EndEvent

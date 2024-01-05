@@ -24,12 +24,16 @@ Event OnPlayerLoadGame()
     Maintenance()
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Scene Handler - OStim - " + msg)
+EndFunction
+
 Function Maintenance()
     oStimInstalled = oStim.IsInterfaceActive()
     if !oStimInstalled
         return
     endif
-    CoL.Log("OStim detected")
+   Log("OStim detected")
 
     succubus = GetTargetActor()
     if succubus == None
@@ -43,13 +47,13 @@ EndFunction
 
 State Waiting
     Event OnBeginState()
-        CoL.Log("Registered for OStim Events for " + succubusName)
         RegisterForModEvent("ostim_start", "OS_startScene")
+        Log("Registered for Events for " + succubusName)
     EndEvent
 
     Event OS_startScene(string eventName, string strArg, float numArg, Form sender)
 
-        CoL.Log(succubusName + " involved OStim animation started")
+        Log(succubusName + " involved animation started")
 
         if !oStim.IsActorActive(succubus)
             return
@@ -78,7 +82,7 @@ State Waiting
     EndEvent
 
     Event OnEndState()
-        CoL.Log("OS Handler Exited Wait")
+        Log("Exited Wait")
         UnregisterForModEvent("ostim_start")
     EndEvent
 
@@ -97,11 +101,11 @@ State Running
         Actor victim = sender as Actor
 
         if victim == None || victim == succubus || currentPartners.Find(victim) == -1
-            CoL.Log("Detected orgasm not related to " + succubusName + " scene")
+            Log("Detected orgasm not related to " + succubusName + " scene")
             return
         endif
 
-        CoL.Log("Entered orgasm handler")
+        Log("Entered orgasm handler")
         triggerDrainStart(victim)
         if currentVictims.Find(victim) == -1
             currentVictims = PushActor(currentVictims, victim)
@@ -110,7 +114,7 @@ State Running
     EndEvent
 
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
-        CoL.Log(succubusName + " involved animation ended")
+        Log(succubusName + " involved animation ended")
 
         int sceneEndEvent
         if succubus == CoL.playerRef
@@ -156,7 +160,7 @@ EndState
 
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
-    CoL.Log("Trigger drain start for " + actorName)
+    Log("Trigger drain start for " + actorName)
 
     int index = currentPartners.Find(victim)
     float arousal = currentPartnerArousal[index]
@@ -173,12 +177,12 @@ Function triggerDrainStart(Actor victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain start event sent")
+        Log("Drain start event sent")
     endif
 EndFunction
 
 Function triggerDrainEnd(Actor victim)
-    CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
+    Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
     if oStim.FullyAnimateRedress() && !oStim.IsSceneAggressiveThemed()
@@ -195,7 +199,7 @@ Function triggerDrainEnd(Actor victim)
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain end event sent")
+        Log("Drain end event sent")
     endif
 EndFunction
 

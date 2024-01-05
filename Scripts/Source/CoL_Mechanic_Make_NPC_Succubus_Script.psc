@@ -10,7 +10,7 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
     Actor oldSuccubus = akOldContainer as Actor
 
     if oldSuccubus != None && oldSuccubus != CoL.playerRef && npcSuccubusQuest.succubusList.Find(oldSuccubus) != -1
-        CoL.Log("Succubus Being Removed")
+        Log("Succubus Being Removed")
         npcSuccubusQuest.succubusList = RemoveActor(npcSuccubusQuest.succubusList, oldSuccubus)
         int i = 0
         while i < sceneHandlerSpells.Length
@@ -20,7 +20,7 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
     endif
 
     if  newSuccubus != None && newSuccubus != CoL.playerRef && npcSuccubusQuest.succubusList.Find(newSuccubus) == -1
-        CoL.Log("New Succubus Being Created")
+        Log("New Succubus Being Created")
         int i = 0
         while i < sceneHandlerSpells.Length
             newSuccubus.AddSpell(sceneHandlerSpells[i])
@@ -29,3 +29,7 @@ Event OnContainerChanged(ObjectReference akNewContainer, ObjectReference akOldCo
         npcSuccubusQuest.succubusList = PushActor(npcSuccubusQuest.succubusList, newSuccubus)
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Succubus Mark - " + msg)
+EndFunction

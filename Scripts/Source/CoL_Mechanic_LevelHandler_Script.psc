@@ -14,7 +14,7 @@ float Property playerSuccubusXP Hidden
     EndFunction
     Function Set(float newVal)
         playerSuccubusXP_var = newVal
-        CoL.Log("Current Xp: " + playerSuccubusXP_var)
+        Log("Current Xp: " + playerSuccubusXP_var)
         if playerSuccubusXP_var >= xpForNextLevel
             LevelUp()
         EndIf
@@ -24,9 +24,13 @@ EndProperty
 int Property xpForNextLevel = 1 Auto Hidden
 int Property xpForPreviousLevel Auto Hidden
 
+Function Log(string msg)
+    CoL.Log("Level Handler - " + msg)
+EndFunction
+
 State Initialize
     Event OnBeginState()
-        CoL.Log("Initializing Level Handler")
+        Log("Initializing")
         if playerSuccubusLevel.GetValueInt() < 1
             playerSuccubusLevel.SetValueInt(1)
         endif
@@ -43,12 +47,12 @@ State Running
             xpMod = configHandler.drainToDeathXPMult
         endif
         float xpGained = (healthDrained * configHandler.xpDrainMult * xpMod) + configHandler.xpPerDrain
-        CoL.Log("Xp Gained: " + xpGained)
+        Log("Xp Gained: " + xpGained)
         playerSuccubusXP += xpGained
     EndFunction
 
     Function addPerkPoint()
-        CoL.Log("Adding Perk")
+        Log("Adding Perk")
         perkPointsAvailable.Mod(configHandler.perkPointsRecieved)
     EndFunction
 
@@ -60,7 +64,7 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        CoL.Log("Uninitializing Level Handler")
+        Log("Uninitializing")
         CoL.RemoveSpells(CoL.levelOneSpells)
         CoL.RemoveSpells(CoL.levelTwoSpells)
         CoL.RemoveSpells(CoL.levelFiveSpells)
@@ -83,7 +87,7 @@ Function LevelUp()
     GrantLevelledSpells()
     calculateXpForNextLevel()
 
-    CoL.Log("XP For Next Level: " + xpForNextLevel)
+    Log("XP For Next Level: " + xpForNextLevel)
     if playerSuccubusXP >= xpForNextLevel
         LevelUp()
     else

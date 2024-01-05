@@ -157,6 +157,10 @@ Event OnInit()
     Maintenance()
 EndEvent
 
+Function Log(string msg)
+    Debug.Trace("[CoL] ConfigHandler - " + msg)
+EndFunction
+
 Function Maintenance()
     followedPathOptions = new string[3]
     followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANQUINE"
@@ -176,12 +180,12 @@ Function SendConfigUpdateEvent()
         int handle = ModEvent.Create("CoL_configUpdated")
         if handle
             ModEvent.Send(handle)
-            Debug.trace("[CoL] Sending Config Update Event")
+           Log("Sending Config Update Event")
         else
-            debug.trace("[CoL] Not Sending Config Update Event")
+            Log("Not Sending Config Update Event")
         endif
     else
-        debug.trace("[CoL] Not Sending Config Update Event")
+        Log("Not Sending Config Update Event")
     endif
 EndFunction
 

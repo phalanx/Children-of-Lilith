@@ -20,8 +20,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Transform - Powers - " + msg)
+EndFunction
+
 function Transform()
-    CoL.Log("Adding additional powers")
+    Log("Adding additional powers")
     if CoL.playerRef.HasPerk(healingForm)
         CoL.playerRef.ModActorValue("HealRate", (configHandler.healRateBoostAmount / 2))
     endif
@@ -32,16 +36,16 @@ function Transform()
         if configHandler.transformBuffsEnabled
             buffs[i] = buffs[i] + configHandler.transformBaseBuffs[i]
         endif
-        CoL.Log("Buff Effect " + i + ": " + buffs[i])
+        Log("Buff Effect " + i + ": " + buffs[i])
         transformBuffSpell.SetNthEffectMagnitude(i, buffs[i])
         i += 1
     endwhile
-    CoL.Log("Adding Buff Spell")
+    Log("Adding Buff Spell")
     CoL.playerRef.AddSpell(transformBuffSpell, false)
 endfunction
 
 function UnTransform()
-    CoL.Log("Removing additional powers")
+    Log("Removing additional powers")
     if CoL.playerRef.HasPerk(healingForm)
         CoL.playerRef.ModActorValue("HealRate", 0.0 - (configHandler.healRateBoostAmount / 2))
     endif
