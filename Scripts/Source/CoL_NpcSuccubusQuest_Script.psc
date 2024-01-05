@@ -5,7 +5,7 @@ CoL_Mechanic_NPC_DrainHandler_Script Property npcDrainHandler Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 Actor[] Property succubusList Auto Hidden           ; List of actors that have been turned into a succubus
-Spell Property sceneHandler Auto
+Spell[] Property sceneHandlerSpells Auto
 
 Event OnInit()
 EndEvent
@@ -48,7 +48,11 @@ Function StartSceneNPC()
 EndFunction
 
 Function RemoveNPC(int index)
-    succubusList[index].RemoveSpell(sceneHandler)
+    int i = 0
+    while i < sceneHandlerSpells.Length
+        succubusList[index].RemoveSpell(sceneHandlerSpells[i])
+        i += 1
+    endwhile
     succubusList = PapyrusUtil.RemoveActor(succubusList, succubusList[index])
 EndFunction
 

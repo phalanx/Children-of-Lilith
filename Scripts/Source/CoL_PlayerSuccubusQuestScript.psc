@@ -37,7 +37,7 @@ Spell[] Property levelOneSpells Auto                ; Spells granted to player a
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
-Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
+Spell[] Property sceneHandlerSpells Auto            ; Spells that contain the animation scene handlers
 Spell Property arousalTransformSpell Auto           ; Spell that contains the arousal transform handler
 Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
@@ -47,32 +47,32 @@ Spell[] Property molagTraits Auto                   ; Spells to provide passives
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
 
 ; Togglable Spells
-Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
-Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
-Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
-Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
+    Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
+    Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
+    Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
+    Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
 
 ; Transform Stuff
-Spell Property transformSpell Auto
+    Spell Property transformSpell Auto
 
-bool Property isTransformed Auto Hidden
-bool Property lockTransform Auto Hidden
-string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
-bool Property succuPresetSaved = false Auto Hidden
-Race Property succuRace Auto Hidden
-Race Property succuCureRace Auto Hidden
-ColorForm Property succuHairColor Auto Hidden
-string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
-bool Property mortalPresetSaved = false Auto Hidden
-Race Property mortalRace Auto Hidden
-Race Property mortalCureRace Auto Hidden
-bool isVampire = false
-ColorForm Property mortalHairColor Auto Hidden
-ObjectReference Property succuEquipmentChest Auto
+    bool Property isTransformed Auto Hidden
+    bool Property lockTransform Auto Hidden
+    string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
+    bool Property succuPresetSaved = false Auto Hidden
+    Race Property succuRace Auto Hidden
+    Race Property succuCureRace Auto Hidden
+    ColorForm Property succuHairColor Auto Hidden
+    string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
+    bool Property mortalPresetSaved = false Auto Hidden
+    Race Property mortalRace Auto Hidden
+    Race Property mortalCureRace Auto Hidden
+    bool isVampire = false
+    ColorForm Property mortalHairColor Auto Hidden
+    ObjectReference Property succuEquipmentChest Auto
 
-; Advancement Settings
-int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
-int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
+; Perk Ranks
+    int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
+    int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
 
 ; Transform Buff Ranks
 ; 0 - health
@@ -102,6 +102,7 @@ State Initialize
         succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
         isPlayerSuccubus.SetValue(1.0)
         playerRef.AddSpell(drainHandler, false)
+        GrantSpells(sceneHandlerSpells, false)
         widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
         Maintenance()
@@ -154,6 +155,7 @@ State Uninitialize
     Event OnBeginState()
         widgetHandler.Uninitialize()
         levelHandler.GoToState("Uninitialize")
+        RemoveSpells(sceneHandlerSpells)
         playerRef.RemoveSpell(drainHandler)
         uninitializeQuest.GoToState("Run")
         UnregisterForEvents()
