@@ -12,6 +12,8 @@ Perk Property VancianMagicPerk = None Auto Hidden
 GlobalVariable Property CurrentVancianCharges = None Auto Hidden
 Float Property LastVancianCharges = 20.0 Auto Hidden ; memorize the last counted charges to check if the current spell did actually cost a charge or not
 
+String Property vampireErrorMessageBox = "CoL could not automatically update to new vampire races.\nProceed with caution" Auto Hidden
+
 Function HandleOrdinatorVancian()
     If Game.GetModByName("Ordinator - Perks of Skyrim.esp") != 255
 		VancianMagicPerk = Game.GetFormFromFile(0x02CB20, "Ordinator - Perks of Skyrim.esp") as Perk
@@ -188,7 +190,7 @@ Event OnVampirismStateChanged(bool isVampire)
     endif
     
     if (newMortalRace == None || newSuccubusRace == None)
-        Debug.MessageBox("CoL could not automatically update to new vampire races.\nProceed with caution")
+        Debug.MessageBox(vampireErrorMessageBox)
     else
         Log("Mortal race id after: " + MiscUtil.GetRaceEditorID(newMortalRace))
         Log("Succubus race id after: " + MiscUtil.GetRaceEditorID(newSuccubusRace))

@@ -3,6 +3,10 @@ Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
+String Property formSavedMsg = "Form Saved" Auto
+String Property formLoadedMsg = "Form Loaded. Exit menu to apply changes" Auto
+String Property equipmentSaveMsg = "Exit menu to select equipment" Auto
+
 bool loadEquipment = false
 Form[] equippedItems
 
@@ -121,7 +125,7 @@ State Text_saveMortalPreset
     Event OnSelectST(string state_id)
         CoL.mortalRace = CoL.playerRef.GetRace()
         CoL.mortalHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMSAVEDMSG")
+        Debug.MessageBox(equipmentSaveMsg)
         CoL.SavePreset(CoL.mortalPresetName)
         CoL.mortalPresetSaved = true
     EndEvent
@@ -131,7 +135,7 @@ State Text_saveMortalPreset
 EndState
 State Text_LoadMortalPreset
     Event OnSelectST(string state_id)
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMLOADEDMSG")
+        Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
         CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
     EndEvent
@@ -143,7 +147,7 @@ State Text_SaveSuccuPreset
     Event OnSelectST(string state_id)
         CoL.succuRace = CoL.playerRef.GetRace()
         CoL.succuHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMSAVEDMSG")
+        Debug.MessageBox(formSavedMsg)
         CoL.SavePreset(CoL.succuPresetName)
         CoL.succuPresetSaved = True
     EndEvent
@@ -153,7 +157,7 @@ State Text_SaveSuccuPreset
 EndState
 State Text_LoadSuccuPreset
     Event OnSelectST(string state_id)
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMLOADEDMSG")
+        Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
         CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
         ForcePageReset()
@@ -165,7 +169,7 @@ EndState
 State Text_ActivateEquipmentChest
     Event OnSelectST(string state_id)
         CoL.succuEquipmentChest.Activate(CoL.playerRef)
-        Debug.MessageBox("$COL_TRANSFORMPAGE_EQUIPMENTSAVE_MSG")
+        Debug.MessageBox(equipmentSaveMsg)
         Utility.Wait(0.1)
     EndEvent
     Event OnHighlightST(string state_id)
