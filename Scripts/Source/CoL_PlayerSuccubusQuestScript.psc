@@ -97,7 +97,7 @@ EndEvent
 
 State Initialize
     Event OnBeginState()
-        Log("Initializing")
+        _Log("Initializing")
         mortalPresetName = "CoL_Mortal_Form_" + playerRef.GetDisplayName()
         succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
         isPlayerSuccubus.SetValue(1.0)
@@ -127,9 +127,9 @@ EndState
 
 State SceneRunning
     Event onBeginState()
-        Log("Entered SceneRunning State")
+        _Log("Entered SceneRunning State")
         if configHandler.transformDuringScene
-            Log("Scene Start Transforming")
+            _Log("Scene Start Transforming")
             if !isTransformed
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
@@ -139,10 +139,10 @@ State SceneRunning
     EndEvent
 
     Event onEndState()
-        Log("Exited SceneRunning State")
+        _Log("Exited SceneRunning State")
         if configHandler.transformDuringScene
             if !isTransformed
-                Log("Scene End Untransforming")
+                _Log("Scene End Untransforming")
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
                 transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
@@ -189,7 +189,7 @@ Function RemoveSpells(Spell[] spellList)
 EndFunction
 
 Function Maintenance()
-    Log("Maintenance running")
+    _Log("Maintenance running")
     if Game.IsPluginInstalled("Devious Devices - Assets.esm")
         ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
     endif
@@ -212,7 +212,7 @@ Function Maintenance()
             endif
         endif
     endif
-    Log("Maintenance Done")
+    _Log("Maintenance Done")
 EndFunction
 
 Function RegisterForHotkeys()
@@ -226,7 +226,7 @@ Function RegisterForEvents()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
     RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
-    Log("Registered for Hotkeys and Events")
+    _Log("Registered for Hotkeys and Events")
 EndFunction
 
 Function UnregisterForHotkeys()
@@ -240,7 +240,7 @@ Function UnregisterForEvents()
     UnregisterForHotkeys()
     UnregisterForModEvent("CoL_startScene")
     UnregisterForModEvent("CoL_endScene")
-    Log("Unregistered for Hotkeys and Events")
+    _Log("Unregistered for Hotkeys and Events")
 EndFunction
 
 Function StartScene()
@@ -274,6 +274,10 @@ Function ScaleEnergyTest()
         Utility.Wait(0.1)
     endwhile
     energyHandler.playerEnergyCurrent = currentEnergy
+EndFunction
+
+Function _Log(string msg)
+    Log("Player Succubus Quest - ")
 EndFunction
 
 Function Log(string msg)
@@ -316,11 +320,11 @@ Function savePreset(string presetName)
         CharGen.SaveCharacter(presetName)
     endif
     CharGen.SavePreset(presetName)
-    Log("Finished Saving Preset")
+    _Log("Finished Saving Preset")
 EndFunction
 
 Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
-    Log("Transforming Player")
+    _Log("Transforming Player")
     int jmorphs
     if configHandler.transformSavesNiOverrides
         jmorphs = __saveBodyMorphs()
@@ -344,7 +348,7 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
     if iSLCumOverlay.IsInterfaceActive()
         iSLCumOverlay.reapplySCOEffects(playerRef)
     endif
-    Log("Finished Transforming Player")
+    _Log("Finished Transforming Player")
 EndFunction
 
 Function __Transform(string presetName, Race presetRace, ColorForm presetHairColor, Race currentRace)
@@ -395,7 +399,7 @@ function __restoreBodyMorphs(int jmorphs)
         string jkkey = JMap.nextKey(jkeys, previousKey="", endKey="")
         while jkkey != ""
             float v = JMap.getFlt(jkeys, jkkey)
-            Log(jmkey + " | " + jkkey + " :=: " + v)
+            _Log(jmkey + " | " + jkkey + " :=: " + v)
             NiOverride.SetBodyMorph(playerRef, jmkey, jkkey, v)
             restored = true
             jkkey = JMap.nextKey(jkeys, jkkey, endKey="")
@@ -449,7 +453,7 @@ Function UpdateCSFPower()
 EndFunction
 
 Function UpdateArousalThresholds()
-    Log("Updating Arousal Thresholds")
+    _Log("Updating Arousal Thresholds")
     if configHandler.transformArousalLowerThreshold == 0 && configHandler.transformArousalUpperThreshold ==0
         if playerRef.HasSpell(arousalTransformSpell)
             playerRef.RemoveSpell(arousalTransformSpell)
@@ -462,7 +466,7 @@ Function UpdateArousalThresholds()
 EndFunction
 
 Function UpdateHunger()
-    Log("Updating Hunger Thresholds")
+    _Log("Updating Hunger Thresholds")
     if configHandler.hungerEnabled
         playerRef.AddSpell(hungerSpell, false)
     else
@@ -471,7 +475,7 @@ Function UpdateHunger()
 EndFunction
 
 Function UpdateConfig()
-    Log("CoL Recieved Config Update")
+    _Log("Recieved Config Update")
     if isPlayerSuccubus.GetValueInt() != 0
         UnregisterForHotkeys()
         RegisterForHotkeys()
