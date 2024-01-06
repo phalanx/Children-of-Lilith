@@ -460,7 +460,7 @@ Function UpdateArousalThresholds()
         endif
     else
         if !playerRef.HasSpell(arousalTransformSpell)
-            playerRef.AddSpell(arousalTransformSpell)
+            playerRef.AddSpell(arousalTransformSpell, false)
         endif
     endif
 EndFunction
