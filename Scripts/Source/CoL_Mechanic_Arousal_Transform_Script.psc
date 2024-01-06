@@ -37,17 +37,21 @@ EndEvent
 Function forceTransform()
     if CoL.isBusy()
         Log("Transform triggered but player is busy")
-        return
     elseif CoL.isTransformed
         Log("Transform triggered but player is already transformed")
-        return
+        CoL.lockTransform = true
+    else
+        CoL.transformSpell.Cast(Col.playerRef)
+        Utility.Wait(0.5)
+        CoL.lockTransform = true
     endif
-    CoL.transformSpell.Cast(Col.playerRef)
-    Utility.Wait(0.5)
-    CoL.lockTransform = true
 EndFunction
 
 Function forceUntransform()
+    if !configHandler.arousalUntransform
+        CoL.lockTransform = false
+        return
+    endif
     if CoL.isBusy()
         Log("Untransform triggered but player is busy")
         return

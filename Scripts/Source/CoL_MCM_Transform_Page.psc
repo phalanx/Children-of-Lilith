@@ -47,6 +47,7 @@ Event OnPageDraw()
     AddToggleOptionST("Toggle_TransformMortalCost", "$COL_TRANSFORMPAGE_MORTALCOST", configHandler.transformMortalCost)
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
+    AddToggleOptionST("Toggle_ArousalUntransform", "$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM", configHandler.arousalUntransform)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_BUFFS")
     if CoL.isTransformed
         AddTextOptionST("Text_NoTransformBuffChange", "$COL_TRANSFORMPAGE_CANTCHANGEBUFFS_MSQ", None)
@@ -313,6 +314,15 @@ State Slider_ArousalLowerThreshold
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD_HELP")
     EndEvent
 
+EndState
+State Toggle_ArousalUntransform
+    Event OnSelectST(string state_id)
+        configHandler.arousalUntransform = !configHandler.arousalUntransform
+        SetToggleOptionValueST(configHandler.arousalUntransform)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM_HELP")
+    EndEvent
 EndState
 State Text_AddStrippable
     Event OnSelectST(string state_id)

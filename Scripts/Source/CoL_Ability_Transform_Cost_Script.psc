@@ -39,6 +39,7 @@ EndFunction
 Event OnUpdate()
     if configHandler.transformCost > 0
         if pauseCost || CoL.lockTransform
+            RegisterForSingleUpdate(1)
             return
         endif
         if energyHandler.playerEnergyCurrent >= configHandler.transformCost

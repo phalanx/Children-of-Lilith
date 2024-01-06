@@ -109,6 +109,7 @@ bool Property transformMortalCost = false Auto Hidden
 bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
+bool Property arousalUntransform = false Auto Hidden
 
 bool Property transformBuffsEnabled = false Auto Hidden
 ; Transform Baseline Buffs
@@ -280,6 +281,7 @@ int Function SaveConfig()
         JMap.setInt(jObj, "transformCrime", transformCrime as int)
         JMap.setFlt(jObj, "transformArousalUpperThreshold", transformArousalUpperThreshold)
         JMap.setFlt(jObj, "transformArousalLowerThreshold", transformArousalLowerThreshold)
+        JMap.setInt(jObj, "transformUntransform", arousalUntransform as int)
     ; Save Transform Baseline Buffs
         JMap.setInt(jObj, "transformBuffsEnabled", transformBuffsEnabled as int)
         i = 0
@@ -398,6 +400,9 @@ Function LoadConfig(int jObj)
         transformCrime = JMap.getInt(jObj, "transformCrime") as bool
         transformArousalUpperThreshold = JMap.getFlt(jObj, "transformArousalUpperThreshold")
         transformArousalLowerThreshold = JMap.getFlt(jObj, "transformArousalLowerThreshold")
+        if configVersion >= 6
+            arousalUntransform = JMap.getInt(jObj, "transformUntransform") as bool
+        endif
         if configVersion >= 5
             transformDuringScene = JMap.getInt(jObj, "transformDuringScene") as bool
         endif
