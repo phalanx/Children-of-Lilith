@@ -6,7 +6,6 @@ GlobalVariable Property timeScale Auto
 string drainTargetName
 
 Event OnEffectStart(Actor drainTarget, Actor akCaster)
-    CoL.Log(drainTarget.GetActorBase().GetName() + " has been drained")
     drainTargetName = drainTarget.GetLeveledActorBase().GetName()
     
     float removalDay

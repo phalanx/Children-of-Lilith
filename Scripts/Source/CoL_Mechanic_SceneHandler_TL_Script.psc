@@ -103,6 +103,7 @@ Event TL_startScene(string EventName, string strArg, float numArg, Form sender)
         endif
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+        ModEvent.PushForm(sceneStartEvent, succubus)
     endif
     if sceneStartEvent
         ModEvent.Send(sceneStartEvent)
@@ -167,6 +168,7 @@ Event TL_endScene(string eventName, string strArg, float numArg, Form sender)
         sceneEndEvent = ModEvent.Create("CoL_endScene")
     else
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+        ModEvent.PushForm(sceneEndEvent, succubus)
     endif
     if sceneEndEvent
         ModEvent.Send(sceneEndEvent)

@@ -105,6 +105,7 @@ Event SL_StartScene(Form actorRef, int threadId)
         RegisterForKey(configHandler.hotkeys[3])
     else
         sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+        ModEvent.PushForm(sceneStartEvent, succubus)
     endif
     ModEvent.Send(sceneStartEvent)
     Log(succubusName +" involved animation started")
@@ -163,6 +164,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
         UnRegisterForKey(configHandler.hotkeys[3])
     else
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+        ModEvent.PushForm(sceneEndEvent, succubus)
     endif
     ModEvent.Send(sceneEndEvent)
     Log(succubusName +" involved animation ended")

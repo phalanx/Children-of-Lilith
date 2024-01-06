@@ -26,7 +26,7 @@ State Running
         CoL.Log("Running NPC Maintenance")
         npcDrainHandler.GoToState("Initialize")
         RegisterForModEvent("CoL_startScene_NPC", "StartSceneNPC")
-        RegisterForModEvent("CoL_endSceneNPC", "EndSceneNPC")
+        RegisterForModEvent("CoL_endScene_NPC", "EndSceneNPC")
         RegisterForModEvent("CoL_GameLoad", "Maintenance")
     EndFunction
 EndState
@@ -35,7 +35,7 @@ State Uninitialize
     Event OnBeginState()
         CoL.Log("Uninitializing NPC Succubus System")
         UnRegisterForModEvent("CoL_startScene_NPC")
-        UnRegisterForModEvent("CoL_endSceneNPC")
+        UnRegisterForModEvent("CoL_endScene_NPC")
         UnRegisterForModEvent("CoL_GameLoad")
     EndEvent
 EndState
@@ -47,8 +47,10 @@ Function Log(string msg)
     CoL.Log("NPC Succubus Quest - " + msg)
 EndFunction
 
-Function StartSceneNPC()
+Function StartSceneNPC(Form drainerForm)
     Log("Scene Start Detected")
+    int jDrainMap = JFormMap.object()
+    JFormDB.setObj(drainerForm, ".ChildrenOfLilith.drainees", jDrainMap)
 EndFunction
 
 Function RemoveNPC(int index)
@@ -60,6 +62,8 @@ Function RemoveNPC(int index)
     succubusList = PapyrusUtil.RemoveActor(succubusList, succubusList[index])
 EndFunction
 
-Function EndSceneNPC()
-    CoL.Log("Scene End Detected")
+Function EndSceneNPC(Form drainerForm)
+    Utility.Wait(0.5) ; Ensure drain has finished
+    Log("Scene End Detected")
+    JFormDB.setObj(drainerForm, ".ChildrenOfLilith.drainees", 0)
 EndFunction

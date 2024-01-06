@@ -11,7 +11,7 @@ Event OnInit()
 EndEvent
 
 Function Log(string msg)
-    CoL.Log("Interface - Arousal -" + msg)
+    CoL.Log("Interface - Arousal - " + msg)
 EndFunction
 
 Function OnGameLoad()
