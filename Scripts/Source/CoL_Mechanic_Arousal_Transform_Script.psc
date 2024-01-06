@@ -6,7 +6,7 @@ CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     RegisterForSingleUpdate(10)
-    CoL.Log("Started")
+    Log("Started")
 EndEvent
 
 Function Log(string msg)
