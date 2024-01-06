@@ -75,7 +75,7 @@ State Waiting
             ModEvent.PushForm(sceneStartEvent, succubus)
         endif
         if sceneStartEvent
-            CoL.Log("Sending Scene Start Event")
+            Log("Sending Scene Start Event")
             ModEvent.Send(sceneStartEvent)
         endif
 

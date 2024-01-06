@@ -25,13 +25,13 @@ Function Maintenance()
 EndFunction
 
 Function StartScene()
-    CoL.Log("Pausing")
+    Log("Pausing")
     pauseCost = true
     UnregisterForUpdate()
 EndFunction
 
 Function EndScene()
-    CoL.Log("Unpausing")
+    Log("Unpausing")
     pauseCost = false
     RegisterForSingleUpdate(1)
 EndFunction

@@ -14,6 +14,10 @@ Event OnInit()
     RegisterModule("$COL_TRANSFORMPAGE_NAME", 70)
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("MCM - Transform - " + msg)
+EndFunction
+
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_PRESET")
@@ -317,11 +321,11 @@ State Text_AddStrippable
         configHandler.NoStripList = PapyrusUtil.PushForm(configHandler.NoStripList, itemRef)
 
         if configHandler.DebugLogging
-            CoL.Log("Adding " + itemRef.getName())
+            Log("Adding " + itemRef.getName())
             int i = 0
-            CoL.Log("Don't strip list contains:")
+            Log("Don't strip list contains:")
             while i < configHandler.NoStripList.Length
-                CoL.Log(configHandler.NoStripList[i].getName())
+                Log(configHandler.NoStripList[i].getName())
                 i += 1
             endwhile
         endif
@@ -336,11 +340,11 @@ State Text_RemoveStrippable
         configHandler.NoStripList = PapyrusUtil.RemoveForm(configHandler.NoStripList, itemRef)
 
         if configHandler.DebugLogging
-            CoL.Log("Removing " + itemRef.GetName())
+            Log("Removing " + itemRef.GetName())
             int i = 0
-            CoL.Log("Worn Item List contains:")
+            Log("Worn Item List contains:")
             while i < equippedItems.Length
-                CoL.Log(equippedItems[i].getName())
+                Log(equippedItems[i].getName())
                 i += 1
             endwhile
         endif

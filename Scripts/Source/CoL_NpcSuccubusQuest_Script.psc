@@ -12,7 +12,7 @@ EndEvent
 
 State Initialize
     Event OnBeginState()
-        CoL.Log("NPC Quest Initializing")
+        Log("Initializing")
         GotoState("Running")
     EndEvent
 EndState
@@ -23,7 +23,7 @@ State Running
     EndEvent
     
     Function Maintenance()
-        CoL.Log("Running NPC Maintenance")
+        Log("Running Maintenance")
         npcDrainHandler.GoToState("Initialize")
         RegisterForModEvent("CoL_startScene_NPC", "StartSceneNPC")
         RegisterForModEvent("CoL_endScene_NPC", "EndSceneNPC")
@@ -33,7 +33,7 @@ EndState
 
 State Uninitialize
     Event OnBeginState()
-        CoL.Log("Uninitializing NPC Succubus System")
+        Log("Uninitializing")
         UnRegisterForModEvent("CoL_startScene_NPC")
         UnRegisterForModEvent("CoL_endScene_NPC")
         UnRegisterForModEvent("CoL_GameLoad")

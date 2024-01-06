@@ -62,7 +62,7 @@ Form[] function StripEquipment(Actor actorRef)
     Log("No Strip List Contains:")
     int x = 0
     while x < NoStripList.Length
-        CoL.Log("    " + NoStripList[x])
+        Log("    " + NoStripList[x])
         x += 1
     endwhile
     while i >= 0
