@@ -7,17 +7,15 @@ Perk Property healingForm Auto
 Spell Property transformBuffSpell Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    CoL.transformReadiness[3] = false
     bool isTransformed = CoL.isTransformed
     Utility.Wait(1)
     if isTransformed
-        if CoL.lockTransform
-            Debug.Notification("Arousal preventing untransforming")
-            return
-        endif
         UnTransform()
     else
         Transform()
     endif
+    CoL.transformReadiness[3] = true
 EndEvent
 
 Function Log(string msg)
@@ -27,7 +25,7 @@ EndFunction
 function Transform()
     Log("Adding additional powers")
     if CoL.playerRef.HasPerk(healingForm)
-        CoL.playerRef.ModActorValue("HealRate", (configHandler.healRateBoostAmount / 2))
+        CoL.playerRef.AddSpell(CoL.healRateBoost, false)
     endif
     float[] buffs = new float[7]
     int i = 0
@@ -47,7 +45,7 @@ endfunction
 function UnTransform()
     Log("Removing additional powers")
     if CoL.playerRef.HasPerk(healingForm)
-        CoL.playerRef.ModActorValue("HealRate", 0.0 - (configHandler.healRateBoostAmount / 2))
+        CoL.playerRef.RemoveSpell(CoL.healRateBoost)
     endif
     CoL.playerRef.RemoveSpell(transformBuffSpell)
 endfunction

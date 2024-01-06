@@ -7,17 +7,15 @@ Form[] originalEquipment
 Form[] succubusEquipment
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    CoL.transformReadiness[2] = false
     bool isTransformed = CoL.isTransformed
     Utility.Wait(1)
     if isTransformed
-        if CoL.lockTransform
-            Debug.Notification("Arousal preventing untransforming")
-            return
-        endif
         UnTransform()
     else
         Transform()
     endif
+    CoL.transformReadiness[2] = true
 EndEvent
 
 Function Log(string msg)

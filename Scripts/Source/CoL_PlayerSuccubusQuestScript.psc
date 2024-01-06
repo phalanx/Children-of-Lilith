@@ -52,10 +52,17 @@ Spell[] Property vaerminaTraits Auto                ; Spells to provide passives
     Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
     Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
 
+bool Property isTransformed Auto Hidden
+bool Property isTransforming = false Auto Hidden
+; 0: FX
+; 1:Body
+; 2: Equipment
+; 3: Powers
+bool[] Property transformReadiness Auto Hidden    
+
 ; Transform Stuff
     Spell Property transformSpell Auto
-
-    bool Property isTransformed Auto Hidden
+     
     bool Property lockTransform Auto Hidden
     string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
     bool Property succuPresetSaved = false Auto Hidden
@@ -93,6 +100,11 @@ Event OnInit()
     transformBuffs[4] = 0
     transformBuffs[5] = 0
     transformBuffs[6] = 0
+    transformReadiness = new bool[4]
+    transformReadiness[0] = true
+    transformReadiness[1] = true
+    transformReadiness[2] = true
+    transformReadiness[3] = true
 EndEvent
 
 State Initialize
@@ -298,6 +310,9 @@ EndFunction
 bool Function isBusy()
     if isBeastRace()
         return True
+    endif
+    if isTransforming
+        return true
     endif
 	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
 		return True

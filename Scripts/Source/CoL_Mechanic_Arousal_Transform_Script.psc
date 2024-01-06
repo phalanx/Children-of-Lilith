@@ -43,6 +43,7 @@ Function forceTransform()
         return
     endif
     CoL.transformSpell.Cast(Col.playerRef)
+    Utility.Wait(0.5)
     CoL.lockTransform = true
 EndFunction
 

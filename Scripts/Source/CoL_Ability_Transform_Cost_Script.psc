@@ -10,7 +10,7 @@ bool pauseCost
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     if configHandler.transformCost > 0
         Maintenance()
-        RegisterForSingleUpdate(1) ;Initial delay to account for animation
+        RegisterForSingleUpdate(1)
     endif
 EndEvent
 
@@ -38,16 +38,18 @@ EndFunction
 
 Event OnUpdate()
     if configHandler.transformCost > 0
-        if pauseCost
+        if pauseCost || CoL.lockTransform
             return
         endif
-        if energyHandler.playerEnergyCurrent > configHandler.transformCost
+        if energyHandler.playerEnergyCurrent >= configHandler.transformCost
             energyHandler.playerEnergyCurrent -= configHandler.transformCost
             RegisterForSingleUpdate(1)
-        elseif !CoL.lockTransform
+        elseif !CoL.isBusy()
             energyHandler.playerEnergyCurrent = 0
             Debug.Notification("Out of Energy")
             CoL.transformSpell.Cast(CoL.playerRef, CoL.playerRef)
+        else
+            RegisterForSingleUpdate(1)
         endif
     endif
 EndEvent
