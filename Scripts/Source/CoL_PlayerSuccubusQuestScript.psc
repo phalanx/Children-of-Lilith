@@ -277,7 +277,7 @@ Function ScaleEnergyTest()
 EndFunction
 
 Function _Log(string msg)
-    Log("Player Succubus Quest - ")
+    Log("Player Succubus Quest - " + msg)
 EndFunction
 
 Function Log(string msg)
