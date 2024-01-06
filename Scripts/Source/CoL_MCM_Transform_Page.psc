@@ -129,7 +129,7 @@ State Text_saveMortalPreset
     Event OnSelectST(string state_id)
         CoL.mortalRace = CoL.playerRef.GetRace()
         CoL.mortalHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-        Debug.MessageBox(equipmentSaveMsg)
+        Debug.MessageBox(formSavedMsg)
         CoL.SavePreset(CoL.mortalPresetName)
         CoL.mortalPresetSaved = true
     EndEvent
