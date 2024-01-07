@@ -240,7 +240,7 @@ int Function SaveConfig()
         JMap.setInt(jObj, "hungerThreshold", hungerThreshold)
     ; Save Tattoo Fade Settings
         JMap.setInt(jObj, "tattooFade", tattooFade as int)
-        JMap.setInt(jObj, "hungerThreshold", tattooSlot)
+        JMap.setInt(jObj, "tatooSlot", tattooSlot)
     ; Save Power Settings
         JMap.setInt(jObj, "grantCSFPower", grantCSFPower as int)
         JMap.setFlt(jObj, "becomeEtherealCost", becomeEtherealCost)

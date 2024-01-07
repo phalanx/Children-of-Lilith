@@ -35,7 +35,7 @@ Event OnEffectStart(actor akTarget, actor akCaster)
     Utility.Wait(1)
     while !(CoL.transformReadiness[0] && CoL.transformReadiness[1] && CoL.transformReadiness[2] && CoL.transformReadiness[3])
         Log("Not Ready")
-        Utility.Wait(1)
+        Utility.Wait(0.5)
     endwhile
     Log("Ready")
     CoL.isTransformed = !CoL.isTransformed
@@ -56,4 +56,10 @@ Event OnEffectStart(actor akTarget, actor akCaster)
     endif
 
     CoL.isTransforming = false
+    int transformEvent = ModEvent.Create("CoL_Transform")
+    if transformEvent
+        ModEvent.Send(transformEvent)
+    else
+        Log("Couldn't send tranform event")
+    endif
 EndEvent

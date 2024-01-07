@@ -244,28 +244,31 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
 EndFunction
 
 Function energyUpdated(float newEnergy, float maxEnergy)
+    if configHandler.deadlyDrainWhenTransformed && CoL.isTransformed
+        return
+    endif
     float energyPercentage = ((newEnergy / maxEnergy) * 100) 
-        if  configHandler.forcedDrainToDeathMinimum != -1 && energyPercentage <= configHandler.forcedDrainToDeathMinimum 
-            draining = false
-            drainingToDeath = true
-        elseif configHandler.forcedDrainMinimum != -1 && energyPercentage <= configHandler.forcedDrainMinimum
-            draining = true
-            drainingToDeath = false
-        elseif configHandler.forcedDrainToDeathMinimum != -1 && configHandler.forcedDrainMinimum != -1
-            draining = false
-            drainingToDeath = false
-        endif
+    if configHandler.forcedDrainToDeathMinimum != 1 && energyPercentage <= configHandler.forcedDrainToDeathMinimum
+        drainingToDeath = true
+    elseif configHandler.forcedDrainMinimum != -1 && energyPercentage <= configHandler.forcedDrainMinimum
+        drainingToDeath = false
+        draining = true
+    elseif configHandler.forcedDrainToDeathMinimum != -1 && configHandler.forcedDrainMinimum != -1
+        drainingToDeath = false
+        draining = false
+    endif
+    CheckDraining(false)
 EndFunction
 
 Function ProcessTransform()
-    if configHandler.deadlyDrainWhenTransformed
+    if configHandler.deadlyDrainWhenTransformed 
         if CoL.isTransformed
-            draining = false
             drainingToDeath = true
             CheckDraining(true)
         else
-            draining = true
             drainingToDeath = false
+            draining = true
+            energyUpdated(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
         endif
     endif
 EndFunction
