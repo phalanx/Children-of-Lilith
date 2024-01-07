@@ -3,10 +3,9 @@ Scriptname CoL_PlayerSuccubusQuestScript extends Quest
 import PapyrusUtil
 import CharGen
 
-Quest Property playerSuccubusQuest Auto
-CoL_ConfigHandler_Script configHandler
+CoL_ConfigHandler_Script Property configHandler Auto 
 
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
+Spell Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
@@ -38,7 +37,7 @@ Spell[] Property levelOneSpells Auto                ; Spells granted to player a
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
-Spell Property sceneHandlerSpell Auto               ; Spell that contains the animation scene handlers
+Spell[] Property sceneHandlerSpells Auto            ; Spells that contain the animation scene handlers
 Spell Property arousalTransformSpell Auto           ; Spell that contains the arousal transform handler
 Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
@@ -48,70 +47,91 @@ Spell[] Property molagTraits Auto                   ; Spells to provide passives
 Spell[] Property vaerminaTraits Auto                ; Spells to provide passives for Path of Vaermina
 
 ; Togglable Spells
-Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
-Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
-Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
-Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
-
-; Transform Stuff
-Spell Property transformSpell Auto
+    Spell Property becomeEthereal Auto                    ; Spell that contains the stamina boost effect
+    Spell Property healRateBoost Auto                   ; Spell that contains the healrate boost effect
+    Spell Property energyCastingToggleSpell Auto     ; The spell that toggles energy for magicka perk. Used to resolve a race condition
+    Perk Property energyCastingPerk Auto             ; The perk that reduces magicka cost to 0 and gets detected for causing energy drain
 
 bool Property isTransformed Auto Hidden
-bool Property lockTransform Auto Hidden
-string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
-bool Property succuPresetSaved = false Auto Hidden
-Race Property succuRace Auto Hidden
-Race Property succuCureRace Auto Hidden
-ColorForm Property succuHairColor Auto Hidden
-string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
-bool Property mortalPresetSaved = false Auto Hidden
-Race Property mortalRace Auto Hidden
-Race Property mortalCureRace Auto Hidden
-bool isVampire = false
-ColorForm Property mortalHairColor Auto Hidden
-ObjectReference Property succuEquipmentChest Auto
+bool Property isTransforming = false Auto Hidden
+; 0: FX
+; 1:Body
+; 2: Equipment
+; 3: Powers
+bool[] Property transformReadiness Auto Hidden    
 
-; Advancement Settings
-int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
-int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
+; Transform Stuff
+    Spell Property transformSpell Auto
+     
+    bool Property lockTransform Auto Hidden
+    string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
+    bool Property succuPresetSaved = false Auto Hidden
+    Race Property succuRace Auto Hidden
+    Race Property succuCureRace Auto Hidden
+    ColorForm Property succuHairColor Auto Hidden
+    string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
+    bool Property mortalPresetSaved = false Auto Hidden
+    Race Property mortalRace Auto Hidden
+    Race Property mortalCureRace Auto Hidden
+    bool isVampire = false
+    ColorForm Property mortalHairColor Auto Hidden
+    ObjectReference Property succuEquipmentChest Auto
 
-; Transform Buff Perks
-int Property transformHealth = 0 Auto Hidden
-int Property transformStamina = 0 Auto Hidden
-int Property transformMagicka = 0 Auto Hidden
-int Property transformCarryWeight = 0 Auto Hidden
-int Property transformMeleeDamage = 0 Auto Hidden
-int Property transformArmor = 0 Auto Hidden
-int Property transformMagicResist = 0 Auto Hidden
+; Perk Ranks
+    int Property efficientFeeder = 0 Auto Hidden         ; Ranked perk that increases health conversion rate
+    int Property energyStorage = 0 Auto Hidden           ; Ranked perk that increases max energy amount
+
+; Transform Buff Ranks
+; 0 - health
+; 1 - stamina
+; 2 - magicka
+; 3 - carry weight
+; 4 - melee damage
+; 5 - armor
+; 6 - magic resist
+int[] Property transformBuffs Auto Hidden
 
 Event OnInit()
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
+    transformBuffs = new int[7]
+    transformBuffs[0] = 0
+    transformBuffs[1] = 0
+    transformBuffs[2] = 0
+    transformBuffs[3] = 0
+    transformBuffs[4] = 0
+    transformBuffs[5] = 0
+    transformBuffs[6] = 0
+    transformReadiness = new bool[4]
+    transformReadiness[0] = true
+    transformReadiness[1] = true
+    transformReadiness[2] = true
+    transformReadiness[3] = true
 EndEvent
 
 State Initialize
     Event OnBeginState()
-        Log("Initializing")
+        _Log("Initializing")
         mortalPresetName = "CoL_Mortal_Form_" + playerRef.GetDisplayName()
         succuPresetName = "CoL_Succubus_Form_" + playerRef.GetDisplayName()
         isPlayerSuccubus.SetValue(1.0)
+        playerRef.AddSpell(drainHandler, false)
+        GrantSpells(sceneHandlerSpells, false)
         widgetHandler.Initialize()
         levelHandler.GoToState("Initialize")
-        UpdateConfig()
-        configHandler.SendConfigUpdateEvent()
         Maintenance()
+        configHandler.SendConfigUpdateEvent()
         GotoState("Running")
     EndEvent
 EndState
 
 State Running
     Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.toggleDrainToDeathHotKey
+        if keyCode == configHandler.hotkeys[1]
             if configHandler.EnergyScaleTestEnabled
                 ScaleEnergyTest()
             endif
-        elseif keyCode == configHandler.transformHotkey
+        elseif keyCode == configHandler.hotkeys[2]
             transformSpell.Cast(playerRef, playerRef)
-        elseif keyCode == configHandler.csfMenuHotkey
+        elseif keyCode == configHandler.hotkeys[4]
             showperkMenu.Cast(playerRef)
         endif
     EndEvent
@@ -119,9 +139,9 @@ EndState
 
 State SceneRunning
     Event onBeginState()
-        Log("Entered SceneRunning State")
+        _Log("Entered SceneRunning State")
         if configHandler.transformDuringScene
-            Log("Scene Start Transforming")
+            _Log("Scene Start Transforming")
             if !isTransformed
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
@@ -130,25 +150,11 @@ State SceneRunning
         endif
     EndEvent
 
-    Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.toggleDrainHotkey
-            if configHandler.lockDrainType
-                return
-            endif
-            drainHandler.draining = !drainHandler.draining
-        elseif keyCode == configHandler.toggleDrainToDeathHotkey
-            if configHandler.lockDrainType
-                return
-            endif
-            drainHandler.drainingToDeath = !drainHandler.drainingToDeath
-        endif
-    EndEvent
-
     Event onEndState()
-        Log("Exited SceneRunning State")
+        _Log("Exited SceneRunning State")
         if configHandler.transformDuringScene
             if !isTransformed
-                Log("Scene End Untransforming")
+                _Log("Scene End Untransforming")
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
                 transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
@@ -161,7 +167,8 @@ State Uninitialize
     Event OnBeginState()
         widgetHandler.Uninitialize()
         levelHandler.GoToState("Uninitialize")
-        drainHandler.GoToState("Uninitialize")
+        RemoveSpells(sceneHandlerSpells)
+        playerRef.RemoveSpell(drainHandler)
         uninitializeQuest.GoToState("Run")
         UnregisterForEvents()
 
@@ -194,7 +201,7 @@ Function RemoveSpells(Spell[] spellList)
 EndFunction
 
 Function Maintenance()
-    Log("Maintenance running")
+    _Log("Maintenance running")
     if Game.IsPluginInstalled("Devious Devices - Assets.esm")
         ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
     endif
@@ -205,7 +212,6 @@ Function Maintenance()
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
     widgetHandler.Maintenance()
-    drainHandler.GoToState("Initialize")
     levelHandler.GoToState("Running")
     RegisterForEvents()
     Utility.Wait(0.5)
@@ -218,29 +224,27 @@ Function Maintenance()
             endif
         endif
     endif
+    _Log("Maintenance Done")
 EndFunction
 
 Function RegisterForHotkeys()
-    RegisterForKey(configHandler.toggleDrainHotKey)
-    RegisterForKey(configHandler.toggleDrainToDeathHotKey)
-    RegisterForKey(configHandler.transformHotkey)
-    RegisterForKey(configHandler.csfMenuHotkey)
+    RegisterForKey(configHandler.hotkeys[1])
+    RegisterForKey(configHandler.hotkeys[2])
+    RegisterForKey(configHandler.hotkeys[4])
 EndFunction
 
 Function RegisterForEvents()
-    ; Register for Events
     RegisterForHotkeys()
     RegisterForModEvent("CoL_startScene", "StartScene")
     RegisterForModEvent("CoL_endScene", "EndScene")
     RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
-    Log("Registered for Hotkeys and Events")
+    _Log("Registered for Hotkeys and Events")
 EndFunction
 
 Function UnregisterForHotkeys()
-    UnregisterForKey(configHandler.toggleDrainHotKey)
-    UnregisterForKey(configHandler.toggleDrainToDeathHotKey)
-    UnregisterForKey(configHandler.transformHotkey)
-    UnregisterForKey(configHandler.csfMenuHotkey)
+    UnRegisterForKey(configHandler.hotkeys[1])
+    UnRegisterForKey(configHandler.hotkeys[2])
+    UnRegisterForKey(configHandler.hotkeys[4])
 EndFunction
 
 Function UnregisterForEvents()
@@ -248,7 +252,7 @@ Function UnregisterForEvents()
     UnregisterForHotkeys()
     UnregisterForModEvent("CoL_startScene")
     UnregisterForModEvent("CoL_endScene")
-    Log("Unregistered for Hotkeys and Events")
+    _Log("Unregistered for Hotkeys and Events")
 EndFunction
 
 Function StartScene()
@@ -284,6 +288,10 @@ Function ScaleEnergyTest()
     energyHandler.playerEnergyCurrent = currentEnergy
 EndFunction
 
+Function _Log(string msg)
+    Log("Player Succubus Quest - " + msg)
+EndFunction
+
 Function Log(string msg)
     if configHandler.DebugLogging
         Debug.Trace("[CoL] " + msg)
@@ -302,6 +310,9 @@ EndFunction
 bool Function isBusy()
     if isBeastRace()
         return True
+    endif
+    if isTransforming
+        return true
     endif
 	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
 		return True
@@ -324,11 +335,11 @@ Function savePreset(string presetName)
         CharGen.SaveCharacter(presetName)
     endif
     CharGen.SavePreset(presetName)
-    Log("Finished Saving Preset")
+    _Log("Finished Saving Preset")
 EndFunction
 
 Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
-    Log("Transforming Player")
+    _Log("Transforming Player")
     int jmorphs
     if configHandler.transformSavesNiOverrides
         jmorphs = __saveBodyMorphs()
@@ -352,7 +363,7 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
     if iSLCumOverlay.IsInterfaceActive()
         iSLCumOverlay.reapplySCOEffects(playerRef)
     endif
-    Log("Finished Transforming Player")
+    _Log("Finished Transforming Player")
 EndFunction
 
 Function __Transform(string presetName, Race presetRace, ColorForm presetHairColor, Race currentRace)
@@ -403,7 +414,7 @@ function __restoreBodyMorphs(int jmorphs)
         string jkkey = JMap.nextKey(jkeys, previousKey="", endKey="")
         while jkkey != ""
             float v = JMap.getFlt(jkeys, jkkey)
-            Log(jmkey + " | " + jkkey + " :=: " + v)
+            _Log(jmkey + " | " + jkkey + " :=: " + v)
             NiOverride.SetBodyMorph(playerRef, jmkey, jkkey, v)
             restored = true
             jkkey = JMap.nextKey(jkeys, jkkey, endKey="")
@@ -457,18 +468,20 @@ Function UpdateCSFPower()
 EndFunction
 
 Function UpdateArousalThresholds()
+    _Log("Updating Arousal Thresholds")
     if configHandler.transformArousalLowerThreshold == 0 && configHandler.transformArousalUpperThreshold ==0
         if playerRef.HasSpell(arousalTransformSpell)
             playerRef.RemoveSpell(arousalTransformSpell)
         endif
     else
         if !playerRef.HasSpell(arousalTransformSpell)
-            playerRef.AddSpell(arousalTransformSpell)
+            playerRef.AddSpell(arousalTransformSpell, false)
         endif
     endif
 EndFunction
 
 Function UpdateHunger()
+    _Log("Updating Hunger Thresholds")
     if configHandler.hungerEnabled
         playerRef.AddSpell(hungerSpell, false)
     else
@@ -477,7 +490,7 @@ Function UpdateHunger()
 EndFunction
 
 Function UpdateConfig()
-    Log("CoL Recieved Config Update")
+    _Log("Recieved Config Update")
     if isPlayerSuccubus.GetValueInt() != 0
         UnregisterForHotkeys()
         RegisterForHotkeys()
@@ -487,5 +500,6 @@ Function UpdateConfig()
         UpdateCSFPower()
         UpdateArousalThresholds()
         UpdateHunger()
+        widgetHandler.UpdateMeter()
     endif
 EndFunction

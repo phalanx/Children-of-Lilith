@@ -1,16 +1,15 @@
 Scriptname CoL_MCM_Status_Page extends nl_mcm_module
 
 GlobalVariable Property isPlayerSuccubus Auto
-Quest Property playerSuccubusQuest Auto
 Quest Property npcSuccubusQuest Auto
 
 bool profilingEnabled = false
 
-CoL_PlayerSuccubusQuestScript CoL
-CoL_Mechanic_LevelHandler_Script levelHandler
-CoL_ConfigHandler_Script configHandler
-CoL_NpcSuccubusQuest_Script npcQuest
-CoL_Mechanic_EnergyHandler_Script energyHandler
+CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_ConfigHandler_Script Property configHandler Auto
+CoL_NpcSuccubusQuest_Script Property npcQuest Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 Event OnInit()
     RegisterModule("$COL_STATUSPAGE_NAME", 10)
@@ -18,11 +17,6 @@ EndEvent
 
 Event OnPageInit()
     SetModName("$COL_MODNAME")
-    levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
-    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
-    npcQuest = npcSuccubusQuest as CoL_NpcSuccubusQuest_Script
     SetPersistentMCMPreset("persistence/CoL_Settings")
 EndEvent
 
@@ -77,9 +71,7 @@ EndFunction
 
 State Menu_FollowedPath
     Event OnMenuOpenST(string state_id)
-        SetMenuDialogOptions(configHandler.followedPathOptions)
-        SetMenuDialogStartIndex(configHandler.selectedPath)
-        SetMenuDialogDefaultIndex(0)
+        SetMenuDialog(configHandler.followedPathOptions, configHandler.selectedPath, 0)
     EndEvent
 
     Event OnMenuAcceptST(string state_id, int index)

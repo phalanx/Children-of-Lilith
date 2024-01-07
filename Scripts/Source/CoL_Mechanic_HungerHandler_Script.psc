@@ -10,13 +10,17 @@ float lastCheckTime = 0.0
 int starvationStack = 0
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    CoL.Log("Hunger Effect - Started")
+    Log("Started")
     lastCheckTime = CoL.GameDaysPassed.GetValue()
     Maintenance()
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Hunger Handler - " + msg)
+EndFunction
+
 Function Maintenance()
-    CoL.Log("Hunger Effect - Registering for Events")
+    Log("Registering for Events")
     RegisterForModEvent("CoL_GameLoad", "Maintenance")
     RegisterForModEvent("CoL_configUpdated", "UpdateConfig")
     RegisterForSingleUpdate(30.0)
@@ -43,7 +47,7 @@ Event OnUpdate()
             iArousal.ModifyArousal(CoL.playerRef, configHandler.hungerArousalAmount)
         endif
         energyHandler.playerEnergyCurrent = 0
-        CoL.Log("Starvation Stack: " + starvationStack)
+        Log("Starvation Stack: " + starvationStack)
     else
         starvationStack = 0
         CoL.playerRef.RemoveSpell(starvationSpell)
@@ -56,5 +60,5 @@ EndEvent
 Function OnEffectFinish(Actor akTarget, Actor akCaster)
     UnregisterForUpdate()
     CoL.playerRef.RemoveSpell(starvationSpell)
-    CoL.Log("Hunger Effect - Stopped")
+    Log("Stopped")
 EndFunction

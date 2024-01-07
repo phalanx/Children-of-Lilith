@@ -15,7 +15,7 @@ float Property playerEnergyCurrent Hidden
             newVal = 0
         endif
         playerEnergyCurrent_var = newVal
-        CoL.Log("Player Energy is now " + playerEnergyCurrent)
+        Log("Player Energy is now " + playerEnergyCurrent)
         int energyUpdateEvent = ModEvent.Create("CoL_Energy_Updated")
         if (energyUpdateEvent)
             ModEvent.PushFloat(energyUpdateEvent, playerEnergyCurrent_var)
@@ -47,3 +47,7 @@ float Property playerEnergyMax Hidden
         endif
     EndFunction
 EndProperty
+
+Function Log(string msg)
+    CoL.Log("Energy Handler - " + msg)
+EndFunction

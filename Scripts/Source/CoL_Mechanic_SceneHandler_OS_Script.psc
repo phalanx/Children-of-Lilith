@@ -4,7 +4,6 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
 
 bool oStimInstalled = False
@@ -25,12 +24,16 @@ Event OnPlayerLoadGame()
     Maintenance()
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Scene Handler - OStim - " + msg)
+EndFunction
+
 Function Maintenance()
     oStimInstalled = oStim.IsInterfaceActive()
     if !oStimInstalled
         return
     endif
-    CoL.Log("OStim detected")
+   Log("OStim detected")
 
     succubus = GetTargetActor()
     if succubus == None
@@ -44,13 +47,13 @@ EndFunction
 
 State Waiting
     Event OnBeginState()
-        CoL.Log("Registered for OStim Events for " + succubusName)
         RegisterForModEvent("ostim_start", "OS_startScene")
+        Log("Registered for Events for " + succubusName)
     EndEvent
 
     Event OS_startScene(string eventName, string strArg, float numArg, Form sender)
 
-        CoL.Log(succubusName + " involved OStim animation started")
+        Log(succubusName + " involved animation started")
 
         if !oStim.IsActorActive(succubus)
             return
@@ -69,9 +72,10 @@ State Waiting
             sceneStartEvent = ModEvent.Create("CoL_startScene")
         else
             sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+            ModEvent.PushForm(sceneStartEvent, succubus)
         endif
         if sceneStartEvent
-            CoL.Log("Sending Scene Start Event")
+            Log("Sending Scene Start Event")
             ModEvent.Send(sceneStartEvent)
         endif
 
@@ -79,7 +83,7 @@ State Waiting
     EndEvent
 
     Event OnEndState()
-        CoL.Log("OS Handler Exited Wait")
+        Log("Exited Wait")
         UnregisterForModEvent("ostim_start")
     EndEvent
 
@@ -90,7 +94,7 @@ State Running
         RegisterForModEvent("ostim_orgasm", "orgasmHandler")
         RegisterForModEvent("ostim_totalend", "stopScene")
         if succubus == CoL.playerRef && levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(configHandler.newTemptationHotkey)
+            RegisterForKey(configHandler.hotkeys[3])
         endif
     EndEvent
 
@@ -98,11 +102,11 @@ State Running
         Actor victim = sender as Actor
 
         if victim == None || victim == succubus || currentPartners.Find(victim) == -1
-            CoL.Log("Detected orgasm not related to " + succubusName + " scene")
+            Log("Detected orgasm not related to " + succubusName + " scene")
             return
         endif
 
-        CoL.Log("Entered orgasm handler")
+        Log("Entered orgasm handler")
         triggerDrainStart(victim)
         if currentVictims.Find(victim) == -1
             currentVictims = PushActor(currentVictims, victim)
@@ -111,13 +115,14 @@ State Running
     EndEvent
 
     Event stopScene(string eventName, string strArg, float numArg, Form sender)
-        CoL.Log(succubusName + " involved animation ended")
+        Log(succubusName + " involved animation ended")
 
         int sceneEndEvent
         if succubus == CoL.playerRef
             sceneEndEvent = ModEvent.Create("CoL_endScene")
         else
             sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+            ModEvent.PushForm(sceneEndEvent, succubus)
         endif
         if sceneEndEvent
             ModEvent.Send(sceneEndEvent)
@@ -133,8 +138,9 @@ State Running
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.newTemptationHotkey
+        if keyCode == configHandler.hotkeys[3]
             if levelHandler.playerSuccubusLevel.GetValueInt() < 2
+                Debug.Notification("Must be Succubus level 2 to use Temptation")
                 return
             endif
             int i = 0
@@ -148,7 +154,7 @@ State Running
     Event OnEndState()
         UnregisterForModEvent("ostim_orgasm")
         UnregisterForModEvent("ostim_end")
-        UnregisterForKey(configHandler.newTemptationHotkey)
+        UnregisterForKey(configHandler.hotkeys[3])
         currentVictims = new Actor[1]
     EndEvent
 
@@ -156,7 +162,7 @@ EndState
 
 Function triggerDrainStart(Actor victim)
     string actorName = victim.GetLeveledActorBase().GetName()
-    CoL.Log("Trigger drain start for " + actorName)
+    Log("Trigger drain start for " + actorName)
 
     int index = currentPartners.Find(victim)
     float arousal = currentPartnerArousal[index]
@@ -173,15 +179,15 @@ Function triggerDrainStart(Actor victim)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain start event sent")
+        Log("Drain start event sent")
     endif
 EndFunction
 
 Function triggerDrainEnd(Actor victim)
-    CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
+    Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     Utility.Wait(2)
-    if oStim.FullyAnimateRedress() && drainHandler.DrainingToDeath && !oStim.IsSceneAggressiveThemed()
+    if oStim.FullyAnimateRedress() && !oStim.IsSceneAggressiveThemed()
         Utility.Wait(5)
     endif
 
@@ -195,7 +201,7 @@ Function triggerDrainEnd(Actor victim)
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain end event sent")
+        Log("Drain end event sent")
     endif
 EndFunction
 

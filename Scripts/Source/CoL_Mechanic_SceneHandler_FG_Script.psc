@@ -21,14 +21,19 @@ Event OnPlayerLoadGame()
     Maintenance()
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Scene Handler - FG - " + msg)
+EndFunction
+
 Function Maintenance()
-    IsHavingSex = Keyword.GetKeyword("dxIsHavingSex")
-    if IsHavingSex
-        CoL.Log("Flowergirls Detected")
+    if Game.IsPluginInstalled("ChildrenOfLilithFGPatch.esp")
+        IsHavingSex = Keyword.GetKeyword("dxIsHavingSex")
+        Log("Flowergirls Patch Detected")
         succubus = GetTargetActor()
         succubusName = succubus.GetActorBase().GetName()
         GoToState("Waiting")
     endif
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
 EndFunction
 
 State Waiting
@@ -36,7 +41,7 @@ State Waiting
         victim1 = None
         victim2 = None
         RegisterForModEvent("CoL_FG_startScene", "FG_startScene")
-        CoL.Log("Registered for Flower Girl " + succubusName +" Start Event")
+        Log("Registered for Flower Girl " + succubusName +" Start Event")
     EndEvent
 
     Event FG_startScene(Form participant1, Form participant2)
@@ -44,7 +49,7 @@ State Waiting
             return
         endif
 
-        CoL.Log(succubusName + " involved FG animation started")
+        Log(succubusName + " involved FG animation started")
 
         UnRegisterForModEvent("CoL_FG_startScene")
 
@@ -62,6 +67,7 @@ State Waiting
             sceneStartEvent = ModEvent.Create("CoL_startScene")
         else
             sceneStartEvent = ModEvent.Create("CoL_startScene_NPC")
+            ModEvent.PushForm(sceneStartEvent, succubus)
         endif
 
         if sceneStartEvent
@@ -76,7 +82,7 @@ State Running
     Event OnBeginState()
         RegisterForModEvent("CoL_FG_Climax", "climax")
         if succubus == CoL.playerRef && levelHandler.playerSuccubusLevel.GetValueInt() >= 2
-            RegisterForKey(configHandler.newTemptationHotkey)
+            RegisterForKey(configHandler.hotkeys[3])
         endif
     EndEvent
 
@@ -87,7 +93,7 @@ State Running
             endif
         endif
 
-        CoL.Log("Entered orgasm handler")
+        Log("Entered orgasm handler")
 
         UnRegisterForModEvent("CoL_FG_Climax")
 
@@ -101,8 +107,9 @@ State Running
     EndEvent
 
     Event OnKeyDown(int keyCode)
-        if keyCode == configHandler.newTemptationHotkey
+        if keyCode == configHandler.hotkeys[3]
             if levelHandler.playerSuccubusLevel.GetValueInt() < 2
+                Debug.Notification("Must be Succubus level 2 to use Temptation")
                 return
             endif
             if victim1 != None
@@ -115,7 +122,7 @@ State Running
     EndEvent
 
     Event OnEndState()
-        UnregisterForKey(configHandler.newTemptationHotkey)
+        UnregisterForKey(configHandler.hotkeys[3])
     EndEvent
 EndState
 
@@ -131,7 +138,7 @@ State Ending
             endif
         endif
 
-        CoL.Log(succubusName + " involved FG animation ended")
+        Log(succubusName + " involved FG animation ended")
 
         UnregisterForModEvent("CoL_FG_stopScene")
 
@@ -140,6 +147,7 @@ State Ending
             sceneEndEvent = ModEvent.Create("CoL_endScene")
         else
             sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")
+            ModEvent.PushForm(sceneEndEvent, succubus)
         endif
         if sceneEndEvent
             ModEvent.Send(sceneEndEvent)
@@ -161,7 +169,7 @@ Function triggerDrainStart(Actor victim, float arousal)
         return
     endif
     string actorName = victim.GetLeveledActorBase().GetName()
-    CoL.Log("Trigger drain start for " + actorName)
+    Log("Trigger drain start for " + actorName)
     
     int drainHandle 
     if succubus == CoL.playerRef
@@ -175,12 +183,12 @@ Function triggerDrainStart(Actor victim, float arousal)
         ModEvent.PushString(drainHandle, actorName)
         ModEvent.PushFloat(drainHandle, arousal)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain start event sent")
+        Log("Drain start event sent")
     endif
 EndFunction
 
 Function triggerDrainEnd(Actor victim)
-    CoL.Log("Trigger drain end for " + victim.GetBaseObject().GetName())
+    Log("Trigger drain end for " + victim.GetBaseObject().GetName())
 
     int drainHandle 
     if succubus == CoL.playerRef
@@ -192,7 +200,7 @@ Function triggerDrainEnd(Actor victim)
         ModEvent.pushForm(drainHandle, succubus)
         ModEvent.pushForm(drainHandle, victim)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain end event sent")
+        Log("Drain end event sent")
     endif
 EndFunction
 

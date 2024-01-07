@@ -10,11 +10,16 @@ Event OnInit()
     OnGameLoad()
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Interface - Arousal - " + msg)
+EndFunction
+
 Function OnGameLoad()
     Utility.Wait(5)
     if OSL.IsInterfaceActive() || SLAR.IsInterfaceActive() || Toys.IsInterfaceActive()
         GoToState("Installed")
     else
+        Log("No arousal frameworks installed")
         GoToState("")
     endif
 EndFunction
@@ -43,7 +48,7 @@ State Installed
         else
             targetArousal = 0.0
         endif
-        CoL.Log(target.GetDisplayName() + "'s Arousal: " + targetArousal)
+        Log(target.GetDisplayName() + "'s Arousal: " + targetArousal)
         return targetArousal
     EndFunction
 

@@ -10,11 +10,11 @@ State Run
             Start()
             Actor drainVictim = drainVictimAlias.GetReference() as Actor
             if drainVictim != None
-                CoL.Log("Cleaning Victim: " + drainVictim.GetDisplayName())
+                Log("Cleaning Victim: " + drainVictim.GetDisplayName())
                 drainVictim.RemoveFromFaction(CoL.drainVictimFaction)
                 drainVictim.RemoveSpell(CoL.drainHealthSpell)
             else
-                CoL.Log("Finished cleaning victims")
+                Log("Finished cleaning victims")
                 loop = false
             endif
             Stop()
@@ -23,3 +23,6 @@ State Run
     EndEvent
 EndState
 
+Function Log(string msg)
+    CoL.Log("Uninitialize Quest - " + msg)
+EndFunction

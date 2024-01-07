@@ -6,15 +6,19 @@ CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     RegisterForSingleUpdate(10)
-    CoL.Log("Arousal Transform - Started")
+    Log("Started")
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Arousal Transform - " + msg)
+EndFunction
 
 Event OnUpdate()
     float averageArousal = iArousal.GetActorArousal(CoL.playerRef)
 
-    CoL.Log("Average arousal: " + averageArousal)
-    CoL.Log("Upper Threshold: " + configHandler.transformArousalUpperThreshold)
-    CoL.Log("Lower Threshold: " + configHandler.transformArousalLowerThreshold)
+    Log("Average arousal: " + averageArousal)
+    Log("Upper Threshold: " + configHandler.transformArousalUpperThreshold)
+    Log("Lower Threshold: " + configHandler.transformArousalLowerThreshold)
 
     if ((configHandler.transformArousalUpperThreshold != 0 && averageArousal >= configHandler.transformArousalUpperThreshold) || ( configHandler.transformArousalLowerThreshold != 0 && averageArousal < configHandler.transformArousalLowerThreshold ))
         forceTransform()
@@ -27,27 +31,32 @@ EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     CoL.lockTransform = false
-    CoL.Log("Arousal Transform - Stopped")
+    Log("Stopped")
 EndEvent
 
 Function forceTransform()
     if CoL.isBusy()
-        CoL.Log("Transform triggered but player is busy")
-        return
+        Log("Transform triggered but player is busy")
     elseif CoL.isTransformed
-        CoL.Log("Transform triggered but player is already transformed")
-        return
+        Log("Transform triggered but player is already transformed")
+        CoL.lockTransform = true
+    else
+        CoL.transformSpell.Cast(Col.playerRef)
+        Utility.Wait(0.5)
+        CoL.lockTransform = true
     endif
-    CoL.transformSpell.Cast(Col.playerRef)
-    CoL.lockTransform = true
 EndFunction
 
 Function forceUntransform()
+    if !configHandler.arousalUntransform
+        CoL.lockTransform = false
+        return
+    endif
     if CoL.isBusy()
-        CoL.Log("Untransform triggered but player is busy")
+        Log("Untransform triggered but player is busy")
         return
     elseif !CoL.isTransformed
-        CoL.Log("Untransform triggered but player is already untransformed")
+        Log("Untransform triggered but player is already untransformed")
         return
     endif
     CoL.lockTransform = false

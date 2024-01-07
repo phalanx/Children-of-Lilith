@@ -3,26 +3,30 @@ Scriptname CoL_UI_Widget_Script extends Quest
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 iWant_Widgets Property iWidgets Auto
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
 int energyMeter
+int[] lastColor
 
 Function Initialize()
-    CoL.Log("Initializing Widgets")
+    Log("Initializing")
     energyMeter = iWidgets.loadMeter(configHandler.energyMeterXPos, configHandler.energyMeterYPos, True)
     if energyMeter == -1
-        CoL.Log("Failed to load energy meter")
+        Log("Failed to load energy meter")
         return
     endif
+    lastColor = GetColor(0)
     iWidgets.setMeterFillDirection(energyMeter, "both")
     Maintenance()
+EndFunction
+
+Function Log(string msg)
+    CoL.Log("Widget - " + msg)
 EndFunction
 
 Function Maintenance()
     UpdateMeter()
     RegisterForModEvent("iWantWidgetsReset", "OniWantWidgetsReset")
-    RegisterForModEvent("CoL_configUpdated", "UpdateMeter")
     RegisterForModEvent("CoL_Energy_Updated", "UpdateFill")
 EndFunction
 
@@ -31,12 +35,13 @@ Event OniWantWidgetsReset(String eventName, String strArg, Float numArg, Form se
 EndEvent
 
 Function UpdateMeter()
+    Log("Updating Meter")
     if CoL.isPlayerSuccubus.GetValueInt() != 1
         Uninitialize()
     endif
     MoveEnergyMeter()
-    UpdateFill(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
     UpdateColor()
+    UpdateFill(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
     ShowMeter()
 EndFunction
 
@@ -50,12 +55,17 @@ Function UpdateFill(float newEnergy, float maxEnergy)
     iWidgets.setMeterPercent(energyMeter, ((newEnergy / maxEnergy) * 100) as int)
 EndFunction
 
-Function UpdateColor()
-    int[] color = GetColor()
+; drainCodes
+; 0 - Not Draining
+; 1 - Draining
+; 2 - Draining To Death
+Function UpdateColor(int drainCode=-1)
+    int[] color = GetColor(drainCode)
     iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
+    lastColor = color
 EndFunction
 
-int[] Function GetColor()
+int[] Function GetColor(int drainCode=-1)
     int[] disabledColor = new int[6]
         disabledColor[0] = 255
         disabledColor[1] = 255
@@ -77,11 +87,16 @@ int[] Function GetColor()
         deathColor[3] = 255
         deathColor[4] = 51
         deathColor[5] = 51
-    if drainHandler.GetState() == "Draining"
+    if drainCode == 0
+         return disabledColor
+    elseif drainCode == 1
         return drainColor
-    elseif drainHandler.GetState() == "DrainingToDeath"
+    elseif drainCode == 2
         return deathColor
+    elseif lastColor.Length > 0
+        return lastColor
     else
+        Log("Couldn't get widget color")
         return disabledColor
     endif
 endFunction
@@ -108,8 +123,7 @@ Event OnUpdate()
 EndEvent
 
 Function Uninitialize()
-    CoL.Log("Uninitializing Widgets")
+    Log("Uninitializing")
     iWidgets.Destroy(energyMeter)
     UnregisterForModEvent("iWantWidgetsReset")
-    UnregisterForModEvent("CoL_configUpdated")
 EndFunction

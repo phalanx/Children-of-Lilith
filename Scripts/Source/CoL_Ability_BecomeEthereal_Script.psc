@@ -13,9 +13,13 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     endif
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Become Ethereal - " + msg)
+EndFunction
+
 Event OnUpdate()
     if energyHandler.playerEnergyCurrent < configHandler.becomeEtherealCost
-        CoL.Log("Out of Energy")
+        Log("Out of Energy")
         Debug.Notification("Out of Energy: Become Ethereal Disabled")
         energyHandler.playerEnergyCurrent = 0
         CoL.playerRef.RemoveSpell(CoL.becomeEthereal)

@@ -1,14 +1,9 @@
 Scriptname CoL_MCM_Powers_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnInit()
     RegisterModule("$COL_POWERSPAGE_NAME", 30)
-EndEvent
-
-Event OnPageInit()
-    ; configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
 EndEvent
 
 Event OnPageDraw()
@@ -38,10 +33,7 @@ EndEvent
 
 State Slider_becomeEtherealCost
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.becomeEtherealCost)
-        SetSliderDialogDefaultValue(10)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(1, 10)
+        SetSliderDialog(configHandler.becomeEtherealCost, 1, 100, 1, 10)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.becomeEtherealCost = value
@@ -53,10 +45,7 @@ State Slider_becomeEtherealCost
 EndState
 State Slider_healRateBoostCost
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.healRateBoostCost)
-        SetSliderDialogDefaultValue(5)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(1, 10)
+        SetSliderDialog(configHandler.healRateBoostCost, 1, 100, 1, 5)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.healRateBoostCost = value
@@ -68,10 +57,7 @@ State Slider_healRateBoostCost
 EndState
 State Slider_healRateBoostAmount
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.healRateBoostAmount)
-        SetSliderDialogDefaultValue(10.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(1.0, 200.0)
+        SetSliderDialog(configHandler.healRateBoostAmount,1, 200, 1, 10)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.healRateBoostAmount = value
@@ -93,10 +79,7 @@ State Toggle_energyCastingFX
 EndState
 State Slider_energyCastingMult
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.energyCastingMult)
-        SetSliderDialogDefaultValue(1.0)
-        SetSliderDialogInterval(0.1)
-        SetSliderDialogRange(0.1, 10.0)
+        SetSliderDialog(configHandler.energyCastingMult, 0.1, 100, 0.1, 1)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.energyCastingMult = value
@@ -108,9 +91,7 @@ State Slider_energyCastingMult
 EndState
 State Menu_energyCastingConcStyle
     Event OnMenuOpenST(string state_id) 
-        SetMenuDialogOptions(configHandler.energyCastingConcStyleOptions)
-        SetMenuDialogStartIndex(configHandler.energyCastingConcStyle)
-        SetMenuDialogDefaultIndex(1)
+        SetMenuDialog(configHandler.energyCastingConcStyleOptions, configHandler.energyCastingConcStyle, 1)
     EndEvent
     Event OnMenuAcceptST(string state_id, int newVal)
         configHandler.energyCastingConcStyle = newVal
@@ -123,10 +104,7 @@ EndState
 
 State Slider_temptationCost
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.newTemptationCost)
-        SetSliderDialogDefaultValue(10.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.newTemptationCost, 0, 100, 1, 10)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.newTemptationCost = value as int
@@ -138,10 +116,7 @@ State Slider_temptationCost
 EndState
 State Slider_temptationBaseIncrease
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.newTemptationBaseIncrease)
-        SetSliderDialogDefaultValue(1.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.newTemptationBaseIncrease, 0, 100, 1, 1)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.newTemptationBaseIncrease = value as int
@@ -153,10 +128,7 @@ State Slider_temptationBaseIncrease
 EndState
 State Slider_temptationLevelMult
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.newTemptationLevelMult)
-        SetSliderDialogDefaultValue(1.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.newTemptationLevelMult, 0, 100, 1, 1)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.newTemptationLevelMult = value as int
@@ -169,10 +141,7 @@ EndState
 
 State Slider_excitementCost
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.excitementCost)
-        SetSliderDialogDefaultValue(10.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.excitementCost, 0, 100, 1, 10)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.excitementCost = value as int
@@ -184,10 +153,7 @@ State Slider_excitementCost
 EndState
 State Slider_excitementBaseIncrease
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.excitementBaseIncrease)
-        SetSliderDialogDefaultValue(1.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.excitementBaseIncrease, 0, 100, 1, 1)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.excitementBaseIncrease = value as int
@@ -199,10 +165,7 @@ State Slider_excitementBaseIncrease
 EndState
 State Slider_excitementLevelMult
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.excitementLevelMult)
-        SetSliderDialogDefaultValue(1.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.excitementLevelMult, 0, 100, 1, 1)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.excitementLevelMult = value as int
@@ -215,10 +178,7 @@ EndState
 
 State Slider_suppressionCost
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.suppressionCost)
-        SetSliderDialogDefaultValue(10.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.suppressionCost, 0, 100, 1, 10)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.suppressionCost = value as int
@@ -230,10 +190,7 @@ State Slider_suppressionCost
 EndState
 State Slider_suppressionBaseIncrease 
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.suppressionBaseIncrease)
-        SetSliderDialogDefaultValue(1.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.suppressionBaseIncrease, 0, 100, 1, 1)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.suppressionBaseIncrease = value as int
@@ -245,10 +202,7 @@ State Slider_suppressionBaseIncrease
 EndState
 State Slider_suppressionLevelMult
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.suppressionLevelMult)
-        SetSliderDialogDefaultValue(1.0)
-        SetSliderDialogInterval(1.0)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.suppressionLevelMult, 0, 100, 1, 1)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.suppressionLevelMult = value as int

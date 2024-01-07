@@ -13,8 +13,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         energyHandler.playerEnergyCurrent -= configHandler.newTemptationCost
         if iArousal.IsInterfaceActive()
             int arousalIncrease = (configHandler.excitementBaseIncrease + (levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.excitementLevelMult) as int)
-            CoL.Log("Increasing "+ akTarget.GetDisplayName() + "'s Arousal by " + arousalIncrease)
+            Log("Increasing "+ akTarget.GetDisplayName() + "'s Arousal by " + arousalIncrease)
             iArousal.ModifyArousal(akTarget, arousalIncrease)
         endif
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Spell - Temptation - " + msg)
+EndFunction

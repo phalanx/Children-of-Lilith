@@ -13,8 +13,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         energyHandler.playerEnergyCurrent -= configHandler.excitementCost
         if iArousal.IsInterfaceActive()
             int arousalIncrease = (configHandler.excitementBaseIncrease + (levelHandler.playerSuccubusLevel.GetValueInt() * configHandler.excitementLevelMult) as int)
-            CoL.Log("Increasing Player Arousal by " + arousalIncrease)
+            Log("Increasing Player Arousal by " + arousalIncrease)
             iArousal.ModifyArousal(akTarget, arousalIncrease)
         endif
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Spell - Excitement - " + msg)
+EndFunction

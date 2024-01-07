@@ -1,20 +1,13 @@
 Scriptname CoL_MCM_Widgets_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
-CoL_ConfigHandler_Script configHandler
-CoL_UI_Widget_Script widgetHandler
-CoL_PlayerSuccubusQuestScript CoL
+CoL_ConfigHandler_Script Property configHandler Auto
+CoL_UI_Widget_Script Property widgetHandler Auto
+CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 bool meterBarChanged = false
 
 Event OnInit()
     RegisterModule("$COL_WIDGETSPAGE_NAME", 50)
-EndEvent
-
-Event OnPageInit()
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    widgetHandler = playerSuccubusQuest as CoL_UI_Widget_Script
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
 EndEvent
 
 Event OnPageDraw()
@@ -37,10 +30,7 @@ EndEvent
 
 State Slider_energyMeterXPos
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.energyMeterXPos)
-        SetSliderDialogDefaultValue(640)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 1279)
+        SetSliderDialog(configHandler.energyMeterXPos, 0, 1279, 1, 640)
     EndEvent
 
     Event OnSliderAcceptST(string state_id, float value)
@@ -56,10 +46,7 @@ EndState
 
 State Slider_energyMeterYPos
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.energyMeterYPos)
-        SetSliderDialogDefaultValue(700)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 719)
+        SetSliderDialog(configHandler.energyMeterYPos, 0, 719, 1, 700)
     EndEvent
 
     Event OnSliderAcceptST(string state_id, float value)
@@ -75,10 +62,7 @@ EndState
 
 State Slider_energyMeterXScale
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.energyMeterXScale)
-        SetSliderDialogDefaultValue(70)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 200)
+        SetSliderDialog(configHandler.energyMeterXScale, 0, 200, 1, 70)
     EndEvent
 
     Event OnSliderAcceptST(string state_id, float value)
@@ -94,10 +78,7 @@ EndState
 
 State Slider_energyMeterYScale
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.energyMeterYScale)
-        SetSliderDialogDefaultValue(70)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 200)
+        SetSliderDialog(configHandler.energyMeterYScale, 0, 200, 1, 70)
     EndEvent
 
     Event OnSliderAcceptST(string state_id, float value)
@@ -113,10 +94,7 @@ EndState
 
 State Slider_energyMeterAlpha
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.energyMeterAlpha)
-        SetSliderDialogDefaultValue(100)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialog(configHandler.energyMeterAlpha, 0, 100, 1, 100)
     EndEvent
 
     Event OnSliderAcceptST(string state_id, float value)
@@ -144,10 +122,7 @@ EndState
 
 State Slider_energyMeterAutoHideTime
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.autoFadeTime)
-        SetSliderDialogDefaultValue(10)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 30)
+        SetSliderDialog(configHandler.autoFadeTime, 0, 30, 1, 10)
     EndEvent
 
     Event OnSliderAcceptST(string state_id, float value)

@@ -4,43 +4,39 @@ import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
-CoL_Mechanic_DrainHandler_Script Property drainHandler Auto
 
 Faction Property playerWerewolfFaction Auto
 Perk Property attractiveDremora Auto
+
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    CoL.transformReadiness[1] = false
     bool isTransformed = CoL.isTransformed
     Utility.Wait(1)
     if isTransformed
-        if CoL.lockTransform
-            Debug.Notification("Arousal preventing untransforming")
-            return
-        endif
         UnTransform()
     else
         Transform()
     endif
+    CoL.transformReadiness[1] = true
 EndEvent
 
+Function Log(string msg)
+    CoL.Log("Transform - Body - " + msg)
+EndFunction
+
 Function Transform()
-    CoL.Log("Transforming Body")
-    CoL.isTransformed = true
+    Log("Transforming")
+
     CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
     
     if configHandler.transformCrime && !CoL.playerRef.HasPerk(attractiveDremora)
         CoL.playerRef.SetAttackActorOnSight()
         CoL.playerRef.AddToFaction(playerWerewolfFaction)
     endif
-
-    if configHandler.deadlyDrainWhenTransformed
-        drainHandler.drainingToDeath = true
-    endif
-    Utility.Wait(2) ; Wait for other scripts to hopefully be finished
 EndFunction
 
 Function UnTransform()
-    CoL.Log("Untransforming Body")
-    CoL.isTransformed = false
+    Log("Untransforming")
     CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
 
     Utility.Wait(0.5)
@@ -48,11 +44,5 @@ Function UnTransform()
         CoL.playerRef.SetAttackActorOnSight(false)
         CoL.playerRef.RemoveFromFaction(playerWerewolfFaction)
     endif
-
-    if configHandler.deadlyDrainWhenTransformed
-        drainHandler.drainingToDeath = false
-        drainHandler.draining = true
-    endif
-    Utility.Wait(2) ; Wait for other scripts to hopefully be finished
 EndFunction
 

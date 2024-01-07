@@ -1,25 +1,20 @@
 Scriptname CoL_MCM_Hotkeys_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
-CoL_PlayerSuccubusQuestScript CoL
-CoL_ConfigHandler_Script configHandler
+CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
 Event OnInit()
     RegisterModule("$COL_HOTKEYSPAGE_NAME", 40)
 EndEvent
 
-Event OnPageInit()
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-EndEvent
-
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
-    AddKeyMapOptionST("CoLKey___drain", "$COL_HOTKEYSPAGE_TOGGLEDRAIN", configHandler.toggleDrainHotkey)
-    AddKeyMapOptionST("CoLKey___drainToDeath", "$COL_HOTKEYSPAGE_TOGGLEDRAINTODEATH", configHandler.toggleDrainToDeathHotkey)
-    AddKeyMapOptionST("CoLKey___transform", "$COL_HOTKEYSPAGE_TRANSFORM", configHandler.transformHotkey)
-    AddKeyMapOptionST("CoLKey___temptation", "$COL_HOTKEYSPAGE_TEMPTATION", configHandler.newTemptationHotkey)
-    AddKeyMapOptionST("CoLKey___csfMenu", "$COL_HOTKEYSPAGE_CSFMENU", configHandler.csfMenuHotkey)
+    
+    int i = 0
+    while i < configHandler.hotkeys.Length
+        AddKeyMapOptionST("CoLKey___"+i, "$COL_HOTKEYSPAGE_"+i, configHandler.hotkeys[i])
+        i += 1
+    endwhile
 EndEvent
 
 State CoLKey
@@ -27,19 +22,11 @@ State CoLKey
         if keyCode == 1
             keyCode = -1
         endif
-        if state_id == "drain"
-            configHandler.toggleDrainHotkey = keyCode
-        elseif state_id == "drainToDeath"
-            configHandler.toggleDrainToDeathHotkey = keyCode
-        elseif state_id == "transform"
-            configHandler.transformHotkey = keyCode
-        elseif state_id == "temptation"
-            configHandler.newTemptationHotkey = keyCode
-        elseif state_id == "csfMenu"
-            configHandler.csfMenuHotkey = keyCode
-        endif
+        configHandler.hotkeys[state_id as int] = keyCode
         SetKeyMapOptionValueST(keyCode, false, "CoLKey___" + state_id)
-        CoL.UnregisterForHotkeys()
-        CoL.RegisterForHotkeys()
+        configHandler.SendConfigUpdateEvent()
     endEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_HOTKEYSPAGE_"+state_id+"_HELP")
+    EndEvent
 EndState

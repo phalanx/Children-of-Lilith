@@ -1,9 +1,11 @@
 Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
+CoL_PlayerSuccubusQuestScript Property CoL Auto
+CoL_ConfigHandler_Script Property configHandler Auto
 
-CoL_PlayerSuccubusQuestScript CoL
-CoL_ConfigHandler_Script configHandler
+String Property formSavedMsg = "Form Saved" Auto
+String Property formLoadedMsg = "Form Loaded. Exit menu to apply changes" Auto
+String Property equipmentSaveMsg = "Exit menu to select equipment" Auto
 
 bool loadEquipment = false
 Form[] equippedItems
@@ -12,10 +14,9 @@ Event OnInit()
     RegisterModule("$COL_TRANSFORMPAGE_NAME", 70)
 EndEvent
 
-Event OnPageInit()
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
-EndEvent
+Function Log(string msg)
+    CoL.Log("MCM - Transform - " + msg)
+EndFunction
 
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
@@ -46,18 +47,21 @@ Event OnPageDraw()
     AddToggleOptionST("Toggle_TransformMortalCost", "$COL_TRANSFORMPAGE_MORTALCOST", configHandler.transformMortalCost)
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
+    AddToggleOptionST("Toggle_ArousalUntransform", "$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM", configHandler.arousalUntransform)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_BUFFS")
     if CoL.isTransformed
         AddTextOptionST("Text_NoTransformBuffChange", "$COL_TRANSFORMPAGE_CANTCHANGEBUFFS_MSQ", None)
     else
         AddToggleOptionST("Toggle_BuffsEnable", "$COL_TRANSFORMPAGE_BUFFSENABLED", configHandler.transformBuffsEnabled)
-        AddSliderOptionST("Slider_BuffsHealth", "$COL_TRANSFORMPAGE_EXTRAHEALTH", configHandler.transformBaseHealth)
-        AddSliderOptionST("Slider_BuffsMagicka", "$COL_TRANSFORMPAGE_EXTRAMAGICKA", configHandler.transformBaseMagicka)
-        AddSliderOptionST("Slider_BuffsStamina", "$COL_TRANSFORMPAGE_EXTRASTAMINA", configHandler.transformBaseStamina)
-        AddSliderOptionST("Slider_BuffsExtraCarryWeight", "$COL_TRANSFORMPAGE_EXTRACARRYRATE", configHandler.transformBaseCarryWeight)
-        AddSliderOptionST("Slider_BuffsExtraMeleeDamage", "$COL_TRANSFORMPAGE_EXTRAMELEEDAMAGE", configHandler.transformBaseMeleeDamage, "{1}")
-        AddSliderOptionST("Slider_BuffsArmor", "$COL_TRANSFORMPAGE_EXTRAARMOR", configHandler.transformBaseArmor)
-        AddSliderOptionST("Slider_BuffsMagicResist", "$COL_TRANSFORMPAGE_EXTRAMAGICRESIST", configHandler.transformBaseMagicResist)
+        int i = 0
+        while i < configHandler.transformBaseBuffs.Length
+            string formatString = "{0}"
+            if i == 4
+                formatString = "{1}"
+            endif
+            AddSliderOptionST("Slider_BaseBuffs___"+i, "$COL_TRANSFORMPAGE_BASEBUFFS_"+i, configHandler.transformBaseBuffs[i], formatString)
+            i += 1
+        endwhile
     endif
     SetCursorPosition(1)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_EQUIPMENT")
@@ -126,7 +130,7 @@ State Text_saveMortalPreset
     Event OnSelectST(string state_id)
         CoL.mortalRace = CoL.playerRef.GetRace()
         CoL.mortalHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMSAVEDMSG")
+        Debug.MessageBox(formSavedMsg)
         CoL.SavePreset(CoL.mortalPresetName)
         CoL.mortalPresetSaved = true
     EndEvent
@@ -136,7 +140,7 @@ State Text_saveMortalPreset
 EndState
 State Text_LoadMortalPreset
     Event OnSelectST(string state_id)
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMLOADEDMSG")
+        Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
         CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
     EndEvent
@@ -148,7 +152,7 @@ State Text_SaveSuccuPreset
     Event OnSelectST(string state_id)
         CoL.succuRace = CoL.playerRef.GetRace()
         CoL.succuHairColor = CoL.playerRef.GetActorbase().GetHairColor()
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMSAVEDMSG")
+        Debug.MessageBox(formSavedMsg)
         CoL.SavePreset(CoL.succuPresetName)
         CoL.succuPresetSaved = True
     EndEvent
@@ -158,7 +162,7 @@ State Text_SaveSuccuPreset
 EndState
 State Text_LoadSuccuPreset
     Event OnSelectST(string state_id)
-        Debug.MessageBox("$COL_TRANSFORMPAGE_FORMLOADEDMSG")
+        Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
         CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
         ForcePageReset()
@@ -170,7 +174,7 @@ EndState
 State Text_ActivateEquipmentChest
     Event OnSelectST(string state_id)
         CoL.succuEquipmentChest.Activate(CoL.playerRef)
-        Debug.MessageBox("$COL_TRANSFORMPAGE_EQUIPMENTSAVE_MSG")
+        Debug.MessageBox(equipmentSaveMsg)
         Utility.Wait(0.1)
     EndEvent
     Event OnHighlightST(string state_id)
@@ -262,111 +266,22 @@ State Toggle_BuffsEnable
         SetInfoText("$COL_TRANSFORMPAGE_BUFFSENABLED_HELP")
     EndEvent
 EndState
-State Slider_BuffsArmor
+State Slider_BaseBuffs
     Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.transformBaseArmor)
-        SetSliderDialogDefaultValue(0)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 1000)
-    EndEvent
+        SetSliderDialog(configHandler.transformBaseBuffs[state_id as int], 0, 100, 1, 0)
+        if state_id == "4"
+            SetSliderDialogInterval(0.1)
+        endif
+    endEvent
     Event OnSliderAcceptST(string state_id, float value)
-        configHandler.transformBaseArmor = value
-        SetSliderOptionValueST(configHandler.transformBaseArmor)
-    EndEvent
+        configHandler.transformBaseBuffs[state_id as int] = value
+        SetSliderOptionValueST(configHandler.transformBaseBuffs[state_id as int], "{1}")
+    endEvent
     Event OnHighlightST(string state_id)
-        SetInfoText("$COL_TRANSFORMPAGE_EXTRAARMOR_HELP")
+        SetInfoText("$COL_TRANSFORMPAGE_BASEBUFFS_" + state_id + "_HELP")
     EndEvent
 EndState
-State Slider_BuffsMagicResist
-    Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.transformBaseMagicResist)
-        SetSliderDialogDefaultValue(0)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 100)
-    EndEvent
-    Event OnSliderAcceptST(string state_id, float value)
-        configHandler.transformBaseMagicResist = value
-        SetSliderOptionValueST(configHandler.transformBaseMagicResist)
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_TRANSFORMPAGE_EXTRAMAGICRESIST_HELP")
-    EndEvent
-EndState
-State Slider_BuffsHealth
-    Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.transformBaseHealth)
-        SetSliderDialogDefaultValue(0)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 1000)
-    EndEvent
-    Event OnSliderAcceptST(string state_id, float value)
-        configHandler.transformBaseHealth = value
-        SetSliderOptionValueST(configHandler.transformBaseHealth)
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_TRANSFORMPAGE_EXTRAHEALTH_HELP")
-    EndEvent
-EndState
-State Slider_BuffsMagicka
-    Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.transformBaseMagicka)
-        SetSliderDialogDefaultValue(0)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 1000)
-    EndEvent
-    Event OnSliderAcceptST(string state_id, float value)
-        configHandler.transformBaseMagicka = value
-        SetSliderOptionValueST(configHandler.transformBaseMagicka)
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_TRANSFORMPAGE_EXTRAMAGICKA_HELP")
-    EndEvent
-EndState
-State Slider_BuffsStamina
-    Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.transformBaseStamina)
-        SetSliderDialogDefaultValue(0)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 1000)
-    EndEvent
-    Event OnSliderAcceptST(string state_id, float value)
-        configHandler.transformBaseStamina = value
-        SetSliderOptionValueST(configHandler.transformBaseStamina)
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_TRANSFORMPAGE_EXTRASTAMINA_HELP")
-    EndEvent
-EndState
-State Slider_BuffsExtraMeleeDamage
-    Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.transformBaseMeleeDamage)
-        SetSliderDialogDefaultValue(0)
-        SetSliderDialogInterval(0.1)
-        SetSliderDialogRange(0, 100)
-    EndEvent
-    Event OnSliderAcceptST(string state_id, float value)
-        configHandler.transformBaseMeleeDamage= value
-        SetSliderOptionValueST(configHandler.transformBaseMeleeDamage, "{1}")
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_TRANSFORMPAGE_EXTRAMELEEDAMAGE_HELP")
-    EndEvent
-EndState
-State Slider_BuffsExtraCarryWeight
-    Event OnSliderOpenST(string state_id)
-        SetSliderDialogStartValue(configHandler.transformBaseCarryWeight)
-        SetSliderDialogDefaultValue(0)
-        SetSliderDialogInterval(1)
-        SetSliderDialogRange(0, 1000)
-    EndEvent
-    Event OnSliderAcceptST(string state_id, float value)
-        configHandler.transformBaseCarryWeight = value
-        SetSliderOptionValueST(configHandler.transformBaseCarryWeight)
-    EndEvent
-    Event OnHighlightST(string state_id)
-        SetInfoText("$COL_TRANSFORMPAGE_EXTRACARRYRATE_HELP")
-    EndEvent
-EndState
+
 State Slider_ArousalUpperThreshold
     Event OnSliderOpenST(string state_id)
         SetSliderDialogStartValue(configHandler.transformArousalUpperThreshold)
@@ -400,6 +315,15 @@ State Slider_ArousalLowerThreshold
     EndEvent
 
 EndState
+State Toggle_ArousalUntransform
+    Event OnSelectST(string state_id)
+        configHandler.arousalUntransform = !configHandler.arousalUntransform
+        SetToggleOptionValueST(configHandler.arousalUntransform)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM_HELP")
+    EndEvent
+EndState
 State Text_AddStrippable
     Event OnSelectST(string state_id)
         int index = state_id as int
@@ -407,11 +331,11 @@ State Text_AddStrippable
         configHandler.NoStripList = PapyrusUtil.PushForm(configHandler.NoStripList, itemRef)
 
         if configHandler.DebugLogging
-            CoL.Log("Adding " + itemRef.getName())
+            Log("Adding " + itemRef.getName())
             int i = 0
-            CoL.Log("Don't strip list contains:")
+            Log("Don't strip list contains:")
             while i < configHandler.NoStripList.Length
-                CoL.Log(configHandler.NoStripList[i].getName())
+                Log(configHandler.NoStripList[i].getName())
                 i += 1
             endwhile
         endif
@@ -426,11 +350,11 @@ State Text_RemoveStrippable
         configHandler.NoStripList = PapyrusUtil.RemoveForm(configHandler.NoStripList, itemRef)
 
         if configHandler.DebugLogging
-            CoL.Log("Removing " + itemRef.GetName())
+            Log("Removing " + itemRef.GetName())
             int i = 0
-            CoL.Log("Worn Item List contains:")
+            Log("Worn Item List contains:")
             while i < equippedItems.Length
-                CoL.Log(equippedItems[i].getName())
+                Log(equippedItems[i].getName())
                 i += 1
             endwhile
         endif

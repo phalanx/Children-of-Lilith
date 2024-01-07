@@ -11,15 +11,11 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Float yoff = forward * math.cos(CoL.PlayerRef.getAngleZ())
 	draineeRef = game.FindClosestActor(CoL.PlayerRef.GetPositionX() + xoff, CoL.PlayerRef.GetPositionY() + yoff, CoL.PlayerRef.GetPositionZ(), forward)
 	if !draineeRef || !draineeRef.GetLeveledActorBase().GetRace().HasKeyword(ActorTypeNPC) || draineeRef == CoL.playerRef || draineeRef.IsOnMount() || draineeRef.IsSneaking() || draineeRef.IsChild() || draineeRef.IsDead()
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] No victim detected")
-        endif
+        Log("No victim detected")
         draineeRef = None
         return
     else
-        if CoL.DebugLogging
-            Debug.Trace("[CoL] Trigger drain start for " + draineeRef.GetLeveledActorBase().GetName())
-        endif
+        Log("Trigger drain start for " + draineeRef.GetLeveledActorBase().GetName())
         int sceneStartEvent = ModEvent.Create("CoL_startScene")
         ModEvent.Send(sceneStartEvent)
     endif
@@ -31,7 +27,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     endif
     int sceneEndEvent = ModEvent.Create("CoL_endScene")
     ModEvent.Send(sceneEndEvent)
-    CoL.Log("Trigger drain end for " + draineeRef.GetBaseObject().GetName())
+    Log("Trigger drain end for " + draineeRef.GetBaseObject().GetName())
     int drainHandle = ModEvent.Create("CoL_startDrain")
     if drainHandle
         ModEvent.pushForm(drainHandle, akCaster)
@@ -39,7 +35,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
         ModEvent.PushString(drainHandle, draineeRef.GetLeveledActorBase().GetName())
         ModEvent.PushFloat(drainHandle, 0.0)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain start event sent")
+        Log("Drain start event sent")
     endif
     Utility.Wait(0.5)
     drainHandle = ModEvent.Create("CoL_endDrain")
@@ -47,6 +43,10 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
         ModEvent.pushForm(drainHandle, akCaster)
         ModEvent.pushForm(drainHandle, draineeRef)
         ModEvent.Send(drainHandle)
-        CoL.Log("Drain end event sent")
+        Log("Drain end event sent")
     endif
 EndEvent
+
+Function Log(string msg)
+    CoL.Log("Scene Handler - ASK - " + msg)
+EndFunction

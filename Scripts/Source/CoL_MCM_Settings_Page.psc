@@ -1,37 +1,19 @@
 Scriptname CoL_MCM_Settings_Page extends nl_mcm_module
 
-Quest Property playerSuccubusQuest Auto
-
-CoL_PlayerSuccubusQuestScript CoL
-CoL_ConfigHandler_Script configHandler
-CoL_Mechanic_DrainHandler_Script drainHandler
-CoL_Mechanic_LevelHandler_Script levelHandler
-CoL_Mechanic_EnergyHandler_Script energyHandler
+CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
+CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 Event OnInit()
     RegisterModule("$COL_SETTINGSPAGE_NAME", 20)
 EndEvent
 
-Event OnPageInit()
-    CoL = playerSuccubusQuest as CoL_PlayerSuccubusQuestScript
-    configHandler = playerSuccubusQuest as CoL_ConfigHandler_Script
-    drainHandler = playerSuccubusQuest as CoL_Mechanic_DrainHandler_Script
-    levelHandler = playerSuccubusQuest as CoL_Mechanic_LevelHandler_Script
-    energyHandler = playerSuccubusQuest as CoL_Mechanic_EnergyHandler_Script
-EndEvent
-
 Event OnPageDraw()
     SetCursorFillMode(TOP_TO_BOTTOM)
-    AddSliderOptionST("Slider_maxEnergyBase", "$COL_SETTINGSPAGE_MAXENERGYBASE", configHandler.baseMaxEnergy, "{0}")
+    AddSliderOptionST("Slider_baseMaxEnergy", "$COL_SETTINGSPAGE_MAXENERGYBASE", configHandler.baseMaxEnergy, "{0}")
     ; Player Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_PLAYERDRAINSETTINGS")
-        if configHandler.lockDrainType
-            AddToggleOptionST("Toggle_Drain", "$COL_SETTINGSPAGE_DRAINTOGGLE", drainHandler.draining, OPTION_FLAG_DISABLED)
-            AddToggleOptionST("Toggle_DrainToDeath", "$COL_SETTINGSPAGE_DRAINTODEATHTOGGLE", drainHandler.drainingToDeath, OPTION_FLAG_DISABLED)
-        else
-            AddToggleOptionST("Toggle_Drain", "$COL_SETTINGSPAGE_DRAINTOGGLE", drainHandler.draining)
-            AddToggleOptionST("Toggle_DrainToDeath", "$COL_SETTINGSPAGE_DRAINTODEATHTOGGLE", drainHandler.drainingToDeath)
-        endif
         AddToggleOptionST("Toggle_lockDrain", "$COL_SETTINGSPAGE_LOCKDRAINTYPETOGGLE", configHandler.lockDrainType)
         AddToggleOptionST("Toggle_deadlyWhenTransformed", "$COL_SETTINGSPAGE_DEADLYDRAINWHILETRANSFORMED", configHandler.deadlyDrainWhenTransformed)
         AddToggleOptionST("Toggle_drainVerbosity", "$COL_SETTINGSPAGE_DRAINVERBOSITY", configHandler.drainNotificationsEnabled)
@@ -46,7 +28,7 @@ Event OnPageDraw()
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
         int i = 0
-        while i <=4
+        while i <= 4
             AddSliderOptionST("Slider_npcRelationshipDeathChance___" + i, "$COL_SETTINGSPAGE_NPCRELATIONSHIODEATHCHANCE_" + i, configHandler.npcRelationshipDeathChance[i], "{1}")
             i += 1
         endwhile
@@ -64,13 +46,15 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_xpPower", "$COL_SETTINGSPAGE_XPPOWER", configHandler.xpPower, "{2}")
         AddSliderOptionST("Slider_levelsForPerk", "$COL_SETTINGSPAGE_LEVELSFORPERK", configHandler.levelsForPerk)
         AddSliderOptionST("Slider_perksRecieved", "$COL_SETTINGSPAGE_PERKSRECIEVED", configHandler.perkPointsRecieved)
-        AddSliderOptionST("Slider_transformHealthPerRank", "$COL_SETTINGSPAGE_TRANSFORMHEALTHPERRANK", configHandler.transformHealthPerRank)
-        AddSliderOptionST("Slider_transformStaminaPerRank", "$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK", configHandler.transformStaminaPerRank)
-        AddSliderOptionST("Slider_transformMagickaPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK", configHandler.transformMagickaPerRank)
-        AddSliderOptionST("Slider_transformCarryWeightPerRank", "$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK", configHandler.transformCarryWeightPerRank)
-        AddSliderOptionST("Slider_transformMeleeDamagePerRank", "$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK", configHandler.transformMeleeDamagePerRank, "{2}")
-        AddSliderOptionST("Slider_transformArmorPerRank", "$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK", configHandler.transformArmorPerRank)
-        AddSliderOptionST("Slider_transformMagicResistPerRank", "$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK", configHandler.transformMagicResistPerRank)
+        i = 0
+        while i < configHandler.transformRankEffects.Length
+            string formatString = "{0}"
+            if i == 4
+                formatString = "{1}"
+            endif
+            AddSliderOptionST("Slider_transformRankEffects___"+i, "$COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+i, configHandler.transformRankEffects[i], formatString)
+            i += 1
+        endwhile
     ; Hunger Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_HUNGER")
         AddToggleOptionST("Toggle_hunger", "$COL_SETTINGSPAGE_HUNGER", configHandler.hungerEnabled)
@@ -84,26 +68,6 @@ Event OnPageDraw()
 EndEvent
 
 ; Drain States
-    State Toggle_Drain
-        Event OnSelectST(string state_id)
-            drainHandler.draining = !drainHandler.draining
-            SetToggleOptionValueST(drainHandler.draining)
-        EndEvent
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_DRAINTOGGLE_HELP")
-        EndEvent
-    EndState
-
-    State Toggle_DrainToDeath
-        Event OnSelectST(string state_id)
-            drainHandler.drainingToDeath = !drainHandler.drainingToDeath
-            SetToggleOptionValueST(drainHandler.drainingToDeath)
-        EndEvent
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_DRAINTODEATHTOGGLE_HELP")
-        EndEvent
-    EndState
-
     State Toggle_lockDrain
         Event OnSelectST(string state_id)
             configHandler.lockDrainType = !configHandler.lockDrainType
@@ -138,10 +102,7 @@ EndEvent
 
     State Slider_forcedDrainMinimum
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.forcedDrainMinimum)
-            SetSliderDialogDefaultValue(0)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(-1, 100)
+            SetSliderDialog(configHandler.forcedDrainMinimum, -1, 100, 1, 0)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainMinimum = value
@@ -155,10 +116,7 @@ EndEvent
 
     State Slider_forcedDrainToDeathMinimum
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.forcedDrainToDeathMinimum)
-            SetSliderDialogDefaultValue(0)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(-1, 100)
+            SetSliderDialog(configHandler.forcedDrainToDeathMinimum, -1, 100, 1, 0)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.forcedDrainToDeathMinimum = value
@@ -172,10 +130,7 @@ EndEvent
 
     State Slider_drainDuration
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.drainDurationInGameTime)
-            SetSliderDialogDefaultValue(24.0)
-            SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(1.0, 72.0)
+            SetSliderDialog(configHandler.drainDurationInGameTime, 1, 72, 1, 24)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -190,10 +145,7 @@ EndEvent
 
     State Slider_healthDrainMulti
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.healthDrainMult)
-            SetSliderDialogDefaultValue(0.2)
-            SetSliderDialogInterval(0.01)
-            SetSliderDialogRange(0.0, 0.99)
+            SetSliderDialog(configHandler.healthDrainMult, 0, 0.99, 0.01, 0.20)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -208,10 +160,7 @@ EndEvent
 
     State Slider_drainArousalMulti
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.drainArousalMult)
-            SetSliderDialogDefaultValue(0.1)
-            SetSliderDialogInterval(0.1)
-            SetSliderDialogRange(0.0, 1.0)
+            SetSliderDialog(configHandler.drainArousalMult, 0, 1, 0.1, 0.1)
         EndEvent
 
         Event OnSliderAcceptST(string state_id,float value)
@@ -224,12 +173,9 @@ EndEvent
         EndEvent
     EndState
 
-    State Slider_maxEnergyBase
+    State Slider_baseMaxEnergy
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.baseMaxEnergy)
-            SetSliderDialogDefaultValue(100)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 1000)
+            SetSliderDialog(configHandler.baseMaxEnergy, 1, 1000, 1, 100)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -245,10 +191,7 @@ EndEvent
 
     State Slider_energyConversionRate
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.energyConversionRate)
-            SetSliderDialogDefaultValue(0.5)
-            SetSliderDialogInterval(0.1)
-            SetSliderDialogRange(0.0, 1.0)
+            SetSliderDialog(configHandler.energyConversionRate, 0, 1, 0.1, 0.5)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.energyConversionRate = value
@@ -262,10 +205,7 @@ EndEvent
     
     State Slider_minHealthPercent
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.minHealthPercent)
-            SetSliderDialogDefaultValue(0.11)
-            SetSliderDialogInterval(0.01)
-            SetSliderDialogRange(0.0, 1.0)
+            SetSliderDialog(configHandler.minHealthPercent, 0, 1, 0.01, 0.10)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.minHealthPercent = value
@@ -288,10 +228,7 @@ EndEvent
 
     State Slider_npcRelationshipDeathChance
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.npcRelationshipDeathChance[state_id as int])
-            SetSliderDialogDefaultValue(0)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(0, 100)
+            SetSliderDialog(configHandler.npcRelationshipDeathChance[state_id as int], 0, 100, 1, 0)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.npcRelationshipDeathChance[state_id as int] = value as int
@@ -301,13 +238,10 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_NPCRELATIONSHIPDEATHCHANCE_HELP")
         EndEvent
     EndState
-; Levelling States
+; Leveling States
     State Slider_xpPerDrain
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.xpPerDrain)
-            SetSliderDialogDefaultValue(0.0)
-            SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(0.0, 100.0)
+            SetSliderDialog(configHandler.xpPerDrain, 0, 100, 1, 0)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -321,15 +255,12 @@ EndEvent
     EndState
     State Slider_xpDrainMult
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.xpDrainMult)
-            SetSliderDialogDefaultValue(0.5)
-            SetSliderDialogInterval(0.1)
-            SetSliderDialogRange(0.0, 100.0)
+            SetSliderDialog(configHandler.xpDrainMult, 0, 100, 0.1, 0.5)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.xpDrainMult = value
-            SetSliderOptionValueST(configHandler.xpDrainMult)
+            SetSliderOptionValueST(configHandler.xpDrainMult, "{1}")
         EndEvent
 
         Event OnHighlightST(string state_id)
@@ -338,10 +269,7 @@ EndEvent
     EndState
     State Slider_xpDeathMult
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.drainToDeathXPMult)
-            SetSliderDialogDefaultValue(2.0)
-            SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(1.0, 100.0)
+            SetSliderDialog(configHandler.drainToDeathXPMult, 1, 100, 1, 2)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -355,10 +283,7 @@ EndEvent
     EndState
     State Slider_xpConstant
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.xpConstant)
-            SetSliderDialogDefaultValue(0.75)
-            SetSliderDialogInterval(0.01)
-            SetSliderDialogRange(0.01, 5.0)
+            SetSliderDialog(configHandler.xpConstant, 0.01, 5, 0.01, 0.3)
         EndEvent
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.xpConstant = value
@@ -371,10 +296,7 @@ EndEvent
     EndState
     State Slider_xpPower
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.xpPower)
-            SetSliderDialogDefaultValue(2.0)
-            SetSliderDialogInterval(0.01)
-            SetSliderDialogRange(0.01, 5.0)
+            SetSliderDialog(configHandler.xpPower, 0.01, 5, 0.01, 2)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -389,10 +311,7 @@ EndEvent
     EndState
     State Slider_levelsForPerk
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.levelsForPerk)
-            SetSliderDialogDefaultValue(1)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 10)
+            SetSliderDialog(configHandler.levelsForPerk, 1, 10, 1, 1)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -406,10 +325,7 @@ EndEvent
     EndState
     State Slider_perksRecieved
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.perkPointsRecieved)
-            SetSliderDialogDefaultValue(1)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 10)
+            SetSliderDialog(configHandler.perkPointsRecieved, 1, 10, 1, 1)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -421,124 +337,35 @@ EndEvent
             SetInfoText("$COL_SETTINGSPAGE_PERKSRECIEVED_HELP")
         EndEvent
     EndState
-
-    State Slider_transformHealthPerRank
+    State Slider_transformRankEffects
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformHealthPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
+            SetSliderDialogStartValue(configHandler.transformRankEffects[state_id as int])
+            if state_id == "4" ; Melee damage bonus
+                SetSliderDialogDefaultValue(0.1)
+                SetSliderDialogInterval(0.1)
+                SetSliderDialogRange(0.1, 10)
+            elseif state_id == "6" ; Magic resist bonus
+                SetSliderDialogDefaultValue(1)
+                SetSliderDialogInterval(1)
+                SetSliderDialogRange(1, 100)
+            else
+                SetSliderDialogDefaultValue(10)
+                SetSliderDialogInterval(1)
+                SetSliderDialogRange(1, 100)
+            endif
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformHealthPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformHealthPerRank)
+            configHandler.transformRankEffects[state_id as int] = value
+            if state_id == "4" ; Melee damage Bonus
+                SetSliderOptionValueST(configHandler.transformRankEffects[state_id as int], "{1}")
+            else
+                SetSliderOptionValueST(configHandler.transformRankEffects[state_id as int])
+            endif
         EndEvent
 
         Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMHEALTHPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformStaminaPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformStaminaPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformStaminaPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformStaminaPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMSTAMINAPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformMagickaPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformMagickaPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformMagickaPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformMagickaPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMAGICKAPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformCarryWeightPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformCarryWeightPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformCarryWeightPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformCarryWeightPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMCARRYWEIGHTPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformMeleeDamagePerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformMeleeDamagePerRank)
-            SetSliderDialogDefaultValue(0.1)
-            SetSliderDialogInterval(0.1)
-            SetSliderDialogRange(0.1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformMeleeDamagePerRank = value as int
-            SetSliderOptionValueST(configHandler.transformMeleeDamagePerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMELEEDAMAGEPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformArmorPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformArmorPerRank)
-            SetSliderDialogDefaultValue(10)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformArmorPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformArmorPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMARMORPERRANK_HELP")
-        EndEvent
-    EndState
-    State Slider_transformMagicResistPerRank
-        Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.transformMagicResistPerRank)
-            SetSliderDialogDefaultValue(1)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 100)
-        EndEvent
-
-        Event OnSliderAcceptST(string state_id, float value)
-            configHandler.transformMagicResistPerRank = value as int
-            SetSliderOptionValueST(configHandler.transformMagicResistPerRank)
-        EndEvent
-
-        Event OnHighlightST(string state_id)
-            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMMAGICRESISTHPERRANK_HELP")
+            SetInfoText("$COL_SETTINGSPAGE_TRANSFORMRANKEFFECTS_"+state_id+"_HELP")
         EndEvent
     EndState
 ; Hunger States
@@ -556,10 +383,7 @@ EndEvent
 
     State Slider_hungerAmount
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.dailyHungerAmount)
-            SetSliderDialogDefaultValue(9.0)
-            SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(-1.0, 100.0)
+            SetSliderDialog(configHandler.dailyHungerAmount, -1, 100, 1, 10)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -585,10 +409,7 @@ EndEvent
 
     State Slider_hungerThreshold
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.hungerThreshold as float)
-            SetSliderDialogDefaultValue(9.0)
-            SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(-1.0, 100.0)
+            SetSliderDialog(configHandler.hungerThreshold, -1, 100, 1, 10)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -614,10 +435,7 @@ EndEvent
 
     State Slider_hungerDamageAmount
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.hungerDamageAmount)
-            SetSliderDialogDefaultValue(4.0)
-            SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(-1.0, 100.0)
+            SetSliderDialog(configHandler.hungerDamageAmount, -1, 100, 1, 5)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -643,10 +461,7 @@ EndEvent
 
     State Slider_hungerArousalAmount
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.hungerArousalAmount)
-            SetSliderDialogDefaultValue(4.0)
-            SetSliderDialogInterval(1.0)
-            SetSliderDialogRange(-1.0, 100.0)
+            SetSliderDialog(configHandler.hungerArousalAmount, -1, 100, 1, 5)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
@@ -673,10 +488,7 @@ EndEvent
 
     State Slider_tattooSlot
         Event OnSliderOpenST(string state_id)
-            SetSliderDialogStartValue(configHandler.tattooSlot)
-            SetSliderDialogDefaultValue(6)
-            SetSliderDialogInterval(1)
-            SetSliderDialogRange(1, 6)
+            SetSliderDialog(configHandler.tattooSlot, 1, 6, 1, 6)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
