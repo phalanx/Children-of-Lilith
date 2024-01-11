@@ -1,0 +1,34 @@
+FormKey: 000801:Lap Sitting.esp
+EditorID: HSF_LapSitEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: hsf_sitonlapscript
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: F
+      Object: 000803:Lap Sitting.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: LapSitNPC
+      Object: 00080A:Lap Sitting.esp
+      Alias: 0
+  - Name: CoL_Trigger_ILS_Script
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+Name:
+  TargetLanguage: English
+  Value: Lap Sit Effect
+Flags:
+- PowerAffectsDuration
+SpellmakingCastingTime: 1
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  Type: Script
+CastType: FireAndForget
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

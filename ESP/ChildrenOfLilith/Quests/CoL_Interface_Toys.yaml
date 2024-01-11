@@ -1,0 +1,13 @@
+FormKey: 2221A7:ChildrenOfLilith.esp
+EditorID: CoL_Interface_Toys
+VirtualMachineAdapter:
+  Scripts:
+  - Name: col_interface_toys_script
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce

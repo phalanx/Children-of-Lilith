@@ -1,0 +1,137 @@
+FormKey: 09E1AE:ChildrenOfLilith.esp
+EditorID: CoL_MCM_Quest
+VirtualMachineAdapter:
+  Scripts:
+  - Name: CoL_MCM_Transform_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: CoL_MCM_Advancements_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: perkPointsAvailable
+      Object: 2A7C35:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectListProperty
+      Name: singleRankPerks
+      Objects:
+      - Name: ''
+        Object: 2AA3CF:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2B9168:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2BB902:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2BE09C:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 323831:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2C0836:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: CoL_MCM_Status_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: npcQuest
+      Object: 213410:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: npcSuccubusQuest
+      Object: 213410:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: isPlayerSuccubus
+      Object: 000D63:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: levelHandler
+      Object: 33C42F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: nl_mcm
+  - Name: CoL_MCM_Settings_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: levelHandler
+      Object: 33C42F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: CoL_MCM_Hotkeys_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: CoL_MCM_Widgets_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: widgetHandler
+      Object: 341362:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: CoL_MCM_Compatibilities_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: Toys_Interfaces
+      Object: 2221A7:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: OSL_Interfaces
+      Object: 2473C6:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: SexLab_Interfaces
+      Object: 1A1684:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: SlaveTats_Interfaces
+      Object: 249B60:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: oStim_Interfaces
+      Object: 19781F:ChildrenOfLilith.esp
+  - Name: CoL_MCM_Powers_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+  FileName: ''
+  Aliases:
+  - Property:
+      Name: ''
+      Object: 09E1AE:ChildrenOfLilith.esp
+      Alias: 0
+    Scripts:
+    - Name: nl_mcm_playerloadalias
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Aliases:
+- Name: playerRef
+  Flags: []
+  ForcedReference: 000014:Skyrim.esm
+  VoiceTypes: Null

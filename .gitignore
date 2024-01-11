@@ -5,3 +5,8 @@ meta.ini
 *.jpg
 *.jpeg
 *.xcf
+ChildrenOfLilith.esp
+Handlers/ASkyrimKiss/ChildrenOfLilithASKPatch.esp
+Handlers/FlowerGirls/ChildrenOfLilithFGPatch.esp
+Handlers/ImmersiveLapSitting/CoL_ILS_Patch.esp
+Compatibility/ChildrenOfLilithVancianPatch.esp

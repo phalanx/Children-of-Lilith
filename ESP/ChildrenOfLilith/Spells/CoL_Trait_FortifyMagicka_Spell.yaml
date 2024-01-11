@@ -1,0 +1,14 @@
+FormKey: 2270DE:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifyMagicka_Spell
+Name:
+  TargetLanguage: English
+  Value: Path of Sanguine
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: On the Path of Sanguine you have +25 Magicka
+Type: Ability
+Effects:
+- BaseEffect: 2270DB:ChildrenOfLilith.esp
+  Data:
+    Magnitude: 25

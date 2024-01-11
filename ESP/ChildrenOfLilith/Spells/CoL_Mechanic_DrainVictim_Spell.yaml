@@ -1,0 +1,16 @@
+FormKey: 00433B:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_DrainVictim_Spell
+Name:
+  TargetLanguage: English
+  Value: Drained By Succubus
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+Flags:
+- IgnoreResistance
+- NoAbsorbOrReflect
+Type: Ability
+Effects:
+- BaseEffect: 00433C:ChildrenOfLilith.esp
+  Data: {}

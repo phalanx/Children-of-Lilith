@@ -76,8 +76,9 @@
         </ZipFile>
     </ZipFiles>
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
-    <PostBuildEvent Description="Post-Build Remove BSA Files" UseInBuild="true">
+    <PostBuildEvent Description="Post-Build Tasks" UseInBuild="true">
         <Command>del /s /q /f *.bsa</Command>
         <Command>translation.sh remove</Command>
+        <Command>spriggit-wrapper.sh serialize</Command>
     </PostBuildEvent>
 </PapyrusProject>

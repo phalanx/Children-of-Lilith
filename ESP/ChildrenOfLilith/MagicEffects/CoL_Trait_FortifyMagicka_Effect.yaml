@@ -1,0 +1,17 @@
+FormKey: 2270DB:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifyMagicka_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Fortify Magicka
+Flags:
+- Recover
+- NoDuration
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Magicka
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

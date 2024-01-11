@@ -1,0 +1,37 @@
+FormKey: 13E129:ChildrenOfLilith.esp
+EditorID: CoL_Chest_Cell
+Name:
+  TargetLanguage: English
+  Value: CoL Equipment Storage
+Flags:
+- IsInteriorCell
+- NoLodWater
+- PublicArea
+Lighting:
+  AmbientColor: '#00808080'
+  DirectionalColor: '#00000000'
+  FogNearColor: '#00000000'
+  FogPower: 1
+  AmbientColors:
+    DirectionalXPlus: '#008D8086'
+    DirectionalXMinus: '#0073807A'
+    DirectionalYPlus: '#00808680'
+    DirectionalYMinus: '#00807A80'
+    DirectionalZPlus: '#003D3D3A'
+    DirectionalZMinus: '#00C3C3C6'
+    Specular: '#00000000'
+    Scale: 1
+  FogFarColor: '#00000000'
+  FogMax: 1
+  Inherits:
+  - AmbientColor
+  - DirectionalColor
+  - FogColor
+  - FogNear
+  - FogFar
+  - ClipDistance
+WaterHeight: 0
+ImageSpace: 0D7B02:Skyrim.esm
+Timestamp: 12327
+PersistentTimestamp: 12327
+TemporaryTimestamp: 12327

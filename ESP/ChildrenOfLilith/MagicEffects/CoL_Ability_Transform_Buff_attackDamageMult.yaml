@@ -1,0 +1,19 @@
+FormKey: 23862D:ChildrenOfLilith.esp
+EditorID: CoL_Ability_Transform_Buff_attackDamageMult
+Name:
+  TargetLanguage: English
+  Value: Fortify Attack Damage
+Flags:
+- Recover
+- NoDuration
+- NoArea
+- PowerAffectsMagnitude
+Archetype:
+  MutagenObjectType: MagicEffectPeakValueModArchetype
+  ActorValue: AttackDamageMult
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

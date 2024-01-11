@@ -1,0 +1,13 @@
+FormKey: 2E329A:ChildrenOfLilith.esp
+EditorID: CoL_Interface_SLCumOverlays
+VirtualMachineAdapter:
+  Scripts:
+  - Name: CoL_Interface_SLCumOverlay_Script
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce

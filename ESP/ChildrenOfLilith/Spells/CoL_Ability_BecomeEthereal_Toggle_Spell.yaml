@@ -1,0 +1,15 @@
+FormKey: 038DA4:ChildrenOfLilith.esp
+EditorID: CoL_Ability_BecomeEthereal_Toggle_Spell
+Name:
+  TargetLanguage: English
+  Value: Succubus Become Ethereal
+MenuDisplayObject: 0435A5:Skyrim.esm
+EquipmentType: 025BEE:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: Spend Energy to Become Ethereal
+Type: LesserPower
+CastType: FireAndForget
+Effects:
+- BaseEffect: 038DA3:ChildrenOfLilith.esp
+  Data: {}

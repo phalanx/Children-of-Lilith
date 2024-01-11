@@ -1,0 +1,17 @@
+FormKey: 2270DF:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifyDestruction_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Fortify Destruction
+Flags:
+- Recover
+- NoDuration
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Destruction
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

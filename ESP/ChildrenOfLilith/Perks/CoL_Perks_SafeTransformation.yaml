@@ -1,0 +1,10 @@
+FormKey: 2BE09C:ChildrenOfLilith.esp
+EditorID: CoL_Perks_SafeTransformation
+Name:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_PERK_3
+Description:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_PERK_3_HELP
+NumRanks: 1
+Playable: True

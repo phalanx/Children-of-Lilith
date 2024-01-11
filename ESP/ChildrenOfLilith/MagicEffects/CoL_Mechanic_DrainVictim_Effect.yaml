@@ -1,0 +1,31 @@
+FormKey: 00433C:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_DrainVictim_Effect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: CoL_Mechanic_DrainVictim_Script
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: TimeScale
+      Object: 00003A:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: drainEffect
+      Object: 2D1D69:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+Name:
+  TargetLanguage: English
+  Value: Drained By Succubus
+Flags:
+- Recover
+- Detrimental
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+HitEffectArt: 0A6EF6:Skyrim.esm
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: Health has been reduced

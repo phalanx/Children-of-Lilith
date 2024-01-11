@@ -1,0 +1,14 @@
+FormKey: 361634:ChildrenOfLilith.esp
+EditorID: CoL_Ability_Transform_Spell
+Name:
+  TargetLanguage: English
+  Value: Succubus Transform
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+Type: LesserPower
+CastType: FireAndForget
+Effects:
+- BaseEffect: 361633:ChildrenOfLilith.esp
+  Data: {}

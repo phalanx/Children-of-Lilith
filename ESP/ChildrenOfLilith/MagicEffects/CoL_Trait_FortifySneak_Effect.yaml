@@ -1,0 +1,17 @@
+FormKey: 2270E5:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifySneak_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Fortify Sneak
+Flags:
+- Recover
+- NoDuration
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Sneak
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

@@ -1,0 +1,13 @@
+FormKey: 249B60:ChildrenOfLilith.esp
+EditorID: CoL_Interface_SlaveTats
+VirtualMachineAdapter:
+  Scripts:
+  - Name: col_interface_slavetats_script
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
