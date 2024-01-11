@@ -316,8 +316,6 @@ bool Function isBusy()
     endif
 	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
 		return True
-	elseIf playerRef.IsInCombat()
-		return True
 	elseIf UI.IsMenuOpen("Dialogue Menu")
 		return True
 	elseIf !Game.IsFightingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Crafting Menu") || !playerRef.Is3DLoaded() || StorageUtil.GetIntValue(playerRef, "DCUR_SceneRunning")==1
