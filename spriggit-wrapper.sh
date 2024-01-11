@@ -14,7 +14,7 @@ function deserialize(){
     spriggit deserialize -o ./Handlers/ASkyrimKiss/ChildrenOfLilithASKPatch.esp -i ./ESP/ASKPatch --PackageName Spriggit.Yaml &
     spriggit deserialize -o ./Handlers/FlowerGirls/ChildrenOfLilithFGPatch.esp -i ./ESP/FGPatch --PackageName Spriggit.Yaml &
     spriggit deserialize -o ./Handlers/ImmersiveLapSitting/CoL_ILS_Patch.esp -i ./ESP/ILS --PackageName Spriggit.Yaml &
-    spriggit serialize -o ./Compatibility/ChildrenOfLilithVancianPatch.esp -i ./ESP/Vancian --PackageName Spriggit.Yaml &
+    spriggit deserialize -o ./Compatibility/ChildrenOfLilithVancianPatch.esp -i ./ESP/Vancian --PackageName Spriggit.Yaml &
 }
 
 if [[ "$1" == "serialize" ]]; then
