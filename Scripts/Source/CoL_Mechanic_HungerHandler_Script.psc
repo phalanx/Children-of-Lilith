@@ -58,7 +58,6 @@ Event OnUpdate()
 EndEvent
 
 Function OnEffectFinish(Actor akTarget, Actor akCaster)
-    UnregisterForUpdate()
     CoL.playerRef.RemoveSpell(starvationSpell)
     Log("Stopped")
 EndFunction

@@ -6,10 +6,12 @@ GameRelease: SkyrimSE
 ModHeader:
   Stats:
     NumRecords: 162
-    NextFormID: 3564903
+    NextFormID: 3575040
   Author: DEFAULT
   MasterReferences:
   - Master: Skyrim.esm
+    FileSize: 0
+  - Master: Update.esm
     FileSize: 0
   - Master: Dawnguard.esm
     FileSize: 0

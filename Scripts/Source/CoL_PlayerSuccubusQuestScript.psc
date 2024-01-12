@@ -29,17 +29,19 @@ GlobalVariable Property TimeScale Auto
 Faction Property drainVictimFaction Auto
 
 Actor Property playerRef Auto                       ; The player reference
-Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
 Spell Property showperkMenu Auto                    ; Spell that when cast will open the CSF perk menu
 Spell Property simpleTransform Auto                 ; Spell that will provide the vfx and sfx for scene start transform
+
+Spell[] Property sceneHandlerSpells Auto            ; Spells that contain the animation scene handlers
+Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
+Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
+Spell Property StarvationSpell Auto                 ; Spell for stacking hunger effect
 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
-Spell[] Property sceneHandlerSpells Auto            ; Spells that contain the animation scene handlers
 Spell Property arousalTransformSpell Auto           ; Spell that contains the arousal transform handler
-Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
 
 Spell[] Property sanguineTraits Auto                ; Spells to provide passives for Path of Sanguine
@@ -169,6 +171,12 @@ State Uninitialize
         levelHandler.GoToState("Uninitialize")
         RemoveSpells(sceneHandlerSpells)
         playerRef.RemoveSpell(drainHandler)
+        if playerRef.HasSpell(hungerSpell)
+            playerRef.RemoveSpell(hungerSpell)
+        endif
+        if playerRef.HasSpell(starvationSpell)
+            playerRef.RemoveSpell(starvationSpell)
+        endif
         uninitializeQuest.GoToState("Run")
         UnregisterForEvents()
 

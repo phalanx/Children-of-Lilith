@@ -11,11 +11,11 @@ VirtualMachineAdapter:
       Name: GameDaysPassed
       Object: 000039:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: CombatTopicToSay
-      Object: 0AB884:Skyrim.esm
-    - MutagenObjectType: ScriptObjectProperty
       Name: WICastNonHostileTimer
       Object: 0E0CDC:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CombatTopicToSay
+      Object: 0AB884:Skyrim.esm
 Name:
   TargetLanguage: English
   Value: Calm
