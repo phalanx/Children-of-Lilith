@@ -2,13 +2,12 @@ FormKey: 126CB0:ChildrenOfLilith.esp
 EditorID: CoL_Mechanic_Starvation_Effect
 Name:
   TargetLanguage: English
-  Value: Starvation
+  Value: Succubus Starvation
 Flags:
 - Recover
 - Detrimental
 - NoDuration
 - NoArea
-- HideInUI
 Archetype:
   MutagenObjectType: MagicEffectArchetype
   ActorValue: Health

@@ -5,12 +5,12 @@ VirtualMachineAdapter:
   - Name: CoL_Uninitialize_Quest_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: drainVictimAlias
       Object: 2095AB:ChildrenOfLilith.esp
       Alias: 0
-    - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
   Versioning:
   - Break0
   ExtraBindDataVersion: 0

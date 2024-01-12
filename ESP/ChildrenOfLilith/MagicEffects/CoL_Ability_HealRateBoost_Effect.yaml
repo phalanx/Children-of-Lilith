@@ -5,14 +5,14 @@ VirtualMachineAdapter:
   - Name: CoL_Ability_HealRateBoost_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
   - Name: magicImodScript
     Properties:
     - MutagenObjectType: ScriptObjectProperty
@@ -30,6 +30,8 @@ VirtualMachineAdapter:
 Name:
   TargetLanguage: English
   Value: Succubus Heal Rate Boost
+Flags:
+- HideInUI
 Archetype:
   MutagenObjectType: MagicEffectArchetype
   Type: Script

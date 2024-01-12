@@ -8,17 +8,17 @@ VirtualMachineAdapter:
       Name: iArousal
       Object: 166021:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: levelHandler
-      Object: 33C42F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
+      Name: levelHandler
+      Object: 33C42F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: OStim
       Object: 19781F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: CoL SceneHandler - FG

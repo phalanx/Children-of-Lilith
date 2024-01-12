@@ -5,8 +5,8 @@ ModKey: ChildrenOfLilith.esp
 GameRelease: SkyrimSE
 ModHeader:
   Stats:
-    NumRecords: 162
-    NextFormID: 3605452
+    NumRecords: 163
+    NextFormID: 3646001
   Author: DEFAULT
   MasterReferences:
   - Master: Skyrim.esm

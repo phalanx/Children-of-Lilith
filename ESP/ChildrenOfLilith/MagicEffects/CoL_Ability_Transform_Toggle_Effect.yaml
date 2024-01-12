@@ -18,8 +18,8 @@ VirtualMachineAdapter:
       Name: transformCostSPell
       Object: 300DCC:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: safeTransformation
-      Object: 2BE09C:ChildrenOfLilith.esp
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
@@ -27,8 +27,8 @@ VirtualMachineAdapter:
       Name: transformSpell
       Object: 361634:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
+      Name: safeTransformation
+      Object: 2BE09C:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: Succubus Transform
