@@ -268,9 +268,12 @@ State Toggle_BuffsEnable
 EndState
 State Slider_BaseBuffs
     Event OnSliderOpenST(string state_id)
-        SetSliderDialog(configHandler.transformBaseBuffs[state_id as int], 0, 100, 1, 0)
+        SetSliderDialog(configHandler.transformBaseBuffs[state_id as int], 0, 1000, 1, 0)
         if state_id == "4"
             SetSliderDialogInterval(0.1)
+        endif
+        if state_id == "4" || state_id == "6"
+            SetSliderDialogRange(0, 100)
         endif
     endEvent
     Event OnSliderAcceptST(string state_id, float value)
