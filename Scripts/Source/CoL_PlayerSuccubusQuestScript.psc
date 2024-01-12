@@ -134,7 +134,10 @@ State Running
         elseif keyCode == configHandler.hotkeys[2]
             transformSpell.Cast(playerRef, playerRef)
         elseif keyCode == configHandler.hotkeys[4]
+            UnregisterForKey(configHandler.hotkeys[4])
             showperkMenu.Cast(playerRef)
+            Utility.Wait(1)
+            RegisterForKey(configHandler.hotkeys[4])
         endif
     EndEvent
 EndState
@@ -283,6 +286,7 @@ bool Function IsStrippable(Form itemRef)
 endFunction
 
 Function ScaleEnergyTest()
+    UnregisterForKey(configHandler.hotkeys[1])
     float currentEnergy = energyHandler.playerEnergyCurrent
     energyHandler.playerEnergyCurrent = 0
     while energyHandler.playerEnergyCurrent < energyHandler.playerEnergyMax
@@ -294,6 +298,7 @@ Function ScaleEnergyTest()
         Utility.Wait(0.1)
     endwhile
     energyHandler.playerEnergyCurrent = currentEnergy
+    RegisterForKey(configHandler.hotkeys[1])
 EndFunction
 
 Function _Log(string msg)
