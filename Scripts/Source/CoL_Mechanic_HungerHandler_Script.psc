@@ -34,6 +34,8 @@ Event OnUpdate()
     else
         hungerAmount = configHandler.dailyHungerAmount * timePassed
     endif
+    Log("Hunger Amount: " + hungerAmount)
+    energyHandler.playerEnergyCurrent -= hungerAmount
     if ((energyHandler.playerEnergyCurrent/energyHandler.playerEnergyMax ) * 100) < configHandler.hungerThreshold
         if configHandler.deadlyHunger
             CoL.playerRef.RemoveSpell(starvationSpell)
@@ -46,12 +48,10 @@ Event OnUpdate()
         if configHandler.hungerArousalEnabled
             iArousal.ModifyArousal(CoL.playerRef, configHandler.hungerArousalAmount)
         endif
-        energyHandler.playerEnergyCurrent = 0
         Log("Starvation Stack: " + starvationStack)
     else
         starvationStack = 0
         CoL.playerRef.RemoveSpell(starvationSpell)
-        energyHandler.playerEnergyCurrent -= hungerAmount
     endif
     lastCheckTime = CoL.GameDaysPassed.GetValue()
     RegisterForSingleUpdate(30.0)
