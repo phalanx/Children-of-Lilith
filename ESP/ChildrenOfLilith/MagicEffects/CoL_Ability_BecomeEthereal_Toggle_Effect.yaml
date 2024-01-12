@@ -4,11 +4,14 @@ VirtualMachineAdapter:
   Scripts:
   - Name: CoL_Generic_Toggle_Spell_Script
     Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptStringProperty
       Name: displayName
       Data: Become Ethereal
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
+      Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
@@ -16,9 +19,6 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: SpellToToggle
       Object: 033CA2:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: Succubus Become Ethereal

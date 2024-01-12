@@ -58,6 +58,7 @@ bool Property grantCSFPower = false Auto Hidden         ; Should the CSF Power M
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Succubus Become Ethereal
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Succubus HealRate Boost
 float Property healRateBoostAmount = 10.0 Auto Hidden   ; Modify healRate by this amount
+float Property healRateBoostMult = 0.0 Auto Hidden     ; Modify healRateMult by this amount
 
 float Property energyCastingMult = 1.0 Auto Hidden      ; Modify the energy cost of spells
 string[] Property energyCastingConcStyleOptions Auto Hidden ; Holds string values for the concentration calculation style. Initialized in Maintenance()
@@ -191,7 +192,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 6
+    return 7
 EndFunction
 
 int Function SaveConfig()
@@ -246,6 +247,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "becomeEtherealCost", becomeEtherealCost)
         JMap.setFlt(jObj, "healRateBoostCost", healRateBoostCost)
         JMap.setFlt(jObj, "healRateBoostAmount", healRateBoostAmount)
+        JMap.setFlt(jObj, "healRateBoostMult", healRateBoostMult)
         JMap.setFlt(jObj, "energyCastingMult", energyCastingMult)
         JMap.setInt(jObj, "energyCastingConcStyle", energyCastingConcStyle)
         JMap.setInt(jObj, "energyCastingFX", energyCastingFXEnabled as int)
@@ -354,6 +356,9 @@ Function LoadConfig(int jObj)
         becomeEtherealCost = JMap.getFlt(jObj, "becomeEtherealCost")
         healRateBoostCost = JMap.getFlt(jObj, "healRateBoostCost")
         healRateBoostAmount = JMap.getFlt(jObj, "healRateBoostAmount")
+        if configVersion >= 7
+            healRateBoostMult = JMap.getFlt(jObj, "healRateBoostMult")
+        endif
         energyCastingMult = JMap.getFlt(jObj, "energyCastingMult")
         energyCastingConcStyle = JMap.getInt(jObj, "energyCastingConcStyle")
         if configVersion >= 4

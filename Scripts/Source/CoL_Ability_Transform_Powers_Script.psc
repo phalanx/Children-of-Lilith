@@ -25,6 +25,9 @@ EndFunction
 function Transform()
     Log("Adding additional powers")
     if CoL.playerRef.HasPerk(healingForm)
+        CoL.healRateBoost.SetNthEffectMagnitude(0, 10)
+        CoL.healRateBoost.SetNthEffectMagnitude(1, configHandler.healRateBoostMult)
+        CoL.healRateBoost.SetNthEffectMagnitude(2, configHandler.healRateBoostAmount)
         CoL.playerRef.AddSpell(CoL.healRateBoost, false)
     endif
     float[] buffs = new float[7]

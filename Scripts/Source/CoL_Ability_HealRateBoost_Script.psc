@@ -18,6 +18,9 @@ Function Log(string msg)
 EndFunction
 
 Event OnUpdate()
+    if GetMagnitude() > 0 ; Assume this effect is from Healing Form Perk
+        return
+    endif
     if energyHandler.playerEnergyCurrent < configHandler.healRateBoostCost
         Log("Out of Energy")
         Debug.Notification("Out of Energy: Heal Rate Boost Disabled")

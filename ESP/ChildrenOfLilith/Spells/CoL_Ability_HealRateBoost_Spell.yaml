@@ -15,6 +15,7 @@ Type: Ability
 Effects:
 - BaseEffect: 042FA5:ChildrenOfLilith.esp
   Data: {}
+- BaseEffect: 36B499:ChildrenOfLilith.esp
+  Data: {}
 - BaseEffect: 057B49:Skyrim.esm
-  Data:
-    Magnitude: 1
+  Data: {}

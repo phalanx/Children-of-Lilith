@@ -13,6 +13,7 @@ Event OnPageDraw()
     AddEmptyOption()
     AddSliderOptionST("Slider_healRateBoostCost", "$COL_POWERSPAGE_HEALRATEBOOSTCOST", configHandler.healRateBoostCost)
     AddSliderOptionST("Slider_healRateBoostAmount", "$COL_POWERSPAGE_HEALRATEBOOSTAMOUNT", configHandler.healRateBoostAmount)
+    AddSliderOptionST("Slider_healRateBoostMult", "$COL_POWERSPAGE_HEALRATEBOOSTMULT", configHandler.healRateBoostMult)
     AddEmptyOption()
     AddToggleOptionST("Toggle_energyCastingFX", "$COL_POWERSPAGE_ENERGYCASTINGFXENABLED", configHandler.energyCastingFXEnabled)
     AddSliderOptionST("Slider_energyCastingMult", "$COL_POWERSPAGE_ENERGYCASTINGMULT", configHandler.energyCastingMult, "{0}")
@@ -57,7 +58,7 @@ State Slider_healRateBoostCost
 EndState
 State Slider_healRateBoostAmount
     Event OnSliderOpenST(string state_id)
-        SetSliderDialog(configHandler.healRateBoostAmount,1, 200, 1, 10)
+        SetSliderDialog(configHandler.healRateBoostAmount,0, 1000, 1, 10)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.healRateBoostAmount = value
@@ -65,6 +66,18 @@ State Slider_healRateBoostAmount
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_POWERSPAGE_HEALRATEBOOSTAMOUNT_HELP")
+    EndEvent
+EndState
+State Slider_healRateBoostMult
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialog(configHandler.healRateBoostMult,0, 1000, 1, 0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.healRateBoostMult = value
+        SetSliderOptionValueST(configHandler.healRateBoostMult)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_POWERSPAGE_HEALRATEBOOSTMULT_HELP")
     EndEvent
 EndState
 

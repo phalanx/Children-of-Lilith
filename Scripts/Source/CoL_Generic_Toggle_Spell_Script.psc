@@ -22,7 +22,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         endif
         if configIndex == 0
             if energyHandler.playerEnergyCurrent >= configHandler.healRateBoostCost
-                SpellToToggle.SetNthEffectMagnitude(1, configHandler.healRateBoostAmount)
+                SpellToToggle.SetNthEffectMagnitude(1, configHandler.healRateBoostMult)
+                SpellToToggle.SetNthEffectMagnitude(2, configHandler.healRateBoostAmount)
             else
                 Debug.Notification("Out of Energy: Heal Rate Boost Disabled")
             endif
