@@ -7,9 +7,6 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: isPlayerSuccubus
       Object: 000D63:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: _CoL
-      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptIntListProperty
       Name: npcRelationshipDeathChance
       Data:
@@ -21,6 +18,9 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: _arousalTransformSpell
       Object: 308499:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: _CoL
+      Object: 000D64:ChildrenOfLilith.esp
   Versioning:
   - Break0
   ExtraBindDataVersion: 0

@@ -5,9 +5,6 @@ VirtualMachineAdapter:
   - Name: CoL_Ability_Transform_FX_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: SuccubusTransformSound
-      Object: 0FF9E9:Skyrim.esm
-    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptBoolProperty
@@ -15,6 +12,9 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: SuccubusTransformSound
+      Object: 0FF9E9:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
       Name: SuccubusTransformationIdle
       Object: 0088E7:Dawnguard.esm
@@ -32,19 +32,19 @@ VirtualMachineAdapter:
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerWerewolfFaction
+      Object: 091822:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: attractiveDremora
       Object: 323831:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: PlayerWerewolfFaction
-      Object: 091822:Skyrim.esm
   - Name: CoL_Ability_Transform_Powers_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: healingForm
-      Object: 2BB902:ChildrenOfLilith.esp
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
@@ -52,8 +52,14 @@ VirtualMachineAdapter:
       Name: transformBuffSpell
       Object: 238627:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
+      Name: healingForm
+      Object: 2BB902:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: healRateSpell
+      Object: 37C9CA:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: healRateMultSpell
+      Object: 37C9CE:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: Succubus Transformation

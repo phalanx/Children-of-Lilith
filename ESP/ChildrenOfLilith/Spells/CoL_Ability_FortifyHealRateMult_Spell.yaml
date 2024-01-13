@@ -1,8 +1,8 @@
-FormKey: 042FA6:ChildrenOfLilith.esp
-EditorID: CoL_Ability_HealRateBoost_Spell
+FormKey: 37C9CE:ChildrenOfLilith.esp
+EditorID: CoL_Ability_FortifyHealRateMult_Spell
 Name:
   TargetLanguage: English
-  Value: Succubus Heal Rate Boost
+  Value: Succubus Healing
 EquipmentType: 013F44:Skyrim.esm
 Description:
   TargetLanguage: English
@@ -13,5 +13,5 @@ Flags:
 - NoAbsorbOrReflect
 Type: Ability
 Effects:
-- BaseEffect: 042FA5:ChildrenOfLilith.esp
+- BaseEffect: 36B499:ChildrenOfLilith.esp
   Data: {}

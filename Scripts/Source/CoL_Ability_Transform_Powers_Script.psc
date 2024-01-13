@@ -4,6 +4,8 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 Perk Property healingForm Auto
+Spell Property healRateSpell Auto
+Spell Property healRateMultSpell Auto
 Spell Property transformBuffSpell Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -25,10 +27,10 @@ EndFunction
 function Transform()
     Log("Adding additional powers")
     if CoL.playerRef.HasPerk(healingForm)
-        CoL.healRateBoost.SetNthEffectMagnitude(0, 10)
-        CoL.healRateBoost.SetNthEffectMagnitude(1, configHandler.healRateBoostMult)
-        CoL.healRateBoost.SetNthEffectMagnitude(2, configHandler.healRateBoostAmount)
-        CoL.playerRef.AddSpell(CoL.healRateBoost, false)
+        healRateSpell.SetNthEffectMagnitude(0, configHandler.healRateBoostAmount)
+        healRateMultSpell.SetNthEffectMagnitude(0, configHandler.healRateBoostMult)
+        CoL.playerRef.AddSpell(healRateSpell, false)
+        CoL.playerRef.AddSpell(healRateMultSpell, false)
     endif
     float[] buffs = new float[7]
     int i = 0
@@ -48,7 +50,8 @@ endfunction
 function UnTransform()
     Log("Removing additional powers")
     if CoL.playerRef.HasPerk(healingForm)
-        CoL.playerRef.RemoveSpell(CoL.healRateBoost)
+        CoL.playerRef.RemoveSpell(healRateSpell)
+        CoL.playerRef.RemoveSpell(healRateMultSpell)
     endif
     CoL.playerRef.RemoveSpell(transformBuffSpell)
 endfunction

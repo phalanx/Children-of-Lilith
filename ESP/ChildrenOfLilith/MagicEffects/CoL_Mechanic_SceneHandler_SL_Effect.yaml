@@ -5,12 +5,6 @@ VirtualMachineAdapter:
   - Name: CoL_Mechanic_SceneHandler_SL_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: SexLab
-      Object: 1A1684:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: iArousal
-      Object: 166021:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
@@ -19,6 +13,12 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: SexLab
+      Object: 1A1684:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: iArousal
+      Object: 166021:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: CoL SceneHandler - FG

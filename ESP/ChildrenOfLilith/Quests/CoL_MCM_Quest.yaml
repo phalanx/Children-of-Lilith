@@ -15,15 +15,6 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: perkPointsAvailable
-      Object: 2A7C35:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
-      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: singleRankPerks
       Objects:
@@ -39,26 +30,35 @@ VirtualMachineAdapter:
         Object: 323831:ChildrenOfLilith.esp
       - Name: ''
         Object: 2C0836:ChildrenOfLilith.esp
-  - Name: CoL_MCM_Status_Page
-    Properties:
-    - MutagenObjectType: ScriptObjectProperty
-      Name: npcSuccubusQuest
-      Object: 213410:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
+      Name: perkPointsAvailable
+      Object: 2A7C35:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: CoL_MCM_Status_Page
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: isPlayerSuccubus
-      Object: 000D63:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: levelHandler
       Object: 33C42F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
+      Name: isPlayerSuccubus
+      Object: 000D63:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: npcSuccubusQuest
+      Object: 213410:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: npcQuest
       Object: 213410:ChildrenOfLilith.esp
@@ -72,11 +72,11 @@ VirtualMachineAdapter:
       Name: levelHandler
       Object: 33C42F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
   - Name: CoL_MCM_Hotkeys_Page
     Properties:
     - MutagenObjectType: ScriptObjectProperty
@@ -88,28 +88,28 @@ VirtualMachineAdapter:
   - Name: CoL_MCM_Widgets_Page
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: widgetHandler
-      Object: 341362:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: widgetHandler
+      Object: 341362:ChildrenOfLilith.esp
   - Name: CoL_MCM_Compatibilities_Page
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: SexLab_Interfaces
-      Object: 1A1684:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: oStim_Interfaces
-      Object: 19781F:ChildrenOfLilith.esp
+      Name: OSL_Interfaces
+      Object: 2473C6:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: SlaveTats_Interfaces
       Object: 249B60:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: OSL_Interfaces
-      Object: 2473C6:ChildrenOfLilith.esp
+      Name: oStim_Interfaces
+      Object: 19781F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: SexLab_Interfaces
+      Object: 1A1684:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: Toys_Interfaces
       Object: 2221A7:ChildrenOfLilith.esp
