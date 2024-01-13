@@ -5,25 +5,22 @@ VirtualMachineAdapter:
   - Name: CoL_Ability_HealRateBoost_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: healRateMultSpell
-      Object: 37C9CE:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
-      Object: 000D64:ChildrenOfLilith.esp
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: healRateSpell
       Object: 37C9CA:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
+      Name: healRateMultSpell
+      Object: 37C9CE:ChildrenOfLilith.esp
   - Name: magicImodScript
     Properties:
-    - MutagenObjectType: ScriptFloatProperty
-      Name: fStaticDelay
-      Data: 0.15
     - MutagenObjectType: ScriptObjectProperty
       Name: OutroFX
       Object: 048428:Skyrim.esm
@@ -33,6 +30,9 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: IntroFX
       Object: 048428:Skyrim.esm
+    - MutagenObjectType: ScriptFloatProperty
+      Name: fStaticDelay
+      Data: 0.15
 Name:
   TargetLanguage: English
   Value: Succubus Heal Rate Boost

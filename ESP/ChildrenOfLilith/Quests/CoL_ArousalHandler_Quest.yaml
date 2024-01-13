@@ -11,11 +11,11 @@ VirtualMachineAdapter:
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: OSL
-      Object: 2473C6:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: SLAR
       Object: 1A1684:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: OSL
+      Object: 2473C6:ChildrenOfLilith.esp
   Versioning:
   - Break0
   ExtraBindDataVersion: 0
