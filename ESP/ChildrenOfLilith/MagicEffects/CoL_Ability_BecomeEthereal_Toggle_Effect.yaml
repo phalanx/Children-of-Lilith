@@ -4,12 +4,12 @@ VirtualMachineAdapter:
   Scripts:
   - Name: CoL_Generic_Toggle_Spell_Script
     Properties:
-    - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptStringProperty
       Name: displayName
       Data: Become Ethereal
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp

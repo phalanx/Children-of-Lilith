@@ -8,11 +8,11 @@ VirtualMachineAdapter:
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: CoL Transform Cost Effect

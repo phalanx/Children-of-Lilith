@@ -4,26 +4,43 @@ VirtualMachineAdapter:
   Scripts:
   - Name: CoL_PlayerSuccubusQuestScript
     Properties:
-    - MutagenObjectType: ScriptObjectProperty
-      Name: uninitializeQuest
-      Object: 2095AB:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: DrainHealthSpell
-      Object: 00433B:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
-      Name: VaerminaTraits
+      Name: levelFiveSpells
       Objects:
       - Name: ''
-        Object: 2270F1:ChildrenOfLilith.esp
-      - Name: ''
-        Object: 024998:ChildrenOfLilith.esp
-      - Name: ''
-        Object: 2270F3:ChildrenOfLilith.esp
-      - Name: ''
-        Object: 2270F5:ChildrenOfLilith.esp
+        Object: 1ADC82:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: SexLab
-      Object: 1A1684:ChildrenOfLilith.esp
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: OStim
+      Object: 19781F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: drainHandler
+      Object: 32FE31:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectListProperty
+      Name: sanguineTraits
+      Objects:
+      - Name: ''
+        Object: 2270DE:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 024996:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2270E8:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2270DC:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: becomeEthereal
+      Object: 033CA2:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: showPerkMenu
+      Object: 2C576A:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: energyCastingToggleSpell
+      Object: 0615AC:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: starvationSpell
+      Object: 126CB1:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: molagTraits
       Objects:
@@ -38,22 +55,46 @@ VirtualMachineAdapter:
       - Name: ''
         Object: 2270EB:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyCastingToggleSpell
-      Object: 0615AC:ChildrenOfLilith.esp
+      Name: iSLCumOverlay
+      Object: 2E329A:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: levelHandler
+      Object: 33C42F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: arousalTransformSpell
+      Object: 308499:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: isPlayerSuccubus
+      Object: 000D63:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: drainVictimFaction
+      Object: 1DF47F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: uninitializeQuest
+      Object: 2095AB:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: hungerSpell
+      Object: 2FE631:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
-      Name: levelTwoSpells
+      Name: VaerminaTraits
       Objects:
       - Name: ''
-        Object: 16AF54:ChildrenOfLilith.esp
+        Object: 2270F1:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 024998:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2270F3:ChildrenOfLilith.esp
+      - Name: ''
+        Object: 2270F5:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: simpleTransform
-      Object: 321096:ChildrenOfLilith.esp
+      Name: transformSpell
+      Object: 13D102:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: becomeEthereal
-      Object: 033CA2:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: drainHandler
-      Object: 32FE31:ChildrenOfLilith.esp
+      Name: DrainHealthSpell
+      Object: 00433B:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: sceneHandlerSpells
       Objects:
@@ -65,56 +106,38 @@ VirtualMachineAdapter:
         Object: 352899:ChildrenOfLilith.esp
       - Name: ''
         Object: 35289B:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectListProperty
+      Name: levelTenSpells
+      Objects:
+      - Name: ''
+        Object: 1BA282:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: PlayerRef
-      Object: 000014:Skyrim.esm
+      Name: temptationSpell
+      Object: 16AF54:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: arousalTransformSpell
-      Object: 308499:ChildrenOfLilith.esp
+      Name: npcSuccubusQuest
+      Object: 213410:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: isPlayerSuccubus
-      Object: 000D63:ChildrenOfLilith.esp
+      Name: widgetHandler
+      Object: 341362:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: starvationSpell
-      Object: 126CB1:ChildrenOfLilith.esp
+      Name: TimeScale
+      Object: 00003A:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: iSLCumOverlay
-      Object: 2E329A:ChildrenOfLilith.esp
+      Name: healRateBoost
+      Object: 042FA6:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: drainVictimFaction
-      Object: 1DF47F:ChildrenOfLilith.esp
+      Name: GameDaysPassed
+      Object: 000039:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyCastingPerk
-      Object: 0573AA:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: showPerkMenu
-      Object: 2C576A:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: transformSpell
-      Object: 13D102:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: levelHandler
-      Object: 33C42F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: hungerSpell
-      Object: 2FE631:ChildrenOfLilith.esp
+      Name: simpleTransform
+      Object: 321096:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: Toys
       Object: 2221A7:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectListProperty
-      Name: levelFiveSpells
-      Objects:
-      - Name: ''
-        Object: 1ADC82:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: succuEquipmentChest
-      Object: 13E13A:ChildrenOfLilith.esp
+      Name: energyCastingPerk
+      Object: 0573AA:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: levelOneSpells
       Objects:
@@ -128,46 +151,23 @@ VirtualMachineAdapter:
         Object: 042FA9:ChildrenOfLilith.esp
       - Name: ''
         Object: 038DA4:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectListProperty
+      Name: levelTwoSpells
+      Objects:
+      - Name: ''
+        Object: 16AF54:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: npcSuccubusQuest
-      Object: 213410:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectListProperty
-      Name: levelTenSpells
-      Objects:
-      - Name: ''
-        Object: 1BA282:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectListProperty
-      Name: sanguineTraits
-      Objects:
-      - Name: ''
-        Object: 2270DE:ChildrenOfLilith.esp
-      - Name: ''
-        Object: 024996:ChildrenOfLilith.esp
-      - Name: ''
-        Object: 2270E8:ChildrenOfLilith.esp
-      - Name: ''
-        Object: 2270DC:ChildrenOfLilith.esp
+      Name: succuEquipmentChest
+      Object: 13E13A:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
       Name: iSlaveTats
       Object: 249B60:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: GameDaysPassed
-      Object: 000039:Skyrim.esm
-    - MutagenObjectType: ScriptObjectProperty
-      Name: healRateBoost
-      Object: 042FA6:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: OStim
-      Object: 19781F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: TimeScale
-      Object: 00003A:Skyrim.esm
-    - MutagenObjectType: ScriptObjectProperty
-      Name: widgetHandler
-      Object: 341362:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: temptationSpell
-      Object: 16AF54:ChildrenOfLilith.esp
+      Name: SexLab
+      Object: 1A1684:ChildrenOfLilith.esp
   - Name: col_mechanic_energyhandler_script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
@@ -197,17 +197,17 @@ VirtualMachineAdapter:
         Name: CoL
         Object: 000D64:ChildrenOfLilith.esp
       - MutagenObjectType: ScriptObjectProperty
+        Name: energyHandler
+        Object: 000D64:ChildrenOfLilith.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: EnergyCastingIMod
+        Object: 0EA0AF:ChildrenOfLilith.esp
+      - MutagenObjectType: ScriptObjectProperty
         Name: energyWeaver
         Object: 2B9168:ChildrenOfLilith.esp
       - MutagenObjectType: ScriptObjectProperty
         Name: configHandler
         Object: 32FE2F:ChildrenOfLilith.esp
-      - MutagenObjectType: ScriptObjectProperty
-        Name: EnergyCastingIMod
-        Object: 0EA0AF:ChildrenOfLilith.esp
-      - MutagenObjectType: ScriptObjectProperty
-        Name: energyHandler
-        Object: 000D64:ChildrenOfLilith.esp
 Flags:
 - StartGameEnabled
 - 0x10

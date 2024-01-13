@@ -16,11 +16,11 @@ VirtualMachineAdapter:
       - 0
       - 0
     - MutagenObjectType: ScriptObjectProperty
-      Name: _arousalTransformSpell
-      Object: 308499:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: _CoL
       Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: _arousalTransformSpell
+      Object: 308499:ChildrenOfLilith.esp
   Versioning:
   - Break0
   ExtraBindDataVersion: 0
