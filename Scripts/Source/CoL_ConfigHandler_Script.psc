@@ -165,7 +165,7 @@ EndFunction
 
 Function Maintenance()
     followedPathOptions = new string[3]
-    followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANQUINE"
+    followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANGUINE"
     followedPathOptions[1] = "$COL_STATUSPAGE_PATH_MOLAG"
     followedPathOptions[2] = "$COL_STATUSPAGE_PATH_VAERMINA"
 
