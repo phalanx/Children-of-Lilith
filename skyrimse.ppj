@@ -13,7 +13,7 @@
         <!-- Set the name of your mod: -->
         <Variable Name="ModName" Value="ChildrenOfLilith" />
         <!-- The folder where you store all of your mods -->
-        <Variable Name="ModsFolder" Value="F:\Skyrim Mods\Mods" />
+        <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.640\Authoring\Children Of Lilith\Mods" />
     </Variables>
     <Imports>
         <Import>@ModsFolder\SexLabFrameworkAE\Scripts\Source</Import>

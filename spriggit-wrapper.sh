@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 function serialize(){
     spriggit serialize -i ./ChildrenOfLilith.esp -o ./ESP/ChildrenOfLilith -g SkyrimSE --PackageName Spriggit.Yaml &
     spriggit serialize -i ./Handlers/ASkyrimKiss/ChildrenOfLilithASKPatch.esp -o ./ESP/ASKPatch -g SkyrimSE --PackageName Spriggit.Yaml &

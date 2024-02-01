@@ -43,16 +43,6 @@ Unknown3: 0x000000
 OwnerQuest: 00080A:Lap Sitting.esp
 DataInputVersion: 2
 Data:
-- Key: 16
-  Value:
-    MutagenObjectType: PackageDataTarget
-    Name: target
-    Flags:
-    - Public
-    Type: SingleRef
-    Target:
-      MutagenObjectType: PackageTargetAlias
-      Alias: 2
 - Key: 3
   Value:
     MutagenObjectType: PackageDataFloat
@@ -64,6 +54,16 @@ Data:
     MutagenObjectType: PackageDataBool
     Name: Stop Movement Flag
     Flags: []
+- Key: 16
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: target
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 2
 - Key: 0
   Value:
     MutagenObjectType: APackageData
