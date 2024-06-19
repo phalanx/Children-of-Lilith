@@ -4,7 +4,7 @@
         {
             "type": "pyro",
             "projectFile": "skyrimse.ppj",
-            "gamePath": "E:\\Skyrim\\1.6.640\\Base Game\\",
+            "gamePath": "E:\\Skyrim\\1.6.1170\\Base Game",
             "problemMatcher": [
                 "$PapyrusCompiler"
             ],

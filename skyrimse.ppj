@@ -13,10 +13,10 @@
         <!-- Set the name of your mod: -->
         <Variable Name="ModName" Value="ChildrenOfLilith" />
         <!-- The folder where you store all of your mods -->
-        <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.640\Authoring\Children Of Lilith\Mods" />
+        <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.1170\Authoring\Children Of Lilith\Mods" />
     </Variables>
     <Imports>
-        <Import>@ModsFolder\SexLabFrameworkAE\Scripts\Source</Import>
+        <Import>@ModsFolder\SexLab Framework\Scripts\Source</Import>
         <Import>@ModsFolder\SkyUI SDK\Scripts\Source</Import>
         <Import>@ModsFolder\Fores New Idles in Skyrim SE - FNIS SE\source\scripts</Import>
         <Import>@ModsFolder\iWant Widgets\source\scripts</Import>
