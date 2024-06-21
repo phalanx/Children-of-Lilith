@@ -168,28 +168,54 @@ Event OnVampirismStateChanged(bool isVampire)
     if CoL.isPlayerSuccubus.GetValueInt() == 0
         return
     endif
-    Log("Player vampire status chaged")
+    Log("Player vampire status changed")
     string mortalRaceId = MiscUtil.GetRaceEditorID(CoL.mortalRace)
     string succubusRaceId = MiscUtil.GetRaceEditorID(CoL.succuRace)
     Race newMortalRace
     Race newSuccubusRace
     Log("Mortal race id before: " + mortalRaceId)
     Log("Succubus race id before: " + succubusRaceId)
+
     if isVampire
-        CoL.mortalCureRace = CoL.mortalRace
-        CoL.succuCureRace = CoL.succuRace
-        mortalRaceId += "Vampire"
-        succubusRaceId +="Vampire"
+        Log("Became Vampire")
+
+        if StringUtil.Find(mortalRaceId, "Vampire") == -1
+            mortalRaceId += "Vampire"
+        else
+            Log("WARNING - Mortal race was already a vampire race")
+        endif
         newMortalRace = Race.GetRace(mortalRaceId)
+
+        if StringUtil.Find(succubusRaceId, "Vampire") == -1
+            succubusRaceId += "Vampire"
+        else
+            Log("WARNING - Succubus race was already a vampire race")
+        endif
         newSuccubusRace = Race.GetRace(succubusRaceId)
     else
-        newMortalRace = CoL.mortalCureRace
-        newSuccubusRace = CoL.succuCureRace
-        CoL.mortalCureRace = None
-        CoL.succuCureRace = None
+        Log("Vampirism Cured")
+
+        int mortalVampireIndex = StringUtil.Find(mortalRaceId, "Vampire")
+        if  mortalVampireIndex != -1
+            mortalRaceId = StringUtil.Substring(mortalRaceId, 0, mortalVampireIndex)
+        else
+            Log("WARNING - Mortal race is already not a vampire race.")
+        endif
+        newMortalRace = Race.GetRace(mortalRaceId)
+
+        int succubusVampireIndex = StringUtil.Find(succubusRaceId, "Vampire")
+        if succubusVampireIndex != -1
+            succubusRaceId = StringUtil.Substring(succubusRaceId, 0 , succubusVampireIndex)
+        else
+            Log("WARNING - Succubus race is already not a vampire race.")
+        endif
+        newSuccubusRace = Race.GetRace(succubusRaceId)
     endif
     
     if (newMortalRace == None || newSuccubusRace == None)
+        Log("Error: Race Could Not Be Updated")
+        Log("Desired Mortal race id after: " + mortalRaceId)
+        Log("Desired Succubus race id after: " + succubusRaceId)
         Debug.MessageBox(vampireErrorMessageBox)
     else
         Log("Mortal race id after: " + MiscUtil.GetRaceEditorID(newMortalRace))
