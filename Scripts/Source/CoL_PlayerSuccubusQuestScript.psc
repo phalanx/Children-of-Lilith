@@ -57,24 +57,21 @@ Spell[] Property vaerminaTraits Auto                ; Spells to provide passives
 bool Property isTransformed Auto Hidden
 bool Property isTransforming = false Auto Hidden
 ; 0: FX
-; 1:Body
+; 1: Body
 ; 2: Equipment
 ; 3: Powers
 bool[] Property transformReadiness Auto Hidden    
 
 ; Transform Stuff
     Spell Property transformSpell Auto
-     
     bool Property lockTransform Auto Hidden
     string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
     bool Property succuPresetSaved = false Auto Hidden
     Race Property succuRace Auto Hidden
-    Race Property succuCureRace Auto Hidden
     ColorForm Property succuHairColor Auto Hidden
     string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
     bool Property mortalPresetSaved = false Auto Hidden
     Race Property mortalRace Auto Hidden
-    Race Property mortalCureRace Auto Hidden
     bool isVampire = false
     ColorForm Property mortalHairColor Auto Hidden
     ObjectReference Property succuEquipmentChest Auto
