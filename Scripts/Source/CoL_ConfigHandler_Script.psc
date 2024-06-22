@@ -164,10 +164,11 @@ Function Log(string msg)
 EndFunction
 
 Function Maintenance()
-    followedPathOptions = new string[3]
+    followedPathOptions = new string[4]
     followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANGUINE"
     followedPathOptions[1] = "$COL_STATUSPAGE_PATH_MOLAG"
     followedPathOptions[2] = "$COL_STATUSPAGE_PATH_VAERMINA"
+    followedPathOptions[3] = "$COL_STATUSPAGE_PATH_NONE"
 
     energyCastingConcStyleOptions = new string[4]
     energyCastingConcStyleOptions[0] = "$COL_POWERSPAGE_COSTCALCSTYLE_LEFT"

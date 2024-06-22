@@ -25,6 +25,7 @@ Keyword Property BBBNoStrip Auto Hidden
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
 GlobalVariable Property TimeScale Auto
+GlobalVariable Property debuffsEnabled Auto ; Controls if player has succubus debuffs
 
 Faction Property drainVictimFaction Auto
 
@@ -72,7 +73,6 @@ bool[] Property transformReadiness Auto Hidden
     string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
     bool Property mortalPresetSaved = false Auto Hidden
     Race Property mortalRace Auto Hidden
-    bool isVampire = false
     ColorForm Property mortalHairColor Auto Hidden
     ObjectReference Property succuEquipmentChest Auto
 
@@ -353,9 +353,6 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
         jmorphs = __saveBodyMorphs()
     endif
     Race currentRace = playerRef.GetRace()
-    if mortalCureRace != None && !isVampire
-        isVampire = true
-    endif
  
     __Transform(presetName, presetRace, presetHairColor, currentRace)
     Utility.Wait(0.1)
@@ -457,13 +454,18 @@ Function UpdatePath()
     RemoveSpells(VaerminaTraits)
     if configHandler.selectedPath == 0
         GrantSpells(sanguineTraits, false)
+        debuffsEnabled.SetValue(1)
         Debug.Notification("Path of Sanguine added")
     elseif configHandler.selectedPath == 1
         GrantSpells(molagTraits, false)
+        debuffsEnabled.SetValue(1)
         Debug.Notification("Path of Molag Bal added")
     elseif configHandler.selectedPath == 2
         GrantSpells(VaerminaTraits, false)
+        debuffsEnabled.SetValue(1)
         Debug.Notification("Path of Vaermina added")
+    elseif configHandler.selectedPath == 3
+        debuffsEnabled.SetValue(0)
     endif
 EndFunction
 
