@@ -174,6 +174,7 @@ Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, fl
 EndFunction
 
 Function EndDrainToDeath(Form drainerForm, Form draineeForm)
+    Utility.Wait(configHandler.drainToDeathDelay)
     Actor drainee = draineeForm as Actor
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 

@@ -156,7 +156,6 @@ Event CoL_SLOrgasmHandler(int threadId, bool hasPlayer)
 EndEvent
 
 Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
-
     int sceneEndEvent
     if succubus == CoL.playerRef
         sceneEndEvent = ModEvent.Create("CoL_endScene")

@@ -79,6 +79,8 @@
     <PostBuildEvent Description="Post-Build Tasks" UseInBuild="true">
         <Command>del /s /q /f *.bsa</Command>
         <Command>translation.sh remove</Command>
+        <!--
         <Command>spriggit-wrapper.sh serialize</Command>
+        -->
     </PostBuildEvent>
 </PapyrusProject>
