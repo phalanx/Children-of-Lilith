@@ -1,12 +1,9 @@
 SpriggitSource:
   PackageName: Spriggit.Yaml.Skyrim
-  Version: 0.16.0
+  Version: 0.24.0
 ModKey: ChildrenOfLilith.esp
 GameRelease: SkyrimSE
 ModHeader:
-  Stats:
-    NumRecords: 165
-    NextFormID: 3737239
   Author: DEFAULT
   MasterReferences:
   - Master: Skyrim.esm

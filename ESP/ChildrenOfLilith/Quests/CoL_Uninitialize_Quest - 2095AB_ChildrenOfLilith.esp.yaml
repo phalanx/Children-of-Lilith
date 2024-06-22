@@ -1,0 +1,29 @@
+FormKey: 2095AB:ChildrenOfLilith.esp
+EditorID: CoL_Uninitialize_Quest
+VirtualMachineAdapter:
+  Scripts:
+  - Name: CoL_Uninitialize_Quest_Script
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: drainVictimAlias
+      Object: 2095AB:ChildrenOfLilith.esp
+      Alias: 0
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+NextAliasID: 1
+Aliases:
+- Name: drainVictimAlias
+  Flags: []
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 1DF47F:ChildrenOfLilith.esp
+    ComparisonValue: 1
+  VoiceTypes: Null

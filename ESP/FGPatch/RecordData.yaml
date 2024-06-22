@@ -1,14 +1,13 @@
 SpriggitSource:
   PackageName: Spriggit.Yaml.Skyrim
-  Version: 0.16.0
+  Version: 0.24.0
 ModKey: ChildrenOfLilithFGPatch.esp
 GameRelease: SkyrimSE
 ModHeader:
   Flags:
   - Light
   Stats:
-    NumRecords: 8
-    NextFormID: 147201
+    Version: 1.7
   Author: DEFAULT
   MasterReferences:
   - Master: Skyrim.esm

@@ -1,14 +1,13 @@
 SpriggitSource:
   PackageName: Spriggit.Yaml.Skyrim
-  Version: 0.16.0
+  Version: 0.24.0
 ModKey: ChildrenOfLilithVancianPatch.esp
 GameRelease: SkyrimSE
 ModHeader:
   Flags:
   - Light
   Stats:
-    NumRecords: 2
-    NextFormID: 22784
+    Version: 1.7
   Author: DEFAULT
   MasterReferences:
   - Master: Skyrim.esm
