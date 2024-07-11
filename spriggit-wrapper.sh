@@ -23,4 +23,3 @@ elif [[ "$1" == "deserialize" ]]; then
 fi
 
 wait
-read -p "Press enter to continue"

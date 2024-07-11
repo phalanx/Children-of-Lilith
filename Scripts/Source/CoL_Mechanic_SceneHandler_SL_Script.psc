@@ -111,15 +111,24 @@ Event SL_StartScene(Form actorRef, int threadId)
 
     currentParticipants = SexLab.Positions(threadId)
 
+    int i = 0
+    while i < currentParticipants.Length
+        if currentParticipants[i] != succubus
+            SexLab.TrackActor(succubus,"CoL_ParticipantTracking")
+            RegisterForModEvent("CoL_ParticipantTracking_Orgasm", "CoL_SLOrgasmHandler")
+        endif
+        i += 1
+    endwhile
+
     SexLab.SetHook(threadId, "CoLSLSceneHook")
     ; Register for thread specific SL Hooks
-    if SLSOInstalled
-        RegisterForModEvent("SexLabOrgasmSeparate", "SLSOOrgasmHandler")
-        Log("Registered for SLSO Orgasm Event")
-    else
-        Log("Registered for Orgasm Event")
-        RegisterForModEvent("HookOrgasmEnd_CoLSLSceneHook", "CoL_SLOrgasmHandler")
-    endif
+    ; if SLSOInstalled
+    RegisterForModEvent("SexLabOrgasmSeparate", "SLSOOrgasmHandler")
+    Log("Registered for SLSO Orgasm Event")
+    ; else
+    Log("Registered for Orgasm Event")
+    RegisterForModEvent("HookOrgasmEnd_CoLSLSceneHook", "CoL_SLOrgasmHandler")
+    ; endif
     RegisterForModEvent("HookAnimationEnd_CoLSLSceneHook", "CoL_SLAnimationEndHandler")
     Log("Registered for Scene Events")
 EndEvent
@@ -186,7 +195,7 @@ Event CoL_SLAnimationEndHandler(int threadId, bool hasPlayer)
 EndEvent
 
 Event SLSOOrgasmHandler(Form ActorRef, Int threadID)
-    Log("Entered orgasm handler")
+    Log("Entered separate orgasm handler")
     Actor akActor = ActorRef as Actor
     Actor[] positions = SexLab.Positions(threadID)
     string actorName = akActor.GetLeveledActorBase().GetName()
