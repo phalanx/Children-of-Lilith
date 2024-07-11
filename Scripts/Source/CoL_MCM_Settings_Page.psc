@@ -26,7 +26,7 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_minHealthPercent", "$COL_SETTINGSPAGE_MINHEALTHPERCENT", configHandler.minHealthPercent, "{2}")
         AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
         AddToggleOptionST("Toggle_drainToDeathCrime", "$COL_SETTINGSPAGE_DRAINTODEATHCRIME", configHandler.drainToDeathCrime)
-        AddSliderOptionST("Slider_drainToDeathDelay", "$COL_SETTINGSPAGE_DRAINTODEATHDELAY", configHandler.drainToDeathDelay)
+        AddSliderOptionST("Slider_drainToDeathDelay", "$COL_SETTINGSPAGE_DRAINTODEATHDELAY", configHandler.drainToDeathDelay, "{1}")
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
         int i = 0
@@ -162,12 +162,12 @@ EndEvent
 
     State Slider_drainToDeathDelay
         Event OnSliderOpenST(string state_id)
-            SetSliderDialog(configHandler.drainToDeathDelay, 0, 60, 1, 1)
+            SetSliderDialog(configHandler.drainToDeathDelay, 0, 60, 0.1, 0)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
             configHandler.drainToDeathDelay = value
-            SetSliderOptionValueST(configHandler.drainToDeathDelay)
+            SetSliderOptionValueST(configHandler.drainToDeathDelay,"{1}")
         EndEvent
 
         Event OnHighlightST(string state_id)
