@@ -185,7 +185,11 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
         drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
         return
     endif
-    drainee.Kill(drainee)
+    if configHandler.drainToDeathCrime
+        drainee.Kill(drainerForm as Actor)
+    else
+        drainee.Kill()
+    endif
 EndFunction
 
 Function doVampireDrain(Actor drainee)

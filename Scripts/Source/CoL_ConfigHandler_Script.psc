@@ -25,7 +25,8 @@ float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier app
 float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
 float Property minHealthPercent = 0.1 Auto Hidden               ; Minimum percentage of health allowed to be drained
-float Property drainToDeathDelay = 1.0 Auto Hidden              ; Delay before drain to death kills victim
+float Property drainToDeathDelay = 0.0 Auto Hidden              ; Delay before drain to death kills victim
+bool Property drainToDeathCrime = true Auto Hidden
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
@@ -194,7 +195,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 7
+    return 8
 EndFunction
 
 int Function SaveConfig()
@@ -225,6 +226,7 @@ int Function SaveConfig()
         JMap.setInt(jObj,"npcRelationshipDeathChance4",npcRelationshipDeathChance[4])
         JMap.setFlt(jObj, "minHealthPercent", minHealthPercent)
         JMap.setFlt(jObj, "drainToDeathDelay", drainToDeathDelay)
+        JMap.setInt(jObj, "drainToDeathCrime", drainToDeathCrime as int)
     ; Save Levelling Settings
         JMap.setFlt(jObj, "xpConstant", xpConstant)
         JMap.setFlt(jObj, "xpPower", xpPower)
@@ -324,6 +326,9 @@ Function LoadConfig(int jObj)
         energyConversionRate = JMap.getFlt(jObj, "energyConversionRate")
         drainFeedsVampire = JMap.getInt(jObj, "drainFeedsVampire") as bool
         npcDrainToDeathChance = JMap.getInt(jObj, "npcDrainToDeathChance")
+        if configVersion >= 3
+            minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
+        endif
         if configVersion >= 5
             npcRelationshipDeathChance[0] = JMap.getInt(jObj,"npcRelationshipDeathChance0")
             npcRelationshipDeathChance[1] = JMap.getInt(jObj,"npcRelationshipDeathChance1")
@@ -331,8 +336,8 @@ Function LoadConfig(int jObj)
             npcRelationshipDeathChance[3] = JMap.getInt(jObj,"npcRelationshipDeathChance3")
             npcRelationshipDeathChance[4] = JMap.getInt(jObj,"npcRelationshipDeathChance4")
         endif
-        if configVersion >= 3
-            minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
+        if configVersion >= 8
+            drainToDeathCrime = JMap.getInt(jObj, "drainToDeathCrime") as bool
         endif
     ; Load Levelling Settings
         xpConstant = JMap.getFlt(jObj, "xpConstant")

@@ -25,6 +25,7 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_energyConversionRate", "$COL_SETTINGSPAGE_ENERGYCONVERSIONRATE", configHandler.energyConversionRate, "{1}")
         AddSliderOptionST("Slider_minHealthPercent", "$COL_SETTINGSPAGE_MINHEALTHPERCENT", configHandler.minHealthPercent, "{2}")
         AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
+        AddToggleOptionST("Toggle_drainToDeathCrime", "$COL_SETTINGSPAGE_DRAINTODEATHCRIME", configHandler.drainToDeathCrime)
         AddSliderOptionST("Slider_drainToDeathDelay", "$COL_SETTINGSPAGE_DRAINTODEATHDELAY", configHandler.drainToDeathDelay)
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
@@ -239,6 +240,16 @@ EndEvent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE_HELP")
+        EndEvent
+    EndState
+
+    State Toggle_drainToDeathCrime
+        Event OnSelectST(string state_id)
+            configHandler.drainToDeathCrime = !configHandler.drainToDeathCrime
+            SetToggleOptionValueST(configHandler.drainToDeathCrime)
+        EndEvent
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_DRAINTODEATHCRIME_HELP")
         EndEvent
     EndState
 
