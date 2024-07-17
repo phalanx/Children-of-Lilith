@@ -22,6 +22,8 @@ Keyword Property ddLibs Auto Hidden
 Keyword Property toysToy Auto Hidden
 Keyword Property BBBNoStrip Auto Hidden
 
+bool Property vrikInstalled = false Auto Hidden
+
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
 GlobalVariable Property TimeScale Auto
@@ -219,6 +221,7 @@ Function Maintenance()
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
+    vrikInstalled = Game.IsPluginInstalled("VRIK.esp")
     widgetHandler.Maintenance()
     levelHandler.GoToState("Running")
     RegisterForEvents()
@@ -310,7 +313,7 @@ EndFunction
 
 bool Function isBeastRace()
     Race currentRace = playerRef.GetRace()
-    if MiscUtil.GetRaceEditorID(currentRace) == "WerewolfBeastRace" || MiscUtil.GetRaceEditorID(currentRace) == "DLC1VampireBeastRace"
+        if MiscUtil.GetRaceEditorID(currentRace) == "WerewolfBeastRace" || MiscUtil.GetRaceEditorID(currentRace) == "DLC1VampireBeastRace"
         return True
     else
         return False
@@ -319,18 +322,38 @@ EndFunction
 
 bool Function isBusy()
     if isBeastRace()
+        Log("Player is Beast Race")
         return True
     endif
+    Log("Camera State = " + Game.GetCameraState())
     if isTransforming
+        Log("Player is transforming")
         return true
     endif
-	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
+	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef) || StorageUtil.GetIntValue(playerRef, "DCUR_SceneRunning")==1
+        Log("Player is in Scene")
 		return True
-	elseIf UI.IsMenuOpen("Dialogue Menu")
+	elseIf UI.IsMenuOpen("Dialogue Menu") || UI.IsMenuOpen("Crafting Menu")
+        Log("Player is in Menu")
 		return True
-	elseIf !Game.IsFightingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Crafting Menu") || !playerRef.Is3DLoaded() || StorageUtil.GetIntValue(playerRef, "DCUR_SceneRunning")==1
+	elseIf !Game.IsFightingControlsEnabled() || !Game.IsMovementControlsEnabled()
+        Log("Player Controls Disabled")
 		return True
-	elseIf (Game.GetCameraState() == 10 || playerRef.GetSitState() != 0 || Game.GetCameraState() == 12 || playerRef.IsSwimming())  ;horse/in furniture/dragon/Swimming
+    elseIf !playerRef.Is3DLoaded()
+        Log("Player 3D is not loaded")
+        return True
+	elseIf Game.GetCameraState() == 10 && !vrikInstalled ; Vrik(or maybe just skryim vr) changes camerastate to 10 when not on horse
+        Log("Player is on horse")
+        return True
+    elseIf Game.GetCameraState() == 12
+        Log("Player is on dragon")
+        return True
+    elseIf playerRef.GetSitState() != 0
+        Log("Player is in furniture")
+        return True
+
+    elseif playerRef.IsSwimming()
+        Log("Player is swimming")
 		return True
 	endIf
 	return False
