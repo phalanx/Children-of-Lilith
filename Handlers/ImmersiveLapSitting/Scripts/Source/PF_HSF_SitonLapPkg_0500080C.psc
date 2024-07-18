@@ -5,9 +5,8 @@ Scriptname PF_HSF_SitonLapPkg_0500080C Extends Package Hidden
 ;BEGIN FRAGMENT Fragment_1
 Function Fragment_1(Actor akActor)
 ;BEGIN CODE
-   if CoL.DebugLogging
-        Debug.Trace("[CoL] ILS Start Detected: " + akActor.GetLeveledActorBase().GetName())
-   endif
+    
+    CoL.Log("[CoL] ILS Start Detected: " + akActor.GetLeveledActorBase().GetName())  
 
     int sceneStartEvent = ModEvent.Create("CoL_startScene")
     if sceneStartEvent
