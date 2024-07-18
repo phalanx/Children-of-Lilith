@@ -23,3 +23,4 @@ elif [[ "$1" == "deserialize" ]]; then
 fi
 
 wait
+read -p "Press Enter..."
