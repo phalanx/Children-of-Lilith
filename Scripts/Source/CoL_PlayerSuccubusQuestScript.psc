@@ -325,7 +325,7 @@ bool Function isBusy()
         Log("Player is Beast Race")
         return True
     endif
-    Log("Camera State = " + Game.GetCameraState())
+
     if isTransforming
         Log("Player is transforming")
         return true
