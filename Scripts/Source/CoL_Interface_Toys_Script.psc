@@ -23,8 +23,8 @@ Function GetToysKeywords()
     toysToy = Keyword.GetKeyword("ToysToyNoStrip")
 
     armBinderKeywords = new Keyword[2]
-    armBinderKeywords[0] = Keyword.GetKeyword("ToysEfffect_ArmBind")
-    armBinderKeywords[1] = Keyword.GetKeyword("ToysEfffect_YokeBind")
+    armBinderKeywords[0] = Keyword.GetKeyword("ToysEffect_ArmBind")
+    armBinderKeywords[1] = Keyword.GetKeyword("ToysEffect_YokeBind")
 EndFunction
 
 State Installed

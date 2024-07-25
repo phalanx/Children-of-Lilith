@@ -13,7 +13,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         Game.ForceThirdPerson()
         bool isTransformed = CoL.isTransformed
         if !isTransformed 
-            if configHandler.transformAnimation && CoL.succuRace == CoL.mortalRace
+            if configHandler.transformAnimation && CoL.succuRace == CoL.mortalRace && !CoL.PlayerArmsBound()
                 bool weaponDrawn
                 if CoL.playerRef.IsWeaponDrawn()
                     weaponDrawn = true

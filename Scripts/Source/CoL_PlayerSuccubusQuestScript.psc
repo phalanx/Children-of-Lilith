@@ -280,6 +280,10 @@ bool Function IsStrippable(Form itemRef)
     return false
 endFunction
 
+bool Function PlayerArmsBound()
+    return DD.ArmsBound() || Toys.Armsbound()
+endFunction
+
 Function ScaleEnergyTest()
     UnregisterForKey(configHandler.hotkeys[1])
     float currentEnergy = energyHandler.playerEnergyCurrent
