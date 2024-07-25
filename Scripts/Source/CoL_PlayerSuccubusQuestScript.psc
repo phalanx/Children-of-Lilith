@@ -147,7 +147,7 @@ State SceneRunning
         _Log("Entered SceneRunning State")
         if configHandler.transformDuringScene
             _Log("Scene Start Transforming")
-            if !isTransformed
+            if !isTransformed && !isBeastRace()
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
                 transformPlayer(succuPresetName, succuRace, succuHairColor)
@@ -329,6 +329,7 @@ bool Function isBusy()
         Log("Player is transforming")
         return true
     endif
+
 	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef) || StorageUtil.GetIntValue(playerRef, "DCUR_SceneRunning")==1
         Log("Player is in Scene")
 		return True
@@ -341,7 +342,7 @@ bool Function isBusy()
     elseIf !playerRef.Is3DLoaded()
         Log("Player 3D is not loaded")
         return True
-	elseIf Game.GetCameraState() == 10 && !vrikInstalled ; Vrik(or maybe just skryim vr) changes camerastate to 10 when not on horse
+	elseIf Game.GetCameraState() == 10 && !vrikInstalled ; Vrik(or maybe just skryim vr) changes camerastate to 10 even when not on a horse
         Log("Player is on horse")
         return True
     elseIf Game.GetCameraState() == 12
@@ -350,7 +351,6 @@ bool Function isBusy()
     elseIf playerRef.GetSitState() != 0
         Log("Player is in furniture")
         return True
-
     elseif playerRef.IsSwimming()
         Log("Player is swimming")
 		return True
