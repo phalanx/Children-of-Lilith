@@ -8,11 +8,11 @@ VirtualMachineAdapter:
       Name: TimeScale
       Object: 00003A:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: drainEffect
-      Object: 2D1D69:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: drainEffect
+      Object: 2D1D69:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: Drained By Succubus

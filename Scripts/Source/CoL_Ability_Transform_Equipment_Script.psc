@@ -72,6 +72,7 @@ Form[] function StripEquipment(Actor actorRef)
                     Log("Item not found in striplist")
                 endif
                 if CoL.IsStrippable(itemRef)
+                    Log("Item is strippable")
                     actorRef.UnequipItemEX(itemRef)
                     stripped[i] = itemRef
                 endif

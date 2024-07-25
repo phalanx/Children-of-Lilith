@@ -14,12 +14,13 @@ CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Interface_SLCumOverlay_Script Property iSLCumOverlay Auto
+CoL_Interface_DD_Script Property DD Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
 ; Keyword Definitions
-Keyword Property ddLibs Auto Hidden
-Keyword Property toysToy Auto Hidden
+; Keyword Property ddLibs Auto Hidden
+; Keyword Property toysToy Auto Hidden
 Keyword Property BBBNoStrip Auto Hidden
 
 bool Property vrikInstalled = false Auto Hidden
@@ -212,12 +213,6 @@ EndFunction
 
 Function Maintenance()
     _Log("Maintenance running")
-    if Game.IsPluginInstalled("Devious Devices - Assets.esm")
-        ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
-    endif
-    if Game.IsPluginInstalled("Toys.esm")
-        toysToy = Game.GetFormFromFile(0x000815, "Toys.esm") as Keyword
-    endif
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
@@ -275,8 +270,8 @@ Function EndScene()
 EndFunction
 
 bool Function IsStrippable(Form itemRef)
-    if !ddLibs || !itemRef.hasKeyword(ddLibs) ; Make sure it's not a devious device
-        if !toysToy || !itemRef.hasKeyword(toysToy) ; Make sure it's not a Toys Framework toy
+    if DD.IsStrippable(itemRef) ; Make sure it's not a devious device
+        if Toys.IsStrippable(itemRef) ; Make sure it's not a Toys Framework toy
             if !BBBNoStrip || !itemRef.hasKeyword(BBBNoStrip) ; Make sure it doesn't have 3BBB's NoStrip Keyword
                 return True
             endif
