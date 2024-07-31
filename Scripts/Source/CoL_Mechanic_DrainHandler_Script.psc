@@ -12,6 +12,7 @@ VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
 
+bool drainStarted = false
 bool draining = false
 bool drainingToDeath = false
 
@@ -95,6 +96,9 @@ Function CheckDraining(bool verbose)
 EndFunction
 
 Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
+    UnRegisterForKey(configHandler.hotkeys[0])
+    UnRegisterForKey(configHandler.hotkeys[1])
+    drainStarted = True
     if drainingToDeath
         DrainToDeath(drainerForm, draineeForm, draineeName, arousal)
     elseif draining
@@ -108,6 +112,8 @@ Event EndDrain(Form drainerForm, Form draineeForm)
     elseif draining
         EndNormalDrain(drainerForm, draineeForm)
     endif
+    drainStarted = False
+    energyUpdated(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
 EndEvent
 
 Function NormalDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
@@ -144,7 +150,7 @@ EndFunction
 Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
     Actor drainee = draineeForm as Actor
 
-    Log("Recieved Start Drain Event for " + draineeName)
+    Log("Recieved Start Drain To Death Event for " + draineeName)
     Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
     Log("Recieved Victim Arousal: " + arousal)
 
@@ -178,7 +184,7 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Actor drainee = draineeForm as Actor
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 
-    Log("Recieved End Drain Event for " + draineeName)
+    Log("Recieved End Drain To Death Event for " + draineeName)
     Log("Killing " + draineeName)
     if drainee.isEssential()
         Log("Can't kill essential. Dealing damage instead")
@@ -251,9 +257,11 @@ EndFunction
 Function energyUpdated(float newEnergy, float maxEnergy)
     if configHandler.deadlyDrainWhenTransformed && CoL.isTransformed
         return
+    elseif drainStarted
+        return
     endif
     float energyPercentage = ((newEnergy / maxEnergy) * 100) 
-    if configHandler.forcedDrainToDeathMinimum != 1 && energyPercentage <= configHandler.forcedDrainToDeathMinimum
+    if configHandler.forcedDrainToDeathMinimum != -1 && energyPercentage <= configHandler.forcedDrainToDeathMinimum
         drainingToDeath = true
     elseif configHandler.forcedDrainMinimum != -1 && energyPercentage <= configHandler.forcedDrainMinimum
         drainingToDeath = false
