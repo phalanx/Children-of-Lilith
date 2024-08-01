@@ -105,6 +105,7 @@ int Property autoFadeTime = 5 Auto Hidden
 Form[] Property NoStripList Auto Hidden
 bool Property transformAnimation = true Auto Hidden
 bool Property transformDuringScene = true Auto Hidden
+float Property transformDuringSceneChance = 1.0 Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property transformSavesNiOverrides = false Auto Hidden
 float Property transformCost = 1.0 Auto Hidden
@@ -195,7 +196,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 8
+    return 9
 EndFunction
 
 int Function SaveConfig()
@@ -418,6 +419,9 @@ Function LoadConfig(int jObj)
         endif
         if configVersion >= 5
             transformDuringScene = JMap.getInt(jObj, "transformDuringScene") as bool
+        endif
+        if configVersion >= 9
+            transformDuringSceneChance = JMap.getFlt(jObj, "transformDuringSceneChance")
         endif
     ; Load Transform Baseline Buffs
         transformBuffsEnabled = JMap.getInt(jObj, "transformBuffsEnabled") as bool

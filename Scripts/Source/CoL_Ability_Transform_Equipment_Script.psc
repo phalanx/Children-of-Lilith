@@ -56,6 +56,7 @@ Form[] function StripEquipment(Actor actorRef)
     int i = 31
     Form itemRef
     Form[] stripped = new Form[32]
+    ; We copy the NoStripList as an optimization to free up configHandler
 	form[] NoStripList = configHandler.NoStripList
     Log("No Strip List Contains:")
     int x = 0

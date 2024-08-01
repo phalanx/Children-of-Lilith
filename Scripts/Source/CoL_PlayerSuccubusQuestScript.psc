@@ -19,8 +19,6 @@ CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
 ; Keyword Definitions
-; Keyword Property ddLibs Auto Hidden
-; Keyword Property toysToy Auto Hidden
 Keyword Property BBBNoStrip Auto Hidden
 
 bool Property vrikInstalled = false Auto Hidden
@@ -142,29 +140,28 @@ State Running
     EndEvent
 EndState
 
+bool transformedForScene = false
 State SceneRunning
     Event onBeginState()
         _Log("Entered SceneRunning State")
-        if configHandler.transformDuringScene
+        transformedForScene = SceneTransformChecksPassed()
+        if transformedForScene
             _Log("Scene Start Transforming")
-            if !isTransformed && !isBeastRace()
-                simpleTransform.Cast(playerRef)
-                Utility.Wait(2)
-                transformPlayer(succuPresetName, succuRace, succuHairColor)
-            endif
+            simpleTransform.Cast(playerRef)
+            Utility.Wait(2)
+            transformPlayer(succuPresetName, succuRace, succuHairColor)
         endif
     EndEvent
 
     Event onEndState()
         _Log("Exited SceneRunning State")
-        if configHandler.transformDuringScene
-            if !isTransformed
-                _Log("Scene End Untransforming")
-                simpleTransform.Cast(playerRef)
-                Utility.Wait(2)
-                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
-            endif
+        if transformedForScene
+            _Log("Scene End Untransforming")
+            simpleTransform.Cast(playerRef)
+            Utility.Wait(2)
+            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
         endif
+        transformedForScene = false
     EndEvent
 EndState
 
@@ -534,4 +531,26 @@ Function UpdateConfig()
         UpdateHunger()
         widgetHandler.UpdateMeter()
     endif
+EndFunction
+
+bool Function SceneTransformChecksPassed()
+    _Log("Checking Scene Transform")
+    if !configHandler.transformDuringScene
+        return false
+    endif
+    if isBeastRace()
+        _Log("Player is Beast Race")
+        return false
+    endif
+    if isTransformed
+        return false
+    endif
+    float randomChance = Utility.RandomFloat()
+    if randomChance > ConfigHandler.transformDuringSceneChance
+        _Log("Chance failed: ")
+        _Log("    Configured Chance: " + configHandler.transformDuringSceneChance)
+        _Log("    Rolled Chance: " + randomChance)
+        return false
+    endif
+    return true
 EndFunction
