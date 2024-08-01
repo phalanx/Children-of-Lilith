@@ -5,8 +5,8 @@ VirtualMachineAdapter:
   - Name: CoL_Perk_Infinite_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: effecientFeeder
-      Object: 2B1A9B:ChildrenOfLilith.esp
+      Name: energyHandler
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
@@ -31,8 +31,8 @@ VirtualMachineAdapter:
       Name: energyStorage
       Object: 2B4235:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
-      Object: 000D64:ChildrenOfLilith.esp
+      Name: effecientFeeder
+      Object: 2B1A9B:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: Infinite Perk

@@ -1,5 +1,4 @@
 FormKey: 3955CA:ChildrenOfLilith.esp
-VersionControl: 12536
 EditorID: CoL_Interface_DD
 VirtualMachineAdapter:
   Scripts:
@@ -14,5 +13,6 @@ VirtualMachineAdapter:
   FileName: ''
 Flags:
 - StartGameEnabled
+- 0x10
 - RunOnce
 NextAliasID: 0

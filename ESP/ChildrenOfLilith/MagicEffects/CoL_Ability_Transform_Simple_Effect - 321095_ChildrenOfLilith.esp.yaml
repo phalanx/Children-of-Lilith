@@ -4,27 +4,21 @@ VirtualMachineAdapter:
   Scripts:
   - Name: CoL_Ability_Transform_FX_Script
     Properties:
-    - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: safeTransformation
-      Object: 2BE09C:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptBoolProperty
       Name: simple
       Data: True
     - MutagenObjectType: ScriptObjectProperty
-      Name: SuccubusTransformationIdle
-      Object: 0088E7:Dawnguard.esm
-    - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: SuccubusTransformSound
       Object: 0FF9E9:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: transformCostSPell
-      Object: 300DCC:ChildrenOfLilith.esp
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: SuccubusTransformationIdle
+      Object: 0088E7:Dawnguard.esm
 Name:
   TargetLanguage: English
   Value: Succubus Transform
