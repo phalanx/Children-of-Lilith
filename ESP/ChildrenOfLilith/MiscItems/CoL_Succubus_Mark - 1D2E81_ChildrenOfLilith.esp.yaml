@@ -7,6 +7,9 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: npcSuccubusQuest
       Object: 213410:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: sceneHandlerSpells
       Objects:
@@ -18,9 +21,6 @@ VirtualMachineAdapter:
         Object: 352899:ChildrenOfLilith.esp
       - Name: ''
         Object: 35289B:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: Mark of the Succubus

@@ -4,18 +4,18 @@ VirtualMachineAdapter:
   Scripts:
   - Name: CoL_Generic_Toggle_Spell_Script
     Properties:
+    - MutagenObjectType: ScriptStringProperty
+      Name: displayName
+      Data: Heal Rate Boost
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: SpellToToggle
       Object: 042FA6:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptStringProperty
-      Name: displayName
-      Data: Heal Rate Boost
     - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp

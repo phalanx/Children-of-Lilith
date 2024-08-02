@@ -8,11 +8,11 @@ VirtualMachineAdapter:
       Name: levelHandler
       Object: 33C42F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
@@ -22,17 +22,17 @@ VirtualMachineAdapter:
   - Name: SayOnHitByMagicEffectScript
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: CombatTopicToSay
-      Object: 0AB884:Skyrim.esm
-    - MutagenObjectType: ScriptObjectProperty
-      Name: WICastNonHostileTimer
-      Object: 0E0CDC:Skyrim.esm
+      Name: TopicToSay
+      Object: 0AB87F:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
       Name: GameDaysPassed
       Object: 000039:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: TopicToSay
-      Object: 0AB87F:Skyrim.esm
+      Name: WICastNonHostileTimer
+      Object: 0E0CDC:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CombatTopicToSay
+      Object: 0AB884:Skyrim.esm
 Name:
   TargetLanguage: English
   Value: Succubus Temptation
@@ -70,4 +70,4 @@ Sounds:
   Sound: 08196D:Skyrim.esm
 Description:
   TargetLanguage: English
-  Value: ''
+  Value: Increase Target's Arousal
