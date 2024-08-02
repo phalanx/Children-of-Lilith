@@ -5,19 +5,26 @@ CoL_ConfigHandler_Script Property configHandler Auto
 iWant_Widgets Property iWidgets Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
-int energyMeter
+int energyMeter = -1
 int[] lastColor
 
 Function Initialize()
     Log("Initializing")
+    CreateMeter()
+    Maintenance()
+EndFunction
+
+Function CreateMeter()
+    if energyMeter != -1
+        iWidgets.Destroy(energyMeter)
+    endif
     energyMeter = iWidgets.loadMeter(configHandler.energyMeterXPos, configHandler.energyMeterYPos, True)
     if energyMeter == -1
         Log("Failed to load energy meter")
         return
     endif
-    lastColor = GetColor(0)
+    lastColor = GetColor()
     iWidgets.setMeterFillDirection(energyMeter, "both")
-    Maintenance()
 EndFunction
 
 Function Log(string msg)
@@ -63,6 +70,7 @@ Function UpdateColor(int drainCode=-1)
     int[] color = GetColor(drainCode)
     iWidgets.setMeterRGB(energyMeter, color[0], color[1], color[2], color[3], color[4], color[5])
     lastColor = color
+    ShowMeter()
 EndFunction
 
 int[] Function GetColor(int drainCode=-1)
@@ -96,13 +104,12 @@ int[] Function GetColor(int drainCode=-1)
     elseif lastColor.Length > 0
         return lastColor
     else
-        Log("Couldn't get widget color")
         return disabledColor
     endif
 endFunction
 
 Function ShowMeter()
-    iWidgets.setVisible(energyMeter, 1)
+    iWidgets.setTransparency(energyMeter, 100)
     if configHandler.autofade
         RegisterForSingleUpdate(configHandler.autoFadeTime)
     endif
@@ -111,12 +118,7 @@ EndFunction
 Event OnUpdate()
     UnRegisterForUpdate()
     if configHandler.autoFade
-        int i = 100
-        while i > 0
-            iWidgets.setTransparency(energyMeter, i)
-            i -= 1
-        endwhile
-        iWidgets.setVisible(energyMeter, 0)
+        iWidgets.doTransitionByTime(energyMeter, 0)
     else
         ShowMeter()
     endif

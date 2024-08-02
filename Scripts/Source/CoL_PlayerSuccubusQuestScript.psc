@@ -246,7 +246,6 @@ Function Maintenance()
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
     vrikInstalled = Game.IsPluginInstalled("VRIK.esp")
-    widgetHandler.Maintenance()
     levelHandler.GoToState("Running")
     RegisterForEvents()
     Utility.Wait(0.5)
