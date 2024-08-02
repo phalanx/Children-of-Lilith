@@ -5,11 +5,11 @@ VirtualMachineAdapter:
   - Name: CoL_NpcSuccubusQuest_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: npcDrainHandler
       Object: 213410:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: sceneHandlerSpells
       Objects:
@@ -33,10 +33,10 @@ VirtualMachineAdapter:
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
+      Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
+      Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
   Versioning:
   - Break0

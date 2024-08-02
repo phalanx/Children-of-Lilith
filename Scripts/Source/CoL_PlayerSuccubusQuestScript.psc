@@ -155,7 +155,7 @@ State SceneRunning
     EndEvent
 
     bool Function PlayerIsVictim()
-        return SexLab.IsVictim(playerRef)
+        return SexLab.IsVictim(playerRef)  || Toys.isPlayerVictim()
     EndFunction
     
     bool Function PlayerIsAgressor()
@@ -583,12 +583,12 @@ bool Function SceneTransformChecksPassed()
         return true
     endif
 
-    if SexLab.IsVictim(playerRef)
+    if PlayerIsVictim()
         _Log("Player is Victim")
         return Utility.RandomFloat() < configHandler.transformIfPlayerVictimChance
     endif
 
-    if SexLab.IsAggressor(playerRef)
+    if PlayerIsAgressor()
         _Log("Player is Aggressor")
         return Utility.RandomFloat() < configHandler.transformIfPlayerAggressorChance
     endif

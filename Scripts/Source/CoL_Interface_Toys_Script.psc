@@ -5,6 +5,10 @@ Actor Property playerRef Auto
 Keyword[] armBinderKeywords
 Keyword toysToy
 
+bool sceneInfoSet = false
+bool playerSceneRunning = false
+bool scenePlayerConsent = true
+
 Event OnInit()
     Maintenance()
 EndEvent
@@ -38,6 +42,30 @@ State Installed
 
     bool Function isBusy()
         return ToysGlobal.isBusy()
+    EndFunction
+
+    ; This function accepts all the scene data but only uses part of it
+    Function SetPlayerSceneData(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerConsent, Form ActInPos1, Form ActInPos2, Form ActInPos3, Form ActInPos4, Form ActInPos5)
+        playerSceneRunning = true
+        Debug.Trace("[CoL] PlayerConsent = " + PlayerConsent )
+        scenePlayerConsent = PlayerConsent
+        sceneInfoSet = true
+    EndFunction
+
+    Function ClearPlayerSceneData()
+        playerSceneRunning = false
+        scenePlayerConsent = true
+        sceneInfoSet = false
+    EndFunction
+
+    bool Function isPlayerVictim()
+        int i = 0
+        while !sceneInfoSet && i < 30
+            Utility.Wait(1)
+            Debug.Trace("[CoL] Waiting for scene data...")
+            i += 1
+        endwhile
+        return !scenePlayerConsent
     EndFunction
 
     Function ArousalAdjust(int adjArousal, bool ForceNotify = false )
@@ -75,6 +103,16 @@ Function Caress()
 EndFunction
 
 bool Function isBusy()
+    return false
+EndFunction
+
+Function setPlayerSceneData(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerConsent, Form ActInPos1, Form ActInPos2, Form ActInPos3, Form ActInPos4, Form ActInPos5)
+EndFunction
+
+Function ClearPlayerSceneData()
+EndFunction
+
+bool Function isPlayerVictim()
     return false
 EndFunction
 

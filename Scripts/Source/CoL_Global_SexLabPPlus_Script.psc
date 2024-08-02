@@ -8,23 +8,27 @@ SexLabThread Function GetThreadByActor(Quest SexLab, Actor actorRef) Global
     return (SexLab as SexLabFramework).GetThreadByActor(actorRef)
 endFunction
 
-bool Function IsVictim(Quest SexLab, Actor actorRef) Global
+bool Function IsVictim(Quest SexLab, Actor actorRef, bool tagCheck=false) Global
     SexLabThread thread = GetThreadByActor(SexLab, actorRef)
-    if thread != None && IsNonCon(SexLab, thread)
+    if thread != None && IsNonCon(SexLab, thread, tagCheck)
         return thread.GetSubmissive(actorRef)
     endif
     return false
 EndFunction
 
-bool Function IsAggressor(Quest SexLab, Actor actorRef) Global
+bool Function IsAggressor(Quest SexLab, Actor actorRef, bool tagCheck=false) Global
     SexLabThread thread = GetThreadByActor(SexLab, actorRef)
-    if thread != None && IsNonCon(SexLab, thread)
+    if thread != None && IsNonCon(SexLab, thread, tagCheck)
         return !thread.GetSubmissive(actorRef)
     endif
     return false
 EndFunction
 
-bool Function IsNonCon(Quest SexLab, SexLabThread thread) Global
+bool Function IsNonCon(Quest SexLab, SexLabThread thread, bool tagCheck=false) Global
     ; Not enough mods use PPlus's contextual tagging yet, so for now this will hopefully work
-    return !thread.IsConsent() || thread.HasTag("Aggressive") || thread.HasTag("aggressive") || thread.HasTag("Forced") || thread.HasTag("forced")
+    if tagCheck
+        return !thread.IsConsent() || thread.HasTag("Aggressive") || thread.HasTag("Forced")
+    else
+        return !thread.IsConsent()
+    endif
 EndFunction

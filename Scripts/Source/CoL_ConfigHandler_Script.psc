@@ -80,17 +80,8 @@ int Property newTemptationBaseIncrease = 1 Auto Hidden     ; Base Arousal increa
 float Property newTemptationLevelMult = 1.0 Auto Hidden    ; Mult applied to succubus level before being added to the base increase
 
 ; Hotkey Settings
-; 0 - Drain Key - Default left alt
-; 1 - Drain to Death Key - Default right alt
-; 2 - Transform Key
-; 3 - Temptation Key
-; 4 - CSF Menu Key
+; 0 - Drain Key - Default left alt | 1 - Drain to Death Key - Default right alt | 2 - Transform Key | 3 - Temptation Key | 4 - CSF Menu Key
 int[] Property hotkeys Auto Hidden
-; int Property toggleDrainHotkey = 29 Auto Hidden            ; Default Toggle Drain key to left shift
-; int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
-; int Property transformHotkey = -1 Auto Hidden              ; Transform hotkey, no default
-; int Property newTemptationHotkey = -1 Auto Hidden             ; temptation hotkey, no default
-; int Property csfMenuHotkey = -1 Auto Hidden                ; Custom skill framework hotkey, no default
 
 ; Widget Settings
 int Property energyMeterAlpha = 100 Auto Hidden
@@ -117,26 +108,17 @@ float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
 bool Property arousalUntransform = false Auto Hidden
 
-bool Property transformBuffsEnabled = false Auto Hidden
 ; Transform Baseline Buffs
-; 0 - health
-; 1 - stamina
-; 2 - magicka
-; 3 - carry weight
-; 4 - melee damage
-; 5 - armor
-; 6 - magic resist
+bool Property transformBuffsEnabled = false Auto Hidden
+; 0 - health | 1 - stamina | 2 - magicka | 3 - carry weight | 4 - melee damage | 5 - armor | 6 - magic resist
 float[] Property transformBaseBuffs Auto Hidden
 
 ; Transform Rank Effects
-; 0 - health
-; 1 - stamina
-; 2 - magicka
-; 3 - carry weight
-; 4 - melee damage
-; 5 - armor
-; 6 - magic resist
+; 0 - health | 1 - stamina | 2 - magicka | 3 - carry weight | 4 - melee damage | 5 - armor | 6 - magic resist
 float[] Property transformRankEffects Auto Hidden
+
+; Compatability Options
+bool Property PPlusTagCheck = false Auto Hidden
 
 Event OnInit()
     transformRankEffects = new float[7]
