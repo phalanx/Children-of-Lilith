@@ -18,6 +18,7 @@ CoL_Interface_DD_Script Property DD Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
+bool Property propertyname Auto
 ; Keyword Definitions
 Keyword Property BBBNoStrip Auto Hidden
 
@@ -153,6 +154,29 @@ State SceneRunning
         endif
     EndEvent
 
+    bool Function PlayerIsVictim()
+        return SexLab.IsVictim(playerRef)
+    EndFunction
+    
+    bool Function PlayerIsAgressor()
+        return SexLab.IsAggressor(playerRef)
+    EndFunction
+
+    Event OnKeyDown(int keyCode)
+        if keyCode == configHandler.hotkeys[2]
+            if !transformedForScene
+                simpleTransform.Cast(playerRef)
+                Utility.Wait(2)
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
+                transformedForScene = true
+            else
+                simpleTransform.Cast(playerRef)
+                Utility.Wait(2)
+                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+                transformedForScene = false
+            endif
+        endif
+    EndEvent
     Event onEndState()
         _Log("Exited SceneRunning State")
         if transformedForScene
@@ -164,6 +188,14 @@ State SceneRunning
         transformedForScene = false
     EndEvent
 EndState
+
+bool Function PlayerIsVictim()
+    return false
+EndFunction
+
+bool Function PlayerIsAgressor()
+    return false
+EndFunction
 
 State Uninitialize
     Event OnBeginState()
@@ -543,14 +575,24 @@ bool Function SceneTransformChecksPassed()
         return false
     endif
     if isTransformed
+        _Log("Player is Transformed")
         return false
     endif
-    float randomChance = Utility.RandomFloat()
-    if randomChance > ConfigHandler.transformDuringSceneChance
-        _Log("Chance failed: ")
-        _Log("    Configured Chance: " + configHandler.transformDuringSceneChance)
-        _Log("    Rolled Chance: " + randomChance)
-        return false
+
+    if Utility.RandomFloat() < ConfigHandler.transformDuringSceneChance
+        return true
     endif
-    return true
+
+    if SexLab.IsVictim(playerRef)
+        _Log("Player is Victim")
+        return Utility.RandomFloat() < configHandler.transformIfPlayerVictimChance
+    endif
+
+    if SexLab.IsAggressor(playerRef)
+        _Log("Player is Aggressor")
+        return Utility.RandomFloat() < configHandler.transformIfPlayerAggressorChance
+    endif
+
+    return false
 EndFunction
+

@@ -42,6 +42,8 @@ Event OnPageDraw()
     AddToggleOptionST("Toggle_TransformDuringScene", "$COL_TRANSFORMPAGE_DURING_SCENE", configHandler.transformDuringScene)
     if configHandler.transformDuringScene
         AddSliderOptionST("Slider_transformDuringSceneChance", "$COL_TRANSFORMPAGE_DURINGSCENECHANCE", configHandler.transformDuringSceneChance * 100)
+        AddSliderOptionST("Slider_transformIfPlayerVictimChance", "$COL_TRANSFORMPAGE_PLAYERVICTIMCHANCE", configHandler.transformIfPlayerVictimChance * 100)
+        AddSliderOptionST("Slider_transformIfPlayerAggressorChance", "$COL_TRANSFORMPAGE_PLAYERAGGRESSORCHANCE", configHandler.transformIfPlayerAggressorChance * 100)
     endif
     AddToggleOptionST("Toggle_TransformCrime", "$COL_TRANSFORMPAGE_TRANSFORMCRIME", configHandler.transformCrime)
     AddToggleOptionST("Toggle_TransformEquipment", "$COL_TRANSFORMPAGE_EQUIPMENTSWAP", configHandler.transformSwapsEquipment)
@@ -235,6 +237,33 @@ State Slider_TransformDuringSceneChance
         SetInfoText("$COL_TRANSFORMPAGE_DURINGSCENECHANCE_HELP")
     EndEvent
 EndState
+
+State Slider_transformIfPlayerVictimChance
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialog(configHandler.transformIfPlayerVictimChance * 100, 0.0, 100.0, 1.0, 100.0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.transformIfPlayerVictimChance = value / 100
+        SetSliderOptionValueST(configHandler.transformIfPlayerVictimChance * 100)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_PLAYERVICTIMCHANCE_HELP")
+    EndEvent
+EndState
+
+State Slider_transformIfPlayerAggressorChance
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialog(configHandler.transformIfPlayerAggressorChance * 100, 0.0, 100.0, 1.0, 100.0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.transformIfPlayerAggressorChance = value / 100
+        SetSliderOptionValueST(configHandler.transformIfPlayerAggressorChance * 100)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_PLAYERAGGRESSORCHANCE_HELP")
+    EndEvent
+EndState
+
 State Toggle_TransformAnimation
     Event OnSelectST(string state_id)
         configHandler.transformAnimation = !configHandler.transformAnimation

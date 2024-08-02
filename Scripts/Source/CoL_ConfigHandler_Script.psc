@@ -106,6 +106,8 @@ Form[] Property NoStripList Auto Hidden
 bool Property transformAnimation = true Auto Hidden
 bool Property transformDuringScene = true Auto Hidden
 float Property transformDuringSceneChance = 1.0 Auto Hidden
+float Property transformIfPlayerVictimChance = 1.0 Auto Hidden
+float Property transformIfPlayerAggressorChance = 1.0 Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property transformSavesNiOverrides = false Auto Hidden
 float Property transformCost = 1.0 Auto Hidden

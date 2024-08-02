@@ -1,6 +1,7 @@
 Scriptname CoL_Interface_SexLab_Script extends Quest
 
 Quest SexLab
+bool Property PPlus = false auto hidden
 
 Event OnInit()
     Maintenance()
@@ -10,10 +11,21 @@ Function OnGameLoad()
     Maintenance()
 EndFunction
 
+Function Log(string msg)
+    Debug.Trace("[CoL] Sexlab Interface - " + msg)
+EndFunction
+
 Function Maintenance()
     RegisterForModEvent("CoL_GameLoad", "OnGameLoad")
     SexLab = Quest.GetQuest("SexLabQuestFramework")
     if SexLab != None
+        if CoL_Global_SexLab_Script.GetVersion(SexLab) >= 20000
+            Log("PPlus Detected")
+            PPlus = true
+        else
+            Log("Base Sexlab Detected")
+            PPlus = false
+        endif
         GoToState("Installed")
     else
         GoToState("")
@@ -46,6 +58,22 @@ State Installed
         Return CoL_Global_SexLab_Script.IsActorActive(SexLab, actorRef)
     EndFunction
 
+    bool Function IsVictim(Actor actorRef)
+        if PPLus
+            return CoL_Global_SexLabPPlus_Script.IsVictim(SexLab, actorRef)
+        else
+            return CoL_Global_SexLab_Script.IsVictim(SexLab, actorRef)
+        endif
+    EndFunction
+
+    bool Function IsAggressor(Actor actorRef)
+        if PPLus
+            return CoL_Global_SexLabPPlus_Script.IsAggressor(SexLab, actorRef)
+        else
+           return CoL_Global_SexLab_Script.IsAggressor(SexLab, actorRef)
+        endif
+    EndFunction
+
 EndState
 
 bool Function IsInterfaceActive()
@@ -62,4 +90,12 @@ Actor[] Function Positions(int threadId)
 EndFunction
 
 bool Function IsActorActive(Actor actorRef)
+EndFunction
+
+bool Function IsVictim(Actor actorRef)
+    return false
+EndFunction
+
+bool Function IsAggressor(Actor actorRef)
+    return false
 EndFunction
