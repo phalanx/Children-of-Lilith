@@ -199,7 +199,7 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
 EndFunction
 
 Function doVampireDrain(Actor drainee)
-    if CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
+    if drainee != None && CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
         vampireHandler.Feed(drainee)
     endif
 EndFunction
