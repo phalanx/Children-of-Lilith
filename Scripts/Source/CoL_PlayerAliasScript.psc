@@ -165,10 +165,14 @@ Function ExpendEnergyVancian()
 EndFunction
 
 Event OnVampirismStateChanged(bool isVampire)
+    Log("Player vampire status changed")
     if CoL.isPlayerSuccubus.GetValueInt() == 0
+        Log("Player is not a succubus")
+        return
+    elseif !CoL.mortalPresetSaved && !CoL.succuPresetSaved
+        Log("Forms not configured")
         return
     endif
-    Log("Player vampire status changed")
     string mortalRaceId = MiscUtil.GetRaceEditorID(CoL.mortalRace)
     string succubusRaceId = MiscUtil.GetRaceEditorID(CoL.succuRace)
     Race newMortalRace
@@ -178,7 +182,6 @@ Event OnVampirismStateChanged(bool isVampire)
 
     if isVampire
         Log("Became Vampire")
-
         if StringUtil.Find(mortalRaceId, "Vampire") == -1
             mortalRaceId += "Vampire"
         else
