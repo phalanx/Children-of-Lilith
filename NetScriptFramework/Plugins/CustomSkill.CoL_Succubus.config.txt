@@ -117,17 +117,17 @@ Node5.X = 0
 Node5.Y = 0
 Node5.GridX = 2
 Node5.GridY = 2
-Node5.Links = "6"
+Node5.Links = "15"
 
 # Transform Armor Perk
-Node6.Enable = true
-Node6.PerkFile = "ChildrenOfLilith.esp"
-Node6.PerkId = 0x28A0F2
-Node6.X = 0.5
-Node6.Y = 0.5
-Node6.GridX = 2
-Node6.GridY = 2
-Node6.Links = "6"
+Node15.Enable = true
+Node15.PerkFile = "ChildrenOfLilith.esp"
+Node15.PerkId = 0x28A0F2
+Node15.X = 0.5
+Node15.Y = 0.5
+Node15.GridX = 2
+Node15.GridY = 2
+Node15.Links = "6"
 
 # Transform Magic Resist Perk
 Node6.Enable = true
