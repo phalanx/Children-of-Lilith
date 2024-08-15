@@ -5,13 +5,10 @@ VirtualMachineAdapter:
   - Name: CoL_Perk_Infinite_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: effecientFeeder
       Object: 2B1A9B:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
+      Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: transformPerks
@@ -30,6 +27,9 @@ VirtualMachineAdapter:
         Object: 28A0F2:ChildrenOfLilith.esp
       - Name: ''
         Object: 2A549B:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: energyStorage
       Object: 2B4235:ChildrenOfLilith.esp

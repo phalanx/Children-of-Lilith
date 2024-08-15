@@ -25,4 +25,4 @@ CastingSoundLevel: Normal
 Sounds: []
 Description:
   TargetLanguage: English
-  Value: Health has been reduced
+  Value: A succubus has drained <mag> points of Health

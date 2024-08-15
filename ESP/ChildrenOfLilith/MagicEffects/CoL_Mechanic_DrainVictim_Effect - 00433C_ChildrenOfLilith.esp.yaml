@@ -5,28 +5,28 @@ VirtualMachineAdapter:
   - Name: CoL_Mechanic_DrainVictim_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: drainEffect
-      Object: 2D1D69:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: drainEffect
+      Object: 2D1D69:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: TimeScale
       Object: 00003A:Skyrim.esm
 Name:
   TargetLanguage: English
-  Value: Drained By Succubus
+  Value: Drain Persistence Tracker
 Flags:
 - Recover
 - Detrimental
 - HideInUI
 Archetype:
   MutagenObjectType: MagicEffectArchetype
-  ActorValue: Health
+  Type: Script
 HitEffectArt: 0A6EF6:Skyrim.esm
 DualCastScale: 1
 CastingSoundLevel: Normal
 Sounds: []
 Description:
   TargetLanguage: English
-  Value: Persistent effect to ensure health drain effect persists correctly
+  Value: ''

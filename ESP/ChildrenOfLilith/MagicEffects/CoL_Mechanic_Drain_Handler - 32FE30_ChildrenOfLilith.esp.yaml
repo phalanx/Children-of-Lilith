@@ -5,8 +5,14 @@ VirtualMachineAdapter:
   - Name: CoL_Mechanic_DrainHandler_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: slakeThirst
-      Object: 2C0836:ChildrenOfLilith.esp
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: vampireHandler
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: gentleDrainer
+      Object: 2AA3CF:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: levelHandler
       Object: 33C42F:ChildrenOfLilith.esp
@@ -14,11 +20,8 @@ VirtualMachineAdapter:
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: widgetHandler
-      Object: 341362:ChildrenOfLilith.esp
+      Name: slakeThirst
+      Object: 2C0836:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
@@ -29,11 +32,8 @@ VirtualMachineAdapter:
       Name: iArousal
       Object: 166021:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: gentleDrainer
-      Object: 2AA3CF:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: vampireHandler
-      Object: 000D64:ChildrenOfLilith.esp
+      Name: widgetHandler
+      Object: 341362:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: CoL Drain Handler

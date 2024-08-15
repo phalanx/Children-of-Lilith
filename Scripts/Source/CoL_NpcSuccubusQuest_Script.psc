@@ -37,6 +37,7 @@ State Uninitialize
         UnRegisterForModEvent("CoL_startScene_NPC")
         UnRegisterForModEvent("CoL_endScene_NPC")
         UnRegisterForModEvent("CoL_GameLoad")
+        npcDrainHandler.GoToState("Uninitialize")
     EndEvent
 EndState
 
