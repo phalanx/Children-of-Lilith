@@ -6,6 +6,12 @@ GlobalVariable Property timeScale Auto
 string drainTargetName
 
 Event OnEffectStart(Actor drainTarget, Actor akCaster)
+    Maintenance()
+EndEvent
+
+Function Maintenance()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
+    Actor drainTarget = GetTargetActor()
     drainTargetName = drainTarget.GetLeveledActorBase().GetName()
     
     float removalDay
@@ -38,7 +44,7 @@ Event OnEffectStart(Actor drainTarget, Actor akCaster)
     drainEffect.SetNthEffectMagnitude(0, healthDrained)
     drainEffect.SetNthEffectDuration(0, Math.floor(drainDuration))
     drainEffect.Cast(drainTarget)
-EndEvent
+EndFunction
 
 Function Log(string msg)
     CoL.Log("Drain Victim - " + msg)

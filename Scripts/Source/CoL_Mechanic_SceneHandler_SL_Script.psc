@@ -28,6 +28,7 @@ Function Log(string msg)
 EndFunction
 
 Function Maintenance()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
     if !SexLab.IsInterfaceActive()
         return
     endif

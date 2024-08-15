@@ -33,9 +33,6 @@ Function Maintenance()
     endif
 EndFunction
 
-Event OnEndState()
-    Utility.Wait(5.0)
-EndEvent
 
 State Installed
 

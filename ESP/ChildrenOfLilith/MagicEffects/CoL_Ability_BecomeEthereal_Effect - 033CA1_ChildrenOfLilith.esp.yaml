@@ -5,11 +5,11 @@ VirtualMachineAdapter:
   - Name: CoL_Ability_BecomeEthereal_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
@@ -21,12 +21,12 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: IntroFX
       Object: 064D69:Skyrim.esm
-    - MutagenObjectType: ScriptFloatProperty
-      Name: fStaticDelay
-      Data: 0.15
     - MutagenObjectType: ScriptObjectProperty
       Name: StaticFX
       Object: 05E93D:Skyrim.esm
+    - MutagenObjectType: ScriptFloatProperty
+      Name: fStaticDelay
+      Data: 0.15
 Name:
   TargetLanguage: English
   Value: Succubus Become Ethereal

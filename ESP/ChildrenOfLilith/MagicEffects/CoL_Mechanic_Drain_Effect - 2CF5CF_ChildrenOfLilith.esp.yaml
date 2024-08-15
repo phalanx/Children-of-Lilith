@@ -19,7 +19,6 @@ Archetype:
   MutagenObjectType: MagicEffectPeakValueModArchetype
   ActorValue: Health
 CastType: FireAndForget
-HitEffectArt: 0EA518:Skyrim.esm
 DualCastScale: 1
 CastingSoundLevel: Normal
 Sounds: []

@@ -7,13 +7,16 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: PerkToToggle
       Object: 2336F4:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptBoolProperty
+      Name: verbose
     - MutagenObjectType: ScriptStringProperty
       Name: displayName
       Data: Transformation
-    - MutagenObjectType: ScriptBoolProperty
-      Name: verbose
   - Name: CoL_Ability_Transform_Toggle_Script
     Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: transformCostSPell
+      Object: 300DCC:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
@@ -21,14 +24,11 @@ VirtualMachineAdapter:
       Name: transformSpell
       Object: 361634:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: safeTransformation
       Object: 2BE09C:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: transformCostSPell
-      Object: 300DCC:ChildrenOfLilith.esp
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
 Name:
   TargetLanguage: English
   Value: Succubus Transform

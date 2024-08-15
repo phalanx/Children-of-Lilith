@@ -5,6 +5,9 @@ VirtualMachineAdapter:
   - Name: col_interface_arousal_script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: Toys
+      Object: 2221A7:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: OSL
       Object: 2473C6:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
@@ -13,9 +16,6 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: SLAR
       Object: 1A1684:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: Toys
-      Object: 2221A7:ChildrenOfLilith.esp
   Versioning:
   - Break0
   ExtraBindDataVersion: 0

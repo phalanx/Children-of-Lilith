@@ -27,6 +27,7 @@ Function Log(string msg)
 EndFunction
 
 Function Maintenance()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
     if Game.IsPluginInstalled("Toys.esm")
         Log("Toys and Love Detected")
         succubus = GetTargetActor()

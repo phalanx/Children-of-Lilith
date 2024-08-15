@@ -5,6 +5,15 @@ VirtualMachineAdapter:
   - Name: CoL_Mechanic_LevelHandler_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: playerSuccubusLevel
+      Object: 13B614:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: levelUpRatio
+      Object: 282A20:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: levelUpMessage
       Object: 282A21:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
@@ -13,15 +22,6 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: levelUpRatio
-      Object: 282A20:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: playerSuccubusLevel
-      Object: 13B614:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
   Versioning:
   - Break0
   ExtraBindDataVersion: 0
