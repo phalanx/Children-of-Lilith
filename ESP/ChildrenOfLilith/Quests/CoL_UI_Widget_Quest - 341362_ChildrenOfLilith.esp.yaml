@@ -5,14 +5,14 @@ VirtualMachineAdapter:
   - Name: CoL_UI_Widget_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
+      Name: iWidgets
+      Object: 000800:iWant Widgets.esl
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: iWidgets
-      Object: 000800:iWant Widgets.esl
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp

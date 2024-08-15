@@ -4,15 +4,6 @@ VirtualMachineAdapter:
   Scripts:
   - Name: CoL_NpcSuccubusQuest_Script
     Properties:
-    - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
-      Object: 000D64:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: npcDrainHandler
-      Object: 213410:ChildrenOfLilith.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: configHandler
-      Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectListProperty
       Name: sceneHandlerSpells
       Objects:
@@ -24,19 +15,28 @@ VirtualMachineAdapter:
         Object: 352899:ChildrenOfLilith.esp
       - Name: ''
         Object: 35289B:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: npcDrainHandler
+      Object: 213410:ChildrenOfLilith.esp
   - Name: col_mechanic_npc_drainhandler_script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
       Name: drainToDeathVFX
       Object: 10F506:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: CoL
+      Name: energyHandler
       Object: 000D64:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: configHandler
       Object: 32FE2F:ChildrenOfLilith.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: energyHandler
+      Name: CoL
       Object: 000D64:ChildrenOfLilith.esp
   Versioning:
   - Break0

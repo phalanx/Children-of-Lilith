@@ -21,17 +21,17 @@ VirtualMachineAdapter:
       Object: 37C9CE:ChildrenOfLilith.esp
   - Name: magicImodScript
     Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: StaticFX
+      Object: 0FD7DB:Skyrim.esm
     - MutagenObjectType: ScriptFloatProperty
       Name: fStaticDelay
       Data: 0.15
     - MutagenObjectType: ScriptObjectProperty
-      Name: StaticFX
-      Object: 0FD7DB:Skyrim.esm
-    - MutagenObjectType: ScriptObjectProperty
-      Name: IntroFX
+      Name: OutroFX
       Object: 048428:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: OutroFX
+      Name: IntroFX
       Object: 048428:Skyrim.esm
 Name:
   TargetLanguage: English
