@@ -40,11 +40,13 @@ Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float a
     if relationship > 4
         relationship = 4
     endif
-    int jDrainMap = JFormDB.getObj(drainerForm, ".ChildrenOfLilith.drainees")
+    
+    int jDrainMap = JFormDB.solveObj(drainerForm, ".ChildrenOfLilith.drainees", JFormMap.object())
     if jDrainMap == 0
         Log("Error: Drain Map Not Found for Start Drain")
         return
     endif
+
     if random < configHandler.npcRelationshipDeathChance[relationship]
         JFormMap.setInt(jDrainMap, draineeForm, 1)
         DrainToDeath(drainerForm, draineeForm, draineeName, arousal)
@@ -52,11 +54,11 @@ Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float a
         JFormMap.setInt(jDrainMap, draineeForm, 0)
         normalDrain(drainerForm, draineeForm, draineeName, arousal)
     endif
-    JFormDB.setObj(drainerForm, ".ChildrenOfLilith.drainees", jDrainMap)
+    JFormDB.solveObjSetter(drainerForm, ".ChildrenOfLilith.drainees", jDrainMap, true)
 EndEvent
 
 Event EndDrain(Form drainerForm, Form draineeForm)
-    int jDrainMap = JFormDB.getObj(drainerForm, ".ChildrenOfLilith.drainees")
+    int jDrainMap = JFormDB.solveObj(drainerForm, ".ChildrenOfLilith.drainees")
     if jDrainMap == 0
         Log("Error: Drain Map Not Found for End Drain")
         return
@@ -65,6 +67,12 @@ Event EndDrain(Form drainerForm, Form draineeForm)
         EndDrainToDeath(drainerForm, draineeForm)
     else
         EndNormalDrain(drainerForm, draineeForm)
+    endif
+
+    JFormMap.removeKey(jDrainMap, draineeForm)
+    if JFormMap.count(jDrainMap) == 0
+        Log("Clearing Drain Map for " + (drainerForm as Actor).GetActorBase().GetName())
+        JFormDB.setObj(drainerForm, ".ChildrenOfLilith.drainees", 0)
     endif
 EndEvent
 

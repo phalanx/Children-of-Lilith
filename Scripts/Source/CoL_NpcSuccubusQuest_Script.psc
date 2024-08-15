@@ -63,7 +63,5 @@ Function RemoveNPC(int index)
 EndFunction
 
 Function EndSceneNPC(Form drainerForm)
-    Utility.Wait(0.5) ; Ensure drain has finished
     Log("Scene End Detected")
-    JFormDB.setObj(drainerForm, ".ChildrenOfLilith.drainees", 0)
 EndFunction
