@@ -21,6 +21,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         if CoL.playerRef.HasPerk(transformPerks[i])
             Log(transformPerks[i].GetName()+" detected")
             CoL.transformBuffs[i] = CoL.transformBuffs[i] + 1
+            CoL.playerRef.RemovePerk(transformPerks[i])
         endif
         i += 1
     endwhile

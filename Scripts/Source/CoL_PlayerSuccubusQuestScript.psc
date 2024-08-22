@@ -14,32 +14,37 @@ CoL_Interface_OStim_Script Property oStim Auto
 CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Interface_SLCumOverlay_Script Property iSLCumOverlay Auto
+CoL_Interface_DD_Script Property DD Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
+bool Property propertyname Auto
 ; Keyword Definitions
-Keyword Property ddLibs Auto Hidden
-Keyword Property toysToy Auto Hidden
 Keyword Property BBBNoStrip Auto Hidden
+
+bool Property vrikInstalled = false Auto Hidden
 
 GlobalVariable Property isPlayerSuccubus Auto ; Controls if the player is a succubus
 GlobalVariable Property GameDaysPassed Auto
 GlobalVariable Property TimeScale Auto
+GlobalVariable Property debuffsEnabled Auto ; Controls if player has succubus debuffs
 
 Faction Property drainVictimFaction Auto
 
 Actor Property playerRef Auto                       ; The player reference
-Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
 Spell Property showperkMenu Auto                    ; Spell that when cast will open the CSF perk menu
 Spell Property simpleTransform Auto                 ; Spell that will provide the vfx and sfx for scene start transform
+
+Spell[] Property sceneHandlerSpells Auto            ; Spells that contain the animation scene handlers
+Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
+Spell Property drainHealthSpell Auto                ; The spell that's applied to drain victims
+Spell Property StarvationSpell Auto                 ; Spell for stacking hunger effect
 
 Spell[] Property levelOneSpells Auto                ; Spells granted to player as a level one succubus
 Spell[] Property levelTwoSpells Auto                ; Spells granted to player as a level two succubus
 Spell[] Property levelFiveSpells Auto               ; Spells granted to player as a level five succubus
 Spell[] Property levelTenSpells Auto                ; Spells granted to player as a level ten succubus
-Spell[] Property sceneHandlerSpells Auto            ; Spells that contain the animation scene handlers
 Spell Property arousalTransformSpell Auto           ; Spell that contains the arousal transform handler
-Spell Property hungerSpell Auto                     ; Spell that contains the hunger handler
 Spell Property temptationSpell Auto                 ; Succubus Temptation spell for hotkey
 
 Spell[] Property sanguineTraits Auto                ; Spells to provide passives for Path of Sanguine
@@ -55,25 +60,21 @@ Spell[] Property vaerminaTraits Auto                ; Spells to provide passives
 bool Property isTransformed Auto Hidden
 bool Property isTransforming = false Auto Hidden
 ; 0: FX
-; 1:Body
+; 1: Body
 ; 2: Equipment
 ; 3: Powers
 bool[] Property transformReadiness Auto Hidden    
 
 ; Transform Stuff
     Spell Property transformSpell Auto
-     
     bool Property lockTransform Auto Hidden
     string Property succuPresetName = "CoL_Succubus_Form" Auto Hidden
     bool Property succuPresetSaved = false Auto Hidden
     Race Property succuRace Auto Hidden
-    Race Property succuCureRace Auto Hidden
     ColorForm Property succuHairColor Auto Hidden
     string Property mortalPresetName = "CoL_Mortal_Form" Auto Hidden
     bool Property mortalPresetSaved = false Auto Hidden
     Race Property mortalRace Auto Hidden
-    Race Property mortalCureRace Auto Hidden
-    bool isVampire = false
     ColorForm Property mortalHairColor Auto Hidden
     ObjectReference Property succuEquipmentChest Auto
 
@@ -132,36 +133,69 @@ State Running
         elseif keyCode == configHandler.hotkeys[2]
             transformSpell.Cast(playerRef, playerRef)
         elseif keyCode == configHandler.hotkeys[4]
+            UnregisterForKey(configHandler.hotkeys[4])
             showperkMenu.Cast(playerRef)
+            Utility.Wait(1)
+            RegisterForKey(configHandler.hotkeys[4])
         endif
     EndEvent
 EndState
 
+bool transformedForScene = false
 State SceneRunning
     Event onBeginState()
         _Log("Entered SceneRunning State")
-        if configHandler.transformDuringScene
+        transformedForScene = SceneTransformChecksPassed()
+        if transformedForScene
             _Log("Scene Start Transforming")
-            if !isTransformed
-                simpleTransform.Cast(playerRef)
-                Utility.Wait(2)
-                transformPlayer(succuPresetName, succuRace, succuHairColor)
-            endif
+            simpleTransform.Cast(playerRef)
+            Utility.Wait(2)
+            transformPlayer(succuPresetName, succuRace, succuHairColor)
         endif
     EndEvent
 
-    Event onEndState()
-        _Log("Exited SceneRunning State")
-        if configHandler.transformDuringScene
-            if !isTransformed
-                _Log("Scene End Untransforming")
+    bool Function PlayerIsVictim()
+        return SexLab.IsVictim(playerRef)  || Toys.isPlayerVictim()
+    EndFunction
+    
+    bool Function PlayerIsAgressor()
+        return SexLab.IsAggressor(playerRef)
+    EndFunction
+
+    Event OnKeyDown(int keyCode)
+        if keyCode == configHandler.hotkeys[2]
+            if !transformedForScene
+                simpleTransform.Cast(playerRef)
+                Utility.Wait(2)
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
+                transformedForScene = true
+            else
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
                 transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+                transformedForScene = false
             endif
         endif
     EndEvent
+    Event onEndState()
+        _Log("Exited SceneRunning State")
+        if transformedForScene
+            _Log("Scene End Untransforming")
+            simpleTransform.Cast(playerRef)
+            Utility.Wait(2)
+            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
+        endif
+        transformedForScene = false
+    EndEvent
 EndState
+
+bool Function PlayerIsVictim()
+    return false
+EndFunction
+
+bool Function PlayerIsAgressor()
+    return false
+EndFunction
 
 State Uninitialize
     Event OnBeginState()
@@ -169,6 +203,12 @@ State Uninitialize
         levelHandler.GoToState("Uninitialize")
         RemoveSpells(sceneHandlerSpells)
         playerRef.RemoveSpell(drainHandler)
+        if playerRef.HasSpell(hungerSpell)
+            playerRef.RemoveSpell(hungerSpell)
+        endif
+        if playerRef.HasSpell(starvationSpell)
+            playerRef.RemoveSpell(starvationSpell)
+        endif
         uninitializeQuest.GoToState("Run")
         UnregisterForEvents()
 
@@ -202,16 +242,10 @@ EndFunction
 
 Function Maintenance()
     _Log("Maintenance running")
-    if Game.IsPluginInstalled("Devious Devices - Assets.esm")
-        ddLibs = Game.GetFormFromFile(0x003894, "Devious Devices - Assets.esm") as Keyword
-    endif
-    if Game.IsPluginInstalled("Toys.esm")
-        toysToy = Game.GetFormFromFile(0x000815, "Toys.esm") as Keyword
-    endif
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
-    widgetHandler.Maintenance()
+    vrikInstalled = Game.IsPluginInstalled("VRIK.esp")
     levelHandler.GoToState("Running")
     RegisterForEvents()
     Utility.Wait(0.5)
@@ -264,8 +298,8 @@ Function EndScene()
 EndFunction
 
 bool Function IsStrippable(Form itemRef)
-    if !ddLibs || !itemRef.hasKeyword(ddLibs) ; Make sure it's not a devious device
-        if !toysToy || !itemRef.hasKeyword(toysToy) ; Make sure it's not a Toys Framework toy
+    if DD.IsStrippable(itemRef) ; Make sure it's not a devious device
+        if Toys.IsStrippable(itemRef) ; Make sure it's not a Toys Framework toy
             if !BBBNoStrip || !itemRef.hasKeyword(BBBNoStrip) ; Make sure it doesn't have 3BBB's NoStrip Keyword
                 return True
             endif
@@ -274,7 +308,12 @@ bool Function IsStrippable(Form itemRef)
     return false
 endFunction
 
+bool Function PlayerArmsBound()
+    return DD.ArmsBound() || Toys.Armsbound()
+endFunction
+
 Function ScaleEnergyTest()
+    UnregisterForKey(configHandler.hotkeys[1])
     float currentEnergy = energyHandler.playerEnergyCurrent
     energyHandler.playerEnergyCurrent = 0
     while energyHandler.playerEnergyCurrent < energyHandler.playerEnergyMax
@@ -286,6 +325,7 @@ Function ScaleEnergyTest()
         Utility.Wait(0.1)
     endwhile
     energyHandler.playerEnergyCurrent = currentEnergy
+    RegisterForKey(configHandler.hotkeys[1])
 EndFunction
 
 Function _Log(string msg)
@@ -300,7 +340,7 @@ EndFunction
 
 bool Function isBeastRace()
     Race currentRace = playerRef.GetRace()
-    if MiscUtil.GetRaceEditorID(currentRace) == "WerewolfBeastRace" || MiscUtil.GetRaceEditorID(currentRace) == "DLC1VampireBeastRace"
+        if MiscUtil.GetRaceEditorID(currentRace) == "WerewolfBeastRace" || MiscUtil.GetRaceEditorID(currentRace) == "DLC1VampireBeastRace"
         return True
     else
         return False
@@ -309,20 +349,38 @@ EndFunction
 
 bool Function isBusy()
     if isBeastRace()
+        Log("Player is Beast Race")
         return True
     endif
+
     if isTransforming
+        Log("Player is transforming")
         return true
     endif
-	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef)
+
+	if GetState() == "SceneRunning" || Toys.isBusy() || oStim.IsActorActive(playerRef) || SexLab.IsActorActive(playerRef) || StorageUtil.GetIntValue(playerRef, "DCUR_SceneRunning")==1
+        Log("Player is in Scene")
 		return True
-	elseIf playerRef.IsInCombat()
+	elseIf UI.IsMenuOpen("Dialogue Menu") || UI.IsMenuOpen("Crafting Menu")
+        Log("Player is in Menu")
 		return True
-	elseIf UI.IsMenuOpen("Dialogue Menu")
+	elseIf !Game.IsFightingControlsEnabled() || !Game.IsMovementControlsEnabled()
+        Log("Player Controls Disabled")
 		return True
-	elseIf !Game.IsFightingControlsEnabled() || !Game.IsMovementControlsEnabled() || UI.IsMenuOpen("Crafting Menu") || !playerRef.Is3DLoaded() || StorageUtil.GetIntValue(playerRef, "DCUR_SceneRunning")==1
-		return True
-	elseIf (Game.GetCameraState() == 10 || playerRef.GetSitState() != 0 || Game.GetCameraState() == 12 || playerRef.IsSwimming())  ;horse/in furniture/dragon/Swimming
+    elseIf !playerRef.Is3DLoaded()
+        Log("Player 3D is not loaded")
+        return True
+	elseIf Game.GetCameraState() == 10 && !vrikInstalled ; Vrik(or maybe just skryim vr) changes camerastate to 10 even when not on a horse
+        Log("Player is on horse")
+        return True
+    elseIf Game.GetCameraState() == 12
+        Log("Player is on dragon")
+        return True
+    elseIf playerRef.GetSitState() != 0
+        Log("Player is in furniture")
+        return True
+    elseif playerRef.IsSwimming()
+        Log("Player is swimming")
 		return True
 	endIf
 	return False
@@ -345,9 +403,6 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
         jmorphs = __saveBodyMorphs()
     endif
     Race currentRace = playerRef.GetRace()
-    if mortalCureRace != None && !isVampire
-        isVampire = true
-    endif
  
     __Transform(presetName, presetRace, presetHairColor, currentRace)
     Utility.Wait(0.1)
@@ -449,13 +504,18 @@ Function UpdatePath()
     RemoveSpells(VaerminaTraits)
     if configHandler.selectedPath == 0
         GrantSpells(sanguineTraits, false)
+        debuffsEnabled.SetValue(1)
         Debug.Notification("Path of Sanguine added")
     elseif configHandler.selectedPath == 1
         GrantSpells(molagTraits, false)
+        debuffsEnabled.SetValue(1)
         Debug.Notification("Path of Molag Bal added")
     elseif configHandler.selectedPath == 2
         GrantSpells(VaerminaTraits, false)
+        debuffsEnabled.SetValue(1)
         Debug.Notification("Path of Vaermina added")
+    elseif configHandler.selectedPath == 3
+        debuffsEnabled.SetValue(0)
     endif
 EndFunction
 
@@ -503,3 +563,35 @@ Function UpdateConfig()
         widgetHandler.UpdateMeter()
     endif
 EndFunction
+
+bool Function SceneTransformChecksPassed()
+    _Log("Checking Scene Transform")
+    if !configHandler.transformDuringScene
+        return false
+    endif
+    if isBeastRace()
+        _Log("Player is Beast Race")
+        return false
+    endif
+    if isTransformed
+        _Log("Player is Transformed")
+        return false
+    endif
+
+    if Utility.RandomFloat() < ConfigHandler.transformDuringSceneChance
+        return true
+    endif
+
+    if PlayerIsVictim()
+        _Log("Player is Victim")
+        return Utility.RandomFloat() < configHandler.transformIfPlayerVictimChance
+    endif
+
+    if PlayerIsAgressor()
+        _Log("Player is Aggressor")
+        return Utility.RandomFloat() < configHandler.transformIfPlayerAggressorChance
+    endif
+
+    return false
+EndFunction
+

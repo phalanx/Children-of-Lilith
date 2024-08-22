@@ -1,0 +1,25 @@
+SpriggitSource:
+  PackageName: Spriggit.Yaml.Skyrim
+  Version: 0.25.0
+ModKey: ChildrenOfLilithASKPatch.esp
+GameRelease: SkyrimSE
+ModHeader:
+  Flags:
+  - Small
+  Stats:
+    Version: 1.7
+  Author: DEFAULT
+  MasterReferences:
+  - Master: Skyrim.esm
+    FileSize: 0
+  - Master: Update.esm
+    FileSize: 0
+  - Master: Dawnguard.esm
+    FileSize: 0
+  - Master: iWant Widgets.esl
+    FileSize: 0
+  - Master: ChildrenOfLilith.esp
+    FileSize: 0
+  - Master: Hoamaii_SkyrimKiss.esp
+    FileSize: 0
+  INTV: 1

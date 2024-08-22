@@ -1,0 +1,17 @@
+FormKey: 024995:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifySpeech_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Fortify Speech
+Flags:
+- Recover
+- NoDuration
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Speech
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

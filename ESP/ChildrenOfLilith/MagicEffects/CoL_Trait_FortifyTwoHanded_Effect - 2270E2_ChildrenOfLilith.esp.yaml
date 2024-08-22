@@ -1,0 +1,17 @@
+FormKey: 2270E2:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifyTwoHanded_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Fortify Two Handed
+Flags:
+- Recover
+- NoDuration
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: TwoHanded
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

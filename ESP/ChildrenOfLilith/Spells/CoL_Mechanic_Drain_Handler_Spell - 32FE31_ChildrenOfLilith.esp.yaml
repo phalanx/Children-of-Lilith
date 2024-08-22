@@ -1,0 +1,10 @@
+FormKey: 32FE31:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_Drain_Handler_Spell
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+Type: Ability
+Effects:
+- BaseEffect: 32FE30:ChildrenOfLilith.esp
+  Data: {}

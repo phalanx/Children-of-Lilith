@@ -1,0 +1,19 @@
+FormKey: 23862B:ChildrenOfLilith.esp
+EditorID: CoL_Ability_Transform_Buff_Magicka
+Name:
+  TargetLanguage: English
+  Value: Fortify Magicka
+Flags:
+- Recover
+- NoDuration
+- NoArea
+- PowerAffectsMagnitude
+Archetype:
+  MutagenObjectType: MagicEffectPeakValueModArchetype
+  ActorValue: Magicka
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

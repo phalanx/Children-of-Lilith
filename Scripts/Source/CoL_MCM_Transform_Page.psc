@@ -40,6 +40,11 @@ Event OnPageDraw()
     AddHeaderOption("")
     AddToggleOptionST("Toggle_TransformAnimation", "$COL_TRANSFORMPAGE_ANIMATION", configHandler.transformAnimation)
     AddToggleOptionST("Toggle_TransformDuringScene", "$COL_TRANSFORMPAGE_DURING_SCENE", configHandler.transformDuringScene)
+    if configHandler.transformDuringScene
+        AddSliderOptionST("Slider_transformDuringSceneChance", "$COL_TRANSFORMPAGE_DURINGSCENECHANCE", configHandler.transformDuringSceneChance * 100)
+        AddSliderOptionST("Slider_transformIfPlayerVictimChance", "$COL_TRANSFORMPAGE_PLAYERVICTIMCHANCE", configHandler.transformIfPlayerVictimChance * 100)
+        AddSliderOptionST("Slider_transformIfPlayerAggressorChance", "$COL_TRANSFORMPAGE_PLAYERAGGRESSORCHANCE", configHandler.transformIfPlayerAggressorChance * 100)
+    endif
     AddToggleOptionST("Toggle_TransformCrime", "$COL_TRANSFORMPAGE_TRANSFORMCRIME", configHandler.transformCrime)
     AddToggleOptionST("Toggle_TransformEquipment", "$COL_TRANSFORMPAGE_EQUIPMENTSWAP", configHandler.transformSwapsEquipment)
     AddToggleOptionST("Toggle_TransformNiOverrides", "$COL_TRANSFORMPAGE_SAVENIOVERRIDES", configHandler.transformSavesNiOverrides)
@@ -82,10 +87,12 @@ EndEvent
 Function LoadEquipmentList()
     equippedItems = getEquippedItems(CoL.playerRef)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_ADDNOSTRIP")
+    ; We copy the NoStripList as an optimization to free up configHandler
+    form[] NoStripList = configHandler.NoStripList
     int i = 0
     while i < equippedItems.Length
-        if !CoL.ddLibs || !equippedItems[i].hasKeyword(CoL.ddLibs) ; Make sure it's not a devious device
-            if configHandler.NoStripList.Find(equippedItems[i]) == -1
+        if CoL.IsStrippable(equippedItems[i]) ; Make sure it's not a devious device
+            if NoStripList.Find(equippedItems[i]) == -1
                 string itemName = equippedItems[i].GetName()
                 if itemName != "" && itemName != " "
                     AddTextOptionST("Text_AddStrippable___" + i, itemName, None)
@@ -96,8 +103,8 @@ Function LoadEquipmentList()
     endwhile
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_REMOVENOSTRIP")
     i = 0
-    while i < configHandler.NoStripList.Length
-        string itemName = configHandler.NoStripList[i].GetName()
+    while i < NoStripList.Length
+        string itemName = NoStripList[i].GetName()
         AddTextOptionST("Text_RemoveStrippable___" + i, itemName, None)
         i += 1
     endwhile
@@ -212,11 +219,51 @@ State Toggle_TransformDuringScene
     Event OnSelectST(string state_id)
         configHandler.transformDuringScene = !configHandler.transformDuringScene
         SetToggleOptionValueST(configHandler.transformDuringScene)
+        ForcePageReset()
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_DURING_SCENE_HELP")
     EndEvent
 EndState
+State Slider_TransformDuringSceneChance
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialog(configHandler.transformDuringSceneChance * 100, 0.0, 100.0, 1.0, 100.0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.transformDuringSceneChance = value / 100
+        SetSliderOptionValueST(configHandler.transformDuringSceneChance * 100)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_DURINGSCENECHANCE_HELP")
+    EndEvent
+EndState
+
+State Slider_transformIfPlayerVictimChance
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialog(configHandler.transformIfPlayerVictimChance * 100, 0.0, 100.0, 1.0, 100.0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.transformIfPlayerVictimChance = value / 100
+        SetSliderOptionValueST(configHandler.transformIfPlayerVictimChance * 100)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_PLAYERVICTIMCHANCE_HELP")
+    EndEvent
+EndState
+
+State Slider_transformIfPlayerAggressorChance
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialog(configHandler.transformIfPlayerAggressorChance * 100, 0.0, 100.0, 1.0, 100.0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.transformIfPlayerAggressorChance = value / 100
+        SetSliderOptionValueST(configHandler.transformIfPlayerAggressorChance * 100)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_PLAYERAGGRESSORCHANCE_HELP")
+    EndEvent
+EndState
+
 State Toggle_TransformAnimation
     Event OnSelectST(string state_id)
         configHandler.transformAnimation = !configHandler.transformAnimation
@@ -268,9 +315,12 @@ State Toggle_BuffsEnable
 EndState
 State Slider_BaseBuffs
     Event OnSliderOpenST(string state_id)
-        SetSliderDialog(configHandler.transformBaseBuffs[state_id as int], 0, 100, 1, 0)
+        SetSliderDialog(configHandler.transformBaseBuffs[state_id as int], 0, 1000, 1, 0)
         if state_id == "4"
             SetSliderDialogInterval(0.1)
+        endif
+        if state_id == "4" || state_id == "6"
+            SetSliderDialogRange(0, 100)
         endif
     endEvent
     Event OnSliderAcceptST(string state_id, float value)

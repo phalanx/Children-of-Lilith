@@ -1,0 +1,13 @@
+FormKey: 1DF47F:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_DrainVictim_Faction
+Name:
+  TargetLanguage: English
+  Value: CoL Drain Victim Faction
+Flags:
+- HiddenFromPC
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+Ranks:
+- Number: 0
+VendorValues: {}

@@ -1,0 +1,19 @@
+FormKey: 23862F:ChildrenOfLilith.esp
+EditorID: CoL_Ability_Transform_Buff_MagicResist
+Name:
+  TargetLanguage: English
+  Value: Fortify Magic Resist
+Flags:
+- Recover
+- NoDuration
+- NoArea
+- PowerAffectsMagnitude
+Archetype:
+  MutagenObjectType: MagicEffectPeakValueModArchetype
+  ActorValue: ResistMagic
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

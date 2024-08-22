@@ -1,0 +1,10 @@
+FormKey: 2B9168:ChildrenOfLilith.esp
+EditorID: CoL_Perks_EnergyWeaver
+Name:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_PERK_1
+Description:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_PERK_1_HELP
+NumRanks: 1
+Playable: True

@@ -1,0 +1,23 @@
+FormKey: 1A1684:ChildrenOfLilith.esp
+EditorID: CoL_Interface_SexLab
+VirtualMachineAdapter:
+  Scripts:
+  - Name: CoL_Interface_SLAR_Script
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+  - Name: CoL_Interface_SexLab_Script
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+NextAliasID: 0

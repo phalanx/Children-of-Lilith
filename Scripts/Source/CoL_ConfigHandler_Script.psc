@@ -24,7 +24,9 @@ float Property drainArousalMult = 0.1 Auto Hidden               ; Multiplier app
 float Property drainToDeathMult = 2.0 Auto Hidden               ; Multiplier applied energy conversion when victim is drained to death
 float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which drained health is converted to Energy
 bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
-float Property minHealthPercent = 0.1 Auto Hidden              ; Minimum percentage of health allowed to be drained
+float Property minHealthPercent = 0.1 Auto Hidden               ; Minimum percentage of health allowed to be drained
+float Property drainToDeathDelay = 0.0 Auto Hidden              ; Delay before drain to death kills victim
+bool Property drainToDeathCrime = true Auto Hidden
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
@@ -58,6 +60,7 @@ bool Property grantCSFPower = false Auto Hidden         ; Should the CSF Power M
 float Property becomeEtherealCost  = 10.0 Auto Hidden   ; Per second Energy Cost of Succubus Become Ethereal
 float Property healRateBoostCost = 5.0 Auto Hidden      ; Per second Energy Cost of Succubus HealRate Boost
 float Property healRateBoostAmount = 10.0 Auto Hidden   ; Modify healRate by this amount
+float Property healRateBoostMult = 0.0 Auto Hidden     ; Modify healRateMult by this amount
 
 float Property energyCastingMult = 1.0 Auto Hidden      ; Modify the energy cost of spells
 string[] Property energyCastingConcStyleOptions Auto Hidden ; Holds string values for the concentration calculation style. Initialized in Maintenance()
@@ -77,17 +80,8 @@ int Property newTemptationBaseIncrease = 1 Auto Hidden     ; Base Arousal increa
 float Property newTemptationLevelMult = 1.0 Auto Hidden    ; Mult applied to succubus level before being added to the base increase
 
 ; Hotkey Settings
-; 0 - Drain Key - Default left alt
-; 1 - Drain to Death Key - Default right alt
-; 2 - Transform Key
-; 3 - Temptation Key
-; 4 - CSF Menu Key
+; 0 - Drain Key - Default left alt | 1 - Drain to Death Key - Default right alt | 2 - Transform Key | 3 - Temptation Key | 4 - CSF Menu Key
 int[] Property hotkeys Auto Hidden
-; int Property toggleDrainHotkey = 29 Auto Hidden            ; Default Toggle Drain key to left shift
-; int Property toggleDrainToDeathHotkey = 157 Auto Hidden    ; Default Toggle Drain to Death key to right alt
-; int Property transformHotkey = -1 Auto Hidden              ; Transform hotkey, no default
-; int Property newTemptationHotkey = -1 Auto Hidden             ; temptation hotkey, no default
-; int Property csfMenuHotkey = -1 Auto Hidden                ; Custom skill framework hotkey, no default
 
 ; Widget Settings
 int Property energyMeterAlpha = 100 Auto Hidden
@@ -102,6 +96,9 @@ int Property autoFadeTime = 5 Auto Hidden
 Form[] Property NoStripList Auto Hidden
 bool Property transformAnimation = true Auto Hidden
 bool Property transformDuringScene = true Auto Hidden
+float Property transformDuringSceneChance = 1.0 Auto Hidden
+float Property transformIfPlayerVictimChance = 1.0 Auto Hidden
+float Property transformIfPlayerAggressorChance = 1.0 Auto Hidden
 bool Property transformSwapsEquipment = true Auto Hidden
 bool Property transformSavesNiOverrides = false Auto Hidden
 float Property transformCost = 1.0 Auto Hidden
@@ -111,26 +108,17 @@ float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
 bool Property arousalUntransform = false Auto Hidden
 
-bool Property transformBuffsEnabled = false Auto Hidden
 ; Transform Baseline Buffs
-; 0 - health
-; 1 - stamina
-; 2 - magicka
-; 3 - carry weight
-; 4 - melee damage
-; 5 - armor
-; 6 - magic resist
+bool Property transformBuffsEnabled = false Auto Hidden
+; 0 - health | 1 - stamina | 2 - magicka | 3 - carry weight | 4 - melee damage | 5 - armor | 6 - magic resist
 float[] Property transformBaseBuffs Auto Hidden
 
 ; Transform Rank Effects
-; 0 - health
-; 1 - stamina
-; 2 - magicka
-; 3 - carry weight
-; 4 - melee damage
-; 5 - armor
-; 6 - magic resist
+; 0 - health | 1 - stamina | 2 - magicka | 3 - carry weight | 4 - melee damage | 5 - armor | 6 - magic resist
 float[] Property transformRankEffects Auto Hidden
+
+; Compatability Options
+bool Property PPlusTagCheck = false Auto Hidden
 
 Event OnInit()
     transformRankEffects = new float[7]
@@ -163,10 +151,11 @@ Function Log(string msg)
 EndFunction
 
 Function Maintenance()
-    followedPathOptions = new string[3]
-    followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANQUINE"
+    followedPathOptions = new string[4]
+    followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANGUINE"
     followedPathOptions[1] = "$COL_STATUSPAGE_PATH_MOLAG"
     followedPathOptions[2] = "$COL_STATUSPAGE_PATH_VAERMINA"
+    followedPathOptions[3] = "$COL_STATUSPAGE_PATH_NONE"
 
     energyCastingConcStyleOptions = new string[4]
     energyCastingConcStyleOptions[0] = "$COL_POWERSPAGE_COSTCALCSTYLE_LEFT"
@@ -191,7 +180,7 @@ Function SendConfigUpdateEvent()
 EndFunction
 
 int Function GetConfigVersion()
-    return 6
+    return 9
 EndFunction
 
 int Function SaveConfig()
@@ -221,6 +210,8 @@ int Function SaveConfig()
         JMap.setInt(jObj,"npcRelationshipDeathChance3",npcRelationshipDeathChance[3])
         JMap.setInt(jObj,"npcRelationshipDeathChance4",npcRelationshipDeathChance[4])
         JMap.setFlt(jObj, "minHealthPercent", minHealthPercent)
+        JMap.setFlt(jObj, "drainToDeathDelay", drainToDeathDelay)
+        JMap.setInt(jObj, "drainToDeathCrime", drainToDeathCrime as int)
     ; Save Levelling Settings
         JMap.setFlt(jObj, "xpConstant", xpConstant)
         JMap.setFlt(jObj, "xpPower", xpPower)
@@ -246,6 +237,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "becomeEtherealCost", becomeEtherealCost)
         JMap.setFlt(jObj, "healRateBoostCost", healRateBoostCost)
         JMap.setFlt(jObj, "healRateBoostAmount", healRateBoostAmount)
+        JMap.setFlt(jObj, "healRateBoostMult", healRateBoostMult)
         JMap.setFlt(jObj, "energyCastingMult", energyCastingMult)
         JMap.setInt(jObj, "energyCastingConcStyle", energyCastingConcStyle)
         JMap.setInt(jObj, "energyCastingFX", energyCastingFXEnabled as int)
@@ -319,6 +311,9 @@ Function LoadConfig(int jObj)
         energyConversionRate = JMap.getFlt(jObj, "energyConversionRate")
         drainFeedsVampire = JMap.getInt(jObj, "drainFeedsVampire") as bool
         npcDrainToDeathChance = JMap.getInt(jObj, "npcDrainToDeathChance")
+        if configVersion >= 3
+            minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
+        endif
         if configVersion >= 5
             npcRelationshipDeathChance[0] = JMap.getInt(jObj,"npcRelationshipDeathChance0")
             npcRelationshipDeathChance[1] = JMap.getInt(jObj,"npcRelationshipDeathChance1")
@@ -326,8 +321,8 @@ Function LoadConfig(int jObj)
             npcRelationshipDeathChance[3] = JMap.getInt(jObj,"npcRelationshipDeathChance3")
             npcRelationshipDeathChance[4] = JMap.getInt(jObj,"npcRelationshipDeathChance4")
         endif
-        if configVersion >= 3
-            minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
+        if configVersion >= 8
+            drainToDeathCrime = JMap.getInt(jObj, "drainToDeathCrime") as bool
         endif
     ; Load Levelling Settings
         xpConstant = JMap.getFlt(jObj, "xpConstant")
@@ -354,6 +349,9 @@ Function LoadConfig(int jObj)
         becomeEtherealCost = JMap.getFlt(jObj, "becomeEtherealCost")
         healRateBoostCost = JMap.getFlt(jObj, "healRateBoostCost")
         healRateBoostAmount = JMap.getFlt(jObj, "healRateBoostAmount")
+        if configVersion >= 7
+            healRateBoostMult = JMap.getFlt(jObj, "healRateBoostMult")
+        endif
         energyCastingMult = JMap.getFlt(jObj, "energyCastingMult")
         energyCastingConcStyle = JMap.getInt(jObj, "energyCastingConcStyle")
         if configVersion >= 4
@@ -405,6 +403,9 @@ Function LoadConfig(int jObj)
         endif
         if configVersion >= 5
             transformDuringScene = JMap.getInt(jObj, "transformDuringScene") as bool
+        endif
+        if configVersion >= 9
+            transformDuringSceneChance = JMap.getFlt(jObj, "transformDuringSceneChance")
         endif
     ; Load Transform Baseline Buffs
         transformBuffsEnabled = JMap.getInt(jObj, "transformBuffsEnabled") as bool

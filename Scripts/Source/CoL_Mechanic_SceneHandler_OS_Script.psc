@@ -20,15 +20,16 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Maintenance()
 EndEvent
 
-Event OnPlayerLoadGame()
-    Maintenance()
-EndEvent
-
 Function Log(string msg)
     CoL.Log("Scene Handler - OStim - " + msg)
 EndFunction
 
+Event OnPlayerLoadGame()
+    Maintenance()
+EndEvent
+
 Function Maintenance()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
     oStimInstalled = oStim.IsInterfaceActive()
     if !oStimInstalled
         return

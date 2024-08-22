@@ -8,6 +8,7 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 ; 4 - Attractive Dremora
 ; 5 - Slake Thirst
 Perk[] Property singleRankPerks Auto
+Spell Property infinitePerkSpell Auto
 GlobalVariable Property perkPointsAvailable Auto
 CoL_ConfigHandler_Script Property  configHandler Auto
 CoL_PlayerSuccubusQuestScript Property  CoL Auto
@@ -38,6 +39,7 @@ Event OnPageDraw()
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
     AddToggleOptionST("Toggle_grantCsfPower","$COL_ADVPAGE_GRANTCSFPOWER", configHandler.grantCSFPower )
+    AddTextOptionST("Text_fixCSF", "$COL_ADVPAGE_FIXCSF", None)
     AddHeaderOption("$COL_ADVPAGE_HEADER_TRANSFORM")
     i = 0
     while i < CoL.transformBuffs.Length
@@ -158,4 +160,13 @@ State Toggle_grantCsfPower
         SetInfoText("$COL_ADVPAGE_GRANTCSFPOWER_HELP")
     EndEvent
 EndState
-
+State Text_fixCSF
+    Event OnSelectST(string state_id)
+        SetOptionFlagsST(OPTION_FLAG_DISABLED, false, "Text_fixCSF")
+        CoL.playerRef.RemoveSpell(infinitePerkSpell)
+        CoL.playerRef.AddSpell(infinitePerkSpell, false)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVPAGE_FIXCSF_HELP")
+    EndEvent
+EndState

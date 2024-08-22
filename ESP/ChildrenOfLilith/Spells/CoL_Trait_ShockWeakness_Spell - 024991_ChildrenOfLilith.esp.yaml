@@ -1,0 +1,27 @@
+FormKey: 024991:ChildrenOfLilith.esp
+EditorID: CoL_Trait_ShockWeakness_Spell
+Name:
+  TargetLanguage: English
+  Value: Succubus
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: As a Succubus, you are <30>% weaker to Shock
+Type: Ability
+Effects:
+- BaseEffect: 01A78F:ChildrenOfLilith.esp
+  Data:
+    Magnitude: 30
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetGlobalValueConditionData
+      Global: 392E30:ChildrenOfLilith.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetGlobalValueConditionData
+      Global: 000D63:ChildrenOfLilith.esp
+    ComparisonValue: 1

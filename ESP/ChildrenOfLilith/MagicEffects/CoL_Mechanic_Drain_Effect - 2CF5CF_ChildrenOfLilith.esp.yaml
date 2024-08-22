@@ -1,0 +1,27 @@
+FormKey: 2CF5CF:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_Drain_Effect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: CoL_Mechanic_DrainEffect_Script
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+Name:
+  TargetLanguage: English
+  Value: Drained by a Succubus
+Keywords:
+- 2D4503:ChildrenOfLilith.esp
+Flags:
+- Recover
+- Detrimental
+Archetype:
+  MutagenObjectType: MagicEffectPeakValueModArchetype
+  ActorValue: Health
+CastType: FireAndForget
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: A succubus has drained <mag> points of Health

@@ -1,0 +1,17 @@
+FormKey: 37C9CE:ChildrenOfLilith.esp
+EditorID: CoL_Ability_FortifyHealRateMult_Spell
+Name:
+  TargetLanguage: English
+  Value: Succubus Healing
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+Flags:
+- ManualCostCalc
+- IgnoreResistance
+- NoAbsorbOrReflect
+Type: Ability
+Effects:
+- BaseEffect: 36B499:ChildrenOfLilith.esp
+  Data: {}

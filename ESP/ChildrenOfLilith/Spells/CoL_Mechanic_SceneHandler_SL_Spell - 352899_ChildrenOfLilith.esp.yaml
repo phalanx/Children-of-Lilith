@@ -1,0 +1,14 @@
+FormKey: 352899:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_SceneHandler_SL_Spell
+Name:
+  TargetLanguage: English
+  Value: Succubus
+MenuDisplayObject: 0435A5:Skyrim.esm
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+Type: Ability
+Effects:
+- BaseEffect: 352895:ChildrenOfLilith.esp
+  Data: {}

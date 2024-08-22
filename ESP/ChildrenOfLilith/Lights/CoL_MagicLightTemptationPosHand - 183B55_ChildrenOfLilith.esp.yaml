@@ -1,0 +1,10 @@
+FormKey: 183B55:ChildrenOfLilith.esp
+EditorID: CoL_MagicLightTemptationPosHand
+Time: -1
+Radius: 40
+Color: '#00FF80C0'
+FalloffExponent: 1
+FOV: 90
+NearClip: 1
+FlickerPeriod: 1
+FadeValue: 1.25

@@ -1,0 +1,10 @@
+FormKey: 2AA3CF:ChildrenOfLilith.esp
+EditorID: CoL_Perks_GentleDrainer
+Name:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_PERK_0
+Description:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_PERK_0_HELP
+NumRanks: 1
+Playable: True

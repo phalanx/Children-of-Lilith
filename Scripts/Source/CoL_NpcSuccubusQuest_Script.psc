@@ -37,6 +37,7 @@ State Uninitialize
         UnRegisterForModEvent("CoL_startScene_NPC")
         UnRegisterForModEvent("CoL_endScene_NPC")
         UnRegisterForModEvent("CoL_GameLoad")
+        npcDrainHandler.GoToState("Uninitialize")
     EndEvent
 EndState
 
@@ -63,7 +64,5 @@ Function RemoveNPC(int index)
 EndFunction
 
 Function EndSceneNPC(Form drainerForm)
-    Utility.Wait(0.5) ; Ensure drain has finished
     Log("Scene End Detected")
-    JFormDB.setObj(drainerForm, ".ChildrenOfLilith.drainees", 0)
 EndFunction

@@ -1,0 +1,35 @@
+FormKey: 352893:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_SceneHandler_OS_Effect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: CoL_Mechanic_SceneHandler_OS_Script
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: OStim
+      Object: 19781F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: configHandler
+      Object: 32FE2F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: levelHandler
+      Object: 33C42F:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CoL
+      Object: 000D64:ChildrenOfLilith.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: iArousal
+      Object: 166021:ChildrenOfLilith.esp
+Name:
+  TargetLanguage: English
+  Value: CoL SceneHandler - OS
+Flags:
+- HideInUI
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  Type: Script
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: You are a Succubus

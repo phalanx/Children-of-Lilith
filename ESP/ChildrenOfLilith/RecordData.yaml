@@ -1,0 +1,17 @@
+SpriggitSource:
+  PackageName: Spriggit.Yaml.Skyrim
+  Version: 0.25.0
+ModKey: ChildrenOfLilith.esp
+GameRelease: SkyrimSE
+ModHeader:
+  Author: DEFAULT
+  MasterReferences:
+  - Master: Skyrim.esm
+    FileSize: 0
+  - Master: Update.esm
+    FileSize: 0
+  - Master: Dawnguard.esm
+    FileSize: 0
+  - Master: iWant Widgets.esl
+    FileSize: 0
+  INTV: 1

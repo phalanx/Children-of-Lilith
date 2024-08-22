@@ -1,0 +1,19 @@
+FormKey: 126CB0:ChildrenOfLilith.esp
+EditorID: CoL_Mechanic_Starvation_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Starvation
+Flags:
+- Recover
+- Detrimental
+- NoDuration
+- NoArea
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: Max Health reduced by <mag>

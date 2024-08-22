@@ -1,0 +1,17 @@
+FormKey: 024994:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifyConjuration_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Fortify Conjuration
+Flags:
+- Recover
+- NoDuration
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Conjuration
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

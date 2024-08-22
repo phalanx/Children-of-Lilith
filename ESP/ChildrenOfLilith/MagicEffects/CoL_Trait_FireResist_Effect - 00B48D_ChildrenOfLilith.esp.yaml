@@ -1,0 +1,17 @@
+FormKey: 00B48D:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FireResist_Effect
+Name:
+  TargetLanguage: English
+  Value: Succubus Fire Resist
+Flags:
+- Recover
+- NoDuration
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: ResistFire
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: Being a Succubus grants you <mag> % Fire Resist

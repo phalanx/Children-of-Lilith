@@ -1,0 +1,16 @@
+FormKey: 08EEAD:ChildrenOfLilith.esp
+EditorID: CoL_Trait_DamageWeakness_Perk
+Name:
+  TargetLanguage: English
+  Value: Succubus Damage Weakness
+Description:
+  TargetLanguage: English
+  Value: ''
+NumRanks: 1
+Playable: True
+Effects:
+- MutagenObjectType: PerkEntryPointModifyValue
+  EntryPoint: ModIncomingDamage
+  PerkConditionTabCount: 3
+  Modification: Multiply
+  Value: 1.1

@@ -1,0 +1,8 @@
+MutagenObjectType: PlacedObject
+FormKey: 13E13A:ChildrenOfLilith.esp
+MajorRecordFlagsRaw: 1024
+SkyrimMajorRecordFlags:
+- 0x400
+Base: 13E139:ChildrenOfLilith.esp
+Placement:
+  Position: 5.112566, -43.417408, 260.0476

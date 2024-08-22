@@ -13,33 +13,35 @@
         <!-- Set the name of your mod: -->
         <Variable Name="ModName" Value="ChildrenOfLilith" />
         <!-- The folder where you store all of your mods -->
-        <Variable Name="ModsFolder" Value="F:\Skyrim Mods\Mods" />
+        <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.1170\Authoring\Children Of Lilith\Mods" />
     </Variables>
     <Imports>
-        <Import>@ModsFolder\SexLabFrameworkAE\Scripts\Source</Import>
+        <Import>@ModsFolder\SexLab Framework PPLUS\Source\Scripts</Import>
+        <Import>@ModsFolder\SexLab Framework\Scripts\Source</Import>
         <Import>@ModsFolder\SkyUI SDK\Scripts\Source</Import>
         <Import>@ModsFolder\Fores New Idles in Skyrim SE - FNIS SE\source\scripts</Import>
         <Import>@ModsFolder\iWant Widgets\source\scripts</Import>
+        <Import>@ModsFolder\MfgFix NG\source\scripts</Import>
         <Import>@ModsFolder\Mfg Fix\source\scripts</Import>
         <Import>@ModsFolder\Race-Menu-Modders Package\Source\Scripts</Import>
         <Import>@ModsFolder\PapyrusUtil SE - Modders Scripting Utility Functions\Scripts\Source</Import>
         <Import>@ModsFolder\Devious Devices\Scripts\Source</Import>
         <Import>@ModsFolder\SexLabArousedSSELoose\Scripts\Source</Import>
         <Import>@ModsFolder\FNIS Sexy Move SE\source\scripts</Import>
-        <Import>@ModsFolder\ConsoleUtilSSE\Scripts\Source</Import>
+        <Import>@ModsFolder\ConsoleUtilSSE NG\Scripts\Source</Import>
         <Import>@ModsFolder\OStim Standalone - Advanced Adult Animation Framework\Scripts\Source</Import>
         <Import>@ModsFolder\JContainers SE\scripts\source</Import>
         <Import>@ModsFolder\powerofthree's Papyrus Extender\Source\scripts</Import>
         <Import>@ModsFolder\Toys and Love\Source\Scripts</Import>
         <Import>@ModsFolder\WildLife for Toys SE V\Source\Scripts</Import>
         <Import>@ModsFolder\CreatureFrameworkV\scripts\source</Import>
-        <Import>@ModsFolder\skse\Scripts\Source</Import>
-        <Import>@ModsFolder\Creation Kit Scripts\Scripts\Source</Import>
         <Import>@ModsFolder\OSL Aroused\Scripts\Source</Import>
         <Import>@ModsFolder\SlaveTatsSE\Source\Scripts</Import>
         <Import>@ModsFolder\NL_MCM - A Modular MCM Framework - SDK\scripts\Source</Import>
         <Import>@ModsFolder\Custom Skills Framework\Source\Scripts</Import>
         <Import>@ModsFolder\Sexlab - Cum Overlays\Scripts\Source</Import>
+        <Import>@ModsFolder\skse\Scripts\Source</Import>
+        <Import>@ModsFolder\Creation Kit Scripts\Scripts\Source</Import>
     </Imports>
     <Folders>
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->
@@ -76,8 +78,9 @@
         </ZipFile>
     </ZipFiles>
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
-    <PostBuildEvent Description="Post-Build Remove BSA Files" UseInBuild="true">
+    <PostBuildEvent Description="Post-Build Tasks" UseInBuild="true">
         <Command>del /s /q /f *.bsa</Command>
         <Command>translation.sh remove</Command>
+        <Command>spriggit-wrapper.sh serialize</Command>
     </PostBuildEvent>
 </PapyrusProject>

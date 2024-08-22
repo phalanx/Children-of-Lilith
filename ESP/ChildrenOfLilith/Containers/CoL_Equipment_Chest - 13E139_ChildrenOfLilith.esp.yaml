@@ -1,0 +1,11 @@
+FormKey: 13E139:ChildrenOfLilith.esp
+EditorID: CoL_Equipment_Chest
+ObjectBounds:
+  First: -48, -23, 0
+  Second: 48, 26, 49
+Name:
+  TargetLanguage: English
+  Value: Chest
+Model:
+  File: Clutter\Upperclass\UpperChest01.nif
+  Data: 0x020000000000000000000000

@@ -25,6 +25,8 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_energyConversionRate", "$COL_SETTINGSPAGE_ENERGYCONVERSIONRATE", configHandler.energyConversionRate, "{1}")
         AddSliderOptionST("Slider_minHealthPercent", "$COL_SETTINGSPAGE_MINHEALTHPERCENT", configHandler.minHealthPercent, "{2}")
         AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
+        AddToggleOptionST("Toggle_drainToDeathCrime", "$COL_SETTINGSPAGE_DRAINTODEATHCRIME", configHandler.drainToDeathCrime)
+        AddSliderOptionST("Slider_drainToDeathDelay", "$COL_SETTINGSPAGE_DRAINTODEATHDELAY", configHandler.drainToDeathDelay, "{1}")
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
         int i = 0
@@ -158,6 +160,21 @@ EndEvent
         EndEvent
     EndState
 
+    State Slider_drainToDeathDelay
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialog(configHandler.drainToDeathDelay, 0, 60, 0.1, 0)
+        EndEvent
+
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.drainToDeathDelay = value
+            SetSliderOptionValueST(configHandler.drainToDeathDelay,"{1}")
+        EndEvent
+
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_DRAINTODEATHDELAY_HELP")
+        EndEvent
+    EndState
+
     State Slider_drainArousalMulti
         Event OnSliderOpenST(string state_id)
             SetSliderDialog(configHandler.drainArousalMult, 0, 1, 0.1, 0.1)
@@ -223,6 +240,16 @@ EndEvent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE_HELP")
+        EndEvent
+    EndState
+
+    State Toggle_drainToDeathCrime
+        Event OnSelectST(string state_id)
+            configHandler.drainToDeathCrime = !configHandler.drainToDeathCrime
+            SetToggleOptionValueST(configHandler.drainToDeathCrime)
+        EndEvent
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_DRAINTODEATHCRIME_HELP")
         EndEvent
     EndState
 

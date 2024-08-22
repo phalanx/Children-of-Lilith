@@ -1,0 +1,13 @@
+FormKey: 2A5498:ChildrenOfLilith.esp
+EditorID: CoL_Perks_Transform_Magicka
+Name:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_RANKEDPERK_2
+Description:
+  TargetLanguage: English
+  Value: $COL_ADVPAGE_RANKEDPERK_2_HELP
+NumRanks: 1
+Playable: True
+Effects:
+- MutagenObjectType: PerkAbilityEffect
+  Ability: 29DDC8:ChildrenOfLilith.esp

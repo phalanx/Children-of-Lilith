@@ -6,6 +6,7 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 CoL_Mechanic_LevelHandler_Script Property levelHandler Auto
+CoL_Interface_Toys_Script Property iToys Auto
 string currentSceneName
 
 Actor[] victims
@@ -26,6 +27,7 @@ Function Log(string msg)
 EndFunction
 
 Function Maintenance()
+    RegisterForModEvent("CoL_GameLoad", "Maintenance")
     if Game.IsPluginInstalled("Toys.esm")
         Log("Toys and Love Detected")
         succubus = GetTargetActor()
@@ -123,6 +125,9 @@ Event sceneInfo(string LoveName, Bool PlayerInScene, int NumStages, Bool PlayerC
     endif
 
     UnRegisterForModEvent("ToysLoveSceneInfo")
+    if succubus == CoL.playerRef
+        iToys.setPlayerSceneData(LoveName, PlayerInScene, NumStages, PlayerConsent, ActInPos1, ActInPos2, ActInPos3, ActInPos4, ActInPos5)
+    endif
     Log("Scene Info: ")
 
     Actor victim
@@ -165,6 +170,7 @@ Event TL_endScene(string eventName, string strArg, float numArg, Form sender)
     triggerDrainEnd()
     int sceneEndEvent
     if succubus == CoL.playerRef
+        iToys.ClearPlayerSceneData()
         sceneEndEvent = ModEvent.Create("CoL_endScene")
     else
         sceneEndEvent = ModEvent.Create("CoL_endScene_NPC")

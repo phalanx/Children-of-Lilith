@@ -1,0 +1,14 @@
+FormKey: 2270E8:ChildrenOfLilith.esp
+EditorID: CoL_Trait_FortifyDestruction_Spell
+Name:
+  TargetLanguage: English
+  Value: Path of Sanguine
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: On the Path of Sanguine you have +5 Destruction
+Type: Ability
+Effects:
+- BaseEffect: 2270DF:ChildrenOfLilith.esp
+  Data:
+    Magnitude: 5
