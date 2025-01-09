@@ -55,6 +55,9 @@ Function EndScene()
 EndFunction
 
 Event OnKeyDown(int keyCode)
+    If Utility.IsInMenuMode() || UI.IsTextInputEnabled()
+        Return
+    EndIf
     if keyCode == configHandler.hotkeys[0]
         if configHandler.lockDrainType
             return

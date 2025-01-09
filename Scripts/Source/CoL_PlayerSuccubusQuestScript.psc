@@ -126,6 +126,9 @@ EndState
 
 State Running
     Event OnKeyDown(int keyCode)
+        If Utility.IsInMenuMode() || UI.IsTextInputEnabled()
+            Return
+        EndIf
         if keyCode == configHandler.hotkeys[1]
             if configHandler.EnergyScaleTestEnabled
                 ScaleEnergyTest()
@@ -163,6 +166,9 @@ State SceneRunning
     EndFunction
 
     Event OnKeyDown(int keyCode)
+        If Utility.IsInMenuMode() || UI.IsTextInputEnabled()
+            Return
+        EndIf
         if keyCode == configHandler.hotkeys[2]
             if !transformedForScene
                 simpleTransform.Cast(playerRef)

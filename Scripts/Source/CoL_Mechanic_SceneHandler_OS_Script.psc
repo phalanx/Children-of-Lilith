@@ -139,6 +139,9 @@ State Running
     EndEvent
 
     Event OnKeyDown(int keyCode)
+        If Utility.IsInMenuMode() || UI.IsTextInputEnabled()
+            Return
+        EndIf
         if keyCode == configHandler.hotkeys[3]
             if levelHandler.playerSuccubusLevel.GetValueInt() < 2
                 Debug.Notification("Must be Succubus level 2 to use Temptation")
