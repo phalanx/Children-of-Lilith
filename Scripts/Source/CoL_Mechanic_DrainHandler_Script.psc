@@ -146,7 +146,6 @@ EndFunction
 Function EndNormalDrain(Form drainerForm, Form draineeForm)
     Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
     StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
-    float drainAmount = StorageUtil.GetFloatValue((draineeForm as Actor), "CoL_drainAmount")
     (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
 EndFunction
 
@@ -161,13 +160,13 @@ Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, fl
     if drainee.isEssential()
         Log("Victim is essential")
         string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the weave of fate"
-
         if drainee.IsInFaction(CoL.drainVictimFaction)
             Log("Victim has been drained")
             notifyMsg = notifyMsg + " and cannot be drained again"
             Debug.Notification(notifyMsg)
             return
         else
+            StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
             applyDrainSpell(drainee, drainAmounts)
         endif
         Debug.Notification(notifyMsg)
@@ -191,7 +190,14 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Log("Killing " + draineeName)
     if drainee.isEssential()
         Log("Can't kill essential. Dealing damage instead")
+        if drainee.IsInFaction(CoL.drainVictimFaction)
+            Log("Victim already drained. Skipping...")
+            return
+        endif
+        Log("Can't kill essential. Dealing damage instead")
         drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
+        StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
+        (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
         return
     endif
     if configHandler.drainToDeathCrime
@@ -238,7 +244,6 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
     float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
     if drainAmount >= (victimHealth - (victimHealth * configHandler.minHealthPercent))
         drainAmount = (victimHealth - (victimHealth * configHandler.minHealthPercent))
-        drainVictim.AddToFaction(CoL.drainVictimFaction)
     endif
     returnValues[0] = drainAmount
 
@@ -248,8 +253,7 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         drainAmount += existingDrain
     endif
     if drainAmount >= (victimHealth - (victimHealth * configHandler.minHealthPercent))
-        drainAmount = (victimHealth - (victimHealth * configHandler.minHealthPercent))
-        drainVictim.AddToFaction(CoL.drainVictimFaction)
+        drainAmount = (victimHealth - (victimHealth * configHandler.minHealthPercent)) 
     endif
     returnValues[1] = drainAmount
 
