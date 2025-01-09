@@ -60,6 +60,7 @@ Form[] function StripEquipment(Actor actorRef)
 	form[] NoStripList = configHandler.NoStripList
     Log("No Strip List Contains:")
     int x = 0
+    ; TODO Add debug check to while loop
     while x < NoStripList.Length
         Log("    " + NoStripList[x])
         x += 1

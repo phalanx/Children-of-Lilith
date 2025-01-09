@@ -16,6 +16,9 @@
         <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.1170\Authoring\Children Of Lilith\Mods" />
     </Variables>
     <Imports>
+        <Import>@ModsFolder\Lovense API\Source\Scripts</Import>
+        <Import>@ModsFolder\AnimSpeedSexLab\Scripts\Source</Import>
+        <Import>@ModsFolder\AnimSpeedSE\Scripts\Source</Import>
         <Import>@ModsFolder\SexLab Framework PPLUS\Source\Scripts</Import>
         <Import>@ModsFolder\SexLab Framework\Scripts\Source</Import>
         <Import>@ModsFolder\SkyUI SDK\Scripts\Source</Import>
@@ -81,6 +84,5 @@
     <PostBuildEvent Description="Post-Build Tasks" UseInBuild="true">
         <Command>del /s /q /f *.bsa</Command>
         <Command>translation.sh remove</Command>
-        <Command>spriggit-wrapper.sh serialize</Command>
     </PostBuildEvent>
 </PapyrusProject>
