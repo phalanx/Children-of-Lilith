@@ -22,8 +22,8 @@ Event OnPageDraw()
     AddHeaderOption("SexLab")
     AddToggleOptionST("SexLab", "SexLab", (SexLab_Interfaces as CoL_Interface_SexLab_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
     SetCursorFillMode(LEFT_TO_RIGHT)
-    AddToggleOptionST("PPlus", "PPlus", (SexLab_Interfaces as CoL_Interface_SexLab_Script).PPlus, OPTION_FLAG_DISABLED)
-    if (SexLab_Interfaces as CoL_Interface_SexLab_Script).PPlus
+    AddToggleOptionST("PPlus", "PPlus", (SexLab_Interfaces as CoL_Interface_SexLab_Script).IsPPlus, OPTION_FLAG_DISABLED)
+    if (SexLab_Interfaces as CoL_Interface_SexLab_Script).IsPPlus
         AddToggleOptionST("Toggle_PPlusTagCheck", "$COL_COMPATIBILTIESPAGE_PPLUSTAGCHECK", configHandler.PPlusTagCheck)
     else
         AddToggleOptionST("Toggle_PPlusTagCheck", "$COL_COMPATIBILTIESPAGE_PPLUSTAGCHECK", configHandler.PPlusTagCheck, OPTION_FLAG_DISABLED)
