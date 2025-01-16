@@ -16,6 +16,7 @@
         <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.1170\Authoring\Children Of Lilith\Mods" />
     </Variables>
     <Imports>
+        <Import>@ModsFolder\Custom Skills Framework\Source\Scripts</Import>
         <Import>@ModsFolder\Lovense API\Source\Scripts</Import>
         <Import>@ModsFolder\AnimSpeedSexLab\Scripts\Source</Import>
         <Import>@ModsFolder\AnimSpeedSE\Scripts\Source</Import>

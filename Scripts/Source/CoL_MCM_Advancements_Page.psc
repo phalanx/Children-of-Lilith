@@ -13,6 +13,7 @@ GlobalVariable Property perkPointsAvailable Auto
 CoL_ConfigHandler_Script Property  configHandler Auto
 CoL_PlayerSuccubusQuestScript Property  CoL Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
+CoL_Interface_CustomSkills_Script Property CustomSkillsInterface Auto
 String Property outOfPointsMessage = "No succubus perk points available" Auto
 
 Event OnInit()
@@ -38,8 +39,12 @@ Event OnPageDraw()
     endwhile
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
-    AddToggleOptionST("Toggle_grantCsfPower","$COL_ADVPAGE_GRANTCSFPOWER", configHandler.grantCSFPower )
-    AddTextOptionST("Text_fixCSF", "$COL_ADVPAGE_FIXCSF", None)
+    if CustomSkillsInterface.IsInterfaceActive()
+        AddToggleOptionST("Toggle_grantCsfPower","$COL_ADVPAGE_GRANTCSFPOWER", configHandler.grantCSFPower )
+        AddTextOptionST("Text_fixCSF", "$COL_ADVPAGE_FIXCSF", None)
+    else
+        AddTextOptionST("Text_NoCustomSkills", "$COL_ADVPAGE_NOCSF", None, OPTION_FLAG_DISABLED)
+    endif
     AddHeaderOption("$COL_ADVPAGE_HEADER_TRANSFORM")
     i = 0
     while i < CoL.transformBuffs.Length

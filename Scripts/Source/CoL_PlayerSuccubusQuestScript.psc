@@ -15,10 +15,10 @@ CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Interface_SLCumOverlay_Script Property iSLCumOverlay Auto
 CoL_Interface_DD_Script Property DD Auto
+CoL_Interface_CustomSkills_Script Property CustomSkillsInterface Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
-bool Property propertyname Auto
 ; Keyword Definitions
 Keyword Property BBBNoStrip Auto Hidden
 
@@ -526,7 +526,7 @@ Function UpdatePath()
 EndFunction
 
 Function UpdateCSFPower()
-    if configHandler.grantCSFPower
+    if configHandler.grantCSFPower && CustomSkillsInterface.IsInterfaceActive()
         playerRef.AddSpell(showperkMenu)
     else
         playerRef.RemoveSpell(showperkMenu)
