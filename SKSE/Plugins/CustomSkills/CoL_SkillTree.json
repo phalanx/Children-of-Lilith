@@ -1,0 +1,14 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Exit-9B/CustomSkills/main/docs/schema/CustomSkill.json",
+    "version": 1,
+    "skydome": {
+      "model": "Interface/intcolskydome.nif",
+      "cameraRightPoint": 1
+    },
+    "perkPoints": "ChildrenOfLilith.esp|2A7C35",
+    "skills": [
+        { "$ref": "ChildrenOfLilith/CoL_Succubus.json" },
+        { "$ref": "ChildrenOfLilith/CoL_Transform.json" },
+        { "$ref": "ChildrenOfLilith/CoL_Molag.json" }
+    ]
+}

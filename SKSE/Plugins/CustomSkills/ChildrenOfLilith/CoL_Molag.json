@@ -1,0 +1,15 @@
+{
+  "id": "col_succubus_molag_skill",
+  "name": "$COL_MOLAG_SKILL",
+  "description": "$COL_MOLAG_SKILL_DESCRIPTION",
+  "level": "ChildrenOfLilith.esp|13B614",
+  "ratio": "ChildrenOfLilith.esp|282A20",
+  "nodes": [
+    {
+      "id": "col_transform_health",
+      "perk": "ChildrenOfLilith.esp|2A5496",
+      "x": 0,
+      "y": 0
+    }
+  ]
+}
