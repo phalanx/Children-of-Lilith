@@ -55,7 +55,7 @@ Function EndScene()
 EndFunction
 
 Event OnKeyDown(int keyCode)
-    If Utility.IsInMenuMode() || UI.IsTextInputEnabled()
+    If  CoL_Global_Utils.IsMenuOpen()
         Return
     EndIf
     if keyCode == configHandler.hotkeys[0]
