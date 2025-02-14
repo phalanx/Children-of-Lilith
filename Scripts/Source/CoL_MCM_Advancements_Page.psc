@@ -8,6 +8,7 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 ; 4 - Attractive Dremora
 ; 5 - Slake Thirst
 Perk[] Property singleRankPerks Auto
+Perk Property CombatFeedingPerk Auto
 Spell Property infinitePerkSpell Auto
 GlobalVariable Property perkPointsAvailable Auto
 CoL_ConfigHandler_Script Property  configHandler Auto
@@ -52,6 +53,12 @@ Event OnPageDraw()
         AddTextOptionST("Text_RankedPerk___" + i, "$COL_ADVPAGE_RANKEDPERK_" + i, CoL.transformBuffs[i])
         i += 1
     endwhile
+    AddHeaderOption("$COL_ADVPAGE_HEADER_MOLAG")
+    if !CoL.playerRef.HasPerk(CombatFeedingPerk)
+        AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", false)
+    else
+        AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", true, OPTION_FLAG_DISABLED)
+    endif
 EndEvent
     
 State Text_perksAvailable
@@ -84,6 +91,10 @@ State Text_perkReset
             CoL.transformBuffs[i] = 0
             i += 1
         endwhile
+        if CoL.playerRef.HasPerk(CombatFeedingPerk)
+            CoL.playerRef.RemovePerk(CombatFeedingPerk)
+            restoredPoints += 1
+        endif
         perkPointsAvailable.Mod(restoredPoints)
         CoL.ApplyRankedPerks()
         ForcePageReset()
@@ -135,6 +146,25 @@ State Text_rankedPerk
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVPAGE_RANKEDPERK_"+state_id+"_HELP")
+    EndEvent
+EndState
+
+State Toggle_molagPerk
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            perkPointsAvailable.Mod(-1)
+            if state_id == "CombatFeeding"
+                CoL.playerRef.AddPerk(CombatFeedingPerk)
+            endif
+            ForcePageReset()
+        else
+            Debug.MessageBox(outOfPointsMessage)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        if state_id == "CombatFeeding"
+            SetInfoText("$COL_PERK_MOLAG_COMBATFEEDING_HELP")
+        endif
     EndEvent
 EndState
 
