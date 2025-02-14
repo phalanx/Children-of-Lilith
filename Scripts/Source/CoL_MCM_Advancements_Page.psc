@@ -25,6 +25,7 @@ Event OnPageDraw()
     AddHeaderOption("$COL_ADVPAGE_HEADER_POINTS")
     AddTextOptionST("Text_perksAvailable", "$COL_ADVPAGE_AVAILABLEPOINTS", perkPointsAvailable.GetValueInt())
     AddTextOptionST("Text_perkReset", "$COL_ADVPAGE_RESETPERKS", None)
+    AddTextOptionST("Text_perkConverter", "$COL_ADVPAGE_PERK_CONVERTER", None)
     AddHeaderOption("$COL_ADVPAGE_HEADER_GENERAL")
     AddTextOptionST("Text_perkEfficientFeeder", "$COL_ADVPAGE_PERK_EFFICIENTFEEDER", CoL.efficientFeeder)
     AddTextOptionST("Text_perkEnergyStorage", "$COL_ADVPAGE_PERK_ENERGYSTORAGE", CoL.energyStorage)
@@ -89,6 +90,20 @@ State Text_perkReset
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVPAGE_RESETPERKS_HELP")
+    EndEvent
+EndState
+State Text_perkConverter
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            perkPointsAvailable.Mod(-1)
+            Game.AddPerkPoints(1) 
+            ForcePageReset()
+        else
+            Debug.MessageBox(outOfPointsMessage)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVPAGE_PERK_CONVERTER_HELP")
     EndEvent
 EndState
 State Toggle_singlePerk

@@ -34,6 +34,12 @@
       "perk": "ChildrenOfLilith.esp|2C0836",
       "x": 0,
       "y": 2
+    },
+    {
+      "id": "col_perkConverter",
+      "perk": "ChildrenOfLilith.esp|3B30F8",
+      "x": 0,
+      "y": 2.5
     }
   ]
 }

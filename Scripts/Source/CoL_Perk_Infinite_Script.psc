@@ -11,6 +11,7 @@ Scriptname CoL_Perk_Infinite_Script extends activemagiceffect
 Perk[] Property transformPerks Auto
 Perk Property effecientFeeder Auto
 Perk Property energyStorage Auto
+Perk Property perkConverter Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
@@ -37,6 +38,11 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
         Log("Energy Storage Ranks: " + CoL.energyStorage)
         energyHandler.playerEnergyMax += 10
         CoL.playerRef.RemovePerk(energyStorage)
+    endif
+    if CoL.playerRef.hasPerk(perkConverter)
+        Log("Perk Conversion Detected")
+        Game.AddPerkPoints(1)
+        CoL.playerRef.RemovePerk(perkConverter)
     endif
 EndEvent
 
