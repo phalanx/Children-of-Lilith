@@ -10,13 +10,26 @@
       "perk": "ChildrenOfLilith.esp|3B8032",
       "x": 0,
       "y": 0,
-      "links": ["col_molag_reinforcedBody"]
+      "links": ["col_molag_reinforcedbody"]
     },
     {
-      "id": "col_molag_reinforcedBody",
+      "id": "col_molag_reinforcedbody",
       "perk": "ChildrenOfLilith.esp|3BCF66",
       "x": 0.5,
+      "y": 0.5,
+      "links": ["col_molag_diamondskin","col_molag_dominatingstrength"]
+    },
+    {
+      "id": "col_molag_diamondskin",
+      "perk": "ChildrenOfLilith.esp|3C6DCD",
+      "x": 1.5,
       "y": 0.5
+    },
+    {
+      "id": "col_molag_dominatingstrength",
+      "perk": "ChildrenOfLilith.esp|3D0C40",
+      "x": 0.5,
+      "y": 1.0
     }
   ]
 }

@@ -9,6 +9,8 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 ; 5 - Slake Thirst
 Perk[] Property singleRankPerks Auto
 Perk[] Property ReinforcedBody Auto
+Perk[] Property DiamondSkin Auto
+Perk[] Property DominatingStrength Auto
 Perk Property CombatFeedingPerk Auto
 Spell Property infinitePerkSpell Auto
 GlobalVariable Property perkPointsAvailable Auto
@@ -47,24 +49,72 @@ Event OnPageDraw()
     else
         AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", true, OPTION_FLAG_DISABLED)
     endif
-    if !CoL.playerRef.HasPerk(ReinforcedBody[0])
-        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", false)
-        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", false, OPTION_FLAG_DISABLED)
-        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", false, OPTION_FLAG_DISABLED)
-    elseif !CoL.playerRef.HasPerk(ReinforcedBody[1])
-        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
-        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", false)
-        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", false, OPTION_FLAG_DISABLED)
-    elseif !CoL.playerRef.HasPerk(ReinforcedBody[2])
-        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
-        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", true, OPTION_FLAG_DISABLED)
-        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", false)
-    else
-        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
-        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", true, OPTION_FLAG_DISABLED)
-        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", true, OPTION_FLAG_DISABLED)
-    endif
-    
+    ; Reinforced Body
+        if !CoL.playerRef.HasPerk(CombatFeedingPerk)
+            AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB0", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB1", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(ReinforcedBody[0])
+            AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB0", false)
+            AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB1", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(ReinforcedBody[1])
+            AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB1", false)
+            AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(ReinforcedBody[2])
+            AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB2", false)
+        else
+            AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB2", true, OPTION_FLAG_DISABLED)
+        endif
+    ; Diamond Skin
+        if !CoL.playerRef.HasPerk(ReinforcedBody[0])
+            AddToggleOptionST("Toggle_DiamondSkin___0", "$COL_PERK_MOLAG_DS0", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___1", "$COL_PERK_MOLAG_DS1", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___2", "$COL_PERK_MOLAG_DS2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(DiamondSkin[0])
+            AddToggleOptionST("Toggle_DiamondSkin___0", "$COL_PERK_MOLAG_DS0", false)
+            AddToggleOptionST("Toggle_DiamondSkin___1", "$COL_PERK_MOLAG_DS1", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___2", "$COL_PERK_MOLAG_DS2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(DiamondSkin[1])
+            AddToggleOptionST("Toggle_DiamondSkin___0", "$COL_PERK_MOLAG_DS0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___1", "$COL_PERK_MOLAG_DS1", false)
+            AddToggleOptionST("Toggle_DiamondSkin___2", "$COL_PERK_MOLAG_DS2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(DiamondSkin[2])
+            AddToggleOptionST("Toggle_DiamondSkin___0", "$COL_PERK_MOLAG_DS0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___1", "$COL_PERK_MOLAG_DS1", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___2", "$COL_PERK_MOLAG_DS2", false)
+        else
+            AddToggleOptionST("Toggle_DiamondSkin___0", "$COL_PERK_MOLAG_DS0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___1", "$COL_PERK_MOLAG_DS1", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DiamondSkin___2", "$COL_PERK_MOLAG_DS1", true, OPTION_FLAG_DISABLED)
+        endif
+    ; Dominating Strength
+        if !CoL.playerRef.HasPerk(ReinforcedBody[0])
+            AddToggleOptionST("Toggle_DomStrength___0", "$COL_PERK_MOLAG_DST0", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___1", "$COL_PERK_MOLAG_DST1", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___2", "$COL_PERK_MOLAG_DST2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(DominatingStrength[0])
+            AddToggleOptionST("Toggle_DomStrength___0", "$COL_PERK_MOLAG_DST0", false)
+            AddToggleOptionST("Toggle_DomStrength___1", "$COL_PERK_MOLAG_DST1", false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___2", "$COL_PERK_MOLAG_DST2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(DominatingStrength[1])
+            AddToggleOptionST("Toggle_DomStrength___0", "$COL_PERK_MOLAG_DST0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___1", "$COL_PERK_MOLAG_DST1", false)
+            AddToggleOptionST("Toggle_DomStrength___2", "$COL_PERK_MOLAG_DST2", false, OPTION_FLAG_DISABLED)
+        elseif !CoL.playerRef.HasPerk(DominatingStrength[2])
+            AddToggleOptionST("Toggle_DomStrength___0", "$COL_PERK_MOLAG_DST0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___1", "$COL_PERK_MOLAG_DST1", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___2", "$COL_PERK_MOLAG_DST2", false)
+        else
+            AddToggleOptionST("Toggle_DomStrength___0", "$COL_PERK_MOLAG_DST0", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___1", "$COL_PERK_MOLAG_DST1", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_DomStrength___2", "$COL_PERK_MOLAG_DST2", true, OPTION_FLAG_DISABLED)
+        endif
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
     if CustomSkillsInterface.IsInterfaceActive()
@@ -119,6 +169,20 @@ State Text_perkReset
         while i < ReinforcedBody.Length
             if CoL.playerRef.HasPerk(ReinforcedBody[i])
                 CoL.playerRef.RemovePerk(ReinforcedBody[i])
+                restoredPoints += 1
+            endif
+            i += 1
+        endWhile
+        while i < DiamondSkin.Length
+            if CoL.playerRef.HasPerk(DiamondSkin[i])
+                CoL.playerRef.RemovePerk(DiamondSkin[i])
+                restoredPoints += 1
+            endif
+            i += 1
+        endWhile
+        while i < DominatingStrength.Length
+            if CoL.playerRef.HasPerk(DominatingStrength[i])
+                CoL.playerRef.RemovePerk(DominatingStrength[i])
                 restoredPoints += 1
             endif
             i += 1
@@ -195,7 +259,6 @@ State Toggle_molagPerk
         endif
     EndEvent
 EndState
-
 State Toggle_ReinforcedBody
     Event OnSelectST(string state_id)
         if perkPointsAvailable.GetValue() > 0
@@ -208,6 +271,34 @@ State Toggle_ReinforcedBody
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_PERK_MOLAG_RB_HELP" + state_id)
+    EndEvent
+EndState
+State Toggle_DiamondSkin
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            perkPointsAvailable.Mod(-1)
+            CoL.playerRef.AddPerk(DiamondSkin[state_id as int])
+            ForcePageReset()
+        else
+            Debug.MessageBox(outOfPointsMessage)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_PERK_MOLAG_DS_HELP" + state_id)
+    EndEvent
+EndState
+State Toggle_DomStrength
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            perkPointsAvailable.Mod(-1)
+            CoL.playerRef.AddPerk(DominatingStrength[state_id as int])
+            ForcePageReset()
+        else
+            Debug.MessageBox(outOfPointsMessage)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_PERK_MOLAG_DST_HELP" + state_id)
     EndEvent
 EndState
 
