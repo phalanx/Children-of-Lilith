@@ -231,7 +231,7 @@ int Function SaveConfig()
         JMap.setInt(jObj, "hungerThreshold", hungerThreshold)
     ; Save Tattoo Fade Settings
         JMap.setInt(jObj, "tattooFade", tattooFade as int)
-        JMap.setInt(jObj, "tatooSlot", tattooSlot)
+        JMap.setInt(jObj, "tattooSlot", tattooSlot)
     ; Save Power Settings
         JMap.setInt(jObj, "grantCSFPower", grantCSFPower as int)
         JMap.setFlt(jObj, "becomeEtherealCost", becomeEtherealCost)
@@ -343,7 +343,7 @@ Function LoadConfig(int jObj)
         hungerThreshold = JMap.getInt(jObj, "hungerThreshold")
     ; Load Tattoo Fade Settings
         tattooFade = JMap.getInt(jObj, "tattooFade") as bool
-        tattooSlot = JMap.getInt(jObj, "tattooSlot")
+        tattooSlot = JMap.getInt(jObj, "tattooSlot", 6)
     ; Load Power Settings
         grantCSFPower = JMap.getInt(jObj, "grantCSFPower") as bool
         becomeEtherealCost = JMap.getFlt(jObj, "becomeEtherealCost")
