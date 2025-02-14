@@ -8,6 +8,7 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 ; 4 - Attractive Dremora
 ; 5 - Slake Thirst
 Perk[] Property singleRankPerks Auto
+Perk[] Property ReinforcedBody Auto
 Perk Property CombatFeedingPerk Auto
 Spell Property infinitePerkSpell Auto
 GlobalVariable Property perkPointsAvailable Auto
@@ -39,6 +40,31 @@ Event OnPageDraw()
         endif
         i+=1
     endwhile
+
+    AddHeaderOption("$COL_ADVPAGE_HEADER_MOLAG")
+    if !CoL.playerRef.HasPerk(CombatFeedingPerk)
+        AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", false)
+    else
+        AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", true, OPTION_FLAG_DISABLED)
+    endif
+    if !CoL.playerRef.HasPerk(ReinforcedBody[0])
+        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", false)
+        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", false, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", false, OPTION_FLAG_DISABLED)
+    elseif !CoL.playerRef.HasPerk(ReinforcedBody[1])
+        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", false)
+        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", false, OPTION_FLAG_DISABLED)
+    elseif !CoL.playerRef.HasPerk(ReinforcedBody[2])
+        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", true, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", false)
+    else
+        AddToggleOptionST("Toggle_ReinforcedBody___0", "$COL_PERK_MOLAG_RB1", true, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_ReinforcedBody___1", "$COL_PERK_MOLAG_RB2", true, OPTION_FLAG_DISABLED)
+        AddToggleOptionST("Toggle_ReinforcedBody___2", "$COL_PERK_MOLAG_RB3", true, OPTION_FLAG_DISABLED)
+    endif
+    
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
     if CustomSkillsInterface.IsInterfaceActive()
@@ -53,12 +79,6 @@ Event OnPageDraw()
         AddTextOptionST("Text_RankedPerk___" + i, "$COL_ADVPAGE_RANKEDPERK_" + i, CoL.transformBuffs[i])
         i += 1
     endwhile
-    AddHeaderOption("$COL_ADVPAGE_HEADER_MOLAG")
-    if !CoL.playerRef.HasPerk(CombatFeedingPerk)
-        AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", false)
-    else
-        AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", true, OPTION_FLAG_DISABLED)
-    endif
 EndEvent
     
 State Text_perksAvailable
@@ -95,6 +115,14 @@ State Text_perkReset
             CoL.playerRef.RemovePerk(CombatFeedingPerk)
             restoredPoints += 1
         endif
+        i = 0
+        while i < ReinforcedBody.Length
+            if CoL.playerRef.HasPerk(ReinforcedBody[i])
+                CoL.playerRef.RemovePerk(ReinforcedBody[i])
+                restoredPoints += 1
+            endif
+            i += 1
+        endWhile
         perkPointsAvailable.Mod(restoredPoints)
         CoL.ApplyRankedPerks()
         ForcePageReset()
@@ -165,6 +193,21 @@ State Toggle_molagPerk
         if state_id == "CombatFeeding"
             SetInfoText("$COL_PERK_MOLAG_COMBATFEEDING_HELP")
         endif
+    EndEvent
+EndState
+
+State Toggle_ReinforcedBody
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            perkPointsAvailable.Mod(-1)
+            CoL.playerRef.AddPerk(ReinforcedBody[state_id as int])
+            ForcePageReset()
+        else
+            Debug.MessageBox(outOfPointsMessage)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_PERK_MOLAG_RB_HELP" + state_id)
     EndEvent
 EndState
 

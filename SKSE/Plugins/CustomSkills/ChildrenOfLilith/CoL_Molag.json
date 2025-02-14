@@ -9,7 +9,14 @@
       "id": "col_molag_combatfeeding",
       "perk": "ChildrenOfLilith.esp|3B8032",
       "x": 0,
-      "y": 0
+      "y": 0,
+      "links": ["col_molag_reinforcedBody"]
+    },
+    {
+      "id": "col_molag_reinforcedBody",
+      "perk": "ChildrenOfLilith.esp|3BCF66",
+      "x": 0.5,
+      "y": 0.5
     }
   ]
 }
