@@ -12,6 +12,7 @@ VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
 Perk[] Property DeadlyRevelry Auto
+Perk[] Property MorbidRecovery Auto
 
 bool drainStarted = false
 bool draining = false
@@ -135,6 +136,7 @@ Function NormalDrain(Form drainerForm, Form draineeForm, string draineeName, flo
 
     StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
     float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    processMorbidRecovery(drainAmounts[0])
     applyDrainSpell(drainee, drainAmounts)
     
     levelHandler.gainXP(drainAmounts[0], false)
@@ -158,6 +160,7 @@ Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, fl
     Log("Recieved Victim Arousal: " + arousal)
 
     float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    processMorbidRecovery(drainAmounts[0])
     if drainee.isEssential()
         Log("Victim is essential")
         string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the weave of fate"
@@ -220,6 +223,21 @@ EndFunction
 Function doVampireDrain(Actor drainee)
     if drainee != None && CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
         vampireHandler.Feed(drainee)
+    endif
+EndFunction
+
+Function processMorbidRecovery(float drainAmount)
+    float playerHealthMax = CoL.playerRef.GetActorValueMax("Health")
+    float playerStaminaMax = CoL.playerRef.GetActorValueMax("Stamina")
+    float playerMagickaMax = CoL.playerRef.GetActorValueMax("Magicka")
+    if CoL.playerRef.HasPerk(MorbidRecovery[1])
+        CoL.playerRef.RestoreActorValue("Health", playerHealthMax)
+        CoL.playerRef.RestoreActorValue("Stamina", playerStaminaMax)
+        CoL.playerRef.RestoreActorValue("Magicka", playerMagickaMax)
+    elseif CoL.playerRef.HasPerk(MorbidRecovery[0])
+        CoL.playerRef.RestoreActorValue("Health", playerHealthMax/2)
+        CoL.playerRef.RestoreActorValue("Stamina", playerStaminaMax/2)
+        CoL.playerRef.RestoreActorValue("Magicka", playerMagickaMax/2)
     endif
 EndFunction
 

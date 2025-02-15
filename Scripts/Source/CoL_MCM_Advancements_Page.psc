@@ -8,11 +8,15 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 ; 4 - Attractive Dremora
 ; 5 - Slake Thirst
 Perk[] Property singleRankPerks Auto
-Perk[] Property ReinforcedBody Auto
-Perk[] Property DiamondSkin Auto
-Perk[] Property DominatingStrength Auto
-Perk[] Property DeadlyRevelry Auto
-Perk Property CombatFeedingPerk Auto
+
+; Path of Dominance Perks
+    Perk Property CombatFeedingPerk Auto
+    Perk[] Property ReinforcedBody Auto
+    Perk[] Property DiamondSkin Auto
+    Perk[] Property DominatingStrength Auto
+    Perk[] Property DeadlyRevelry Auto
+    Perk[] Property MorbidRecovery Auto
+
 Spell Property infinitePerkSpell Auto
 GlobalVariable Property perkPointsAvailable Auto
 CoL_ConfigHandler_Script Property  configHandler Auto
@@ -55,6 +59,7 @@ Event OnPageDraw()
         printPerkArray(DiamondSkin,"DiamondSkin",ReinforcedBody[0])
         printPerkArray(DominatingStrength,"DomStrength",ReinforcedBody[0])
         printPerkArray(DeadlyRevelry,"DeadlyRevelry",CombatFeedingPerk)
+        printPerkArray(MorbidRecovery,"MorbidRecovery",CombatFeedingPerk)
     
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
@@ -257,6 +262,20 @@ State Toggle_DeadlyRevelry
         if perkPointsAvailable.GetValue() > 0
             perkPointsAvailable.Mod(-1)
             CoL.playerRef.AddPerk(DeadlyRevelry[state_id as int])
+            ForcePageReset()
+        else
+            Debug.MessageBox(outOfPointsMessage)
+        endif
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_PERK_MOLAG_DEADLYREV_HELP" + state_id)
+    EndEvent
+EndState
+State Toggle_MorbidRecovery
+    Event OnSelectST(string state_id)
+        if perkPointsAvailable.GetValue() > 0
+            perkPointsAvailable.Mod(-1)
+            CoL.playerRef.AddPerk(MorbidRecovery[state_id as int])
             ForcePageReset()
         else
             Debug.MessageBox(outOfPointsMessage)
