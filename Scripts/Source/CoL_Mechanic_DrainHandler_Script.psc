@@ -11,6 +11,7 @@ CoL_UI_Widget_Script  Property widgetHandler Auto
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
+Perk[] Property DeadlyRevelry Auto
 
 bool drainStarted = false
 bool draining = false
@@ -176,7 +177,16 @@ Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, fl
     
     float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
     
-    energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
+    float finalDrainToDeathMult = configHandler.drainToDeathMult
+    if CoL.playerRef.HasPerk(DeadlyRevelry[2])
+        finalDrainToDeathMult += configHandler.drainToDeathMult * 1
+    elseif CoL.playerRef.HasPerk(DeadlyRevelry[1])
+        finalDrainToDeathMult += configHandler.drainToDeathMult * 0.5
+    elseif CoL.playerRef.HasPerk(DeadlyRevelry[0])
+        finalDrainToDeathMult += configHandler.drainToDeathMult * 0.25
+    endif
+
+    energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * finalDrainToDeathMult)
     levelHandler.gainXP(drainAmounts[0], true)
     doVampireDrain(drainee)
 EndFunction
