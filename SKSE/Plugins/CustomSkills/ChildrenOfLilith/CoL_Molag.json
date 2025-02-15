@@ -42,7 +42,14 @@
       "id": "col_molag_morbidrecovery",
       "perk": "ChildrenOfLilith.esp|3E9841",
       "x": 0,
-      "y": 2
+      "y": 2,
+      "links": ["col_molag_essenceextraction"]
+    },
+    {
+      "id": "col_molag_essenceextraction",
+      "perk": "ChildrenOfLilith.esp|3EE775",
+      "x": 0,
+      "y": 3
     }
   ]
 }

@@ -8,9 +8,12 @@ CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
+Spell Property soulTrap Auto
+
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
+Perk Property EssensceExtraction Auto
 Perk[] Property DeadlyRevelry Auto
 Perk[] Property MorbidRecovery Auto
 
@@ -198,6 +201,10 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Utility.Wait(configHandler.drainToDeathDelay)
     Actor drainee = draineeForm as Actor
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
+
+    if CoL.playerRef.HasPerk(EssensceExtraction)
+        soulTrap.Cast(CoL.playerRef, drainee)
+    endif
 
     Log("Recieved End Drain To Death Event for " + draineeName)
     Log("Killing " + draineeName)

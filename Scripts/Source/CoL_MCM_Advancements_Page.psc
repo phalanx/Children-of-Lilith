@@ -16,6 +16,7 @@ Perk[] Property singleRankPerks Auto
     Perk[] Property DominatingStrength Auto
     Perk[] Property DeadlyRevelry Auto
     Perk[] Property MorbidRecovery Auto
+    Perk Property EssensceExtraction Auto
 
 Spell Property infinitePerkSpell Auto
 GlobalVariable Property perkPointsAvailable Auto
@@ -50,16 +51,22 @@ Event OnPageDraw()
 
     ; Path of Domination
         AddHeaderOption("$COL_ADVPAGE_HEADER_MOLAG")
+        
         if !CoL.playerRef.HasPerk(CombatFeedingPerk)
-            AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", false)
+            AddToggleOptionST("Toggle_molagPerk___CombatFeeding", CombatFeedingPerk.GetName(), false)
         else
-            AddToggleOptionST("Toggle_molagPerk___CombatFeeding", "$COL_PERK_MOLAG_COMBATFEEDING", true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_molagPerk___CombatFeeding", CombatFeedingPerk.GetName(), true, OPTION_FLAG_DISABLED)
         endif
         printPerkArray(ReinforcedBody,"ReinforcedBody",CombatFeedingPerk)
         printPerkArray(DiamondSkin,"DiamondSkin",ReinforcedBody[0])
         printPerkArray(DominatingStrength,"DomStrength",ReinforcedBody[0])
         printPerkArray(DeadlyRevelry,"DeadlyRevelry",CombatFeedingPerk)
         printPerkArray(MorbidRecovery,"MorbidRecovery",CombatFeedingPerk)
+        if !CoL.playerRef.HasPerk(EssensceExtraction)
+            AddToggleOptionST("Toggle_molagPerk___EssensceExtraction", EssensceExtraction.GetName(), false)
+        else
+            AddToggleOptionST("Toggle_molagPerk___EssensceExtraction", EssensceExtraction.GetName(), true, OPTION_FLAG_DISABLED)
+        endif
     
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
@@ -203,6 +210,8 @@ State Toggle_molagPerk
             perkPointsAvailable.Mod(-1)
             if state_id == "CombatFeeding"
                 CoL.playerRef.AddPerk(CombatFeedingPerk)
+            elseif state_id == "EssenceExtraction"
+                CoL.playerRef.AddPerk(EssensceExtraction)
             endif
             ForcePageReset()
         else
@@ -211,7 +220,7 @@ State Toggle_molagPerk
     EndEvent
     Event OnHighlightST(string state_id)
         if state_id == "CombatFeeding"
-            SetInfoText("$COL_PERK_MOLAG_COMBATFEEDING_HELP")
+            SetInfoText("$COL_PERK_MOLAG_" + state_id + "_HELP")
         endif
     EndEvent
 EndState
