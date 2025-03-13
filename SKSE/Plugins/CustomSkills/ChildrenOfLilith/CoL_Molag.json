@@ -10,7 +10,7 @@
       "perk": "ChildrenOfLilith.esp|3B8032",
       "x": 0,
       "y": 0,
-      "links": ["col_molag_reinforcedbody","col_molag_deadlyrevelry"]
+      "links": ["col_molag_reinforcedbody","col_molag_deadlyrevelry","col_molag_terrifyingform"]
     },
     {
       "id": "col_molag_reinforcedbody",
@@ -50,6 +50,12 @@
       "perk": "ChildrenOfLilith.esp|3EE775",
       "x": 0,
       "y": 3
+    },
+    {
+      "id": "col_molag_terrifyingform",
+      "perk": "ChildrenOfLilith.esp|3F36AE",
+      "x": -1,
+      "y": 1
     }
   ]
 }

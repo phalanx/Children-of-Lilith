@@ -9,14 +9,15 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 ; 5 - Slake Thirst
 Perk[] Property singleRankPerks Auto
 
-; Path of Dominance Perks
+; Path of Domination Perks
     Perk Property CombatFeedingPerk Auto
+    Perk Property EssenceExtraction Auto
     Perk[] Property ReinforcedBody Auto
     Perk[] Property DiamondSkin Auto
     Perk[] Property DominatingStrength Auto
     Perk[] Property DeadlyRevelry Auto
     Perk[] Property MorbidRecovery Auto
-    Perk Property EssensceExtraction Auto
+    Perk[] Property TerrifyingForm Auto
 
 Spell Property infinitePerkSpell Auto
 GlobalVariable Property perkPointsAvailable Auto
@@ -52,21 +53,14 @@ Event OnPageDraw()
     ; Path of Domination
         AddHeaderOption("$COL_ADVPAGE_HEADER_MOLAG")
         
-        if !CoL.playerRef.HasPerk(CombatFeedingPerk)
-            AddToggleOptionST("Toggle_molagPerk___CombatFeeding", CombatFeedingPerk.GetName(), false)
-        else
-            AddToggleOptionST("Toggle_molagPerk___CombatFeeding", CombatFeedingPerk.GetName(), true, OPTION_FLAG_DISABLED)
-        endif
-        printPerkArray(ReinforcedBody,"ReinforcedBody",CombatFeedingPerk)
-        printPerkArray(DiamondSkin,"DiamondSkin",ReinforcedBody[0])
-        printPerkArray(DominatingStrength,"DomStrength",ReinforcedBody[0])
-        printPerkArray(DeadlyRevelry,"DeadlyRevelry",CombatFeedingPerk)
-        printPerkArray(MorbidRecovery,"MorbidRecovery",CombatFeedingPerk)
-        if !CoL.playerRef.HasPerk(EssensceExtraction)
-            AddToggleOptionST("Toggle_molagPerk___EssensceExtraction", EssensceExtraction.GetName(), false)
-        else
-            AddToggleOptionST("Toggle_molagPerk___EssensceExtraction", EssensceExtraction.GetName(), true, OPTION_FLAG_DISABLED)
-        endif
+        printPerk(CombatFeedingPerk, "Toggle_molagPerk___CombatFeeding")
+        printRankedPerk(ReinforcedBody,"Toggle_ReinforcedBody", CombatFeedingPerk)
+        printRankedPerk(DiamondSkin,"Toggle_DiamondSkin", ReinforcedBody[0])
+        printRankedPerk(DominatingStrength,"Toggle_DomStrength", ReinforcedBody[0])
+        printRankedPerk(DeadlyRevelry,"Toggle_DeadlyRevelry", CombatFeedingPerk)
+        printRankedPerk(MorbidRecovery,"Toggle_MorbidRecovery", DeadlyRevelry[0])
+        printPerk(EssenceExtraction,"Toggle_molagPerk___EssenceExtraction")
+        printRankedPerk(TerrifyingForm, "Toggle_TerrifyingForm", CombatFeedingPerk)
     
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
@@ -84,19 +78,50 @@ Event OnPageDraw()
     endwhile
 EndEvent
 
+Function printPerk(Perk perkToPrint, string stateName, Perk requiredPerk=None)
+    string perkName = perkToPrint.GetName()
+    if requiredPerk != None && !CoL.playerRef.HasPerk(requiredPerk)
+        AddToggleOptionST(stateName, perkName, false, OPTION_FLAG_DISABLED)
+    elseif CoL.playerRef.HasPerk(perkToPrint)
+        AddToggleOptionST(stateName, perkName, true, OPTION_FLAG_DISABLED)
+    else
+        AddToggleOptionST(stateName, perkName, false)
+    endif
+EndFunction
+
+Function printRankedPerk(Perk[] perkArray, string stateName, Perk requiredPerk=None)
+    int i = 0
+    string perkName
+    if requiredPerk != None && !CoL.playerRef.HasPerk(requiredPerk)
+        perkName = perkArray[i].GetName() + " " + (i+1) + "/" + perkArray.Length
+        AddToggleOptionST(stateName+"___"+ i, perkName, false, OPTION_FLAG_DISABLED)
+        return
+    endif
+    while i < perkArray.Length
+        if !CoL.playerRef.HasPerk(perkArray[i])
+            perkName = perkArray[i].GetName() + " " + (i+1) + "/" + perkArray.Length
+            AddToggleOptionST(stateName+"___"+ i, perkName, false)
+            return
+        endif
+        i += 1
+    endWhile
+    i -= 1
+    AddToggleOptionST(stateName+"___"+ i, perkArray[i].GetName() + " " + (i+1) + "/" + perkArray.Length, true, OPTION_FLAG_DISABLED)
+EndFunction
+
 Function printPerkArray(Perk[] perkArray, string stateName, Perk requiredPerk=None)
     int i = 0
     while i < perkArray.Length
         int previousIndex = i - 1
         string perkName = perkArray[i].GetName() + " " + (i + 1)
         if requiredPerk != None && !CoL.playerRef.HasPerk(requiredPerk)
-            AddToggleOptionST("Toggle_"+stateName+"___"+ i, perkName, false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST(stateName+"___"+ i, perkName, false, OPTION_FLAG_DISABLED)
         elseif CoL.playerRef.HasPerk(perkArray[i])
-            AddToggleOptionST("Toggle_"+stateName+"___"+ i, perkName, true, OPTION_FLAG_DISABLED)
+            AddToggleOptionST(stateName+"___"+ i, perkName, true, OPTION_FLAG_DISABLED)
         elseif i == 0 || CoL.playerRef.HasPerk(perkArray[previousIndex])
-            AddToggleOptionST("Toggle_"+stateName+"___"+ i, perkName, false)
+            AddToggleOptionST(stateName+"___"+ i, perkName, false)
         else
-            AddToggleOptionST("Toggle_"+stateName+"___"+ i, perkName, false, OPTION_FLAG_DISABLED)
+            AddToggleOptionST(stateName+"___"+ i, perkName, false, OPTION_FLAG_DISABLED)
         endif
         i += 1
     endWhile
@@ -118,11 +143,16 @@ State Text_perkReset
         restoredPoints += CoL.energyStorage
         CoL.energyStorage = 0
 
+        restoredPoints += resetPerk(CombatFeedingPerk)
+        restoredPoints += resetPerk(EssenceExtraction)
+
         restoredPoints += resetPerkArray(singleRankPerks)
         restoredPoints += resetPerkArray(ReinforcedBody)
         restoredPoints += resetPerkArray(DiamondSkin)
         restoredPoints += resetPerkArray(DominatingStrength)
         restoredPoints += resetPerkArray(DeadlyRevelry)
+        restoredPoints += resetPerkArray(MorbidRecovery)
+        restoredPoints += resetPerkArray(TerrifyingForm)
         
         int i = 0
         while i < CoL.transformBuffs.Length
@@ -130,11 +160,6 @@ State Text_perkReset
             CoL.transformBuffs[i] = 0
             i += 1
         endwhile
-
-        if CoL.playerRef.HasPerk(CombatFeedingPerk)
-            CoL.playerRef.RemovePerk(CombatFeedingPerk)
-            restoredPoints += 1
-        endif
 
         perkPointsAvailable.Mod(restoredPoints)
         CoL.ApplyRankedPerks()
@@ -144,6 +169,14 @@ State Text_perkReset
         SetInfoText("$COL_ADVPAGE_RESETPERKS_HELP")
     EndEvent
 EndState
+
+int Function resetPerk(Perk perkToReset)
+    if CoL.playerRef.HasPerk(perkToReset)
+        CoL.playerRef.RemovePerk(perkToReset)
+        return 1
+    endif
+    return 0
+EndFunction
 
 int Function resetPerkArray(Perk[] perkArray)
     int restoredPoints = 0
@@ -156,6 +189,16 @@ int Function resetPerkArray(Perk[] perkArray)
         i += 1
     endwhile
     return restoredPoints
+EndFunction
+
+Function GivePerk(Perk perkToGive)
+    if perkPointsAvailable.GetValue() > 0
+        perkPointsAvailable.Mod(-1)
+        CoL.playerRef.AddPerk(perkToGive)
+        ForcePageReset()
+    else
+        Debug.MessageBox(outOfPointsMessage)
+    endif
 EndFunction
 
 State Text_perkConverter
@@ -174,14 +217,7 @@ State Text_perkConverter
 EndState
 State Toggle_singlePerk
     Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            CoL.playerRef.AddPerk(singleRankPerks[state_id as int])
-            SetToggleOptionValueST(singleRankPerks[state_id as int])
-            perkPointsAvailable.Mod(-1)
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
+        GivePerk(singleRankPerks[state_id as int])
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVPAGE_PERK_"+state_id+"_HELP")
@@ -206,33 +242,19 @@ EndState
 
 State Toggle_molagPerk
     Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            perkPointsAvailable.Mod(-1)
-            if state_id == "CombatFeeding"
-                CoL.playerRef.AddPerk(CombatFeedingPerk)
-            elseif state_id == "EssenceExtraction"
-                CoL.playerRef.AddPerk(EssensceExtraction)
-            endif
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
+        if state_id == "CombatFeeding"
+            GivePerk(CombatFeedingPerk)
+        elseif state_id == "EssenceExtraction"
+            GivePerk(EssenceExtraction)
         endif
     EndEvent
     Event OnHighlightST(string state_id)
-        if state_id == "CombatFeeding"
-            SetInfoText("$COL_PERK_MOLAG_" + state_id + "_HELP")
-        endif
+        SetInfoText("$COL_PERK_MOLAG_" + state_id + "_HELP")
     EndEvent
 EndState
 State Toggle_ReinforcedBody
     Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            perkPointsAvailable.Mod(-1)
-            CoL.playerRef.AddPerk(ReinforcedBody[state_id as int])
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
+        GivePerk(ReinforcedBody[state_id as int])
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_PERK_MOLAG_RB_HELP" + state_id)
@@ -240,13 +262,7 @@ State Toggle_ReinforcedBody
 EndState
 State Toggle_DiamondSkin
     Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            perkPointsAvailable.Mod(-1)
-            CoL.playerRef.AddPerk(DiamondSkin[state_id as int])
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
+        GivePerk(DiamondSkin[state_id as int])
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_PERK_MOLAG_DS_HELP" + state_id)
@@ -254,13 +270,7 @@ State Toggle_DiamondSkin
 EndState
 State Toggle_DomStrength
     Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            perkPointsAvailable.Mod(-1)
-            CoL.playerRef.AddPerk(DominatingStrength[state_id as int])
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
+        GivePerk(DominatingStrength[state_id as int])
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_PERK_MOLAG_DST_HELP" + state_id)
@@ -268,13 +278,7 @@ State Toggle_DomStrength
 EndState
 State Toggle_DeadlyRevelry
     Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            perkPointsAvailable.Mod(-1)
-            CoL.playerRef.AddPerk(DeadlyRevelry[state_id as int])
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
+        GivePerk(DeadlyRevelry[state_id as int])
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_PERK_MOLAG_DEADLYREV_HELP" + state_id)
@@ -282,16 +286,18 @@ State Toggle_DeadlyRevelry
 EndState
 State Toggle_MorbidRecovery
     Event OnSelectST(string state_id)
-        if perkPointsAvailable.GetValue() > 0
-            perkPointsAvailable.Mod(-1)
-            CoL.playerRef.AddPerk(MorbidRecovery[state_id as int])
-            ForcePageReset()
-        else
-            Debug.MessageBox(outOfPointsMessage)
-        endif
+        GivePerk(MorbidRecovery[state_id as int])
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_PERK_MOLAG_DEADLYREV_HELP" + state_id)
+    EndEvent
+EndState
+State Toggle_TerrifyingForm
+    Event OnSelectST(string state_id)
+        GivePerk(TerrifyingForm[state_id as int])
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_PERK_MOLAG_TERRIFYINGFORM_HELP" + state_id)
     EndEvent
 EndState
 

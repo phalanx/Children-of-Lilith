@@ -60,11 +60,12 @@ Form[] function StripEquipment(Actor actorRef)
 	form[] NoStripList = configHandler.NoStripList
     Log("No Strip List Contains:")
     int x = 0
-    ; TODO Add debug check to while loop
-    while x < NoStripList.Length
-        Log("    " + NoStripList[x])
-        x += 1
-    endwhile
+    if configHandler.DebugLogging
+        while x < NoStripList.Length
+            Log("    " + NoStripList[x])
+            x += 1
+        endwhile
+    endif
     while i >= 0
         itemRef = actorRef.GetWornForm(Armor.GetMaskForSlot(i+30)) 
 		if itemRef 

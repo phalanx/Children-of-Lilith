@@ -13,7 +13,7 @@ Spell Property soulTrap Auto
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
-Perk Property EssensceExtraction Auto
+Perk Property EssenceExtraction Auto
 Perk[] Property DeadlyRevelry Auto
 Perk[] Property MorbidRecovery Auto
 
@@ -202,7 +202,7 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Actor drainee = draineeForm as Actor
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 
-    if CoL.playerRef.HasPerk(EssensceExtraction)
+    if CoL.playerRef.HasPerk(EssenceExtraction)
         soulTrap.Cast(CoL.playerRef, drainee)
     endif
 
