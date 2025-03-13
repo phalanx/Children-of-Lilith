@@ -13,6 +13,7 @@ Perk[] Property singleRankPerks Auto
     Perk Property CombatFeedingPerk Auto
     Perk Property EssenceExtraction Auto
     Perk Property NoEscape Auto
+    Perk Property BuiltForCombat Auto
     Perk[] Property ReinforcedBody Auto
     Perk[] Property DiamondSkin Auto
     Perk[] Property DominatingStrength Auto
@@ -63,6 +64,7 @@ Event OnPageDraw()
         printPerk(EssenceExtraction,"Toggle_molagPerk___EssenceExtraction")
         printRankedPerk(TerrifyingForm, "Toggle_TerrifyingForm", CombatFeedingPerk)
         printPerk(NoEscape,"Toggle_molagPerk___NoEscape", TerrifyingForm[0])
+        printPerk(BuiltForCombat,"Toggle_molagPerk___BuiltForCombat",NoEscape)
     
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
@@ -250,6 +252,8 @@ State Toggle_molagPerk
             GivePerk(EssenceExtraction)
         elseif state_id == "NoEscape"
             GivePerk(NoEscape)
+        elseif state_id == "BuiltForCombat"
+            GivePerk(BuiltForCombat)
         endif
     EndEvent
     Event OnHighlightST(string state_id)

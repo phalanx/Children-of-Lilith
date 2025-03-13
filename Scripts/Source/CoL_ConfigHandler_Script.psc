@@ -79,6 +79,8 @@ int Property newTemptationCost = 10 Auto Hidden            ; Energy cost of temp
 int Property newTemptationBaseIncrease = 1 Auto Hidden     ; Base Arousal increase of temptation
 float Property newTemptationLevelMult = 1.0 Auto Hidden    ; Mult applied to succubus level before being added to the base increase
 
+float Property builtForCombatMult = 3.0 Auto Hidden           ; Mult applied to transform cost when Built For Combat is active
+
 ; Hotkey Settings
 ; 0 - Drain Key - Default left alt | 1 - Drain to Death Key - Default right alt | 2 - Transform Key | 3 - Temptation Key | 4 - CSF Menu Key
 int[] Property hotkeys Auto Hidden
@@ -250,6 +252,7 @@ int Function SaveConfig()
         JMap.setInt(jObj, "newTemptationCost", newTemptationCost)
         JMap.setInt(jObj, "newTemptationBaseIncrease", newTemptationBaseIncrease)
         JMap.setFlt(jObj, "newTemptationLevelMult", newTemptationLevelMult)
+        JMap.setFlt(jObj,"builtForCombatMult", builtForCombatMult)
     ; Save Hotkey Settings
         int i = 0
         while i < hotkeys.Length
@@ -368,6 +371,7 @@ Function LoadConfig(int jObj)
             newTemptationBaseIncrease = JMap.getInt(jObj, "newTemptationBaseIncrease")
             newTemptationLevelMult = JMap.getFlt(jObj, "newTemptationLevelMult")
         endif
+        builtForCombatMult = JMap.getFlt(jObj, "builtForCombatMult", 3.0)
     ; Load Hotkey Settings
         if configVersion >= 6
             int i = 0

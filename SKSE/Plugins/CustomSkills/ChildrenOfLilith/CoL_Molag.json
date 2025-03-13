@@ -55,13 +55,21 @@
       "id": "col_molag_terrifyingform",
       "perk": "ChildrenOfLilith.esp|3F36AE",
       "x": -1,
-      "y": 1
+      "y": 1,
+      "links": ["col_molag_noescape"]
     },
     {
       "id": "col_molag_noescape",
       "perk": "ChildrenOfLilith.esp|413979",
       "x": -1,
-      "y": 2
+      "y": 2,
+      "links": ["col_molag_builtforcombat"]
+    },
+    {
+      "id": "col_molag_builtforcombat",
+      "perk": "ChildrenOfLilith.esp|4188AD",
+      "x": -1,
+      "y": 3
     }
   ]
 }
