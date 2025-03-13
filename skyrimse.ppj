@@ -72,6 +72,7 @@
             <Include>@ModName.esp</Include>
             <Include>LICENSE</Include>
             <Include NoRecurse="true">*.bsa</Include>
+            <Include>meshes/interface/intcolskydome.nif</Include>
             <Match In="Handlers">*</Match>
             <Match In="Compatibility">*</Match>
             <Match In="Extras">*</Match>
