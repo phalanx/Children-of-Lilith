@@ -56,6 +56,12 @@
       "perk": "ChildrenOfLilith.esp|3F36AE",
       "x": -1,
       "y": 1
+    },
+    {
+      "id": "col_molag_noescape",
+      "perk": "ChildrenOfLilith.esp|413979",
+      "x": -1,
+      "y": 2
     }
   ]
 }

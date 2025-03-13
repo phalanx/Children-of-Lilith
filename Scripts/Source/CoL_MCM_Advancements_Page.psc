@@ -12,6 +12,7 @@ Perk[] Property singleRankPerks Auto
 ; Path of Domination Perks
     Perk Property CombatFeedingPerk Auto
     Perk Property EssenceExtraction Auto
+    Perk Property NoEscape Auto
     Perk[] Property ReinforcedBody Auto
     Perk[] Property DiamondSkin Auto
     Perk[] Property DominatingStrength Auto
@@ -61,6 +62,7 @@ Event OnPageDraw()
         printRankedPerk(MorbidRecovery,"Toggle_MorbidRecovery", DeadlyRevelry[0])
         printPerk(EssenceExtraction,"Toggle_molagPerk___EssenceExtraction")
         printRankedPerk(TerrifyingForm, "Toggle_TerrifyingForm", CombatFeedingPerk)
+        printPerk(NoEscape,"Toggle_molagPerk___NoEscape", TerrifyingForm[0])
     
     SetCursorPosition(1)
     AddHeaderOption("$COL_ADVPAGE_HEADER_CSF")
@@ -246,6 +248,8 @@ State Toggle_molagPerk
             GivePerk(CombatFeedingPerk)
         elseif state_id == "EssenceExtraction"
             GivePerk(EssenceExtraction)
+        elseif state_id == "NoEscape"
+            GivePerk(NoEscape)
         endif
     EndEvent
     Event OnHighlightST(string state_id)
