@@ -4,8 +4,8 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 GlobalVariable Property playerSuccubusLevel Auto
 GlobalVariable Property perkPointsAvailable Auto
 GlobalVariable Property levelUpRatio Auto
-GlobalVariable Property levelUpMessage Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Interface_CustomSkills_Script Property CustomSkillsInterface Auto
 
 float playerSuccubusXP_var = 0.0
 float Property playerSuccubusXP Hidden
@@ -78,7 +78,7 @@ EndFunction
 
 Function LevelUp()
     
-    playerSuccubusLevel.Mod(1)
+    CustomSkillsInterface.IncrementSkill("col_succubus_skill")
 
     if (playerSuccubusLevel.GetValueInt() % configHandler.levelsForPerk) == 0
         AddPerkPoint()
@@ -93,7 +93,7 @@ Function LevelUp()
     else
         Debug.Notification("Succubus Level Increased")
         Debug.Notification("New Level: " + playerSuccubusLevel.GetValueInt())
-        levelUpMessage.SetValueInt(playerSuccubusLevel.GetValueInt())
+        ;levelUpMessage.SetValueInt(playerSuccubusLevel.GetValueInt())
     endif
 EndFunction
 

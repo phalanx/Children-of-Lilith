@@ -4,9 +4,12 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
 
 Perk Property healingForm Auto
+Perk Property terrifyingForm Auto
+
 Spell Property healRateSpell Auto
 Spell Property healRateMultSpell Auto
 Spell Property transformBuffSpell Auto
+Spell Property terrifyingFormSpell Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     CoL.transformReadiness[3] = false
@@ -26,12 +29,24 @@ EndFunction
 
 function Transform()
     Log("Adding additional powers")
+    ApplyPerks()
+    ApplyBuffs()
+endfunction
+
+Function ApplyPerks()
     if CoL.playerRef.HasPerk(healingForm)
         healRateSpell.SetNthEffectMagnitude(0, configHandler.healRateBoostAmount)
         healRateMultSpell.SetNthEffectMagnitude(0, configHandler.healRateBoostMult)
         CoL.playerRef.AddSpell(healRateSpell, false)
         CoL.playerRef.AddSpell(healRateMultSpell, false)
     endif
+    if CoL.playerRef.HasPerk(terrifyingForm)
+        Log("Casting Terrifying Form")
+        terrifyingFormSpell.Cast(CoL.playerRef)
+    endif
+EndFunction
+
+Function ApplyBuffs()
     float[] buffs = new float[7]
     int i = 0
     while i < buffs.Length
@@ -45,7 +60,7 @@ function Transform()
     endwhile
     Log("Adding Buff Spell")
     CoL.playerRef.AddSpell(transformBuffSpell, false)
-endfunction
+EndFunction
 
 function UnTransform()
     Log("Removing additional powers")

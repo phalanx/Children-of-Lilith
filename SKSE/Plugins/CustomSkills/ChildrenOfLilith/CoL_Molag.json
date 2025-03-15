@@ -1,0 +1,75 @@
+{
+  "id": "col_succubus_molag_skill",
+  "name": "$COL_MOLAG_SKILL",
+  "description": "$COL_MOLAG_SKILL_DESCRIPTION",
+  "level": "ChildrenOfLilith.esp|13B614",
+  "ratio": "ChildrenOfLilith.esp|282A20",
+  "nodes": [
+    {
+      "id": "col_molag_combatfeeding",
+      "perk": "ChildrenOfLilith.esp|3B8032",
+      "x": 0,
+      "y": 0,
+      "links": ["col_molag_reinforcedbody","col_molag_deadlyrevelry","col_molag_terrifyingform"]
+    },
+    {
+      "id": "col_molag_reinforcedbody",
+      "perk": "ChildrenOfLilith.esp|3BCF66",
+      "x": 1,
+      "y": 1,
+      "links": ["col_molag_diamondskin","col_molag_dominatingstrength"]
+    },
+    {
+      "id": "col_molag_diamondskin",
+      "perk": "ChildrenOfLilith.esp|3C6DCD",
+      "x": 2,
+      "y": 1
+    },
+    {
+      "id": "col_molag_dominatingstrength",
+      "perk": "ChildrenOfLilith.esp|3D0C40",
+      "x": 1,
+      "y": 2
+    },
+    {
+      "id": "col_molag_deadlyrevelry",
+      "perk": "ChildrenOfLilith.esp|3E2173",
+      "x": 0,
+      "y": 1,
+      "links": ["col_molag_morbidrecovery"]
+    },
+    {
+      "id": "col_molag_morbidrecovery",
+      "perk": "ChildrenOfLilith.esp|3E9841",
+      "x": 0,
+      "y": 2,
+      "links": ["col_molag_essenceextraction"]
+    },
+    {
+      "id": "col_molag_essenceextraction",
+      "perk": "ChildrenOfLilith.esp|3EE775",
+      "x": 0,
+      "y": 3
+    },
+    {
+      "id": "col_molag_terrifyingform",
+      "perk": "ChildrenOfLilith.esp|3F36AE",
+      "x": -1,
+      "y": 1,
+      "links": ["col_molag_noescape"]
+    },
+    {
+      "id": "col_molag_noescape",
+      "perk": "ChildrenOfLilith.esp|413979",
+      "x": -1,
+      "y": 2,
+      "links": ["col_molag_builtforcombat"]
+    },
+    {
+      "id": "col_molag_builtforcombat",
+      "perk": "ChildrenOfLilith.esp|4188AD",
+      "x": -1,
+      "y": 3
+    }
+  ]
+}

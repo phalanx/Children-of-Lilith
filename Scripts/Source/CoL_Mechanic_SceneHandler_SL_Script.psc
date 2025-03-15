@@ -123,18 +123,21 @@ Event SL_StartScene(Form actorRef, int threadId)
 
     SexLab.SetHook(threadId, "CoLSLSceneHook")
     ; Register for thread specific SL Hooks
-    ; if SLSOInstalled
-    RegisterForModEvent("SexLabOrgasmSeparate", "SLSOOrgasmHandler")
-    Log("Registered for SLSO Orgasm Event")
-    ; else
-    Log("Registered for Orgasm Event")
-    RegisterForModEvent("HookOrgasmEnd_CoLSLSceneHook", "CoL_SLOrgasmHandler")
-    ; endif
+    if SLSOInstalled || SexLab.IsPPlus
+        RegisterForModEvent("SexLabOrgasmSeparate", "SLSOOrgasmHandler")
+        Log("Registered for SLSO Orgasm Event")
+    else
+        RegisterForModEvent("HookOrgasmEnd_CoLSLSceneHook", "CoL_SLOrgasmHandler")
+        Log("Registered for Orgasm Event")
+    endif
     RegisterForModEvent("HookAnimationEnd_CoLSLSceneHook", "CoL_SLAnimationEndHandler")
     Log("Registered for Scene Events")
 EndEvent
 
 Event OnKeyDown(int keyCode)
+    If CoL_Global_Utils.IsMenuOpen()
+        Return
+    EndIf
     if keyCode == configHandler.hotkeys[3]
         if levelHandler.playerSuccubusLevel.GetValueInt() < 2
             Debug.Notification("Must be Succubus level 2 to use Temptation")

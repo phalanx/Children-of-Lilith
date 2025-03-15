@@ -1,0 +1,69 @@
+{
+  "id": "col_succubus_transform_skill",
+  "name": "$COL_TRANSFORM_SKILL_NAME",
+  "description": "$COL_TRANSFORM_SKILL_DESCRIPTION",
+  "level": "ChildrenOfLilith.esp|13B614",
+  "ratio": "ChildrenOfLilith.esp|282A20",
+  "nodes": [
+    {
+      "id": "col_transform_health",
+      "perk": "ChildrenOfLilith.esp|2A5496",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "col_transform_stamina",
+      "perk": "ChildrenOfLilith.esp|2A5497",
+      "x": 0,
+      "y": 0.5
+    },
+    {
+      "id": "col_transform_magicka",
+      "perk": "ChildrenOfLilith.esp|2A5498",
+      "x": 0,
+      "y": 1
+    },
+    {
+      "id": "col_transform_carryweight",
+      "perk": "ChildrenOfLilith.esp|2A5499",
+      "x": 0,
+      "y": 1.5
+    },
+    {
+      "id": "col_transform_meleedamage",
+      "perk": "ChildrenOfLilith.esp|2A549A",
+      "x": 0,
+      "y": 2
+    },
+    {
+      "id": "col_transform_armor",
+      "perk": "ChildrenOfLilith.esp|28A0F2",
+      "x": 0,
+      "y": 2.5
+    },
+    {
+      "id": "col_transform_magicresist",
+      "perk": "ChildrenOfLilith.esp|2A549B",
+      "x": 0,
+      "y": 3
+    },
+    {
+      "id": "col_healingform",
+      "perk": "ChildrenOfLilith.esp|2BB902",
+      "x": 0,
+      "y": 3.5
+    },
+    {
+      "id": "col_safetransformation",
+      "perk": "ChildrenOfLilith.esp|2BE09C",
+      "x": 0,
+      "y": 4
+    },
+    {
+      "id": "col_attractivedremora",
+      "perk": "ChildrenOfLilith.esp|323831",
+      "x": 0,
+      "y": 4.5
+    }
+  ]
+}

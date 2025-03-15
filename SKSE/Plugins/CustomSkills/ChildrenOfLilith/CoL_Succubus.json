@@ -1,0 +1,45 @@
+{
+  "id": "col_succubus_skill",
+  "name": "$COL_SKILL_NAME",
+  "description": "$COL_SKILL_DESCRIPTION",
+  "level": "ChildrenOfLilith.esp|13B614",
+  "ratio": "ChildrenOfLilith.esp|282A20",
+  "nodes": [
+    {
+      "id": "col_energystorage",
+      "perk": "ChildrenOfLilith.esp|2B4235",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "col_efficientfeeder",
+      "perk": "ChildrenOfLilith.esp|2B1A9B",
+      "x": 0,
+      "y": 0.5
+    },
+    {
+      "id": "col_gentledrainer",
+      "perk": "ChildrenOfLilith.esp|2AA3CF",
+      "x": 0,
+      "y": 1
+    },
+    {
+      "id": "col_energyweaver",
+      "perk": "ChildrenOfLilith.esp|2B9168",
+      "x": 0,
+      "y": 1.5
+    },
+    {
+      "id": "col_slakethirst",
+      "perk": "ChildrenOfLilith.esp|2C0836",
+      "x": 0,
+      "y": 2
+    },
+    {
+      "id": "col_perkConverter",
+      "perk": "ChildrenOfLilith.esp|3B30F8",
+      "x": 0,
+      "y": 2.5
+    }
+  ]
+}

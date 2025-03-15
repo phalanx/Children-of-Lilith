@@ -48,7 +48,7 @@ Event OnPageDraw()
     AddToggleOptionST("Toggle_TransformCrime", "$COL_TRANSFORMPAGE_TRANSFORMCRIME", configHandler.transformCrime)
     AddToggleOptionST("Toggle_TransformEquipment", "$COL_TRANSFORMPAGE_EQUIPMENTSWAP", configHandler.transformSwapsEquipment)
     AddToggleOptionST("Toggle_TransformNiOverrides", "$COL_TRANSFORMPAGE_SAVENIOVERRIDES", configHandler.transformSavesNiOverrides)
-    AddSliderOptionST("Slider_TransformCost", "$COL_TRANSFORMPAGE_ENERGYCOST", configHandler.transformCost)
+    AddSliderOptionST("Slider_TransformCost", "$COL_TRANSFORMPAGE_ENERGYCOST", configHandler.transformCost, "{2}")
     AddToggleOptionST("Toggle_TransformMortalCost", "$COL_TRANSFORMPAGE_MORTALCOST", configHandler.transformMortalCost)
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
@@ -277,12 +277,12 @@ State Slider_TransformCost
     Event OnSliderOpenST(string state_id)
         SetSliderDialogStartValue(configHandler.transformCost)
         SetSliderDialogDefaultValue(1)
-        SetSliderDialogInterval(1)
+        SetSliderDialogInterval(0.01)
         SetSliderDialogRange(0, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformCost = value
-        SetSliderOptionValueST(configHandler.transformCost)
+        SetSliderOptionValueST(configHandler.transformCost, "{2}")
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_ENERGYCOST_HELP")

@@ -16,6 +16,11 @@
         <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.1170\Authoring\Children Of Lilith\Mods" />
     </Variables>
     <Imports>
+        <Import>@ModsFolder\Acheron - Death Alternative\Source\Scripts</Import>
+        <Import>@ModsFolder\Custom Skills Framework\Source\Scripts</Import>
+        <Import>@ModsFolder\Lovense API\Source\Scripts</Import>
+        <Import>@ModsFolder\AnimSpeedSexLab\Scripts\Source</Import>
+        <Import>@ModsFolder\AnimSpeedSE\Scripts\Source</Import>
         <Import>@ModsFolder\SexLab Framework PPLUS\Source\Scripts</Import>
         <Import>@ModsFolder\SexLab Framework\Scripts\Source</Import>
         <Import>@ModsFolder\SkyUI SDK\Scripts\Source</Import>
@@ -67,6 +72,7 @@
             <Include>@ModName.esp</Include>
             <Include>LICENSE</Include>
             <Include NoRecurse="true">*.bsa</Include>
+            <Include>meshes/interface/intcolskydome.nif</Include>
             <Match In="Handlers">*</Match>
             <Match In="Compatibility">*</Match>
             <Match In="Extras">*</Match>
@@ -74,13 +80,12 @@
             <Match In="Scripts\Source">*.psc</Match>
             <Match In="Scripts">*.pex</Match>
             <Match In="Interface">*</Match>
-            <Match In="NetScriptFramework">*</Match>
+            <Match In="SKSE">*</Match>
         </ZipFile>
     </ZipFiles>
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
     <PostBuildEvent Description="Post-Build Tasks" UseInBuild="true">
         <Command>del /s /q /f *.bsa</Command>
         <Command>translation.sh remove</Command>
-        <Command>spriggit-wrapper.sh serialize</Command>
     </PostBuildEvent>
 </PapyrusProject>

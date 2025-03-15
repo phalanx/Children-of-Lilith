@@ -183,6 +183,9 @@ Event TL_endScene(string eventName, string strArg, float numArg, Form sender)
 EndEvent
 
 Event OnKeyDown(int keyCode)
+    If  CoL_Global_Utils.IsMenuOpen()
+        Return
+    EndIf
     if keyCode == configHandler.hotkeys[3]
         if levelHandler.playerSuccubusLevel.GetValueInt() < 2
             Debug.Notification("Must be Succubus level 2 to use Temptation")

@@ -15,10 +15,10 @@ CoL_Interface_SexLab_Script Property SexLab Auto
 CoL_Interface_SlaveTats_Script Property iSlaveTats Auto
 CoL_Interface_SLCumOverlay_Script Property iSLCumOverlay Auto
 CoL_Interface_DD_Script Property DD Auto
+CoL_Interface_CustomSkills_Script Property CustomSkillsInterface Auto
 CoL_Uninitialize_Quest_Script Property uninitializeQuest Auto
 CoL_NpcSuccubusQuest_Script Property npcSuccubusQuest Auto
 
-bool Property propertyname Auto
 ; Keyword Definitions
 Keyword Property BBBNoStrip Auto Hidden
 
@@ -126,6 +126,9 @@ EndState
 
 State Running
     Event OnKeyDown(int keyCode)
+        If CoL_Global_Utils.IsMenuOpen()
+            Return
+        EndIf
         if keyCode == configHandler.hotkeys[1]
             if configHandler.EnergyScaleTestEnabled
                 ScaleEnergyTest()
@@ -163,6 +166,9 @@ State SceneRunning
     EndFunction
 
     Event OnKeyDown(int keyCode)
+        If CoL_Global_Utils.IsMenuOpen()
+            Return
+        EndIf
         if keyCode == configHandler.hotkeys[2]
             if !transformedForScene
                 simpleTransform.Cast(playerRef)
@@ -245,7 +251,7 @@ Function Maintenance()
     if Game.IsPluginInstalled("3BBB.esp")
         BBBNoStrip = Game.GetFormFromFile(0x000848, "3BBB.esp") as Keyword
     endif
-    vrikInstalled = Game.IsPluginInstalled("VRIK.esp")
+    vrikInstalled = Game.GetModByName("VRIK.esp") != 255
     levelHandler.GoToState("Running")
     RegisterForEvents()
     Utility.Wait(0.5)
@@ -520,7 +526,7 @@ Function UpdatePath()
 EndFunction
 
 Function UpdateCSFPower()
-    if configHandler.grantCSFPower
+    if configHandler.grantCSFPower && CustomSkillsInterface.IsInterfaceActive()
         playerRef.AddSpell(showperkMenu)
     else
         playerRef.RemoveSpell(showperkMenu)

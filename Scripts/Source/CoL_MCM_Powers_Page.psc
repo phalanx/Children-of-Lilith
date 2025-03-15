@@ -18,6 +18,8 @@ Event OnPageDraw()
     AddToggleOptionST("Toggle_energyCastingFX", "$COL_POWERSPAGE_ENERGYCASTINGFXENABLED", configHandler.energyCastingFXEnabled)
     AddSliderOptionST("Slider_energyCastingMult", "$COL_POWERSPAGE_ENERGYCASTINGMULT", configHandler.energyCastingMult, "{0}")
     AddMenuOptionST("Menu_energyCastingConcStyle", "$COL_POWERSPAGE_COSTCALCSTYLE", configHandler.energyCastingConcStyleOptions[configHandler.energyCastingConcStyle])
+    AddEmptyOption()
+    AddSliderOptionST("Slider_builtForCombatMult", "$COL_POWERSPAGE_BUILTFORCOMBATMULT", configHandler.builtForCombatMult, "{1}")
     SetCursorPosition(1)
     AddSliderOptionST("Slider_temptationCost", "$COL_POWERSPAGE_TEMPTATIONCOST", configHandler.newTemptationCost)
     AddSliderOptionST("Slider_temptationBaseIncrease", "$COL_POWERSPAGE_TEMPTATIONBASE", configHandler.newTemptationBaseIncrease)
@@ -112,6 +114,19 @@ State Menu_energyCastingConcStyle
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_POWERSPAGE_COSTCALCSTYLE_HELP")
+    EndEvent
+EndState
+
+State Slider_builtForCombatMult
+    Event OnSliderOpenST(string state_id)
+        SetSliderDialog(configHandler.builtForCombatMult, 0, 10, 0.1, 3.0)
+    EndEvent
+    Event OnSliderAcceptST(string state_id, float value)
+        configHandler.builtForCombatMult = value
+        SetSliderOptionValueST(configHandler.builtForCombatMult, "{1}")
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_POWERSPAGE_BULTFORCOMBATMULT_HELP")
     EndEvent
 EndState
 

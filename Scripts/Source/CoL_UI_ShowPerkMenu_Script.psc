@@ -1,7 +1,7 @@
 Scriptname CoL_UI_ShowPerkMenu_Script extends activemagiceffect
 
-GlobalVariable Property showPerkMenu Auto
+CoL_Interface_CustomSkills_Script Property CustomSkillsInterface Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    showPerkMenu.Mod(1)
+    CustomSkillsInterface.OpenCustomSkillMenu("col_succubus_skill")
 EndEvent

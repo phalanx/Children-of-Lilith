@@ -1,7 +1,7 @@
 Scriptname CoL_Interface_SexLab_Script extends Quest
 
 Quest SexLab
-bool Property PPlus = false auto hidden
+bool Property IsPPlus = false auto hidden
 CoL_ConfigHandler_Script Property  configHandler Auto
 
 Event OnInit()
@@ -21,11 +21,11 @@ Function Maintenance()
     SexLab = Quest.GetQuest("SexLabQuestFramework")
     if SexLab != None
         if CoL_Global_SexLab_Script.GetVersion(SexLab) >= 20000
-            Log("PPlus Detected")
-            PPlus = true
+            Log("Sexlab PPlus Detected")
+            IsPPlus = true
         else
-            Log("Base Sexlab Detected")
-            PPlus = false
+            Log("Sexlab Detected")
+            IsPPlus = false
         endif
         GoToState("Installed")
     else
@@ -35,7 +35,6 @@ EndFunction
 
 
 State Installed
-
     bool Function IsInterfaceActive()
         return true
     EndFunction
@@ -57,7 +56,7 @@ State Installed
     EndFunction
 
     bool Function IsVictim(Actor actorRef)
-        if PPLus
+        if IsPPlus
             return CoL_Global_SexLabPPlus_Script.IsVictim(SexLab, actorRef, configHandler.PPlusTagCheck)
         else
             return CoL_Global_SexLab_Script.IsVictim(SexLab, actorRef)
@@ -65,7 +64,7 @@ State Installed
     EndFunction
 
     bool Function IsAggressor(Actor actorRef)
-        if PPLus
+        if IsPPlus
             return CoL_Global_SexLabPPlus_Script.IsAggressor(SexLab, actorRef, configHandler.PPlusTagCheck)
         else
            return CoL_Global_SexLab_Script.IsAggressor(SexLab, actorRef)

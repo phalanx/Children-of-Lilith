@@ -1,9 +1,0 @@
-FormKey: 000805:ChildrenOfLilithFGPatch.esp
-EditorID: CoL_SM_FG_End
-Parent: 3CEBED:FlowerGirls SE.esm
-PreviousSibling: 3CEBF2:FlowerGirls SE.esm
-QuestFlags:
-- SharesEvent
-MaxConcurrentQuests: 0
-Quests:
-- Quest: 000801:ChildrenOfLilithFGPatch.esp

@@ -5,6 +5,8 @@ CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler auto
 CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 
+Perk Property BuiltForCombat Auto
+
 bool pauseCost
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -37,13 +39,17 @@ Function EndScene()
 EndFunction
 
 Event OnUpdate()
-    if configHandler.transformCost > 0
+    float totalCost = configHandler.transformCost
+    if totalCost > 0
         if pauseCost || CoL.lockTransform
             RegisterForSingleUpdate(1)
             return
         endif
-        if energyHandler.playerEnergyCurrent >= configHandler.transformCost
-            energyHandler.playerEnergyCurrent -= configHandler.transformCost
+        if CoL.playerRef.HasPerk(BuiltForCombat)
+            totalCost *= configHandler.builtForCombatMult
+        endif
+        if energyHandler.playerEnergyCurrent >= totalCost
+            energyHandler.playerEnergyCurrent -= totalCost
             RegisterForSingleUpdate(1)
         elseif !CoL.isBusy()
             energyHandler.playerEnergyCurrent = 0

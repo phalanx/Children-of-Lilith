@@ -8,9 +8,14 @@ CoL_Mechanic_EnergyHandler_Script Property energyHandler Auto
 CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
+Spell Property soulTrap Auto
+
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
 Perk Property slakeThirst Auto
+Perk Property EssenceExtraction Auto
+Perk[] Property DeadlyRevelry Auto
+Perk[] Property MorbidRecovery Auto
 
 bool drainStarted = false
 bool draining = false
@@ -55,6 +60,9 @@ Function EndScene()
 EndFunction
 
 Event OnKeyDown(int keyCode)
+    If  CoL_Global_Utils.IsMenuOpen()
+        Return
+    EndIf
     if keyCode == configHandler.hotkeys[0]
         if configHandler.lockDrainType
             return
@@ -131,6 +139,7 @@ Function NormalDrain(Form drainerForm, Form draineeForm, string draineeName, flo
 
     StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
     float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    processMorbidRecovery(drainAmounts[0])
     applyDrainSpell(drainee, drainAmounts)
     
     levelHandler.gainXP(drainAmounts[0], false)
@@ -143,7 +152,6 @@ EndFunction
 Function EndNormalDrain(Form drainerForm, Form draineeForm)
     Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
     StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
-    float drainAmount = StorageUtil.GetFloatValue((draineeForm as Actor), "CoL_drainAmount")
     (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
 EndFunction
 
@@ -155,16 +163,17 @@ Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, fl
     Log("Recieved Victim Arousal: " + arousal)
 
     float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
+    processMorbidRecovery(drainAmounts[0])
     if drainee.isEssential()
         Log("Victim is essential")
         string notifyMsg = drainee.GetBaseObject().GetName() + " is protected by the weave of fate"
-
         if drainee.IsInFaction(CoL.drainVictimFaction)
             Log("Victim has been drained")
             notifyMsg = notifyMsg + " and cannot be drained again"
             Debug.Notification(notifyMsg)
             return
         else
+            StorageUtil.SetIntValue(drainee, "CoL_activeParticipant", 1)
             applyDrainSpell(drainee, drainAmounts)
         endif
         Debug.Notification(notifyMsg)
@@ -174,7 +183,16 @@ Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, fl
     
     float energyConversionMult = configHandler.energyConversionRate + ((0.1 * CoL.efficientFeeder) * configHandler.energyConversionRate)
     
-    energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * configHandler.drainToDeathMult)
+    float finalDrainToDeathMult = configHandler.drainToDeathMult
+    if CoL.playerRef.HasPerk(DeadlyRevelry[2])
+        finalDrainToDeathMult += configHandler.drainToDeathMult * 1
+    elseif CoL.playerRef.HasPerk(DeadlyRevelry[1])
+        finalDrainToDeathMult += configHandler.drainToDeathMult * 0.5
+    elseif CoL.playerRef.HasPerk(DeadlyRevelry[0])
+        finalDrainToDeathMult += configHandler.drainToDeathMult * 0.25
+    endif
+
+    energyHandler.playerEnergyCurrent += (drainAmounts[0] * energyConversionMult * finalDrainToDeathMult)
     levelHandler.gainXP(drainAmounts[0], true)
     doVampireDrain(drainee)
 EndFunction
@@ -184,11 +202,22 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Actor drainee = draineeForm as Actor
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 
+    if CoL.playerRef.HasPerk(EssenceExtraction)
+        soulTrap.Cast(CoL.playerRef, drainee)
+    endif
+
     Log("Recieved End Drain To Death Event for " + draineeName)
     Log("Killing " + draineeName)
     if drainee.isEssential()
         Log("Can't kill essential. Dealing damage instead")
+        if drainee.IsInFaction(CoL.drainVictimFaction)
+            Log("Victim already drained. Skipping...")
+            return
+        endif
+        Log("Can't kill essential. Dealing damage instead")
         drainee.DamageActorValue("Health", drainee.GetActorValue("Health") + 1)
+        StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
+        (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
         return
     endif
     if configHandler.drainToDeathCrime
@@ -201,6 +230,21 @@ EndFunction
 Function doVampireDrain(Actor drainee)
     if drainee != None && CoL.playerRef.HasKeyword(vampireKeyword) && configHandler.drainFeedsVampire
         vampireHandler.Feed(drainee)
+    endif
+EndFunction
+
+Function processMorbidRecovery(float drainAmount)
+    float playerHealthMax = CoL.playerRef.GetActorValueMax("Health")
+    float playerStaminaMax = CoL.playerRef.GetActorValueMax("Stamina")
+    float playerMagickaMax = CoL.playerRef.GetActorValueMax("Magicka")
+    if CoL.playerRef.HasPerk(MorbidRecovery[1])
+        CoL.playerRef.RestoreActorValue("Health", playerHealthMax)
+        CoL.playerRef.RestoreActorValue("Stamina", playerStaminaMax)
+        CoL.playerRef.RestoreActorValue("Magicka", playerMagickaMax)
+    elseif CoL.playerRef.HasPerk(MorbidRecovery[0])
+        CoL.playerRef.RestoreActorValue("Health", playerHealthMax/2)
+        CoL.playerRef.RestoreActorValue("Stamina", playerStaminaMax/2)
+        CoL.playerRef.RestoreActorValue("Magicka", playerMagickaMax/2)
     endif
 EndFunction
 
@@ -235,7 +279,6 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
     float drainAmount = ((victimHealth * configHandler.healthDrainMult) + (arousal * configHandler.drainArousalMult) + (succubusArousal * configHandler.drainArousalMult))
     if drainAmount >= (victimHealth - (victimHealth * configHandler.minHealthPercent))
         drainAmount = (victimHealth - (victimHealth * configHandler.minHealthPercent))
-        drainVictim.AddToFaction(CoL.drainVictimFaction)
     endif
     returnValues[0] = drainAmount
 
@@ -245,8 +288,7 @@ float[] Function CalculateDrainAmount(Actor drainVictim, float arousal=0.0)
         drainAmount += existingDrain
     endif
     if drainAmount >= (victimHealth - (victimHealth * configHandler.minHealthPercent))
-        drainAmount = (victimHealth - (victimHealth * configHandler.minHealthPercent))
-        drainVictim.AddToFaction(CoL.drainVictimFaction)
+        drainAmount = (victimHealth - (victimHealth * configHandler.minHealthPercent)) 
     endif
     returnValues[1] = drainAmount
 
