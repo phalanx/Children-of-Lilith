@@ -9,6 +9,7 @@ CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
 Spell Property soulTrap Auto
+Keyword Property blacklistedVictim Auto
 
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
@@ -107,6 +108,14 @@ Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float a
     UnRegisterForKey(configHandler.hotkeys[0])
     UnRegisterForKey(configHandler.hotkeys[1])
     drainStarted = True
+
+    Log("Recieved Start Drain Event for " + draineeName)
+    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
+    Log("Recieved Victim Arousal: " + arousal)
+    if draineeForm.HasKeyword(blacklistedVictim)
+        Log(draineeName + " has been blacklisted")
+        return
+    endif
     if drainingToDeath
         DrainToDeath(drainerForm, draineeForm, draineeName, arousal)
     elseif draining
@@ -115,21 +124,20 @@ Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float a
 EndEvent
 
 Event EndDrain(Form drainerForm, Form draineeForm)
+    drainStarted = False
+    if draineeForm.HasKeyword(blacklistedVictim)
+        return
+    endif
     if drainingToDeath
         EndDrainToDeath(drainerForm, draineeForm)
     elseif draining
         EndNormalDrain(drainerForm, draineeForm)
     endif
-    drainStarted = False
     energyUpdated(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
 EndEvent
 
 Function NormalDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
     Actor drainee = draineeForm as Actor
-
-    Log("Recieved Start Drain Event for " + draineeName)
-    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-    Log("Recieved Victim Arousal: " + arousal)
 
     if drainee.IsInFaction(CoL.drainVictimFaction) 
         Log(draineeName + " has been drained and Drain to Death not enabled")
@@ -152,15 +160,14 @@ EndFunction
 Function EndNormalDrain(Form drainerForm, Form draineeForm)
     Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
     StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
+    if draineeForm.HasKeyword(blacklistedVictim)
+        return
+    endif
     (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
 EndFunction
 
 Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
     Actor drainee = draineeForm as Actor
-
-    Log("Recieved Start Drain To Death Event for " + draineeName)
-    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-    Log("Recieved Victim Arousal: " + arousal)
 
     float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
     processMorbidRecovery(drainAmounts[0])
