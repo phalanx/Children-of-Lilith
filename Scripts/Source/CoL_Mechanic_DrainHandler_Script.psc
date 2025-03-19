@@ -18,6 +18,7 @@ Perk Property EssenceExtraction Auto
 Perk[] Property DeadlyRevelry Auto
 Perk[] Property MorbidRecovery Auto
 
+Actor[] drainToDeathVictim
 bool drainStarted = false
 bool draining = false
 bool drainingToDeath = false
@@ -53,11 +54,13 @@ EndFunction
 Function StartScene()
     RegisterForKey(configHandler.hotkeys[0])
     RegisterForKey(configHandler.hotkeys[1])
+    drainToDeathVictim = new Actor[1]
 EndFunction
 
 Function EndScene()
     UnRegisterForKey(configHandler.hotkeys[0])
     UnRegisterForKey(configHandler.hotkeys[1])
+    drainToDeathVictim = new Actor[1]
 EndFunction
 
 Event OnKeyDown(int keyCode)
@@ -168,6 +171,12 @@ EndFunction
 
 Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
     Actor drainee = draineeForm as Actor
+    if drainToDeathVictim.Find(drainee) != -1
+        Log("Victim has already been drained to death")
+        return
+    else
+        drainToDeathVictim = PapyrusUtil.PushActor(drainToDeathVictim, drainee)
+    endif
 
     float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
     processMorbidRecovery(drainAmounts[0])
