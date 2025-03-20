@@ -109,6 +109,7 @@ bool Property transformCrime = false Auto Hidden
 float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
 bool Property arousalUntransform = false Auto Hidden
+bool Property autoEnergyCasting = false Auto Hidden
 
 ; Transform Baseline Buffs
 bool Property transformBuffsEnabled = false Auto Hidden

@@ -53,6 +53,7 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
     AddToggleOptionST("Toggle_ArousalUntransform", "$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM", configHandler.arousalUntransform)
+    AddToggleOptionST("Toggle_AutoEnergyCasting", "$COL_TRANSFORMPAGE_AUTOENERGYCASTING", configHandler.autoEnergyCasting)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_BUFFS")
     if CoL.isTransformed
         AddTextOptionST("Text_NoTransformBuffChange", "$COL_TRANSFORMPAGE_CANTCHANGEBUFFS_MSQ", None)
@@ -372,6 +373,15 @@ State Toggle_ArousalUntransform
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM_HELP")
+    EndEvent
+EndState
+State Toggle_AutoEnergyCasting
+    Event OnSelectST(string state_id)
+        configHandler.autoEnergyCasting = !configHandler.autoEnergyCasting
+        SetToggleOptionValueST(configHandler.autoEnergyCasting)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_AUTOENERGYCASTING_HELP")
     EndEvent
 EndState
 State Text_AddStrippable

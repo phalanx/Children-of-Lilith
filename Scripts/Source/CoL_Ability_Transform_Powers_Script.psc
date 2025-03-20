@@ -5,6 +5,7 @@ CoL_ConfigHandler_Script Property configHandler Auto
 
 Perk Property healingForm Auto
 Perk Property terrifyingForm Auto
+Perk Property energyCasting Auto
 
 Spell Property healRateSpell Auto
 Spell Property healRateMultSpell Auto
@@ -44,6 +45,9 @@ Function ApplyPerks()
         Log("Casting Terrifying Form")
         terrifyingFormSpell.Cast(CoL.playerRef)
     endif
+    if configHandler.autoEnergyCasting
+        CoL.playerRef.AddPerk(energyCasting)
+    endif
 EndFunction
 
 Function ApplyBuffs()
@@ -67,6 +71,9 @@ function UnTransform()
     if CoL.playerRef.HasPerk(healingForm)
         CoL.playerRef.RemoveSpell(healRateSpell)
         CoL.playerRef.RemoveSpell(healRateMultSpell)
+    endif
+    if configHandler.autoEnergyCasting
+        CoL.playerRef.RemovePerk(energyCasting)
     endif
     CoL.playerRef.RemoveSpell(transformBuffSpell)
 endfunction
