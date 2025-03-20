@@ -32,13 +32,6 @@ State Installed
     Function OpenCustomSkillMenu(string skillName)
         CustomSkills.OpenCustomSkillMenu(skillName)
     endFunction
-    Function IncrementSkill(string skillName)
-        if detectedCSFVersion == 3
-            CustomSkills.IncrementSkill(skillName)
-        else ;CSF v2 does not have IncrementSkill for some reason, but otherwise seems to have parity with v3
-            playerSuccubusLevel.Mod(1)
-        endif
-    endFunction
 EndState
 
 bool Function IsInterfaceActive()
@@ -46,7 +39,4 @@ bool Function IsInterfaceActive()
 EndFunction
 
 Function OpenCustomSkillMenu(string skillName)
-endFunction
-
-Function IncrementSkill(string skillName)
 endFunction
