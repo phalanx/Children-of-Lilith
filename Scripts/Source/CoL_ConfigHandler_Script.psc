@@ -278,6 +278,8 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "transformArousalUpperThreshold", transformArousalUpperThreshold)
         JMap.setFlt(jObj, "transformArousalLowerThreshold", transformArousalLowerThreshold)
         JMap.setInt(jObj, "transformUntransform", arousalUntransform as int)
+        JMap.setInt(jObj, "autoEnergyCasting", autoEnergyCasting as int)
+
     ; Save Transform Baseline Buffs
         JMap.setInt(jObj, "transformBuffsEnabled", transformBuffsEnabled as int)
         i = 0
@@ -403,6 +405,7 @@ Function LoadConfig(int jObj)
         transformCrime = JMap.getInt(jObj, "transformCrime") as bool
         transformArousalUpperThreshold = JMap.getFlt(jObj, "transformArousalUpperThreshold")
         transformArousalLowerThreshold = JMap.getFlt(jObj, "transformArousalLowerThreshold")
+        autoEnergyCasting = JMap.getInt(jObj, "autoEnergyCasting", 0) as bool
         if configVersion >= 6
             arousalUntransform = JMap.getInt(jObj, "transformUntransform") as bool
         endif
