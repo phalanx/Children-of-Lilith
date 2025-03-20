@@ -79,12 +79,7 @@ EndFunction
 
 Function LevelUp()
     
-    if CustomSkillsInterface.IsInterfaceActive()
-        CustomSkillsInterface.IncrementSkill("col_succubus_skill")
-    else
-        playerSuccubusLevel.Mod(1)
-    endif
-
+    playerSuccubusLevel.Mod(1)
     if (playerSuccubusLevel.GetValueInt() % configHandler.levelsForPerk) == 0
         AddPerkPoint()
     endif
