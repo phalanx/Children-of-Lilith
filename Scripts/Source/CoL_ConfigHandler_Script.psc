@@ -317,19 +317,13 @@ Function LoadConfig(int jObj)
         energyConversionRate = JMap.getFlt(jObj, "energyConversionRate")
         drainFeedsVampire = JMap.getInt(jObj, "drainFeedsVampire") as bool
         npcDrainToDeathChance = JMap.getInt(jObj, "npcDrainToDeathChance")
-        if configVersion >= 3
-            minHealthPercent = JMap.getFlt(jObj, "minHealthPercent")
-        endif
-        if configVersion >= 5
-            npcRelationshipDeathChance[0] = JMap.getInt(jObj,"npcRelationshipDeathChance0")
-            npcRelationshipDeathChance[1] = JMap.getInt(jObj,"npcRelationshipDeathChance1")
-            npcRelationshipDeathChance[2] = JMap.getInt(jObj,"npcRelationshipDeathChance2")
-            npcRelationshipDeathChance[3] = JMap.getInt(jObj,"npcRelationshipDeathChance3")
-            npcRelationshipDeathChance[4] = JMap.getInt(jObj,"npcRelationshipDeathChance4")
-        endif
-        if configVersion >= 8
-            drainToDeathCrime = JMap.getInt(jObj, "drainToDeathCrime") as bool
-        endif
+        minHealthPercent = JMap.getFlt(jObj, "minHealthPercent", 0.1)
+        npcRelationshipDeathChance[0] = JMap.getInt(jObj,"npcRelationshipDeathChance0", 0)
+        npcRelationshipDeathChance[1] = JMap.getInt(jObj,"npcRelationshipDeathChance1", 0)
+        npcRelationshipDeathChance[2] = JMap.getInt(jObj,"npcRelationshipDeathChance2", 0)
+        npcRelationshipDeathChance[3] = JMap.getInt(jObj,"npcRelationshipDeathChance3", 0)
+        npcRelationshipDeathChance[4] = JMap.getInt(jObj,"npcRelationshipDeathChance4", 0)
+        drainToDeathCrime = JMap.getInt(jObj, "drainToDeathCrime", 0) as bool
     ; Load Levelling Settings
         xpConstant = JMap.getFlt(jObj, "xpConstant")
         xpPower = JMap.getFlt(jObj, "xpPower")
@@ -355,25 +349,19 @@ Function LoadConfig(int jObj)
         becomeEtherealCost = JMap.getFlt(jObj, "becomeEtherealCost")
         healRateBoostCost = JMap.getFlt(jObj, "healRateBoostCost")
         healRateBoostAmount = JMap.getFlt(jObj, "healRateBoostAmount")
-        if configVersion >= 7
-            healRateBoostMult = JMap.getFlt(jObj, "healRateBoostMult")
-        endif
+        healRateBoostMult = JMap.getFlt(jObj, "healRateBoostMult", 0.0)
         energyCastingMult = JMap.getFlt(jObj, "energyCastingMult")
         energyCastingConcStyle = JMap.getInt(jObj, "energyCastingConcStyle")
-        if configVersion >= 4
-            energyCastingFXEnabled = JMap.getInt(jObj, "energyCastingFX")
-        endif
+        energyCastingFXEnabled = JMap.getInt(jObj, "energyCastingFX", 1)
         excitementCost = JMap.getInt(jObj, "excitementCost")
         excitementBaseIncrease = JMap.getInt(jObj, "excitementBaseIncrease")
         excitementLevelMult = JMap.getFlt(jObj, "excitementLevelMult")
         suppressionCost = JMap.getInt(jObj, "suppressionCost")
         suppressionBaseIncrease = JMap.getInt(jObj, "suppressionBaseIncrease")
         suppressionLevelMult = JMap.getFlt(jObj, "suppressionLevelMult")
-        if configVersion >= 2
-            newTemptationCost = JMap.getInt(jObj, "newTemptationCost")
-            newTemptationBaseIncrease = JMap.getInt(jObj, "newTemptationBaseIncrease")
-            newTemptationLevelMult = JMap.getFlt(jObj, "newTemptationLevelMult")
-        endif
+        newTemptationCost = JMap.getInt(jObj, "newTemptationCost", 10)
+        newTemptationBaseIncrease = JMap.getInt(jObj, "newTemptationBaseIncrease", 1)
+        newTemptationLevelMult = JMap.getFlt(jObj, "newTemptationLevelMult", 1)
         builtForCombatMult = JMap.getFlt(jObj, "builtForCombatMult", 3.0)
     ; Load Hotkey Settings
         if configVersion >= 6
@@ -406,18 +394,12 @@ Function LoadConfig(int jObj)
         transformArousalUpperThreshold = JMap.getFlt(jObj, "transformArousalUpperThreshold")
         transformArousalLowerThreshold = JMap.getFlt(jObj, "transformArousalLowerThreshold")
         autoEnergyCasting = JMap.getInt(jObj, "autoEnergyCasting", 0) as bool
-        if configVersion >= 6
-            arousalUntransform = JMap.getInt(jObj, "transformUntransform") as bool
-        endif
-        if configVersion >= 5
-            transformDuringScene = JMap.getInt(jObj, "transformDuringScene") as bool
-        endif
-        if configVersion >= 9
-            transformDuringSceneChance = JMap.getFlt(jObj, "transformDuringSceneChance")
-        endif
+        arousalUntransform = JMap.getInt(jObj, "transformUntransform", 0) as bool
+        transformDuringScene = JMap.getInt(jObj, "transformDuringScene", 1) as bool
+        transformDuringSceneChance = JMap.getFlt(jObj, "transformDuringSceneChance", 1.0)
     ; Load Transform Baseline Buffs
         transformBuffsEnabled = JMap.getInt(jObj, "transformBuffsEnabled") as bool
-        if configVersion >= 6
+        if configVersion >= 6 ; Need to keep configVersion here to maintain compatibility with the old way to store it
             int i = 0
             while i < transformBaseBuffs.Length
                 transformBaseBuffs[i] = JMap.getFlt(jObj, "transformBaseBuffs_"+i)
@@ -433,7 +415,7 @@ Function LoadConfig(int jObj)
             transformBaseBuffs[6] = JMap.getFlt(jObj, "transformBaseMagicResist")
         endif
     ; Load Transform Buffs Per Rank
-        if configVersion >= 6
+        if configVersion >= 6 ; Need to keep configVersion here to maintain compatibility with the old way to store it
             int i = 0
             while i < transformRankEffects.Length
                 transformRankEffects[i] = JMap.getFlt(jObj, "transformRankEffect_"+i)
