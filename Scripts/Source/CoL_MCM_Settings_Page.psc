@@ -26,6 +26,7 @@ Event OnPageDraw()
         AddSliderOptionST("Slider_minHealthPercent", "$COL_SETTINGSPAGE_MINHEALTHPERCENT", configHandler.minHealthPercent, "{2}")
         AddToggleOptionST("Toggle_drainFeedsVampire", "$COL_SETTINGSPAGE_DRAINFEEDSVAMPIRE", configHandler.drainFeedsVampire)
         AddToggleOptionST("Toggle_drainToDeathCrime", "$COL_SETTINGSPAGE_DRAINTODEATHCRIME", configHandler.drainToDeathCrime)
+        AddSliderOptionST("Slider_drainToDeathDetectionRange", "$COL_SETTINGSPAGE_CRIMERANGE", configHandler.drainToDeathDetectionRange)
         AddSliderOptionST("Slider_drainToDeathDelay", "$COL_SETTINGSPAGE_DRAINTODEATHDELAY", configHandler.drainToDeathDelay, "{1}")
     ; NPC Drain Settings
         AddHeaderOption("$COL_SETTINGSPAGE_HEADER_NPCDRAINSETTINGS")
@@ -250,6 +251,19 @@ EndEvent
         EndEvent
         Event OnHighlightST(string state_id)
             SetInfoText("$COL_SETTINGSPAGE_DRAINTODEATHCRIME_HELP")
+        EndEvent
+    EndState
+
+    State Slider_drainToDeathDetectioNRange
+        Event OnSliderOpenST(string state_id)
+            SetSliderDialog(configHandler.drainToDeathDetectionRange, 0, 5000, 100, 1000)
+        EndEvent
+        Event OnSliderAcceptST(string state_id, float value)
+            configHandler.drainToDeathDetectionRange = value as int
+            SetSliderOptionValueST(configHandler.drainToDeathDetectionRange)
+        EndEvent
+        Event OnHighlightST(string state_id)
+            SetInfoText("$COL_SETTINGSPAGE_CRIMERANGE_HELP")
         EndEvent
     EndState
 

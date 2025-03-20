@@ -1,4 +1,5 @@
 Scriptname CoL_Mechanic_DrainHandler_Script extends ActiveMagicEffect
+import SPE_Actor
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
@@ -10,6 +11,8 @@ CoL_UI_Widget_Script  Property widgetHandler Auto
 
 Spell Property soulTrap Auto
 Keyword Property blacklistedVictim Auto
+Faction Property CurrentFollowerFaction Auto
+Faction Property CurrentHireling Auto
 
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
@@ -216,6 +219,7 @@ EndFunction
 Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Utility.Wait(configHandler.drainToDeathDelay)
     Actor drainee = draineeForm as Actor
+    Actor drainer = drainerForm as Actor
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 
     if CoL.playerRef.HasPerk(EssenceExtraction)
@@ -236,11 +240,54 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
         (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
         return
     endif
-    if configHandler.drainToDeathCrime
-        drainee.Kill(drainerForm as Actor)
+    if configHandler.drainToDeathCrime && DrainerIsDetected(drainer, drainee)
+        drainee.Kill(drainer)
     else
         drainee.Kill()
     endif
+EndFunction
+
+bool Function DrainerIsDetected(Actor drainer, Actor drainee)
+    Actor[] detectors = GetDetectedBy(drainer)
+    int i = 0
+    while i < detectors.length
+        if IsValidDetector(detectors[i], drainer, drainee)
+            return true
+        endif
+        i += 1
+    endwhile
+    return false
+EndFunction
+
+bool Function IsValidDetector(Actor detector, Actor drainer, Actor drainee)
+    string detectorName = detector.GetActorBase().GetName()
+    Log("Drainer is detected by: " + detectorName)
+    if GetRaceType(detector) != "Human"
+        Log(detectorName + " is not Human")
+        return false
+    endif
+    if detector == drainee
+        Log(detectorName + " is drainee")
+        return false
+    endif
+    if detector.IsPlayerTeammate()
+        Log(detectorName + " is a teammate")
+        return false
+    endif
+    if StorageUtil.GetIntValue(detector, "CoL_activeParticipant") as bool
+        Log(detectorName + " is an active participant")
+        return false
+    endif
+    if !detector.HasLoS(drainer)
+        Log(detectorName + " does not have LOS")
+        return false
+    endif
+    if detector.GetDistance(drainer) > configHandler.drainToDeathDetectionRange
+        Log(detectorName + " is too far away")
+        return false
+    endif
+    Log(detectorName + " is a valid detector")
+    return true
 EndFunction
 
 Function doVampireDrain(Actor drainee)

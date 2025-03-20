@@ -26,7 +26,8 @@ float Property energyConversionRate = 0.5 Auto Hidden           ; Rate at which 
 bool Property drainFeedsVampire = true Auto Hidden              ; Should draining trigger a vampire feeding
 float Property minHealthPercent = 0.1 Auto Hidden               ; Minimum percentage of health allowed to be drained
 float Property drainToDeathDelay = 0.0 Auto Hidden              ; Delay before drain to death kills victim
-bool Property drainToDeathCrime = true Auto Hidden
+bool Property drainToDeathCrime = true Auto Hidden              ; Whether or not draining a victim to death is a crime
+int Property drainToDeathDetectionRange = 1000 Auto             ; How far should drain to death be detectable
 
 ; NPC Drain Settings
 int Property npcDrainToDeathChance = 0 Auto Hidden              ; Percentage chance for npc succubi to drain a victim to death
@@ -215,6 +216,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "minHealthPercent", minHealthPercent)
         JMap.setFlt(jObj, "drainToDeathDelay", drainToDeathDelay)
         JMap.setInt(jObj, "drainToDeathCrime", drainToDeathCrime as int)
+        JMap.setInt(jObj,"drainToDeathDetectionRange",drainToDeathDetectionRange)
     ; Save Levelling Settings
         JMap.setFlt(jObj, "xpConstant", xpConstant)
         JMap.setFlt(jObj, "xpPower", xpPower)
@@ -324,6 +326,7 @@ Function LoadConfig(int jObj)
         npcRelationshipDeathChance[3] = JMap.getInt(jObj,"npcRelationshipDeathChance3", 0)
         npcRelationshipDeathChance[4] = JMap.getInt(jObj,"npcRelationshipDeathChance4", 0)
         drainToDeathCrime = JMap.getInt(jObj, "drainToDeathCrime", 0) as bool
+        drainToDeathDetectionRange = JMap.getInt(jObj, "drainToDeathDetectionRange", 1000)
     ; Load Levelling Settings
         xpConstant = JMap.getFlt(jObj, "xpConstant")
         xpPower = JMap.getFlt(jObj, "xpPower")
