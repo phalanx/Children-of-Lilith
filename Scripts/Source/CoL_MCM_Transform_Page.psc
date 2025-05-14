@@ -279,7 +279,7 @@ State Slider_TransformCost
         SetSliderDialogStartValue(configHandler.transformCost)
         SetSliderDialogDefaultValue(1)
         SetSliderDialogInterval(0.01)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialogRange(-100, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformCost = value
