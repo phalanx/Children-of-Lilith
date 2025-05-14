@@ -5,12 +5,17 @@ CoL_UI_Widget_Script Property widgetHandler Auto
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 
 bool meterBarChanged = false
+string[] fillDirOptions
 
 Event OnInit()
     RegisterModule("$COL_WIDGETSPAGE_NAME", 50)
 EndEvent
 
 Event OnPageDraw()
+    fillDirOptions = new string[3]
+    fillDirOptions[0] = "$COL_WIDGETSPAGE_ENERGYMETER_FILLDIR_0"
+    fillDirOptions[1] = "$COL_WIDGETSPAGE_ENERGYMETER_FILLDIR_1"
+    fillDirOptions[2] = "$COL_WIDGETSPAGE_ENERGYMETER_FILLDIR_2"
     SetCursorFillMode(TOP_TO_BOTTOM)
     AddSliderOptionST("Slider_energyMeterXPos", "$COL_WIDGETSPAGE_ENERGYMETER_XPOS", configHandler.energyMeterXPos)
     AddSliderOptionST("Slider_energyMeterYPos", "$COL_WIDGETSPAGE_ENERGYMETER_YPOS", configHandler.energyMeterYPos)
@@ -19,6 +24,7 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_energyMeterAlpha", "$COL_WIDGETSPAGE_ENERGYMETER_ALPHA", configHandler.energyMeterAlpha)
     AddToggleOptionST("Toggle_energyMeterAutoHide", "$COL_WIDGETSPAGE_ENERGYMETER_AUTOHIDE", configHandler.autoFade)
     AddSliderOptionST("Slider_energyMeterAutoHideTime", "$COL_WIDGETSPAGE_ENERGYMETER_AUTOHIDETIME", configHandler.autoFadeTime)
+    AddMenuOptionST("Menu_meterFillDirection", "$COL_WIDGETSPAGE_ENERGYMETER_FILLDIR", fillDirOptions[configHandler.meterFillDirection])
 EndEvent
 
 Event OnConfigClose()
@@ -133,5 +139,19 @@ State Slider_energyMeterAutoHideTime
 
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_WIDGETSPAGE_ENERGYMETER_AUTOHIDETIME_HELP")
+    EndEvent
+EndState
+
+State Menu_meterFillDirection
+    Event OnMenuOpenST(string state_id)
+        SetMenuDialog(fillDirOptions, configHandler.meterFillDirection)
+    EndEvent
+    Event OnMenuAcceptST(string state_id, int newVal)
+        configHandler.meterFillDirection = newVal
+        SetMenuOptionValueST(fillDirOptions[newVal])
+        meterBarChanged = true
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_WIDGETSPAGE_ENERGYMETER_FILLDIR_HELP")
     EndEvent
 EndState

@@ -94,6 +94,8 @@ int Property energyMeterXScale = 70 Auto Hidden
 int Property energyMeterYScale = 70 Auto Hidden
 bool Property autoFade = false Auto Hidden
 int Property autoFadeTime = 5 Auto Hidden
+; 0 - both | 1 - left | 2 - right
+int Property meterFillDirection = 0 Auto Hidden
 
 ; Transform Settings
 Form[] Property NoStripList Auto Hidden
