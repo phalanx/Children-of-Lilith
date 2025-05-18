@@ -150,6 +150,7 @@ State Text_perkReset
         restoredPoints += resetPerk(CombatFeedingPerk)
         restoredPoints += resetPerk(EssenceExtraction)
         restoredPoints += resetPerk(NoEscape)
+        restoredPoints += resetPerk(BuiltForCombat)
 
         restoredPoints += resetPerkArray(singleRankPerks)
         restoredPoints += resetPerkArray(ReinforcedBody)
