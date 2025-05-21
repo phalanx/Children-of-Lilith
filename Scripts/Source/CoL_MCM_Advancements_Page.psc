@@ -61,7 +61,7 @@ Event OnPageDraw()
         printRankedPerk(DominatingStrength,"Toggle_DomStrength", ReinforcedBody[0])
         printRankedPerk(DeadlyRevelry,"Toggle_DeadlyRevelry", CombatFeedingPerk)
         printRankedPerk(MorbidRecovery,"Toggle_MorbidRecovery", DeadlyRevelry[0])
-        printPerk(EssenceExtraction,"Toggle_molagPerk___EssenceExtraction")
+        printPerk(EssenceExtraction,"Toggle_molagPerk___EssenceExtraction", MorbidRecovery[0])
         printRankedPerk(TerrifyingForm, "Toggle_TerrifyingForm", CombatFeedingPerk)
         printPerk(NoEscape,"Toggle_molagPerk___NoEscape", TerrifyingForm[0])
         printPerk(BuiltForCombat,"Toggle_molagPerk___BuiltForCombat",NoEscape)
@@ -299,7 +299,7 @@ State Toggle_MorbidRecovery
         GivePerk(MorbidRecovery[state_id as int])
     EndEvent
     Event OnHighlightST(string state_id)
-        SetInfoText("$COL_PERK_MOLAG_DEADLYREV_HELP" + state_id)
+        SetInfoText("$COL_PERK_MOLAG_MORBIDRECOVERY_HELP" + state_id)
     EndEvent
 EndState
 State Toggle_TerrifyingForm

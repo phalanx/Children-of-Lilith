@@ -16,6 +16,7 @@
         <Variable Name="ModsFolder" Value="E:\Skyrim\1.6.1170\Authoring\Children Of Lilith\Mods" />
     </Variables>
     <Imports>
+        <Import>@ModsFolder\yps-ImmersiveFashion (6.9.1)\Scripts\Source</Import>
         <Import>@ModsFolder\Scrab's Papyrus Extender\Source\Scripts</Import>
         <Import>@ModsFolder\Acheron - Death Alternative\Source\Scripts</Import>
         <Import>@ModsFolder\Custom Skills Framework\Source\Scripts</Import>
@@ -31,6 +32,7 @@
         <Import>@ModsFolder\Mfg Fix\source\scripts</Import>
         <Import>@ModsFolder\Race-Menu-Modders Package\Source\Scripts</Import>
         <Import>@ModsFolder\PapyrusUtil SE - Modders Scripting Utility Functions\Scripts\Source</Import>
+        <Import>@ModsFolder\Devious Devices NG\Scripts\Source</Import>
         <Import>@ModsFolder\Devious Devices\Scripts\Source</Import>
         <Import>@ModsFolder\SexLabArousedSSELoose\Scripts\Source</Import>
         <Import>@ModsFolder\FNIS Sexy Move SE\source\scripts</Import>
