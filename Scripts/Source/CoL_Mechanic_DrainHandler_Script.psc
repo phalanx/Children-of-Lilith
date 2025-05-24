@@ -241,9 +241,11 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
         return
     endif
     if configHandler.drainToDeathCrime && DrainerIsDetected(drainer, drainee)
+        Log("Blaming drainer")
         drainee.Kill(drainer)
     else
-        drainee.Kill()
+        Log("No blame drain")
+        drainee.KillSilent()
     endif
 EndFunction
 
