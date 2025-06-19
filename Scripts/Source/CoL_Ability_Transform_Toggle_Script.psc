@@ -2,6 +2,7 @@ Scriptname CoL_Ability_Transform_Toggle_Script extends activemagiceffect
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+Perk Property isTransformedPerk Auto
 Perk Property safeTransformation Auto
 Spell Property transformSpell Auto
 Spell Property transformCostSpell Auto
@@ -49,10 +50,12 @@ Event OnEffectStart(actor akTarget, actor akCaster)
         if !configHandler.transformMortalCost
             CoL.playerRef.AddSpell(transformCostSpell, false)
         endif
+        CoL.playerRef.AddPerk(isTransformedPerk)
     else
         if configHandler.transformMortalCost
             CoL.playerRef.AddSpell(transformCostSpell, false)
         endif
+        CoL.playerRef.RemovePerk(isTransformedPerk)
     endif
 
     CoL.isTransforming = false
