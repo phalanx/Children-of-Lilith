@@ -2,6 +2,7 @@ Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Interface_AnimatedWings Property iAnimatedWings Auto
 
 String Property formSavedMsg = "Form Saved" Auto
 String Property formLoadedMsg = "Form Loaded. Exit menu to apply changes" Auto
@@ -23,6 +24,9 @@ Event OnPageDraw()
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_PRESET")
     if CoL.isPlayerSuccubus.GetValueInt() == 0
         AddTextOptionST("Text_initFirst", "$COL_TRANSFORMPAGE_INITFIRST", None)
+        AddEmptyOption()
+        AddEmptyOption()
+        AddEmptyOption()
     else
         AddTextOptionST("Text_saveMortalPreset", "$COL_TRANSFORMPAGE_SAVEMORTALFORM", None)
         if CoL.mortalPresetSaved
@@ -74,6 +78,14 @@ Event OnPageDraw()
     AddTextOptionST("Text_ActivateEquipmentChest", "$COL_TRANSFORMPAGE_EQUIPMENTSAVE" , None)
     if !loadEquipment
         AddTextOptionST("Text_LoadEquipment", "$COL_TRANSFORMPAGE_LOADEQUIPMENT" , None)
+        AddEmptyOption()
+        AddEmptyOption()
+        AddHeaderOption("")
+        if iAnimatedWings.IsInterfaceActive()
+            AddMenuOptionST("Menu_Wings", "$COL_TRANSFORMPAGE_WINGS", iAnimatedWings.wingsOptions[configHandler.selectedWing])
+        else
+            AddMenuOptionST("Menu_Wings", "$COL_TRANSFORMPAGE_WINGS", iAnimatedWings.wingsOptions[configHandler.selectedWing], OPTION_FLAG_DISABLED)
+        endif
     endif
     if loadEquipment
         LoadEquipmentList()
@@ -150,7 +162,7 @@ State Text_LoadMortalPreset
     Event OnSelectST(string state_id)
         Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
-        CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor, false)
+        CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_LOADMORTALFORM_HELP")
@@ -172,7 +184,7 @@ State Text_LoadSuccuPreset
     Event OnSelectST(string state_id)
         Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
-        CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor, true)
+        CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
         ForcePageReset()
     EndEvent
     Event OnHighlightST(string state_id)
@@ -420,5 +432,25 @@ State Text_RemoveStrippable
         endif
 
         ForcePageReset()
+    EndEvent
+EndState
+
+State Menu_Wings
+    Event OnMenuOpenST(string state_id)
+        int i = 0
+        SetMenuDialog(iAnimatedWings.wingsOptions, configHandler.selectedWing, 0)
+    EndEvent
+
+    Event OnMenuAcceptST(string state_id, int index)
+        if index == -1
+            index = 0
+        endif
+        configHandler.selectedWing = index
+        iAnimatedWings.UpdateWings()
+        SetMenuOptionValueST(iAnimatedWings.wingsOptions[index])
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_WINGS_HELP")
     EndEvent
 EndState

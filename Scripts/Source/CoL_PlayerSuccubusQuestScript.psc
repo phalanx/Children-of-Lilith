@@ -153,7 +153,7 @@ State SceneRunning
             _Log("Scene Start Transforming")
             simpleTransform.Cast(playerRef)
             Utility.Wait(2)
-            transformPlayer(succuPresetName, succuRace, succuHairColor, true)
+            transformPlayer(succuPresetName, succuRace, succuHairColor)
         endif
     EndEvent
 
@@ -173,12 +173,12 @@ State SceneRunning
             if !transformedForScene
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
-                transformPlayer(succuPresetName, succuRace, succuHairColor, true)
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
                 transformedForScene = true
             else
                 simpleTransform.Cast(playerRef)
                 Utility.Wait(2)
-                transformPlayer(mortalPresetName, mortalRace, mortalHairColor, false)
+                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
                 transformedForScene = false
             endif
         endif
@@ -189,7 +189,7 @@ State SceneRunning
             _Log("Scene End Untransforming")
             simpleTransform.Cast(playerRef)
             Utility.Wait(2)
-            transformPlayer(mortalPresetName, mortalRace, mortalHairColor, false)
+            transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
         endif
         transformedForScene = false
     EndEvent
@@ -258,9 +258,9 @@ Function Maintenance()
     if mortalPresetSaved && succuPresetSaved
         if !isBeastRace()
             if isTransformed
-                transformPlayer(succuPresetName, succuRace, succuHairColor, true)
+                transformPlayer(succuPresetName, succuRace, succuHairColor)
             else
-                transformPlayer(mortalPresetName, mortalRace, mortalHairColor, false)
+                transformPlayer(mortalPresetName, mortalRace, mortalHairColor)
             endif
         endif
     endif
@@ -402,145 +402,7 @@ Function savePreset(string presetName)
     _Log("Finished Saving Preset")
 EndFunction
 
-Spell Function getWingsSpell()
-    Spell wings = None
-
-    if configHandler.selectedWing == 1
-        wings = Game.GetFormFromFile(0x9D1, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 2
-        wings = Game.GetFormFromFile(0x9D2, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 3
-        wings = Game.GetFormFromFile(0x9D3, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 4
-        wings = Game.GetFormFromFile(0x9D5, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 5
-        wings = Game.GetFormFromFile(0x9D6, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 6
-        wings = Game.GetFormFromFile(0x9D7, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 7
-        wings = Game.GetFormFromFile(0x9D8, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 8
-        wings = Game.GetFormFromFile(0x9D9, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 9
-        wings = Game.GetFormFromFile(0x9DA, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 10
-        wings = Game.GetFormFromFile(0x9DB, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 11
-        wings = Game.GetFormFromFile(0x9DD, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 12
-        wings = Game.GetFormFromFile(0x9DE, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 13
-        wings = Game.GetFormFromFile(0x9DF, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 14
-        wings = Game.GetFormFromFile(0x9E0, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 15
-        wings = Game.GetFormFromFile(0x9E1, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 16
-        wings = Game.GetFormFromFile(0x9E2, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 17
-        wings = Game.GetFormFromFile(0x9E3, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 18
-        wings = Game.GetFormFromFile(0x9E4, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 19
-        wings = Game.GetFormFromFile(0x9E5, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 20
-        wings = Game.GetFormFromFile(0x9E6, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 21
-        wings = Game.GetFormFromFile(0x9E7, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 22
-        wings = Game.GetFormFromFile(0x9E8, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 23
-        wings = Game.GetFormFromFile(0x9E9, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 24
-        wings = Game.GetFormFromFile(0x9EB, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 25
-        wings = Game.GetFormFromFile(0x9EC, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 26
-        wings = Game.GetFormFromFile(0x9EE, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 27
-        wings = Game.GetFormFromFile(0x9F6, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 28
-        wings = Game.GetFormFromFile(0x9F7, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 29
-        wings = Game.GetFormFromFile(0x9F8, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 30
-        wings = Game.GetFormFromFile(0x9F9, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 31
-        wings = Game.GetFormFromFile(0x9FA, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 32
-        wings = Game.GetFormFromFile(0x9FB, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 33
-        wings = Game.GetFormFromFile(0x9FC, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 34
-        wings = Game.GetFormFromFile(0x9FD, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 35
-        wings = Game.GetFormFromFile(0xA01, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 36
-        wings = Game.GetFormFromFile(0xA02, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 37
-        wings = Game.GetFormFromFile(0xA03, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 38
-        wings = Game.GetFormFromFile(0xA04, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 39
-        wings = Game.GetFormFromFile(0xA05, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 40
-        wings = Game.GetFormFromFile(0xA06, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 41
-        wings = Game.GetFormFromFile(0xA12, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 42
-        wings = Game.GetFormFromFile(0xA13, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 43
-        wings = Game.GetFormFromFile(0xA14, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 44
-        wings = Game.GetFormFromFile(0xA20, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 45
-        wings = Game.GetFormFromFile(0xA21, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 46
-        wings = Game.GetFormFromFile(0xA22, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 47
-        wings = Game.GetFormFromFile(0xA23, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 48
-        wings = Game.GetFormFromFile(0xA24, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 49
-        wings = Game.GetFormFromFile(0xA25, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 50
-        wings = Game.GetFormFromFile(0xA26, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 51
-        wings = Game.GetFormFromFile(0xA34, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 52
-        wings = Game.GetFormFromFile(0xA35, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 53
-        wings = Game.GetFormFromFile(0xA36, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 54
-        wings = Game.GetFormFromFile(0xA37, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 55
-        wings = Game.GetFormFromFile(0xA38, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 56
-        wings = Game.GetFormFromFile(0xA39, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 57
-        wings = Game.GetFormFromFile(0xA3A, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 58
-        wings = Game.GetFormFromFile(0xA3B, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 59
-        wings = Game.GetFormFromFile(0xA3C, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 60
-        wings = Game.GetFormFromFile(0xA3D, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 61
-        wings = Game.GetFormFromFile(0xA3E, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 62
-        wings = Game.GetFormFromFile(0xA3F, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 63
-        wings = Game.GetFormFromFile(0xA40, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 64
-        wings = Game.GetFormFromFile(0xA41, "Animated Wings Ultimate.esp") as Spell
-    elseif configHandler.selectedWing == 65
-        wings = Game.GetFormFromFile(0xA42, "Animated Wings Ultimate.esp") as Spell
-    EndIf
-
-    return wings
-EndFunction
-
-Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor, bool toSuccubus)
+Function transformPlayer(string presetName, Race presetRace, ColorForm presetHairColor)
     _Log("Transforming Player")
     int jmorphs
     if configHandler.transformSavesNiOverrides
@@ -562,19 +424,6 @@ Function transformPlayer(string presetName, Race presetRace, ColorForm presetHai
     if iSLCumOverlay.IsInterfaceActive()
         iSLCumOverlay.reapplySCOEffects(playerRef)
     endif
-
-    if toSuccubus
-        Spell wings = getWingsSpell()
-        if wings != None 
-            playerRef.AddSpell(wings, false)
-        EndIf
-    else
-        Spell wings = getWingsSpell()
-        if wings != None
-            playerRef.RemoveSpell(wings)
-        EndIf
-    endif
-
     _Log("Finished Transforming Player")
 EndFunction
 

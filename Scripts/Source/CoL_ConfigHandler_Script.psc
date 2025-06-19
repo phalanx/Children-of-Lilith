@@ -13,8 +13,7 @@ bool Property DebugLogging = false Auto Hidden                  ; Are debug logs
 bool Property EnergyScaleTestEnabled = false Auto Hidden        ; Is the energy scale test enabled
 
 ; Wings
-string[] Property wingsOptions Auto Hidden                      ; Holds available path options
-int Property selectedWing = 0 Auto Hidden                       ; Which path is the player following
+int Property selectedWing = 0 Auto Hidden                       ; Which wings the player has selected
 
 ; Player Drain Settings
 bool Property lockDrainType = false Auto Hidden                 ; Disable drain type hotkeys
@@ -161,78 +160,6 @@ Function Log(string msg)
 EndFunction
 
 Function Maintenance()
-    wingsOptions = new string[1];
-    wingsOptions[0] = "None";
-    if Game.GetFormFromFile(0x9D1, "Animated Wings Ultimate.esp")
-        wingsOptions = new string[66];
-        wingsOptions[0] = "$COL_NONE_WINGS";
-        wingsOptions[1] = "$COL_FAIRY_BLACK_WINGS" ; 9D1
-        wingsOptions[2] = "$COL_SOUL_HOUND_BLOOD_RUNED_WINGS" ; 9D2
-        wingsOptions[3] = "$COL_SOUL_HOUND_AURIEL_RUNED_WINGS" ; 9D3
-        wingsOptions[4] = "$COL_GUARDIAN_GREEN_GOLD_RED_WINGS" ; 9D5
-        wingsOptions[5] = "$COL_GUARDIAN_GREEN_PURPLE_WINGS" ; 9D6
-        wingsOptions[6] = "$COL_GUARDIAN_RED_GOLD_WINGS" ; 9D7
-        wingsOptions[7] = "$COL_GUARDIAN_WHITE_BLUE_WINGS" ; 9D8
-        wingsOptions[8] = "$COL_GUARDIAN_WHITE_RED_WINGS" ; 9D9
-        wingsOptions[9] = "$COL_GUARDIAN_WHITE_GOLD_WINGS" ; 9DA
-        wingsOptions[10] = "$COL_SOUL_HOUND_BLACK_WINGS" ; 9DB
-        wingsOptions[11] = "$COL_SOUL_HOUND_BLUE_WINGS" ; 9DD
-        wingsOptions[12] = "$COL_SOUL_HOUND_BROWN_WINGS" ; 9DE
-        wingsOptions[13] = "$COL_SOUL_HOUND_BROWN_WHITE_WINGS" ; 9DF
-        wingsOptions[14] = "$COL_SOUL_HOUND_GOLD_WINGS" ; 9E0
-        wingsOptions[15] = "$COL_SOUL_HOUND_GREEN_WINGS" ; 9E1
-        wingsOptions[16] = "$COL_SOUL_HOUND_RED_WINGS" ; 9E2
-        wingsOptions[17] = "$COL_SOUL_HOUND_RED_BLACK_WINGS" ; 9E3
-        wingsOptions[18] = "$COL_SOUL_HOUND_WHITE_WINGS" ; 9E4
-        wingsOptions[19] = "$COL_SORCERER_GOLD_WINGS" ; 9E5
-        wingsOptions[20] = "$COL_SORCERER_PURPLE_WINGS" ; 9E6
-        wingsOptions[21] = "$COL_SORCERER_WHITE_WINGS" ; 9E7
-        wingsOptions[22] = "$COL_SORCERER_WHITE_RED_WINGS" ; 9E8
-        wingsOptions[23] = "$COL_SORCERER_PINKISH_PURPLE_WINGS" ; 9E9
-        wingsOptions[24] = "$COL_SORCERER_BROWN_WHITE_WINGS" ; 9EB
-        wingsOptions[25] = "$COL_SORCERER_BROWN_WINGS" ; 9EC
-        wingsOptions[26] = "$COL_SORCERER_GREEN_BROWN_WINGS" ; 9EE
-        wingsOptions[27] = "$COL_GUARDIAN_GOLD_GREEN_WINGS" ; 9F6
-        wingsOptions[28] = "$COL_BLOODY_DRAGON_WINGS" ; 9F7
-        wingsOptions[29] = "$COL_COMMON_DRAGON_WINGS" ; 9F8
-        wingsOptions[30] = "$COL_DANGER_DRAGON_WINGS" ; 9F9
-        wingsOptions[31] = "$COL_DEAD_DRAGON_WINGS" ; 9FA
-        wingsOptions[32] = "$COL_EVIL_DRAGON_WINGS" ; 9FB
-        wingsOptions[33] = "$COL_COMMON_DRAGON_WINGS" ; 9FC
-        wingsOptions[34] = "$COL_EVIL_BLUE_DRAGON_WINGS" ; 9FD
-        wingsOptions[35] = "$COL_FRIENDLY_DRAGON_WINGS" ; A01
-        wingsOptions[36] = "$COL_FOREST_DRAGON_WINGS" ; A02
-        wingsOptions[37] = "$COL_SNOW_DRAGON_WINGS" ; A03
-        wingsOptions[38] = "$COL_COOL_BLUE_DRAGON_WINGS" ; A04
-        wingsOptions[39] = "$COL_TUNDRA_DRAGON_WINGS" ; A05
-        wingsOptions[40] = "$COL_WISDOM_DRAGON_WINGS" ; A06
-        wingsOptions[41] = "$COL_GUARDIAN_BLUE_GOLD_WINGS" ; A12
-        wingsOptions[42] = "$COL_GUARDIAN_BLACK_RED_WINGS" ; A13
-        wingsOptions[43] = "$COL_GUARDIAN_BLACK_BLUE_WINGS" ; A14
-        wingsOptions[44] = "$COL_BLOODY_RED_DRAGON_WINGS" ; A20
-        wingsOptions[45] = "$COL_LAMBENT_BLUE_DRAGON_WINGS" ; A21
-        wingsOptions[46] = "$COL_LAMBENT_GREEN_DRAGON_WINGS" ; A22
-        wingsOptions[47] = "$COL_LAMBENT_ORANGE_DRAGON_WINGS" ; A23
-        wingsOptions[48] = "$COL_LAMBENT_PURPLE_DRAGON_WINGS" ; A24
-        wingsOptions[49] = "$COL_LAMBENT_RED_DRAGON_WINGS" ; A25
-        wingsOptions[50] = "$COL_LAMBENT_YELLOW_DRAGON_WINGS" ; A26
-        wingsOptions[51] = "$COL_EMPEROR_S_NEW_WINGS" ; A34
-        wingsOptions[52] = "$COL_BOUND_DRAGON_WINGS" ; A35
-        wingsOptions[53] = "$COL_BOUND_BLOOD_DRAGON_WINGS" ; A36
-        wingsOptions[54] = "$COL_BOUND_DARK_DRAGON_WINGS" ; A37
-        wingsOptions[55] = "$COL_BOUND_FLAME_DRAGON_WINGS" ; A38
-        wingsOptions[56] = "$COL_BOUND_FROST_DRAGON_WINGS" ; A39
-        wingsOptions[57] = "$COL_BOUND_LIGHT_DRAGON_WINGS" ; A3A
-        wingsOptions[58] = "$COL_BOUND_SHOCK_DRAGON_WINGS" ; A3B
-        wingsOptions[59] = "$COL_BOUND_EVIL_DRAGON_WINGS" ; A3C
-        wingsOptions[60] = "$COL_BOUND_BLOOD_EVIL_DRAGON_WINGS" ; A3D
-        wingsOptions[61] = "$COL_BOUND_DARK_EVIL_DRAGON_WINGS" ; A3E
-        wingsOptions[62] = "$COL_BOUND_FLAME_EVIL_DRAGON_WINGS" ; A3F
-        wingsOptions[63] = "$COL_BOUND_FROST_EVIL_DRAGON_WINGS" ; A40
-        wingsOptions[64] = "$COL_BOUND_LIGHT_EVIL_DRAGON_WINGS" ; A41
-        wingsOptions[65] = "$COL_BOUND_SHOCK_EVIL_DRAGON_WINGS" ; A42
-    EndIf
-
     followedPathOptions = new string[4]
     followedPathOptions[0] = "$COL_STATUSPAGE_PATH_SANGUINE"
     followedPathOptions[1] = "$COL_STATUSPAGE_PATH_MOLAG"
@@ -271,7 +198,7 @@ int Function SaveConfig()
         JMap.setInt(jObj, "version", GetConfigVersion())
         JMap.setFlt(jObj, "baseMaxEnergy", baseMaxEnergy)
         JMap.setInt(jObj, "selectedPath", selectedPath)
-        JMap.setInt(jObj, "selectedWing", selectedWing)
+        ; JMap.setInt(jObj, "selectedWing", selectedWing)
         JMap.setInt(jObj, "DebugLogging", DebugLogging as int)
         JMap.setInt(jObj, "EnergyScaleTestEnabled", EnergyScaleTestEnabled as int)
     ; Save Drain Settings
@@ -383,7 +310,7 @@ Function LoadConfig(int jObj)
     ; Load Base Settings
         baseMaxEnergy = JMap.getFlt(jObj, "baseMaxEnergy")
         selectedPath = JMap.getInt(jObj, "selectedPath")
-        selectedWing = JMap.getInt(jObj, "selectedWing")
+        selectedWing = JMap.getInt(jObj, "selectedWing", 0)
         DebugLogging = JMap.getInt(jObj, "DebugLogging") as bool
         EnergyScaleTestEnabled = JMap.getInt(jObj, "EnergyScaleTestEnabled") as bool
     ; Load Drain Settings
