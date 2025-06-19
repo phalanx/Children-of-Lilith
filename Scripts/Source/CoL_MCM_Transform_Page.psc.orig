@@ -150,7 +150,7 @@ State Text_LoadMortalPreset
     Event OnSelectST(string state_id)
         Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
-        CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor, false)
+        CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_LOADMORTALFORM_HELP")
@@ -172,7 +172,7 @@ State Text_LoadSuccuPreset
     Event OnSelectST(string state_id)
         Debug.MessageBox(formLoadedMsg)
         Utility.Wait(0.1)
-        CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor, true)
+        CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
         ForcePageReset()
     EndEvent
     Event OnHighlightST(string state_id)

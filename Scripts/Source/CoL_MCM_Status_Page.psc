@@ -38,6 +38,7 @@ Event OnPageDraw()
         AddTextOptionST("Text_EnergyCurrent", "$COL_STATUSPAGE_ENERGYCURRENT", energyHandler.playerEnergyCurrent as int, OPTION_FLAG_DISABLED)
         AddTextOptionST("Text_MaxEnergy", "$COL_STATUSPAGE_MAXENERGY", energyHandler.playerEnergyMax, OPTION_FLAG_DISABLED)
         AddMenuOptionST("Menu_FollowedPath", "$COL_STATUSPAGE_FOLLOWEDPATH", configHandler.followedPathOptions[configHandler.selectedPath])
+        AddMenuOptionST("Menu_Wings", "$COL_STATUSPAGE_WINGS", configHandler.wingsOptions[configHandler.selectedWing])
     endif
     SetCursorPosition(1)
     AddHeaderOption("$COL_STATUSPAGE_HEADER_TWO")
@@ -82,6 +83,21 @@ State Menu_FollowedPath
 
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_STATUSPAGE_FOLLOWEDPATH_HELP")
+    EndEvent
+EndState
+
+State Menu_Wings
+    Event OnMenuOpenST(string state_id)
+        SetMenuDialog(configHandler.wingsOptions, configHandler.selectedWing, 0)
+    EndEvent
+
+    Event OnMenuAcceptST(string state_id, int index)
+        configHandler.selectedWing = index
+        SetMenuOptionValueST(configHandler.wingsOptions[index])
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_STATUSPAGE_WINGS")
     EndEvent
 EndState
 

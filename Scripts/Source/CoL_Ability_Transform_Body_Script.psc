@@ -27,7 +27,7 @@ EndFunction
 Function Transform()
     Log("Transforming")
 
-    CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
+    CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor, true)
     
     if configHandler.transformCrime && !CoL.playerRef.HasPerk(attractiveDremora)
         CoL.playerRef.SetAttackActorOnSight()
@@ -37,7 +37,7 @@ EndFunction
 
 Function UnTransform()
     Log("Untransforming")
-    CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
+    CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor, false)
 
     Utility.Wait(0.5)
     if configHandler.transformCrime 
