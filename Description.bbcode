@@ -1,4 +1,4 @@
-[center][size=5][b]Children of Lilith[/b][/size][/center]
+[center][size=5][b]Children [/b][/size][size=5][b]of Lilith[/b][/size][/center]
 Children of Lilith adds succubus gameplay to Skyrim. Drain victims to absorb Energy, and spend that Energy on new abilities or a powerful new form. Will you take just a bit, or will you take it all? 
 
 I use succubus throughout this description, but the mod will work the same with male, female, or any other gender of character. As long as they can start and participate in a SexLab animation, it’ll work.
@@ -20,17 +20,18 @@ If you disagree with these goals, or feel I’ve missed the mark, most of the va
 [b]About Balance[/b]
 I’ve tried to keep this mod as balanced as I can, but I’m far from perfect. If you find anything horribly over or under powered, please let me know and I’ll see what I can do. The main balancing tool is how much Max Energy you have, and how much powers cost. These two things dictate how long and how often you are able to use your powers during a single dungeon run and are fully configurable. Tune and tweak to your heart’s content.
 [/spoiler]
-[center][size=5][b]Updating to 3.0[/b][/size][/center]
+
+[center][size=5][b]Updating to 5.0[/b][/size][/center]
 [spoiler]
 A new game is required. There were too many big changes to support an in place upgrade. You can try a clean save, but I doubt it will work and won't support anyone who does.
-
-If you aren't planning on having your forms be different races, then I would also recommend going into Data/SKSE/Plugins/skee.ini and setting bExternalHeads back to 0. I've noticed increased instability when this is enabled.
 [/spoiler]
+
 [size=5][center][b]Installation[/b][/center][/size]
 [spoiler]
 [list=1]
 [*] Use your chosen mod manager to install the files. Make selections with the fomod. Manual installations are not supported.
-[*] If you are planning on having different races for your forms, please perform the steps in Configuring Race Change below, then come back here.
+[*] Open Data/SKSE/Plugins/skee64.ini. If you use ModOrganizer, this file will be from RaceMenu.
+[*]Find the line bExternalHeads=0 and change it to bExternalHeads=1. Failure to do this may lead to inconsistent results.
 [*] You may wish to read through the Configuring Tattoo Fade below, before creating your character.
 [*] Launch the game and make your character as normal.
 [*] Go into the MCM, click on Become Succubus and exit the menu. Wait for notifications to disappear.
@@ -41,27 +42,22 @@ If you aren't planning on having your forms be different races, then I would als
 [*] Select "Load Mortal Form" and exit the menu to return to your normal form.
 [*] You may now do whatever other configuration you desire or start playing normally
 [/list]
-
-[b][size=4][color=deeppink]Configuring Race Change[/color][/size][/b]
+[b][size=4][color=deeppink]A Note on Race Change[/color][/size][/b]
 [spoiler]
-[list=1]
-[*]Open Data/SKSE/Plugins/skee64.ini. If you use ModOrganizer, this will be in RaceMenu
-[*] Find the line bExternalHeads=0 and change it to bExternalHeads=1. Failure to do this may lead to inconsistent results.
-[/list]
+[b][color=#cc4125]Warning: If you are using hdt-smp enabled body parts in your presets you must be on an updated version of [url=https://www.nexusmods.com/skyrimspecialedition/mods/57339]FSMP [/url]or you will crash when loading the preset, which happens automatically when you load a game. I don't know exactly when they fixed the issue, but as of at least 1.50.7-rc1 it seems to work.[/color][/b]
 
-[b][color=#cc4125]Warning: If you are using hdt-smp enabled body parts in your presets, the game will likely crash when you transform. This is a RaceMenu issue. HDT-SMP enabled body parts are not supported as part of the preset. These are things like hair and tail mods that come with a RaceMenu slider. The equipment versions of both of these things works fine. Again, this is a RaceMenu issue and not something I can fix.[/color][/b]
-
-There are other caveats with this as well. While it does work, I have noticed an increased number of CTDs when using bExternalHeads=1. I've mostly seen this when opening the racemenu, and usually was able to solve it by deleting the generated presets and exported heads.
-There is also an increased likely hood that SMP enabled body parts will not work with bExternalHeads=1. I've had success using them with it off, but turning it on usually caused a crash during transformation.
+There are other caveats with this as well. While it does work, I have noticed an increased number of CTDs and other issues when changing races. I've mostly seen this when opening the racemenu, and usually was able to solve it by deleting the generated presets and exported heads. Personally I do not recommend changing races, but it [i]does[/i] seem to mostly work.  Skyrim does not always handle changing races very well. [b]Do this at your own risk.[/b]
 [/spoiler]
+
 [b][size=4][color=deeppink]Configuring Tattoo Fade[/color][/size][/b]
 [img]https://i.imgur.com/u9aqg3T.gif[/img]
 [spoiler]
 This feature was made with [url=https://www.nexusmods.com/skyrimspecialedition/mods/83786]LewdMarks[/url] in mind but will work with any tattoos that go in the Body slots. By default, the tattoo in Body slot 6 is the one that gets faded. The fade is done with the tattoo's Alpha channel, so at full energy the tattoo will be at 100% alpha. The way tattoos seem to work is that the tattoos lower in the list get drawn on top of the tattoos higher in the list, so the best way I've found to configure it is to put your faded tattoo in slot 5 then put your fully displayed tattoo in slot 6. If you want a glow, I would use the glow option of the tattoo configuration and not the glowing version of LewdMarks, but it's up to what you think looks best. You can choose not to have a faded tattoo as well, if you want it to disappear entirely.
- 
+
 I also added an energy scaling test to make it easier to test what the tattoo will look like at various energy levels. Enable it in the Debug section of the Status page.
 [/spoiler]
 [/spoiler]
+
 [b][size=5][center]Features[/center][/size][/b]
 [spoiler]
 [b][left][size=4][color=deeppink]Drain[/color][/size][/left][/b]
@@ -75,7 +71,10 @@ Draining a victim is not a crime, however killing a victim with Drain is, so be 
 Essential actors cannot be killed with the Drain to Death feature, and I don’t plan on adding it. I don’t want to intentionally provide a way to break your game.
 
 If you are a vampire, there is also the option to be able to feed while Draining.
+
+You may blacklist actors from being drained by assigning them the CoL_blackListedVictim keyword. You can use SPID, KID, or a plugin to assign the keyword.
 [/spoiler]
+
 [b][size=4][color=deeppink]Energy[/color][/size][/b]
 [spoiler]
 When you drain a victim, their life force becomes your Energy. The amount of energy gained is configurable, and defaults to 50% of the health the victim lost. Killing your victim with drain doubles the amount you gain.
@@ -87,12 +86,14 @@ In the above scenario, a victim that’s drained but left alive would be at a ma
 
 By default you have a max of 100 Energy, but this is configurable and can be raised through the Succubus Advancement system. A SkyUI widget is included to easily see how much energy you have available.
 [/spoiler]
+
 [b][size=4][color=deeppink]Arousal[/color][/size][/b]
 [spoiler]
 If you have any of the supported arousal frameworks installed, then the arousal of the victim is also added to the amount of energy gained. If you have multiple frameworks installed, then the average arousal is applied. There is also a perk you can take that applies the succubus' arousal to the energy gained.
- 
+
 Both of those values are multiplied by the configurable Drain Arousal Multiplier and then added directly to the energy gained. By default the modifier is 0.1
 [/spoiler]
+
 [size=4][b][color=deeppink]Passive Buffs and Debuffs[/color][/b][/size]
 [spoiler]
 All succubi have the following passives:
@@ -124,7 +125,9 @@ There are also 3 Paths you can choose from.
 [*]Illusion +5
 [*]Stamina +25
 [/list]
+You may also forgo having a Path, gaining no buffs, but also having none of the debuffs
 [/spoiler]
+
 [b][size=4][color=deeppink]New Powers[/color][/size][/b]
 [spoiler]
 [b]Succubus Become Ethereal[/b]
@@ -144,48 +147,57 @@ Both the base increase and level multiplier are configurable in the MCM. If mult
 [b]Succubus Excitement[/b]
 At succubus level 5, you gain the Succubus Excitement spell. If you have a supported arousal framework installed, this spell will raise the caster's arousal by the following formula:
     Excitement Base Increase + (Succubus Level * Level Multiplier)
-Both the base increase and level multiplier are configurable in the MCM. If multiple arousal frameworks are installed, then the increase is applied to all of them.
+Both the base increase and level multiplier are configurable in the MCM. If multiple arousal frameworks are installed, then the increase is applied to all of them.
  
 [b]Succubus Suppression[/b]
 At succubus level 10, you gain the Succubus Suppression spell. If you have a supported arousal framework installed, this spell will lower the caster's arousal by the following formula:
     Suppression Base Decrease + (Succubus Level * Level Multiplier)
-Both the base decrease and level multiplier are configurable in the MCM. If multiple arousal frameworks are installed, then the decrease is applied to all of them.
+Both the base decrease and level multiplier are configurable in the MCM. If multiple arousal frameworks are installed, then the decrease is applied to all of them.
 [/spoiler]
+
 [b][size=4][color=deeppink]Succubus Transformation[/color][/size][/b]
 [spoiler]
 Use RaceMenu to create a new form for your succubus and transform into it at will. The transformation will also swap your equipped armor. You may also gain buffs while transformed through the Succubus Advancement System. Please follow the installation instructions to configure the body changing.
 
-The equipment swapping works a little differently. The power stores the gear you have equipped when you transform back to human form and then reapplies it when you change to succubus form. This also saves any custom enchantments you have put on the gear.[b]However, due to a bug with the engine, player enchantments may not get applied on transform until you reequip the gear. If anyone knows of a fix for this, let me know.[/b]
+The equipment swapping works a little differently. The power stores the gear you have equipped when you transform back to human form and then reapplies it when you change to succubus form. This also saves any custom enchantments you have put on the gear.[b]However, due to a bug with the engine, player enchantments may not get applied on transform until you reequip the gear. There is a mod listed in the requirements that should fix this.[/b]
 
 You can access the chest that the equipment gets stored in via the MCM menu either for ease of outfit configuration or to recover items. You can also select equipment that does not get stripped during transformation.
+
+There is also integration for [url=https://www.nexusmods.com/skyrimspecialedition/mods/34571]Animated Wings Ultimate[/url] allowing you to select a set of wings to apply in your succubus form.
 [/spoiler]
+
 [size=4][b][color=deeppink]Succubus Advancement[/color][/b][/size]
 [spoiler]
-Raise your Succubus level by Draining victims. Each level grants a Succubus Perk Point that can be spent on a Succubus Perk through the MCM or a provided Custom Skills Framework configuration. Some of these perks can be taken an infinite amount of times.
+Raise your Succubus level by draining victims. Each level grants a Succubus Perk Point that can be spent on a Succubus Perk through the MCM or a provided Custom Skills Framework configuration. Some of these perks can be taken an infinite amount of times.
 
 The perks are all documented in the MCM and the CSF menu, so I won't duplicate that here. If there's anything missing or unclear please let me know.
 [/spoiler]
+
 [b][size=4][color=deeppink]Hunger and Starvation[/color][/size][/b]
 [spoiler]
 By default energy will not drain passively, and being at 0 Energy has no negative effects. However, there are options available to control whether this is true and how much Energy is lost passively, as well as whether or not being out of Energy causes a stacking max health debuff and how much max health is reduced. You can also set whether being low on energy causes an arousal increase separately or together with the health effects. This option requires polling, but only gets an update every 30 seconds.
 
 This feature starts a script that runs every 30 seconds to update your Hunger and Starvation effects.
 [/spoiler]
+
 [b][size=4][color=deeppink]NPC Succubi[/color][/size][/b]
 [spoiler]
 You are able to convert an NPC to a succubus by giving them a Mark of the Succubus. The Mark of the Succubus can be crafted at any forge with 1 Daedra Heart and 1 Gold Ingot. There is also a SPID configuration file available in the fomod installer to give a 5% chance for any non-unique actor to be a succubus. You will need to click the Enable NPC Succubi button in the MCM to start this portion of the mod.
  
-NPCs can drain victims in the same way that the PC can. There is a configurable chance for an NPC to drain a victim to death as well. These effects both work on the player character so use care if you enable the drain to death feature.  When an NPC drains a victim, the same health drain effect gets applied as when a PC drains a victim, but it does not take into account any of the PCs perks. 10% of the energy they drain is transferred to the player.
+NPCs can drain victims in the same way that the PC can. There is a configurable chance for an NPC to drain a victim to death based on their relationship with the victim as well. These effects both work on the player character so use care if you enable the drain to death feature.  When an NPC drains a victim, the same health drain effect gets applied as when a PC drains a victim, but it does not take into account any of the PCs perks. 10% of the energy they drain is transferred to the player.
  
 My intent here, if you care, is that if you are giving Marks of the Succubus then you are yourself a succubus and are making minion succubi, so you receive a portion of the energy they drain. And if you are using the SPID then you are not a succubus, so you won't be getting energy anyway. I'll probably add a check in a future version for if the drainer was given a Mark or something before adding energy to the player.
  
 NPC succubi will not transform. The RaceMenu functions I use to do the transform explicitly state not to use them on NPCs, so until and unless I find another way this isn't going to happen. I'm considering doing something with NiOverrides but I'm not 100% certain how it will work and would probably require a lot of manual configuration on the user's part.
 [/spoiler]
 [/spoiler]
+
+
 [center][size=5][b]Supported Animation Frameworks[/b][/size][/center]
 [spoiler]
 Support for the following animation frameworks is built in, with no additional patches required
 [url=https://www.loverslab.com/files/file/20058-sexlab-se-sex-animation-framework-v164c-010722/]SexLab[/url]
+[url=https://www.loverslab.com/files/file/25318-sexlab-p/]SexLab P+[/url]
 [url=https://www.nexusmods.com/skyrimspecialedition/mods/40725]OStim[/url]
 [url=https://www.nexusmods.com/skyrimspecialedition/mods/63512]Toys and Love[/url]
 
@@ -206,19 +218,18 @@ Either Ostim or OSA seem to be suppressing notifications, so when you push the d
 Anything that doesn't change the base functionality of the animation frameworks is likely to work. The ones listed here are the ones that took extra work.
 
 [url=https://www.loverslab.com/files/file/5929-sexlab-separate-orgasm-se/]SLSO[/url]
-[url=https://www.loverslab.com/files/file/19278-odefeat-defeat-reborn/]ODefeat[/url]
-[url=https://www.loverslab.com/files/file/1421-sexlab-aroused-redux-december-05-2016/]Sexlab Aroused Redux[/url]
+[url=https://www.loverslab.com/files/file/1421-sexlab-aroused-redux-december-05-2016/]Sexlab Aroused Redux[/url] (And probably all of it's variants)
 [url=https://www.nexusmods.com/skyrimspecialedition/mods/65454]OSL Aroused[/url]
-[url=https://www.nexusmods.com/skyrimspecialedition/mods/57232]OAroused[/url]﻿
 
 [b]Vampire Mods[/b]
 These have all been tested. Others may also work with the Base scripts. If you test any please let me know whether or not they work and I'll update this list. The support for vampire mods is limited to sating your thirst when you drain. Any other functions of the mods may or may not work during the drain.
 
 [url=https://www.nexusmods.com/skyrimspecialedition/mods/3928]Sacrosanct[/url]
-[url=https://www.nexusmods.com/skyrimspecialedition/mods/1925]Better Vampires[/url]
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/1925]Better Vampires[/url] (Still a little buggy. Check incompatibilities section)
 [url=https://www.nexusmods.com/skyrimspecialedition/mods/41639]Scion[/url]
 [url=https://www.nexusmods.com/skyrimspecialedition/mods/26312]Sanguinaire[/url]
 [/spoiler]
+
 [b][size=5][center]Uninstallation[/center][/size][/b]
 [spoiler]
 With the usual warnings about it being dangerous to remove mods mid playthrough that we all ignore anyway:
@@ -235,86 +246,11 @@ If you use MO2, these will be in your Overwrite folder
 
 That’s about as uninstalled as this mod will get without a save cleaner.
 [/spoiler]
+
 [center][size=5][b]Configuration Options[/b][/size][/center]
 [spoiler]
-Most of the configuration options should be self explanatory, so feel free to skip this section if you want to explore it yourself. I would suggest reading the section on Cost Calculation Style as it is not explained adequately in game.
+This mod is highly configurable and I was not able to keep this section updated. All options in the MCM have default values I believe to be reasonable and they should all be self-explanatory. If any of them are confusing or unclear, please let me know so I can clarify. The below settings are the ones I believe require additional explanation that cannot fit in the MCM.
 
-[b][size=4][color=deeppink]Status[/color][/size][/b]
-This page has basic information about your Succubus. Along with the following options and Debugging functions
-[spoiler]
-[u] Followed Path[/u]: Select between the Passive presets
-[u]Become Succubus[/u]: Starts this mod.
-[u]Become Mortal[/u]: Stops this mod. This also cleans up drain victims and removes spells added by the mod.
-[u]Refill Energy[/u]: Sets your current Energy to your Maximum Energy.
-[u]Level Up:[/u] Increases your Succubus Level by 1.
-[u]Enable Scale Test[/u]: Enables energy scaling test. Mostly useful for testing the Tattoo Fading
-[u]Debug Logging[/u]: Enable/Disable papyrus logging for this mod. I’d recommend leaving it off unless you are troubleshooting
-[u]Enable NPC Succubi[/u]: Enables NPC Succubi Subsystems
-[u]Disable NPC Succubi[/u]: Disables the NPC Succubi Subsystems
-[u] NPC Succubi[/u]: The names of NPCs you've selected as succubi will appear under this heading. Click one to remove them
-[/spoiler]
-[b][size=4][color=deeppink]Settings[/color][/size][/b]
-This page has most of the settings available for the mod
-[spoiler]
-[u]Base Maximum Energy:[/u] Starting point of your max energy. Perks will be applied afterwards
-[b][u]Player Drain Settings[/u][/b]
-[spoiler]
-[u]Drain:[/u] Enables or disables Drain
-[u]Drain to Death:[/u] Enables or disables Drain to Death. Takes precedence over Drain
-[u]Lock Drain Type:[/u] Disable manual selection of Drain or Drain to Death. Useful when combined with some of the other options.
-[u]Enable Deadly Drain while Transformed:[/u] Automatically enable Drain to Death while transformed, and Drain while untransformed.
-[u]Enable Drain Notifications:[/u] Enable/Disable the drain type notifications in the top left corner
-[u]Forced Drain Percentage:[/u] If energy is below this percentage, partners will always be drained. Set to -1 to disable. 
-[u]Forced Drain To Death Percentage:[/u] If energy is below this percentage, partners will always be drained to death. Set to -1 to disable
-[u]Drain Duration[/u]: How long the victim's health is reduced, in hours of game time.
-[u]Health Drain Multiplier:[/u] The percentage of health removed from a victim (Victim Health * Health Drain Multiplier) = Health Drained
-[u]Drain Arousal Multiplier:[/u] The modifier applied to victim or succubus' arousal before being added to energy gained on drain.
-[u]Energy Conversion Rate:[/u] The percentage of Health Drained that is converted into Energy. (Health Drained * Energy Conversion Rate) = Energy Gained
-[u]Drain Feeds Vampires:[/u] Drain will trigger a vampire feeding. It probably won't cause it to be viewed as a crime and may or may not trigger mod added effects depending on how those authors implemented them.
-[/spoiler]
-[b][u]NPC Drain Settings[/u][/b]
-[spoiler]
-[u]NPC Drain to Death Chance:[/u] Chance an NPC succubus will kill their partner. This can kill the player as well so use caution
-[/spoiler]
-[b][u]Tattoo Fade Settings[/u][/b]
-[spoiler]
-[u]Tattoo Fade:[/u] Whether the tatto fading system is enabled
-[u]Tattoo Body Slot:[/u] Which body slot the tattoo to fade occupies.
-[/spoiler]
-[b][u]Levelling Settings[/u][/b]
-[spoiler]
-[u]XP Per Drain:[/u] Sets Extra XP gained per drain action.
-[u]XP Drain to Death Mult:[/u] Multiplier applied to XP Per Drain when victim is Drained to Death.
-You can use the spreadsheet found [url=https://blog.jakelee.co.uk/converting-levels-into-xp-vice-versa/]here[/url] to see how changing the next two values will effect levelling.
-[u]XP Constant:[/u] Set the XP Constant. Lower values means more XP is required per level. Follows the formula (Next_Level/Constant)^Power
-[u]XP Power:[/u] Set the XP Power. Controls how quickly the XP per Level grows. Higher values means larger gaps between levels. Follows the formula (Next_Level/Constant)^Power
-[u]Levels Before Perk:[/u] Sets how many levels are required before earning a perk point.
-[u]Perk Points Received:[/u] Sets how many Perk Points you receive when you reach a level that would grant perk points.
-[/spoiler]
-[b][u]Perk Settings[/u][/b]
-[spoiler]
-This section contains settings for how much each of the transformation perks improves your stats while transformed
-[/spoiler]
-[b][u]Hunger Settings[/u][/b]
-[spoiler]
-[u]Hunger:[/u] Enables or disables passive Energy loss
-[u]Hunger Amount:[/u] Amount of Energy lost per day. 
-[u]Hunger is Percentage:[/u] Turns the above value into a percentage of max energy lost per day
-[u]Hunger Threshold:[/u] Sets the energy threshold below which Starvation effects will activate
-[u]Deadly Hunger:[/u] Enables or disables Starvation health loss 
-[u]Hunger Damage Amount:[/u] The amount of Max Health lost every 30 seconds when at 0 Energy
-[u]Hunger Arousal Enabled:[/u] Enables arousal gain when energy is below the Hunger Threshold. A supported arousal framework must be installed.
-[u]HungerArousal Amount:[/u] The amount to raise arousal by per tick
-[/spoiler]
-[/spoiler]
-[b][size=4][color=deeppink]Power Settings[/color][/size][/b]
-[spoiler]
-[u]Become Ethereal Cost[/u]: Per second Energy cost of Succubus Become Ethereal power
-
-[u]HealRate Boost Cost[/u]: Per second Energy cost of Succubus HealRate Boost power
-[u]HealRate Boost Multiplier[/u]: Multiplier applied to the HealRate while power is active.
-
-[u]Energy Casting Cost Multiplier[/u]: Multiplier applied to spells’ Magicka cost before being removed from the Energy pool
 [u]Cost Calculation Style[/u]: Cost Calculation Style for Concentration spells. Check spoiler for details.
 [spoiler]
 The reason this matters, is that if you are firing a concentration spell (e.g. Lesser Ward)  with one hand, and have a fire and forget spell (e.g. Firebolt) charged in the other hand, it’s difficult to calculate the ongoing cost of the concentration spell. I’ve provided a few options, but note that dual casting relies on the Left Hand being included in the calculation.
@@ -323,84 +259,42 @@ The reason this matters, is that if you are firing a concentration spell (e.g. L
 [u][i]Right Hand Only[/i][/u]: This option works the same as the Left Hand Only option, except with the sides reversed. This also will not calculate dual casting concentration spells correctly and will allow them to fire forever.
 [u][i]Cheat: Neither[/i][/u]: This option will completely ignore ongoing concentration spell costs, and so you’ll be able to fire them forever while Energy Casting is enabled.
 [/spoiler]
-[u]Temptation Cost:[/u] Energy cost of the Succubus Temptation Spell
-[u]Temptation Base Arousal Increase:[/u] Base amount added to target's arousal.
-[u]Temptation Level Multiplier:[/u] Multiplier applied to Succubus Level before being added to the Temptation Base Arousal Increase.
- 
-[u]Excitement Cost:[/u] Energy cost of the Succubus Excitement Spell
-[u]Excitement Base Arousal Increase:[/u] Base amount added to caster's arousal.
-[u]Excitement Level Multiplier:[/u] Multiplier applied to Succubus Level before being added to the Excitement Base Arousal Increase.
- 
-[u]Suppression Cost:[/u] Energy cost of the Succubus Suppression Spell
-[u]Suppression Base Arousal Decrease:[/u] Base amount removed from caster's arousal.
-[u]Suppression Level Multiplier:[/u] Multiplier applied to Succubus Level before being added to the Suppression Base Arousal Decrease.
 [/spoiler]
-[b][size=4][color=deeppink]Hotkeys[/color][/size][/b]
-[spoiler]
-[u]Toggle Drain Key:[/u] Sets the key to turn on Drain
-[u]Toggle Drain To Death Key:[/u] Sets the key to turn on Drain to Death
-[u]Transform hotkey:[/u] will apply the succubus transformation. Does not work during a scene.
-[u]Temptation hotkey:[/u] will cast Succubus Temptation on your partners in a scene, if you have it unlocked.
-[u]CSF Menu Hotkey:[/u] will open the Custom Skills Framework perk menu if it is installed
-[/spoiler]
-[b][size=4][color=deeppink]Widgets[/color][/size][/b]
-[spoiler]
-[u]Energy Meter X Position:[/u] Horizontal position of the energy bar
-[u]Energy Meter Y Position:[/u] Vertical position of the energy bar
-[u]Energy Meter X Scale:[/u] Horizontal size of the energy bar
-[u]Energy Meter Y Scale:[/u] Vertical size of the energy bar
-[u]Energy Meter Transparency:[/u] Transparency of the energy bar
-[u]Energy Meter AutoHides:[/u] Whether or not the energy bar disappears after a set amount of time
-[u]Energy Meter AutoHide Timer:[/u] How long before the energy bar takes to disappear after a change to it.
-[/spoiler]
-[b][size=4][color=deeppink]Advancements[/color][/size][/b]
-[spoiler]
-New perks are available for purchase as you level up.
 
-[u]Available Perk Points:[/u] Displays current available succubus perk points. Click it to add a new succubus perk point.
-[u]Reset Perks:[/u]Recover all spent perk points and remove the perks they were spent on.
-[u]Grant CSF Menu Power:[/u] Will give a power to open the Custom Skills Framework perk menu if it's installed
-
-Individual Perks are detailed in Game
-[/spoiler]
-[b][size=4][color=deeppink]Transformation Settings[/color][/size][/b]
-[spoiler]
-[u]Save Human Form: [/u] Saves current character appearance as your non-succubus form.
-[u]Save Succubus Form:[/u] Saves current character appearance as your succubus form.
-[u]Load Human Form:[/u] Change current character appearance into your non-succubus form.
-[u]Load Succubus Form:[/u] Change current character appearance into your succubus form.
-
-[u]Transform Animation:[/u] Toggle the animation that plays when you transform
-[u]Transformation is a Crime:[/u] You will be attacked on sight while transformed. Works the same was as vanilla werewolf.
-[u]Transform Swaps Equipment:[/u] When you transform, your equipment will be switched with whatever is in the succubus equipment chest. The items equipped while transformed will be placed in this chest when untransforming.
-[u]Save NiOverrides:[/u] Save NiOverrides before transformation and reapply after. WARNING: This will slow down the transformation a bit, especially on script heavy games
-[u]Transform Energy Cost:[/u] per second energy lost while transformed.
-[u]Arousal Upper Threshold:[/u] Upper arousal threshold for forced transform. Will be transformed while arousal is above this value.
-[u]Arousal Lower Threshold:[/u] Lower arousal threshold for forced transform. Will be transformed while arousal below this value.
-[/spoiler]
-[b][size=4][color=deeppink]Base Transform Buffs[/color][/size][/b]
-[spoiler]
-These buffs will be applied while transformed in addition to any perks you have bought. You can find details of the specific buffs in game.
-[u]Enable Transform Buffs:[/u] Whether Base transform buffs are enabled or not
-[/spoiler]
-[b][size=4][color=deeppink]Compatabilities[/color][/size][/b]
-[spoiler]
-This tab simply displays which supported mods have been detected
-[/spoiler]
-[/spoiler]
 [center][size=5][b]Known Incompatibilities[/b][/size][/center]
 [spoiler]
 [b]Papyrus Tweaks NG:[/b] Using the bSpeedUpNativeCalls = true option, breaks Energy Casting. Adding Spell to the sScriptClassesToExclude list fixes this, but also means that any benefit gained from bSpeedUpNativeCalls will not apply to Spells.
-[b]HDT-SMP Enabled Body Parts[/b]: Because RaceMenu does not support presets with HDT-SMP body parts, this mod also will not support them. A work around is to use a wig with the equipment swap option instead. Some users report it's fine as well.
-[b]Better Messagebox Contros:[/b] This mod does not respect translation strings, so Messageboxes triggered by CoL will not display properly. I don't think there's much important information in the messageboxes, so it's okay to play with.
+[b]HDT-SMP[/b]: There is an issue with using HDT-SMP and RaceMenu presets, which will cause a CTD when loading presets with physics enabled body parts. A newer version of Faster SMP has solved this, so as long as you are on an updated version of FSMP you should be able to use physics enabled body parts.
+[b]Better Vampires:[/b] There are issues with transforming and Better Vampires. I would suggest becoming a vampire and then saving your forms, which should alleviate the issues until I can find a fix for it. You might also be able to transform, then use the console to set your race to a vampire race and resave, but I'm not certain this will work.
+[b]Non-english Characters in Character Names: [/b]Racemenu does not correctly save or load presets with non-english characters in their names. You will almost definitely see issues.
+[b]OBody NG:[/b] When changing forms, morphs that were created by OBody NG will not be reset. You will need to clear the obody data out of the presets to reset it.
+[b]Ultimate Body Enhancer 2.0[/b] [b](UBE):[/b] The problem as I understand it is that UBE replaces the code to detect the current player race so that instead of getting the UBE race it gets the vanilla race. Which then when I reapply the race I detected it obviously breaks since I'm applying the vanilla race. The spoiler below may be a workaround for now
+[spoiler]
+[list=1]
+[*]Start a new game and wait for mods to start up
+[*]Save before starting CoL
+[*]Set a hot key for transform
+[*]Save the presets that you want to use
+[*]Press the hot key to confirm that it reverts to vanilla
+[*]Using command to set UBE race again in my case was 00ube_darkelfracevampire
+[*]After resetting the race to UBE, open showracemenu and save the preset overwriting the preset that CoL created, doing the same for both forms, Mortal and succubus.
+[*]Reset the game
+[*]Load the save before activate the COL mod
+[*]Activate it 
+[/list]
+DONT set presets again, just pressing the hot key, make my character transform
+Dont change the character name or the transformation presets wont work
+If you want to make change to the transformation, just overwrite the presets with the new ones. 
 [/spoiler]
+[/spoiler]
+
 [center][size=5][b]Future Plans[/b][/size][/center]
 [spoiler]
 Nothing in here is guaranteed, and may change before or during implementation. If you see anything of interest in this section, be sure to let me know in the comments.
 
 [b]Planned for a Future Version[/b]
 3 different paths to power (perk trees and additional abilities. Check the sticky post for details)
-    Path of Molag Bal: Combat and Conjuration focused
+    [s]Path of Molag Bal: Combat and Conjuration focused[/s] [color=#00ff00]DONE![/color]
     Path of Sanguine: Seduction/Speech and Alteration focused
     Path of Vaermina: Stealth and Illusion focused
     Each of these will also provide a different way to initiate feeding
@@ -419,3 +313,11 @@ What gets implemented from this section will largely depend on user feedback
 [spoiler]
 Please don’t hesitate to post your comments, feature requests, bug reports, questions, encouragements, or anything else. I promise I won’t throw a tantrum and delist the mod. All I ask is that you be polite, respectful, and recognize that I don’t have infinite free time to work on mods or monitor forums.
 [/spoiler]
+
+[center][size=5][b]Other Mods[/b][/size][/center]
+If you like this mod, or even if you don't, check out my other mods:
+
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/111314]Maintainable Spells Reborn[/url]﻿ - Maintain spells at the cost of reserved Magicka
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/110675]Roaring Words[/url] - Adds quest markers to all word walls at once
+[url=https://www.nexusmods.com/skyrimspecialedition/mods/88757]I.M.P.S. - Dynamic Autosale Chests[/url] - Configure any chest to autosell your loot
+NSFW: [url=https://www.nexusmods.com/skyrimspecialedition/mods/68638]Children of Lilith - Succubus of Skyrim[/url] - Gameplay mod for playing as a Succubus
