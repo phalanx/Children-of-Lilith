@@ -10,7 +10,7 @@ Perk Property BuiltForCombat Auto
 bool pauseCost
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    if configHandler.transformCost > 0
+    if configHandler.transformCost != 0
         Maintenance()
         RegisterForSingleUpdate(1)
     endif
@@ -39,15 +39,16 @@ Function EndScene()
 EndFunction
 
 Event OnUpdate()
+    if pauseCost || CoL.lockTransform
+        RegisterForSingleUpdate(1)
+        return
+    endif
     float totalCost = configHandler.transformCost
+    if CoL.playerRef.HasPerk(BuiltForCombat)
+        totalCost *= configHandler.builtForCombatMult
+    endif
+    Log("Total cost: " + totalCost)
     if totalCost > 0
-        if pauseCost || CoL.lockTransform
-            RegisterForSingleUpdate(1)
-            return
-        endif
-        if CoL.playerRef.HasPerk(BuiltForCombat)
-            totalCost *= configHandler.builtForCombatMult
-        endif
         if energyHandler.playerEnergyCurrent >= totalCost
             energyHandler.playerEnergyCurrent -= totalCost
             RegisterForSingleUpdate(1)
@@ -56,6 +57,11 @@ Event OnUpdate()
             Debug.Notification("Out of Energy")
             CoL.transformSpell.Cast(CoL.playerRef, CoL.playerRef)
         else
+            RegisterForSingleUpdate(1)
+        endif
+    elseif totalCost < 0
+        if energyHandler.playerEnergyCurrent < energyHandler.playerEnergyMax
+            energyHandler.playerEnergyCurrent -= totalCost
             RegisterForSingleUpdate(1)
         endif
     endif

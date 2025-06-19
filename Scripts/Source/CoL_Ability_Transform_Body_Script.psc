@@ -4,6 +4,7 @@ import PapyrusUtil
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Interface_AnimatedWings Property iAnimatedWings Auto
 
 Faction Property playerWerewolfFaction Auto
 Perk Property attractiveDremora Auto
@@ -28,6 +29,7 @@ Function Transform()
     Log("Transforming")
 
     CoL.transformPlayer(CoL.succuPresetName, CoL.succuRace, CoL.succuHairColor)
+    iAnimatedWings.applyWings()
     
     if configHandler.transformCrime && !CoL.playerRef.HasPerk(attractiveDremora)
         CoL.playerRef.SetAttackActorOnSight()
@@ -38,6 +40,7 @@ EndFunction
 Function UnTransform()
     Log("Untransforming")
     CoL.transformPlayer(CoL.mortalPresetName, CoL.mortalRace, CoL.mortalHairColor)
+    iAnimatedWings.RemoveWings()
 
     Utility.Wait(0.5)
     if configHandler.transformCrime 

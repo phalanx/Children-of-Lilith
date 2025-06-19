@@ -205,6 +205,5 @@ Event SLSOOrgasmHandler(Form ActorRef, Int threadID)
     string actorName = akActor.GetLeveledActorBase().GetName()
     if akActor != succubus && positions.Find(succubus) >= 0
         triggerDrainStart(akActor)
-        Log("Trigger drain start for " + actorName)
     endif
 EndEvent

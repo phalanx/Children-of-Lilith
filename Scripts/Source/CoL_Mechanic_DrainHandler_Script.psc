@@ -1,4 +1,5 @@
 Scriptname CoL_Mechanic_DrainHandler_Script extends ActiveMagicEffect
+import SPE_Actor
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_Interface_Arousal_Script Property iArousal Auto
@@ -9,6 +10,9 @@ CoL_Mechanic_VampireHandler_Script Property vampireHandler Auto
 CoL_UI_Widget_Script  Property widgetHandler Auto
 
 Spell Property soulTrap Auto
+Keyword Property blacklistedVictim Auto
+Faction Property CurrentFollowerFaction Auto
+Faction Property CurrentHireling Auto
 
 VisualEffect Property drainToDeathVFX Auto
 Perk Property gentleDrainer Auto
@@ -17,6 +21,7 @@ Perk Property EssenceExtraction Auto
 Perk[] Property DeadlyRevelry Auto
 Perk[] Property MorbidRecovery Auto
 
+Actor[] drainToDeathVictim
 bool drainStarted = false
 bool draining = false
 bool drainingToDeath = false
@@ -52,11 +57,13 @@ EndFunction
 Function StartScene()
     RegisterForKey(configHandler.hotkeys[0])
     RegisterForKey(configHandler.hotkeys[1])
+    drainToDeathVictim = new Actor[1]
 EndFunction
 
 Function EndScene()
     UnRegisterForKey(configHandler.hotkeys[0])
     UnRegisterForKey(configHandler.hotkeys[1])
+    drainToDeathVictim = new Actor[1]
 EndFunction
 
 Event OnKeyDown(int keyCode)
@@ -107,6 +114,14 @@ Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float a
     UnRegisterForKey(configHandler.hotkeys[0])
     UnRegisterForKey(configHandler.hotkeys[1])
     drainStarted = True
+
+    Log("Recieved Start Drain Event for " + draineeName)
+    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
+    Log("Recieved Victim Arousal: " + arousal)
+    if draineeForm.HasKeyword(blacklistedVictim)
+        Log(draineeName + " has been blacklisted")
+        return
+    endif
     if drainingToDeath
         DrainToDeath(drainerForm, draineeForm, draineeName, arousal)
     elseif draining
@@ -115,21 +130,20 @@ Event StartDrain(Form drainerForm, Form draineeForm, string draineeName, float a
 EndEvent
 
 Event EndDrain(Form drainerForm, Form draineeForm)
+    drainStarted = False
+    if draineeForm.HasKeyword(blacklistedVictim)
+        return
+    endif
     if drainingToDeath
         EndDrainToDeath(drainerForm, draineeForm)
     elseif draining
         EndNormalDrain(drainerForm, draineeForm)
     endif
-    drainStarted = False
     energyUpdated(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
 EndEvent
 
 Function NormalDrain(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
     Actor drainee = draineeForm as Actor
-
-    Log("Recieved Start Drain Event for " + draineeName)
-    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-    Log("Recieved Victim Arousal: " + arousal)
 
     if drainee.IsInFaction(CoL.drainVictimFaction) 
         Log(draineeName + " has been drained and Drain to Death not enabled")
@@ -152,15 +166,20 @@ EndFunction
 Function EndNormalDrain(Form drainerForm, Form draineeForm)
     Log("Recieved End Drain Event for " + (draineeForm as Actor).GetActorBase().GetName())
     StorageUtil.UnsetIntValue(draineeForm, "CoL_activeParticipant")
+    if draineeForm.HasKeyword(blacklistedVictim)
+        return
+    endif
     (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
 EndFunction
 
 Function DrainToDeath(Form drainerForm, Form draineeForm, string draineeName, float arousal=0.0)
     Actor drainee = draineeForm as Actor
-
-    Log("Recieved Start Drain To Death Event for " + draineeName)
-    Log("Drained by " + (drainerForm as Actor).GetBaseObject().GetName())
-    Log("Recieved Victim Arousal: " + arousal)
+    if drainToDeathVictim.Find(drainee) != -1
+        Log("Victim has already been drained to death")
+        return
+    else
+        drainToDeathVictim = PapyrusUtil.PushActor(drainToDeathVictim, drainee)
+    endif
 
     float[] drainAmounts = CalculateDrainAmount(drainee, arousal)
     processMorbidRecovery(drainAmounts[0])
@@ -200,6 +219,7 @@ EndFunction
 Function EndDrainToDeath(Form drainerForm, Form draineeForm)
     Utility.Wait(configHandler.drainToDeathDelay)
     Actor drainee = draineeForm as Actor
+    Actor drainer = drainerForm as Actor
     string draineeName = (drainee.GetBaseObject() as Actorbase).GetName()
 
     if CoL.playerRef.HasPerk(EssenceExtraction)
@@ -220,11 +240,56 @@ Function EndDrainToDeath(Form drainerForm, Form draineeForm)
         (draineeForm as Actor).AddToFaction(CoL.drainVictimFaction)
         return
     endif
-    if configHandler.drainToDeathCrime
-        drainee.Kill(drainerForm as Actor)
+    if configHandler.drainToDeathCrime && DrainerIsDetected(drainer, drainee)
+        Log("Blaming drainer")
+        drainee.Kill(drainer)
     else
-        drainee.Kill()
+        Log("No blame drain")
+        drainee.KillSilent()
     endif
+EndFunction
+
+bool Function DrainerIsDetected(Actor drainer, Actor drainee)
+    Actor[] detectors = GetDetectedBy(drainer)
+    int i = 0
+    while i < detectors.length
+        if IsValidDetector(detectors[i], drainer, drainee)
+            return true
+        endif
+        i += 1
+    endwhile
+    return false
+EndFunction
+
+bool Function IsValidDetector(Actor detector, Actor drainer, Actor drainee)
+    string detectorName = detector.GetActorBase().GetName()
+    Log("Drainer is detected by: " + detectorName)
+    if GetRaceType(detector) != "Human"
+        Log(detectorName + " is not Human")
+        return false
+    endif
+    if detector == drainee
+        Log(detectorName + " is drainee")
+        return false
+    endif
+    if detector.IsPlayerTeammate()
+        Log(detectorName + " is a teammate")
+        return false
+    endif
+    if StorageUtil.GetIntValue(detector, "CoL_activeParticipant") as bool
+        Log(detectorName + " is an active participant")
+        return false
+    endif
+    if !detector.HasLoS(drainer)
+        Log(detectorName + " does not have LOS")
+        return false
+    endif
+    if detector.GetDistance(drainer) > configHandler.drainToDeathDetectionRange
+        Log(detectorName + " is too far away")
+        return false
+    endif
+    Log(detectorName + " is a valid detector")
+    return true
 EndFunction
 
 Function doVampireDrain(Actor drainee)

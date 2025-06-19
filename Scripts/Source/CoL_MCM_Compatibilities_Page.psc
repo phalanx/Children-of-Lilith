@@ -5,6 +5,7 @@ Quest Property SexLab_Interfaces Auto
 Quest Property Toys_Interfaces Auto
 Quest Property OSL_Interfaces Auto
 Quest Property SlaveTats_Interfaces Auto
+CoL_Interface_AnimatedWings Property iAnimatedWings Auto
 
 CoL_ConfigHandler_Script Property  configHandler Auto
 
@@ -37,6 +38,8 @@ Event OnPageDraw()
     AddToggleOptionST("OSL", "OSL Aroused", (OSL_Interfaces as CoL_Interface_OSL_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
     AddHeaderOption("SlaveTats")
     AddToggleOptionST("SlaveTats", "SlaveTats", (SlaveTats_Interfaces as CoL_Interface_SlaveTats_Script).IsInterfaceActive(), OPTION_FLAG_DISABLED)
+    AddHeaderOption("Animated Wings Ultimate")
+    AddToggleOptionST("AnimatedWingsUltimate", "Animated Wings Ultimate", iAnimatedWings.IsInterfaceActive(), OPTION_FLAG_DISABLED )
 EndEvent
 
 State Toggle_PPlusTagCheck

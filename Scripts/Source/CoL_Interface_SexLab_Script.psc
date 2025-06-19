@@ -13,7 +13,7 @@ Function OnGameLoad()
 EndFunction
 
 Function Log(string msg)
-    Debug.Trace("[CoL] Interface - Sexlab" + msg)
+    Debug.Trace("[CoL] Interface - Sexlab - " + msg)
 EndFunction
 
 Function Maintenance()

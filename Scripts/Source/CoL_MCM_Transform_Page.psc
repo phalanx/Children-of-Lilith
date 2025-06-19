@@ -2,6 +2,7 @@ Scriptname CoL_MCM_Transform_Page extends nl_mcm_module
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+CoL_Interface_AnimatedWings Property iAnimatedWings Auto
 
 String Property formSavedMsg = "Form Saved" Auto
 String Property formLoadedMsg = "Form Loaded. Exit menu to apply changes" Auto
@@ -23,6 +24,9 @@ Event OnPageDraw()
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_PRESET")
     if CoL.isPlayerSuccubus.GetValueInt() == 0
         AddTextOptionST("Text_initFirst", "$COL_TRANSFORMPAGE_INITFIRST", None)
+        AddEmptyOption()
+        AddEmptyOption()
+        AddEmptyOption()
     else
         AddTextOptionST("Text_saveMortalPreset", "$COL_TRANSFORMPAGE_SAVEMORTALFORM", None)
         if CoL.mortalPresetSaved
@@ -53,6 +57,7 @@ Event OnPageDraw()
     AddSliderOptionST("Slider_ArousalUpperThreshold", "$COL_TRANSFORMPAGE_AROUSALUPPERTHRESHOLD", configHandler.transformArousalUpperThreshold)
     AddSliderOptionST("Slider_ArousalLowerThreshold", "$COL_TRANSFORMPAGE_AROUSALLOWERTHRESHOLD", configHandler.transformArousalLowerThreshold)
     AddToggleOptionST("Toggle_ArousalUntransform", "$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM", configHandler.arousalUntransform)
+    AddToggleOptionST("Toggle_AutoEnergyCasting", "$COL_TRANSFORMPAGE_AUTOENERGYCASTING", configHandler.autoEnergyCasting)
     AddHeaderOption("$COL_TRANSFORMPAGE_HEADER_BUFFS")
     if CoL.isTransformed
         AddTextOptionST("Text_NoTransformBuffChange", "$COL_TRANSFORMPAGE_CANTCHANGEBUFFS_MSQ", None)
@@ -73,6 +78,16 @@ Event OnPageDraw()
     AddTextOptionST("Text_ActivateEquipmentChest", "$COL_TRANSFORMPAGE_EQUIPMENTSAVE" , None)
     if !loadEquipment
         AddTextOptionST("Text_LoadEquipment", "$COL_TRANSFORMPAGE_LOADEQUIPMENT" , None)
+        AddEmptyOption()
+        AddEmptyOption()
+        AddHeaderOption("")
+        if iAnimatedWings.IsInterfaceActive()
+            AddMenuOptionST("Menu_Wings", "$COL_TRANSFORMPAGE_WINGS", iAnimatedWings.wingsOptions[configHandler.selectedWing])
+            AddToggleOptionST("Toggle_WingPerk", "$COL_TRANSFORMPAGE_WINGSNEEDPERK", configHandler.wingsNeedPerk)
+        else
+            AddMenuOptionST("Menu_Wings", "$COL_TRANSFORMPAGE_WINGS", iAnimatedWings.wingsOptions[configHandler.selectedWing], OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_WingPerk", "$COL_TRANSFORMPAGE_WINGSNEEDPERK", configHandler.wingsNeedPerk, OPTION_FLAG_DISABLED)
+        endif
     endif
     if loadEquipment
         LoadEquipmentList()
@@ -278,7 +293,7 @@ State Slider_TransformCost
         SetSliderDialogStartValue(configHandler.transformCost)
         SetSliderDialogDefaultValue(1)
         SetSliderDialogInterval(0.01)
-        SetSliderDialogRange(0, 100)
+        SetSliderDialogRange(-100, 100)
     EndEvent
     Event OnSliderAcceptST(string state_id, float value)
         configHandler.transformCost = value
@@ -374,6 +389,15 @@ State Toggle_ArousalUntransform
         SetInfoText("$COL_TRANSFORMPAGE_AROUSALUNTRANSFORM_HELP")
     EndEvent
 EndState
+State Toggle_AutoEnergyCasting
+    Event OnSelectST(string state_id)
+        configHandler.autoEnergyCasting = !configHandler.autoEnergyCasting
+        SetToggleOptionValueST(configHandler.autoEnergyCasting)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_AUTOENERGYCASTING_HELP")
+    EndEvent
+EndState
 State Text_AddStrippable
     Event OnSelectST(string state_id)
         int index = state_id as int
@@ -410,5 +434,36 @@ State Text_RemoveStrippable
         endif
 
         ForcePageReset()
+    EndEvent
+EndState
+
+State Menu_Wings
+    Event OnMenuOpenST(string state_id)
+        int i = 0
+        SetMenuDialog(iAnimatedWings.wingsOptions, configHandler.selectedWing, 0)
+    EndEvent
+
+    Event OnMenuAcceptST(string state_id, int index)
+        if index == -1
+            index = 0
+        endif
+        configHandler.selectedWing = index
+        iAnimatedWings.UpdateWings()
+        SetMenuOptionValueST(iAnimatedWings.wingsOptions[index])
+    EndEvent
+
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_WINGS_HELP")
+    EndEvent
+EndState
+
+State Toggle_WingPerk
+    Event OnSelectST(string state_id)
+        configHandler.wingsNeedPerk = !configHandler.wingsNeedPerk
+        SetToggleOptionValueST(configHandler.wingsNeedPerk)
+        iAnimatedWings.UpdateWings()
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_WINGSNEEDPERK_HELP")
     EndEvent
 EndState

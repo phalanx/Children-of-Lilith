@@ -85,6 +85,8 @@ State Menu_FollowedPath
     EndEvent
 EndState
 
+
+
 State Text_BecomeSuccubus
     Event OnSelectST(string state_id)
         SetTextOptionValueST("$COL_MCM_EXIT")

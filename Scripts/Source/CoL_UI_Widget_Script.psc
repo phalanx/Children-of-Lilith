@@ -24,7 +24,8 @@ Function CreateMeter()
         return
     endif
     lastColor = GetColor()
-    iWidgets.setMeterFillDirection(energyMeter, "both")
+    UpdateFillDirection()
+
 EndFunction
 
 Function Log(string msg)
@@ -48,6 +49,7 @@ Function UpdateMeter()
     endif
     MoveEnergyMeter()
     UpdateColor()
+    UpdateFillDirection()
     UpdateFill(energyHandler.playerEnergyCurrent, energyHandler.playerEnergyMax)
     ShowMeter()
 EndFunction
@@ -60,6 +62,14 @@ EndFunction
 
 Function UpdateFill(float newEnergy, float maxEnergy)
     iWidgets.setMeterPercent(energyMeter, ((newEnergy / maxEnergy) * 100) as int)
+EndFunction
+
+Function UpdateFillDirection()
+    string[] directionOptions = new string[3]
+    directionOptions[0] = "both"
+    directionOptions[1] = "left"
+    directionOptions[2] = "right"
+    iWidgets.setMeterFillDirection(energyMeter, directionOptions[configHandler.meterFillDirection])
 EndFunction
 
 ; drainCodes
