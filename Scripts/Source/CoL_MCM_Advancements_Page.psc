@@ -8,6 +8,7 @@ Scriptname CoL_MCM_Advancements_Page extends nl_mcm_module
 ; 4 - Attractive Dremora
 ; 5 - Slake Thirst
 Perk[] Property singleRankPerks Auto
+Perk Property VelvetWings Auto
 
 ; Path of Domination Perks
     Perk Property CombatFeedingPerk Auto
@@ -80,6 +81,7 @@ Event OnPageDraw()
         AddTextOptionST("Text_RankedPerk___" + i, "$COL_ADVPAGE_RANKEDPERK_" + i, CoL.transformBuffs[i])
         i += 1
     endwhile
+    printPerk(VelvetWings, "Toggle_VelvetWings")
 EndEvent
 
 Function printPerk(Perk perkToPrint, string stateName, Perk requiredPerk=None)
@@ -151,6 +153,7 @@ State Text_perkReset
         restoredPoints += resetPerk(EssenceExtraction)
         restoredPoints += resetPerk(NoEscape)
         restoredPoints += resetPerk(BuiltForCombat)
+        restoredPoints += resetPerk(VelvetWings)
 
         restoredPoints += resetPerkArray(singleRankPerks)
         restoredPoints += resetPerkArray(ReinforcedBody)
@@ -243,6 +246,14 @@ State Text_rankedPerk
     EndEvent
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_ADVPAGE_RANKEDPERK_"+state_id+"_HELP")
+    EndEvent
+EndState
+State Toggle_velvetWings
+    Event OnSelectST(string state_id)
+        GivePerk(VelvetWings)
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_ADVPAGE_PERK_VELVETWINGS_HELP")
     EndEvent
 EndState
 

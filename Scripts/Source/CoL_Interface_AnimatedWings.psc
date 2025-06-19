@@ -2,6 +2,7 @@ Scriptname CoL_Interface_AnimatedWings extends Quest
 
 CoL_PlayerSuccubusQuestScript Property CoL Auto
 CoL_ConfigHandler_Script Property configHandler Auto
+Perk Property velvetWings Auto
 
 string[] Property wingsOptions Auto Hidden                      ; Holds available wing options
 
@@ -42,6 +43,7 @@ State Installed
             i += 1
         endWhile
         Log("Done Building Wing List")
+        UpdateWings()
     EndEvent
 
     bool Function IsInterfaceActive()
@@ -187,12 +189,18 @@ State Installed
     EndFunction
     
     Function UpdateWings()
+        RemoveWings()
         selectedWingSpell = GetWings(configHandler.selectedWing)
+        if CoL.isTransformed
+            ApplyWings()
+        endif
     EndFunction
     
     Function ApplyWings()
         if selectedWingSpell != None
-            CoL.playerRef.AddSpell(selectedWingSpell)
+            if CoL.playerRef.HasPerk(velvetWings) || !configHandler.wingsNeedPerk
+                CoL.playerRef.AddSpell(selectedWingSpell, false)
+            endif
         endif
     EndFunction
 

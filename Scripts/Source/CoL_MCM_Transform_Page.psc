@@ -83,8 +83,10 @@ Event OnPageDraw()
         AddHeaderOption("")
         if iAnimatedWings.IsInterfaceActive()
             AddMenuOptionST("Menu_Wings", "$COL_TRANSFORMPAGE_WINGS", iAnimatedWings.wingsOptions[configHandler.selectedWing])
+            AddToggleOptionST("Toggle_WingPerk", "$COL_TRANSFORMPAGE_WINGSNEEDPERK", configHandler.wingsNeedPerk)
         else
             AddMenuOptionST("Menu_Wings", "$COL_TRANSFORMPAGE_WINGS", iAnimatedWings.wingsOptions[configHandler.selectedWing], OPTION_FLAG_DISABLED)
+            AddToggleOptionST("Toggle_WingPerk", "$COL_TRANSFORMPAGE_WINGSNEEDPERK", configHandler.wingsNeedPerk, OPTION_FLAG_DISABLED)
         endif
     endif
     if loadEquipment
@@ -452,5 +454,16 @@ State Menu_Wings
 
     Event OnHighlightST(string state_id)
         SetInfoText("$COL_TRANSFORMPAGE_WINGS_HELP")
+    EndEvent
+EndState
+
+State Toggle_WingPerk
+    Event OnSelectST(string state_id)
+        configHandler.wingsNeedPerk = !configHandler.wingsNeedPerk
+        SetToggleOptionValueST(configHandler.wingsNeedPerk)
+        iAnimatedWings.UpdateWings()
+    EndEvent
+    Event OnHighlightST(string state_id)
+        SetInfoText("$COL_TRANSFORMPAGE_WINGSNEEDPERK_HELP")
     EndEvent
 EndState

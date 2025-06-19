@@ -116,6 +116,7 @@ float Property transformArousalUpperThreshold = 0.0 Auto Hidden
 float Property transformArousalLowerThreshold = 0.0 Auto Hidden
 bool Property arousalUntransform = false Auto Hidden
 bool Property autoEnergyCasting = false Auto Hidden
+bool Property wingsNeedPerk = true Auto Hidden
 
 ; Transform Baseline Buffs
 bool Property transformBuffsEnabled = false Auto Hidden
@@ -198,7 +199,6 @@ int Function SaveConfig()
         JMap.setInt(jObj, "version", GetConfigVersion())
         JMap.setFlt(jObj, "baseMaxEnergy", baseMaxEnergy)
         JMap.setInt(jObj, "selectedPath", selectedPath)
-        ; JMap.setInt(jObj, "selectedWing", selectedWing)
         JMap.setInt(jObj, "DebugLogging", DebugLogging as int)
         JMap.setInt(jObj, "EnergyScaleTestEnabled", EnergyScaleTestEnabled as int)
     ; Save Drain Settings
@@ -287,6 +287,7 @@ int Function SaveConfig()
         JMap.setFlt(jObj, "transformArousalLowerThreshold", transformArousalLowerThreshold)
         JMap.setInt(jObj, "transformUntransform", arousalUntransform as int)
         JMap.setInt(jObj, "autoEnergyCasting", autoEnergyCasting as int)
+        JMap.setInt(jObj, "selectedWing", selectedWing)
 
     ; Save Transform Baseline Buffs
         JMap.setInt(jObj, "transformBuffsEnabled", transformBuffsEnabled as int)
@@ -310,7 +311,6 @@ Function LoadConfig(int jObj)
     ; Load Base Settings
         baseMaxEnergy = JMap.getFlt(jObj, "baseMaxEnergy")
         selectedPath = JMap.getInt(jObj, "selectedPath")
-        selectedWing = JMap.getInt(jObj, "selectedWing", 0)
         DebugLogging = JMap.getInt(jObj, "DebugLogging") as bool
         EnergyScaleTestEnabled = JMap.getInt(jObj, "EnergyScaleTestEnabled") as bool
     ; Load Drain Settings
@@ -404,6 +404,7 @@ Function LoadConfig(int jObj)
         transformArousalUpperThreshold = JMap.getFlt(jObj, "transformArousalUpperThreshold")
         transformArousalLowerThreshold = JMap.getFlt(jObj, "transformArousalLowerThreshold")
         autoEnergyCasting = JMap.getInt(jObj, "autoEnergyCasting", 0) as bool
+        selectedWing = JMap.getInt(jObj, "selectedWing", 0)
         arousalUntransform = JMap.getInt(jObj, "transformUntransform", 0) as bool
         transformDuringScene = JMap.getInt(jObj, "transformDuringScene", 1) as bool
         transformDuringSceneChance = JMap.getFlt(jObj, "transformDuringSceneChance", 1.0)
