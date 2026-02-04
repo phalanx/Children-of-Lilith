@@ -529,7 +529,7 @@ EndEvent
 
     State Slider_tattooSlot
         Event OnSliderOpenST(string state_id)
-            SetSliderDialog(configHandler.tattooSlot, 1, 6, 1, 6)
+            SetSliderDialog(configHandler.tattooSlot, 1, 20, 1, 6)
         EndEvent
 
         Event OnSliderAcceptST(string state_id, float value)
